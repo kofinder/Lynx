@@ -1,0 +1,70 @@
+DEBUG ?= 1
+LLVM_SUP=llvm.sup
+BUILD_DIR = build
+EXAMPLE_DIR = livechat
+LSP_CLIENT_DIR = extension/build
+BUILD_SOURCE_DIR = $(BUILD_DIR)/src
+EXECUTABLE_NAME = $(BUILD_SOURCE_DIR)/Lynx
+LSP_SERVER_NAME = $(BUILD_SOURCE_DIR)/LynxLSPServer
+GRAMMAR_JSON = $(BUILD_SOURCE_DIR)/lang/grammar.json
+
+UNIT_TESTS = $(BUILD_DIR)/tests/unit_tests
+
+# Define paths
+BISON_DIR = bison
+SKIA_DIR = external/skia
+
+
+
+all: create build
+
+create:
+	@echo "Creating build directory"
+	@mkdir -p $(BUILD_DIR)
+
+configure:
+	@echo "Configuring the project with CMake"
+	cd $(BUILD_DIR) && cmake -DCMAKE_BUILD_TYPE=Debug ..
+
+build: configure
+	@echo "Building in $(BUILD_DIR)"
+	cd $(BUILD_DIR) && cmake --build .
+	mv ${LSP_SERVER_NAME} ${LSP_CLIENT_DIR}/
+	mv ${GRAMMAR_JSON} ${LSP_CLIENT_DIR}/
+
+
+install: build
+	@echo "Generating graphviz dependency graph"
+	cd $(BUILD_DIR) && cmake .. --graphviz=graph.dot && dot -Tpng graph.dot -o graph.png
+
+validate: build
+	@echo "Running $(UNIT_TESTS)"
+	cd $(BUILD_DIR)/tests && ./unit_tests
+
+execute: build
+	@echo "Running $(EXECUTABLE_NAME)"
+	./$(EXECUTABLE_NAME) run -c ${EXAMPLE_DIR}/app_config.yaml -e main.lynx
+
+syntax:
+	@echo "Running Bison to generate parser and header..."
+	bison --report=all --report-file=$(BISON_REPORT) -d $(BISON_DIR)
+	@echo "Bison report saved to $(BISON_REPORT)"
+	@grep -i conflict $(BISON_REPORT) || echo "No conflicts found."
+
+trace: build
+	@echo "Debuging $(EXECUTABLE_NAME)"
+	valgrind --leak-check=full --show-leak-kinds=all --suppressions=${LLVM_SUP} ./$(EXECUTABLE_NAME) run -c ${EXAMPLE_DIR}/app_config.yaml -e main.lynx
+	#valgrind --leak-check=full --show-leak-kinds=all --gen-suppressions=all ./$(EXECUTABLE_NAME) run -c ${EXAMPLE_DIR}/app_config.yaml -e main.lynx
+	#valgrind -s --leak-check=full --suppressions=llvm.supp --track-origins=yes --show-leak-kinds=all ./$(EXECUTABLE_NAME) run -c ${EXAMPLE_DIR}/app_config.yaml -e main.lynx
+
+debug: build
+	@echo "Starting GDB for $(EXECUTABLE_NAME) with args..."
+	gdb -ex "set breakpoint pending on" -ex run --args ./$(EXECUTABLE_NAME) run -c ${EXAMPLE_DIR}//app_config.yaml -e main.lynx
+
+clean:
+	@echo "Cleaning up..."
+	@sh sh_clean.sh
+	cd ${BISON_DIR}/ && sh run.sh clean
+	#cd ${SKIA_DIR}/ && rm -rf out/Static
+
+.PHONY: all create configure install build validate execute debug trace clean syntax
