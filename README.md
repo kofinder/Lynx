@@ -5,14 +5,12 @@
 - [LLVM Language Reference – Identifiers](https://llvm.org/docs/LangRef.html#identifiers)
 - [GNU Bison Manual – Location Type](https://www.gnu.org/software/bison/manual/html_node/Location-Type.html)
 - [C++ Core Guidelines – Source](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#S-source)
-
----
-
-## Documentation
+- [LLVM Documentation (PDF)](https://readthedocs.org/projects/llvm/downloads/pdf/latest/)
 - [Poco Project Documentation](https://pocoproject.org/documentation.html)
 - [Exploring OS – Source Tutorials](https://mohitmishra786.github.io/exploring-os/src/)
-- CS162 Lecture Notes
-
+- [ISPC] - (https://github.com/ispc/ispc)
+- [Flex Manual – Functions and Macros](https://westes.github.io/flex/manual/Index-of-Functions-and-Macros.html#Index-of-Functions-and-Macros)
+- [GNU Bison Manual – C++ Unions](https://www.gnu.org/software/bison/manual/bison.html#C_002b_002b-Unions)
 ---
 
 ## Memory Management
@@ -21,23 +19,6 @@
 - [Resource Allocation Graph Theory](https://mohitmishra786.github.io/exploring-os/src/day-42-resource-allocation-graph-theory.html)
 
 ---
-
-## LLVM References
-- [Mapping High-Level Constructs to LLVM IR](https://mapping-high-level-constructs-to-llvm-ir.readthedocs.io/en/latest/basic-constructs/local-variables.html)
-- [LLVM Documentation (PDF)](https://readthedocs.org/projects/llvm/downloads/pdf/latest/)
-- [LLVM Programmer's Manual – Map-like Containers](https://llvm.org/docs/ProgrammersManual.html#map-like-containers-std-map-densemap-etc)
-- [LLVM Language Reference](https://llvm.org/docs/LangRef.html)
-- [LLVM Value Class Reference](https://llvm.org/doxygen/classllvm_1_1Value.html)
-
----
-
-## Flex
-- [Flex Manual – Functions and Macros](https://westes.github.io/flex/manual/Index-of-Functions-and-Macros.html#Index-of-Functions-and-Macros)
-
----
-
-## Bison
-- [GNU Bison Manual – C++ Unions](https://www.gnu.org/software/bison/manual/bison.html#C_002b_002b-Unions)
 
 ---
 
@@ -68,5 +49,4 @@
 ---
 
 ## Obfuscated C Code Contest
-- [2005 IOCCC Winner – Aidan](https://www.ioccc.org/2005/aidan/index.html)
 - [IOCCC Source Code Repository](https://github.com/ioccc-src/winner)
