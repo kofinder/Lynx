@@ -8,7 +8,7 @@
 - [LLVM Documentation (PDF)](https://readthedocs.org/projects/llvm/downloads/pdf/latest/)
 - [Poco Project Documentation](https://pocoproject.org/documentation.html)
 - [Exploring OS – Source Tutorials](https://mohitmishra786.github.io/exploring-os/src/)
-- [ISPC] - (https://github.com/ispc/ispc)
+- [ISPC](https://github.com/ispc/ispc)
 - [Flex Manual – Functions and Macros](https://westes.github.io/flex/manual/Index-of-Functions-and-Macros.html#Index-of-Functions-and-Macros)
 - [GNU Bison Manual – C++ Unions](https://www.gnu.org/software/bison/manual/bison.html#C_002b_002b-Unions)
 ---
