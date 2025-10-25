@@ -56,35 +56,6 @@ make
 
 ---
 
-## 💡 Example Concept
-
-```cpp
-// Example of OOP-style syntax in Lynx (conceptual)
-interface Drawable {
-    void draw();
-}
-
-class Shape : Drawable {
-    int x, y;
-    void draw() {
-        print("Drawing Shape at (" + x + ", " + y + ")");
-    }
-}
-
-mixin Color {
-    string color;
-}
-
-class Circle : Shape, Color {
-    int radius;
-    void draw() {
-        print("Drawing " + color + " circle with radius " + radius);
-    }
-}
-```
-
----
-
 ## 🤝 Contributing
 
 Lynx is an open, community-driven language project.  
