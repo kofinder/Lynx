@@ -1,7 +1,6 @@
 DEBUG ?= 1
-LLVM_SUP=llvm.sup
 BUILD_DIR = build
-EXAMPLE_DIR = livechat
+EXAMPLE_DIR = toy
 LSP_CLIENT_DIR = extension/build
 BUILD_SOURCE_DIR = $(BUILD_DIR)/src
 EXECUTABLE_NAME = $(BUILD_SOURCE_DIR)/Lynx

@@ -41,4 +41,11 @@
 *.dwo
 
 external
+
 build
+
+extension/build
+
+.vscode
+
+toy
