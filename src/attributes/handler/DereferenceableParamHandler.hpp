@@ -15,7 +15,7 @@ namespace LynxFunctionAttr {
                 // LOG_INFO("Invoked DereferenceableParamHandler");
 
                 if (func->size() <= 5 && !func->isDeclaration()) {
-                    builder.addAttributeAtParam(llvm::Attribute::Dereferenceable, 0);
+                   // builder.addAttributeAtParam(llvm::Attribute::Dereferenceable, 0);
                     LOG_ERROR("Applied alwayinline attributes");
                 }
             }

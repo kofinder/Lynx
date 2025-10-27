@@ -7,8 +7,8 @@
 namespace LynxProgramConfig {
 
     inline constexpr std::string_view file_pefix = ".lynx";
-    inline constexpr std::string_view entry_file = "livechat/main.lynx";
-    inline constexpr std::string_view config_file = "livechat/app_config.yaml";
+    inline constexpr std::string_view entry_file = "toy/main.lynx";
+    inline constexpr std::string_view config_file = "toy/app_config.yaml";
 
     // ======= Options =======
     inline constexpr std::string_view general_opts_description = "General Options";

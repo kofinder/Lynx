@@ -7,7 +7,6 @@ using namespace LynxTypes;
 namespace LynxTypes {
 
     llvm::Type* ArrayType::computeLLVMType() const {
-        LOG_INFO("Invoked... arrsize {} ", numElements);
 
         if(!elementType) {
             LOG_ERROR("Element type is null.");
@@ -15,6 +14,16 @@ namespace LynxTypes {
         }
     
         llvm::Type* elemLLVMType = elementType->getLLVMType();
+        if (!elemLLVMType) {
+            LOG_ERROR("Failed to get LLVM type for elementType");
+            return nullptr;
+        }
+
+        if (numElements <= 0) {
+            LOG_ERROR("Array size must be greater than 0. Got {}.", numElements);
+            return nullptr;
+        }    
+        
         auto& context = astContext->getLLVMContext();
     
         // If the element type is already a struct wrapping an array, treat it as inner array struct

@@ -57,10 +57,27 @@ namespace LynxContext {
         debugBuilder(std::make_shared<llvm::DIBuilder>(*module)),
         errors(std::make_shared<CompositeError>()),
         dataLayout(module->getDataLayout()),
-        types(sharedTypes ? sharedTypes : std::make_shared<std::map<std::string, std::shared_ptr<BaseType>>>()) {}
+        types(sharedTypes ? sharedTypes : std::make_shared<std::map<std::string, std::shared_ptr<BaseType>>>()) {
+           
+            if (!llvmContext) {
+                LOG_ERROR("AstContext ctor: received null LLVMContext shared_ptr for module '{}'", moduleName);
+                throw std::runtime_error("AstContext requires a valid LLVMContext");
+            }
+        
+            LOG_INFO("AstContext created: module='{}' llvmContext={} modulePtr={} builderPtr={}",
+                moduleName, (void*)llvmContext.get(), (void*)module.get(), (void*)builder.get());
+        
+        }
 
     std::shared_ptr<AstContext> AstContext::createContext() const {  
-        auto newCtx = std::make_shared<AstContext>(module->getName().str(), llvmContext, globalContext, types);
+        std::cout << "Call create context" << std::endl;
+        
+        auto newCtx = std::make_shared<AstContext>(
+            module->getName().str(), 
+            llvmContext, 
+            globalContext, 
+            types
+        );
         newCtx->types = this->types;
         newCtx->errors = this->errors;
         newCtx->builder = this->builder;
@@ -69,6 +86,15 @@ namespace LynxContext {
         newCtx->debugBuilder = this->debugBuilder;
         newCtx->globalContext = this->globalContext;
         newCtx->currentDepth = this->currentDepth + 1;
+
+
+        // Rebind types to the new context pointer (important if you store astContext* in types)
+        // if (newCtx->types) {
+        //     for (auto& kv : *newCtx->types) {
+        //         if (kv.second) kv.second->setContext(newCtx.get());
+        //     }
+        // }
+
         return newCtx;  
     }
 
@@ -117,7 +143,7 @@ namespace LynxContext {
             case DataType::FILE: return findType("File");
             case DataType::AUTO: return findType("auto");
 
-            case DataType::ARRAY: return findType("array");
+            // case DataType::ARRAY: return findType("array");
             case DataType::LIST: return findType("list");
             case DataType::SET: return findType("set");
             case DataType::STACK: return findType("stack");
@@ -156,8 +182,8 @@ namespace LynxContext {
                 llvmType = llvmType->getPointerElementType();
             }
 
-            // llvmType->print(llvm::errs()); llvm::errs() << " vs ";
-            // valType->print(llvm::errs()); llvm::errs() << "\n";
+            llvmType->print(llvm::errs()); llvm::errs() << " vs ";
+            valType->print(llvm::errs()); llvm::errs() << "\n";
 
             if (llvmType == valType) return x.second;
                 

@@ -5,9 +5,9 @@
 #include <resolver/TypeMethodResolver.hpp>
 #include <resolver/IntMethodResolver.hpp>
 
-using namespace LynxContext;
-
 namespace LynxTypes {
+
+    using namespace LynxContext;
 
     llvm::Type* IntegerType::computeLLVMType() const {
         LOG_INFO("Invoked...");
@@ -29,6 +29,8 @@ namespace LynxTypes {
 
     llvm::Value* IntegerType::createInstance(std::string variableName) {
         LOG_INFO("Invoked...");
+
+    
         auto& builder = astContext->getBuilder();
         llvm::Type* intType = this->getLLVMType();
         auto var = builder.CreateAlloca(intType, nullptr, variableName); 
@@ -40,12 +42,14 @@ namespace LynxTypes {
        
         return var;
     }
+    
 
     llvm::Value* IntegerType::createValue(LValueType value) const {
-        LOG_INFO("Invoked...");
+        assert(astContext && "IntegerType must be constructed with a valid AstContext");      
         if(std::holds_alternative<int>(value)) {
             auto& context = astContext->getLLVMContext();
-            int intValue = std::get<int>(value);
+            assert(&context && "LLVMContext is not initialized!");   
+            int intValue = std::get<int>(value); 
             return llvm::ConstantInt::get(context, llvm::APInt(32, intValue));
         }
 

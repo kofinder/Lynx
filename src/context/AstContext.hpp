@@ -174,7 +174,15 @@ namespace LynxContext {
             */
             void logErrors();
 
-            ~AstContext() = default;
+            ~AstContext() {
+                LOG_INFO("AstContext destroyed: module='{}' llvmContext={} modulePtr={}",
+                    module ? module->getName().str() : "<null>",
+                    (void*)llvmContext.get(),
+                    (void*)module.get());
+            }
+            
+
+            // ~AstContext() = default;
     };  
 }
 
