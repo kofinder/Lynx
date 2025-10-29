@@ -20,7 +20,7 @@ namespace LynxAst {
     using namespace LynxFunctionAttr;
 
     llvm::Value* FunctionNode::generateCode(std::shared_ptr<AstContext> astContext) {
-        LOG_INFO("Dispatched {}", fnName);
+        LOG_WARN("Dispatched {}", fnName);
 
         auto* module = astContext->getModule();
         auto& builder = astContext->getBuilder();

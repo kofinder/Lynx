@@ -25,7 +25,7 @@ namespace LynxAst {
 
     using namespace LynxConstants;
 
-    class FunctionCallNode: public Node {
+    class FunctionCallNode : public Node {
         
         protected:
         
@@ -43,12 +43,12 @@ namespace LynxAst {
 
         public:
             
-            explicit FunctionCallNode(std::string fnName): functionName(fnName) {}
+            explicit FunctionCallNode(std::string fnName) : functionName(fnName) {}
 
             explicit FunctionCallNode(
                 std::string fnName, 
                 std::unique_ptr<std::vector<std::unique_ptr<ExpressionNode>>> args
-            ): functionName(fnName), arguments(std::move(args)) {}
+            ) : functionName(fnName), arguments(std::move(args)) {}
 
             std::unique_ptr<Node> clone() const override;
 
@@ -56,7 +56,7 @@ namespace LynxAst {
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
-            void setArguments(std::unique_ptr<std::vector<std::unique_ptr<ExpressionNode>>> args) { arguments = std::move(args); }
+            void setArguments(std::unique_ptr<std::vector<std::unique_ptr<ExpressionNode>>> args) noexcept { arguments = std::move(args); }
 
             const std::vector<std::unique_ptr<ExpressionNode>>& getArguments() const {  return *arguments; }
 
@@ -75,7 +75,7 @@ namespace LynxAst {
             const std::string& getFunctionName() const { return functionName; }
 
             std::string getClazzInstanceName() const { return "new_" + objectName; }
-            
+
             ~FunctionCallNode() override = default;
     };
 

@@ -1,7 +1,9 @@
 #include "FunctionCallNode.hpp"
 #include <logger/Logger.hpp>
 #include "tmpl/ImportSymbolTemplate.hpp"
+#include "utils/LLVMFunctionUtils.hpp"
 #include "ExceptionHandlerNode.hpp"
+#include "FunctionNode.hpp"
 #include <context/GlobalSymbolContext.hpp>
 
 namespace LynxAst {
@@ -10,14 +12,12 @@ namespace LynxAst {
      using namespace LynxContext;
 
      llvm::Value* FunctionCallNode::generateCode(std::shared_ptr<AstContext> astContext) {
-          LOG_WARN("Emit function call {}", functionName);
-
-          // auto fnNode = Import::findImportSymbolNode<FunctionNode>(astContext.get(), functionName, NodeType::FUNCTION_NODE);
-
-
           std::vector<llvm::Value*> calleeArgs;
-          for (auto& element: *(arguments)) {
-               calleeArgs.push_back(element->generateCode(astContext->createContext()));
+          calleeArgs.reserve(arguments ? arguments->size() : 0);
+          if (arguments) {
+              for (auto& element : *arguments) {
+                  calleeArgs.push_back(element->generateCode(astContext->createContext()));
+              }
           }
 
           auto* module = astContext->getModule();
@@ -29,30 +29,25 @@ namespace LynxAst {
      }
 
      llvm::Value* FunctionCallNode::generateImportedFunctionCallIR(const AstContext& astContext, llvm::ArrayRef<llvm::Value*> calleeArgs) {
-
-          LOG_ERROR("Invoked ......................");
-
           auto* module = astContext.getModule();
-          return nullptr;
+          auto symbolCtx = astContext.getGlobalContext();
+          auto importNode = Import::findImportSymbolNode<FunctionNode>(symbolCtx.get(), functionName, NodeType::FUNCTION_NODE);
 
-          // llvm::Type* returnType = astContext->findType(fnNode->getReturnType()->type)->getLLVMType();
-          // std::vector<llvm::Type*> paramTypes;
-          // for (const auto& param : *fnNode->getFunctionParameter()) {
-          //      auto variableType = *param->type;
-          //      auto fieldType = astContext->findType(variableType)->getLLVMType();
-          //      paramTypes.push_back(fieldType);
-          // }
-     
-          // auto funcType = llvm::FunctionType::get(returnType, paramTypes, false);
-
-          // auto calleeFunction = llvm::Function::Create(funcType, llvm::Function::ExternalLinkage, fnNode->getQualifiedFunctionName(), module);  
+          if (!importNode.has_value()) throw std::runtime_error("Function does not exist: " + functionName);
           
-          // std::vector<llvm::Value *> calleeArgs;
-          // for (auto& element: *(arguments)) {
-          //      calleeArgs.push_back(element->generateCode(astContext->createContext()));
-          // }
-          // return this->generateFunctionCall(astContext, calleeFunction, calleeArgs);
-
+          const auto* funcNode = importNode.value();
+          auto* returnType = astContext.findType(funcNode->getReturnType()->type)->getLLVMType();
+      
+          std::vector<llvm::Type*> paramTypes;
+          paramTypes.reserve(funcNode->getFunctionParameter()->size());
+      
+          for (const auto& param : *funcNode->getFunctionParameter()) {
+              const auto& variableType = *param->type;
+              paramTypes.push_back(astContext.findType(variableType)->getLLVMType());
+          }
+      
+          auto* calleeFunc = LLVMFunction::ensureFunctionDeclared(module, returnType, paramTypes, functionName);
+          return generateFunctionCallIR(astContext, calleeFunc, calleeArgs);
      }
 
      llvm::Value* FunctionCallNode::generateFunctionCallIR(const AstContext& astContext, llvm::Function* calleeFunction, llvm::ArrayRef<llvm::Value*> calleeArgs) {
@@ -89,14 +84,12 @@ namespace LynxAst {
                     } else {
                         clonedArgs->push_back(nullptr);
                     }
-                }
-        
+               }
           }
       
           auto clonedNode = std::make_unique<FunctionCallNode>(functionName, std::move(clonedArgs));
           clonedNode->setClassName(className);
           clonedNode->setObjectName(objectName);
           return clonedNode;
-      }
+     }
 }
-

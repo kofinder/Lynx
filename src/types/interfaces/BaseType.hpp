@@ -2,6 +2,15 @@
 #define LYNX_BASE_TYPE_HPP
 
 
+/**
+ * @class BaseType
+ * @brief Abstract base class for all language types in the compiler.
+ *
+ * Provides a unified interface for LLVM type resolution, type metadata,
+ * method dispatching, and code generation hooks. All types (built-in or custom)
+ * should inherit from this and implement the required virtual methods.
+*/
+
 #include <iostream>
 #include <string>
 #include <variant>
@@ -33,14 +42,6 @@ using namespace MetadataTypeConstants;
 
 namespace LynxTypes {
 
-    /**
-     * @class BaseType
-     * @brief Abstract base class for all language types in the compiler.
-     *
-     * Provides a unified interface for LLVM type resolution, type metadata,
-     * method dispatching, and code generation hooks. All types (built-in or custom)
-     * should inherit from this and implement the required virtual methods.
-    */
     class BaseType {
 
         protected:
@@ -82,8 +83,23 @@ namespace LynxTypes {
 
         public:
 
-            /// @brief Constructor to initialize the AST context.
+            /**
+             * @brief Constructor initializing the AST context.
+             * @param context Pointer to the AstContext associated with this type.
+            */
             BaseType(AstContext* context) : astContext(context), cachedLLVMType(nullptr) {}
+
+            /**
+             * @brief Set or update the AST context for this type.
+             * @param context Pointer to the new AstContext.
+            */
+            void setContext(AstContext* context) noexcept { astContext = context; }
+
+            /**
+             * @brief Returns the AST context currently associated with this type.
+             * @return Pointer to the AstContext.
+            */
+            inline AstContext* getContext() const noexcept { return astContext; }
 
             /**
              * @brief Returns the LLVM type, computing it if not already cached.
@@ -96,75 +112,85 @@ namespace LynxTypes {
             */
             virtual void accept(TypeVisitor& visitor) {}
 
-            /// @brief Returns whether the type is const-qualified.
-            inline bool isConst() const { return constFlag; }
+            /**
+             * @brief Returns whether the type is const-qualified.
+             * 
+             * Checks if the type has been marked as `const`.
+             * @return true if the type is const-qualified, false otherwise.
+            */
+            inline bool isConst() const noexcept { return constFlag; }
 
-            /// @brief Sets the const qualifier of the type.
-            inline void setConst(bool value) { constFlag = value; }
+            /**
+             * @brief Sets the const qualifier for this type.
+             * 
+             * Marks the type as `const` or removes the const qualification.
+             * @param value true to mark the type as const, false to remove const.
+            */
+            inline void setConst(bool value) noexcept { constFlag = value; }
 
            /**
              * @brief Returns whether the type is static-qualified.
              * @return True if the type is marked as static.
             */
-            inline bool isStatic() const { return staticFlag; }
+            inline bool isStatic() const noexcept { return staticFlag; }
 
             /**
              * @brief Sets the static qualifier of the type.
              * @param value True to mark the type as static; false otherwise.
             */
-            inline void setStatic(bool value) { staticFlag = value; }
+            inline void setStatic(bool value) noexcept { staticFlag = value; }
 
             /**
              * @brief Indicates whether the type supports assignment operations.
              * @return True if the type can be assigned to; false by default.
             */
-            virtual inline bool supportsAssignment() const { return false; }
+            virtual inline bool supportsAssignment() const noexcept { return false; }
 
             /**
              * @brief Indicates whether the type supports nullability (e.g., pointers).
              * @return True if the type can be null; false by default.
             */
-            virtual inline bool isNullable() const { return false; }
+            virtual inline bool isNullable() const noexcept { return false; }
 
             /**
              * @brief Indicates whether the type supports index-based access (e.g., arrays).
              * @return True if the type is indexable; false by default.
             */
-            virtual inline bool isIndexable() const { return false; }
+            virtual inline bool isIndexable() const noexcept { return false; }
 
             /**
              * @brief Indicates whether the type supports key-based lookup (e.g., maps).
              * @return True if the type allows key lookup; false by default.
             */
-            virtual inline bool supportsKeyLookup() const { return false; }
+            virtual inline bool supportsKeyLookup() const noexcept { return false; }
         
            /**
              * @brief Returns true if the type is a built-in primitive type (e.g., int, float, bool).
              * 
              * This typically includes types directly supported by the language or runtime.
             */
-            virtual inline bool isBuiltInType() const { return false; }
+            virtual inline bool isBuiltInType() const noexcept { return false; }
 
             /**
              * @brief Returns true if the type represents a collection (e.g., array, list, map).
              * 
              * Useful for distinguishing container types from scalar or object types.
             */
-            virtual inline bool isCollectionType() const { return false; }
+            virtual inline bool isCollectionType() const noexcept { return false; }
 
             /**
              * @brief Returns true if the type is user-defined (e.g., class, struct, enum).
              * 
              * Indicates types created by the user rather than built-in to the language.
             */
-            virtual inline bool isUserDefinedType() const { return false; }
+            virtual inline bool isUserDefinedType() const noexcept { return false; }
 
             /**
              * @brief Returns true if the type is a wrapper around another type (e.g., Option<T>, Ref<T>).
              * 
              * Used for recognizing smart pointers, optional types, or language-level type wrappers.
              */
-            virtual inline bool isWrapperType() const { return false; }
+            virtual inline bool isWrapperType() const noexcept { return false; }
 
             /**
              * @brief Returns a tag indicating the specific type category (e.g., IntType, FloatType, VectorType).
@@ -312,7 +338,6 @@ namespace LynxTypes {
              * @return A unique pointer to a new copy of the derived type.
              */
             virtual std::unique_ptr<BaseType> clone() const = 0;
-
 
             /// @brief Virtual destructor for proper cleanup of derived types.
             virtual ~BaseType() {}

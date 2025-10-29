@@ -27,9 +27,9 @@ namespace LynxTypes {
             /**
              * @brief Returns true as this collection is associative by definition.
             */
-            inline bool isAssociative() const override { return true; }
+            inline bool isAssociative() const noexcept override { return true; }
 
-            inline bool supportsKeyLookup() const override { return true; }
+            inline bool supportsKeyLookup() const noexcept override { return true; }
 
             /**
              * @brief Creates an LLVM value from a generic LValueType variant.

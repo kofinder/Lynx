@@ -24,7 +24,7 @@ namespace LynxTypes {
 
             explicit VectorType(AstContext* context) : SequentialType(context) {}
 
-            inline bool isIndexable() const override { return true; }
+            inline bool isIndexable() const noexcept override { return true; }
 
             inline DataType getTypeTag() const override { return DataType::VECTOR; }
 

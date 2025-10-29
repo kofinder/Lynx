@@ -31,16 +31,33 @@ namespace LynxAst {
     
         public:
 
-            // Virtual destructor to ensure proper cleanup of derived classes.
-            virtual ~Node() {}
+            /**
+             * @brief Virtual destructor.
+             *
+             * Ensures proper cleanup of derived classes.
+            */
+            virtual ~Node() noexcept {}
 
             /**
              * @brief Set the line number for this node.
              * 
              * This is used for error reporting and debugging.
-             * @param lNo The line number to set.
+             * @param lineNo The line number to set.
              */
-            void setLineNumber(int lNo);
+            void setLineNumber(int lineNo) noexcept { lineNumber = lineNo; }
+
+            /**
+             * @brief Get the line number of this node.
+             * @return Line number.
+            */
+            int getLineNumber() const noexcept { return lineNumber; }
+            
+            /**
+             * @brief Print LLVM value for debugging purposes.
+             * @param value LLVM Value to print.
+            */
+            void llvmPrint(llvm::Value* value);
+
 
             /**
              * @brief Prepare the node for code generation.
@@ -76,10 +93,6 @@ namespace LynxAst {
              * @return A unique_ptr to the newly cloned node.
             */
             virtual std::unique_ptr<Node> clone() const = 0;
-
-            int getLineNumber() const { return lineNumber; }
-            
-            void llvmPrint(llvm::Value* value);
     };
 }
 

@@ -69,15 +69,14 @@ namespace LynxContext {
         
         }
 
-    std::shared_ptr<AstContext> AstContext::createContext() const {  
-        std::cout << "Call create context" << std::endl;
-        
+    std::shared_ptr<AstContext> AstContext::createContext() const {          
         auto newCtx = std::make_shared<AstContext>(
             module->getName().str(), 
             llvmContext, 
             globalContext, 
             types
         );
+
         newCtx->types = this->types;
         newCtx->errors = this->errors;
         newCtx->builder = this->builder;
@@ -87,14 +86,15 @@ namespace LynxContext {
         newCtx->globalContext = this->globalContext;
         newCtx->currentDepth = this->currentDepth + 1;
 
-
-        // Rebind types to the new context pointer (important if you store astContext* in types)
-        // if (newCtx->types) {
-        //     for (auto& kv : *newCtx->types) {
-        //         if (kv.second) kv.second->setContext(newCtx.get());
-        //     }
-        // }
-
+        // Step 3: Rebind all shared BaseType objects to the new AstContext
+        if (newCtx->types) {
+            for (auto& kv : *newCtx->types) {
+                if (kv.second && kv.second->getContext() != newCtx.get()) {
+                    kv.second->setContext(newCtx.get());
+                }
+            }
+        }
+        
         return newCtx;  
     }
 
@@ -143,7 +143,7 @@ namespace LynxContext {
             case DataType::FILE: return findType("File");
             case DataType::AUTO: return findType("auto");
 
-            // case DataType::ARRAY: return findType("array");
+            case DataType::ARRAY: return findType("array");
             case DataType::LIST: return findType("list");
             case DataType::SET: return findType("set");
             case DataType::STACK: return findType("stack");

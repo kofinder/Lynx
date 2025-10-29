@@ -35,22 +35,22 @@ namespace LynxTypes {
             /**
              * @brief Returns false since collections are not built-in scalar types.
             */
-            inline bool isCollectionType() const override { return true; }
+            inline bool isCollectionType() const noexcept override { return true; }
         
             /**
              * @brief Returns true if this collection is associative (key-value based).
              */
-            virtual inline bool isAssociative() const { return false; }
+            virtual inline bool isAssociative() const noexcept { return false; }
 
             /**
              * @brief Returns true if this collection is sequential (ordered list).
             */
-            virtual inline bool isSequential() const { return false; }
+            virtual inline bool isSequential() const noexcept { return false; }
                 
             /**
              * @brief Returns true if the collection has a fixed size (e.g. fixed-length array).
             */
-            virtual bool hasFixedSize() const { return false; }
+            virtual bool hasFixedSize() const noexcept { return false; }
 
             /**
              * @brief Returns the current number of elements in the collection.

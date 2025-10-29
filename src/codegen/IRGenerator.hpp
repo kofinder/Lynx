@@ -1,6 +1,14 @@
 #ifndef LYNX_IR_GENERATOR_HPP
 #define LYNX_IR_GENERATOR_HPP
 
+/**
+ * @brief Responsible for generating LLVM IR from the AST.
+ * 
+ * The IRGenerator translates high-level AST representations of the Lynx language
+ * into LLVM Intermediate Representation (IR) modules. It handles module ordering,
+ * target machine setup, and writing IR to file.
+*/
+
 #include <string>
 #include <unordered_map>
 #include <memory>
@@ -14,18 +22,12 @@
 #include <config/ProgramSourceProcessor.hpp>
 
 namespace fs = boost::filesystem;
-using namespace LynxAst;
-using namespace LynxLang;
 
 namespace LynxCodegen {
 
-    /**
-     * @brief Responsible for generating LLVM IR from the AST.
-     * 
-     * The IRGenerator translates high-level AST representations of the Lynx language
-     * into LLVM Intermediate Representation (IR) modules. It handles module ordering,
-     * target machine setup, and writing IR to file.
-     */
+    using namespace LynxAst;
+    using namespace LynxLang;
+    
     class IRGenerator {
 
         private:

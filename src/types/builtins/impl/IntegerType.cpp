@@ -29,8 +29,6 @@ namespace LynxTypes {
 
     llvm::Value* IntegerType::createInstance(std::string variableName) {
         LOG_INFO("Invoked...");
-
-    
         auto& builder = astContext->getBuilder();
         llvm::Type* intType = this->getLLVMType();
         auto var = builder.CreateAlloca(intType, nullptr, variableName); 

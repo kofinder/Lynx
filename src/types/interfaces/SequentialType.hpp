@@ -26,7 +26,7 @@ namespace LynxTypes {
             /**
              * @brief Returns true as this collection is sequential by definition.
             */
-            inline bool isSequential() const override { return true; }
+            inline bool isSequential() const noexcept override { return true; }
 
             /**
              * @brief Creates an LLVM value from a generic LValueType variant.

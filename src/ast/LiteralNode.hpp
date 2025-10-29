@@ -7,7 +7,8 @@
  * 
  * Author: Ko Thein (Nathan Mratt)
  * Date: November 2, 2024
- */
+*/
+
 #include <variant>
 #include "Node.hpp"
 #include <logger/Logger.hpp>
@@ -15,13 +16,13 @@
 #include <constants/LValueType.hpp>
 #include <context/AstContext.hpp>
 
-using namespace LynxLogger;
-using namespace LynxConstants;
-
 
 namespace LynxAst {
     
-    class LiteralNode: public Node {
+   using namespace LynxLogger;
+   using namespace LynxConstants;
+
+    class LiteralNode : public Node {
         
         protected:
 
@@ -31,69 +32,43 @@ namespace LynxAst {
 
         public:
 
-            explicit LiteralNode(uint8_t byteValue) : valueType(DataType::BYTE), literalData(byteValue) {
-               // LOG_WARN("[LiteralNode] btye literal {}", byteValue);
-            }
+            explicit LiteralNode(uint8_t byteValue) noexcept : valueType(DataType::BYTE), literalData(byteValue) {}
 
-            explicit LiteralNode(short shortValue) : valueType(DataType::SHORT), literalData(shortValue) {
-               // LOG_WARN("[LiteralNode] short literal {}", shortValue);
-            }
+            explicit LiteralNode(short shortValue) noexcept : valueType(DataType::SHORT), literalData(shortValue) {}
 
-            explicit LiteralNode(int intValue) : valueType(DataType::INT), literalData(intValue) {
-               // LOG_WARN("[LiteralNode] int literal {}", intValue);
-            }
+            explicit LiteralNode(int intValue) noexcept : valueType(DataType::INT), literalData(intValue) {}
 
-            explicit LiteralNode(long longValue) : valueType(DataType::LONG), literalData(static_cast<int64_t>(longValue)) {
-               // LOG_WARN("[LiteralNode] long literal {}", longValue);
-            }
+            explicit LiteralNode(long longValue) noexcept : valueType(DataType::LONG), literalData(static_cast<int64_t>(longValue)) {}
 
-            explicit LiteralNode(float floatValue) : valueType(DataType::FLOAT), literalData(floatValue) {
-                //LOG_WARN("[LiteralNode] float literal {}", floatValue);
-            }
+            explicit LiteralNode(float floatValue) noexcept : valueType(DataType::FLOAT), literalData(floatValue) {}
 
-            explicit LiteralNode(double doubleValue) : valueType(DataType::DOUBLE), literalData(doubleValue) {
-               // LOG_WARN("[LiteralNode] double literal {}", doubleValue);
-            }
+            explicit LiteralNode(double doubleValue) noexcept : valueType(DataType::DOUBLE), literalData(doubleValue) {}
 
-            explicit LiteralNode(bool booleanValue) : valueType(DataType::BOOLEAN), literalData(booleanValue) {
-               // LOG_WARN("[LiteralNode] bool literal {}", booleanValue);
-            }
+            explicit LiteralNode(bool booleanValue) noexcept : valueType(DataType::BOOLEAN), literalData(booleanValue) {}
 
-            explicit LiteralNode(char charValue) : valueType(DataType::CHAR), literalData(charValue) {
-               // LOG_WARN("[LiteralNode] char literal {}", charValue);
-            }
+            explicit LiteralNode(char charValue) noexcept : valueType(DataType::CHAR), literalData(charValue) {}
 
-            explicit LiteralNode(const std::nullptr_t nil) : valueType(DataType::NULLPTR), literalData(nil) {
-               //LOG_WARN("[LiteralNode] null literal {}", nil);
-            }
+            explicit LiteralNode(const std::nullptr_t nil) noexcept: valueType(DataType::NULLPTR), literalData(nil) {}
 
-            explicit LiteralNode(const std::string& stringValue) : valueType(DataType::STRING), literalData(stringValue) {
-               //LOG_WARN("[LiteralNode] string literal {}", stringValue);
-            }
+            explicit LiteralNode(const std::string& stringValue) : valueType(DataType::STRING), literalData(stringValue) {}
 
-            explicit LiteralNode(const Date& dateValue) : valueType(DataType::DATE), literalData(dateValue) {
-               // LOG_WARN("[LiteralNode] date literal");
-            }
+            explicit LiteralNode(const Date& dateValue) : valueType(DataType::DATE), literalData(dateValue) {}
 
-            explicit LiteralNode(const DateTime& dateTimeValue) : valueType(DataType::DATETIME), literalData(dateTimeValue) {
-               // LOG_WARN("[LiteralNode] datetime literal");
-            }
+            explicit LiteralNode(const DateTime& dateTimeValue) : valueType(DataType::DATETIME), literalData(dateTimeValue) {}
 
-            explicit LiteralNode(const File& file) : valueType(DataType::FILE), literalData(file) {
-                // LOG_WARN("[LiteralNode] file literal");
-            }
+            explicit LiteralNode(const File& file) : valueType(DataType::FILE), literalData(file) {}
 
             std::unique_ptr<Node> clone() const override;
 
-            inline bool isNull() const {  return valueType == DataType::NULLPTR;  }
-   
             NodeType getNodeType() override { return NodeType::LITERAL_NODE; }
-
-            constexpr inline DataType getVariableType() const { return this->valueType; };
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
-            inline LValueType getLiteralValue() const { return literalData; }
+            inline bool isNull() const noexcept {  return valueType == DataType::NULLPTR;  }
+   
+            inline constexpr DataType getVariableType() const noexcept { return valueType; }
+
+            inline LValueType getLiteralValue() const noexcept { return literalData; }
 
             ~LiteralNode() override = default;
     };

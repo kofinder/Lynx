@@ -23,19 +23,10 @@
 #include <constants/metadata/LabelTypeConstants.hpp>
 #include "SuperConstructorCallNode.hpp"
 
-using namespace LynxConstants;
-
 namespace LynxAst {
 
-    /**
-     * @class FunctionNode
-     * @brief Represents a function definition within the AST.
-     * 
-     * The FunctionNode class provides functionality for:
-     * - Defining function names, return types, and parameters.
-     * - Generating LLVM IR for the function signature and body.
-     * - Managing entry and exit blocks for the function.
-     */
+    using namespace LynxConstants;
+
     class FunctionNode : public Node {
 
         public:
@@ -65,19 +56,16 @@ namespace LynxAst {
             llvm::AllocaInst* returnValue = nullptr;
 
         public:
-            explicit FunctionNode(std::string name): fnName(name) {}
 
-            explicit FunctionNode(std::shared_ptr<VariableType> retType, std::string name): fnName(name) {
-                this->setReturnType(retType);
-            }
+            explicit FunctionNode(std::string name) : fnName(name) {}
+
+            explicit FunctionNode(std::shared_ptr<VariableType> retType, std::string name) : fnName(name) { setReturnType(retType); }
 
             explicit FunctionNode(
                 std::shared_ptr<VariableType> retType, 
                 std::string name, 
                 std::shared_ptr<std::vector<std::shared_ptr<Parameter>>> parameters
-            ): fnName(name), fnParams(std::move(parameters)) {
-                this->setReturnType(retType);
-            }
+            ) : fnName(name), fnParams(std::move(parameters)) { setReturnType(retType); }
 
             std::unique_ptr<Node> clone() const override;
         
