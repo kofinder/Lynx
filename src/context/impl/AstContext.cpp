@@ -59,8 +59,14 @@ namespace LynxContext {
         dataLayout(module->getDataLayout()),
         types(sharedTypes ? sharedTypes : std::make_shared<std::map<std::string, std::shared_ptr<BaseType>>>()) {}
 
-    std::shared_ptr<AstContext> AstContext::createContext() const {  
-        auto newCtx = std::make_shared<AstContext>(module->getName().str(), llvmContext, globalContext, types);
+    std::shared_ptr<AstContext> AstContext::createContext() const {          
+        auto newCtx = std::make_shared<AstContext>(
+            module->getName().str(), 
+            llvmContext, 
+            globalContext, 
+            types
+        );
+
         newCtx->types = this->types;
         newCtx->errors = this->errors;
         newCtx->builder = this->builder;
@@ -69,6 +75,16 @@ namespace LynxContext {
         newCtx->debugBuilder = this->debugBuilder;
         newCtx->globalContext = this->globalContext;
         newCtx->currentDepth = this->currentDepth + 1;
+
+        // Step 3: Rebind all shared BaseType objects to the new AstContext
+        if (newCtx->types) {
+            for (auto& kv : *newCtx->types) {
+                if (kv.second && kv.second->getContext() != newCtx.get()) {
+                    kv.second->setContext(newCtx.get());
+                }
+            }
+        }
+        
         return newCtx;  
     }
 

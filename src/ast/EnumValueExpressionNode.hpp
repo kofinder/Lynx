@@ -33,7 +33,6 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
 
-            // Evaluate the expression at compile-time (parse-time)
             int evaluate() const;
             
             NodeType getNodeType() override { return NodeType::ENUM_VALUE_EXPRESSION_NODE; }

@@ -20,7 +20,6 @@ namespace LynxAst {
     using namespace LynxFunctionAttr;
 
     llvm::Value* FunctionNode::generateCode(std::shared_ptr<AstContext> astContext) {
-        LOG_INFO("Dispatched {}", fnName);
 
         auto* module = astContext->getModule();
         auto& builder = astContext->getBuilder();
@@ -29,8 +28,7 @@ namespace LynxAst {
         
         guard::FunctionScope funcScope(*symbol, this);
 
-        llvm::FunctionType* funcType = createFnSignature(*astContext);
-
+        auto* funcType = createFnSignature(*astContext);
         if (!funcType) {
             LOG_ERROR("Function signature generation failed.");
             return nullptr;
@@ -57,9 +55,7 @@ namespace LynxAst {
         FunctionAttributeInferer inferer;
         inferer.inferAndApply(llvmFunction); 
 
-        if (auto* currentBlock = builder.GetInsertBlock()) {
-            builder.SetInsertPoint(currentBlock);
-        }
+        if (auto* currentBlock = builder.GetInsertBlock()) builder.SetInsertPoint(currentBlock);
     
         llvm::verifyFunction(*llvmFunction, &llvm::errs());
         llvm::verifyModule(*module, &llvm::errs());
@@ -67,7 +63,7 @@ namespace LynxAst {
         return llvmFunction;
     }
 
-    llvm::FunctionType* FunctionNode::createFnSignature(AstContext& astContext) {
+    llvm::FunctionType* FunctionNode::createFnSignature(const AstContext& astContext) {
         std::vector<llvm::Type*> argTypes;        
         if (fnParams && !fnParams->empty()) {
             for (auto& param : *fnParams) {
@@ -78,21 +74,18 @@ namespace LynxAst {
         }
 
         auto* fnReturnType = astContext.findType(*returnType)->getLLVMType();
-
         auto* functionType = llvm::FunctionType::get(fnReturnType, argTypes, false);
 
         return functionType;
     }
 
 
-    llvm::Value* FunctionNode::finalizeExitBlock(AstContext& astContext) {
-        LOG_ERROR("Invoked ...");
-
+    llvm::Value* FunctionNode::finalizeExitBlock(const AstContext& astContext) {
         auto& builder = astContext.getBuilder();
         auto* module = astContext.getModule();
         auto* retType = llvmFunction->getReturnType();
-
-        // Insert a branch/return if the current block has no terminator.
+    
+        // well, will be refactor when i have time
         if (!builder.GetInsertBlock()->getTerminator()) {
             if (exitBlock) {
                 builder.CreateBr(exitBlock);
@@ -104,60 +97,60 @@ namespace LynxAst {
                 }
             }
         }
-
-        // If an exit block exists, finalize it.
-        if(exitBlock) {
+    
+        if (exitBlock) {
             builder.SetInsertPoint(exitBlock);
-            if(returnValue) {
-                auto valueType = returnValue->getType();
+    
+            if (returnValue) {
+                auto* valueType = returnValue->getType();
                 if (!valueType->isPointerTy()) {
                     llvm::errs() << "ERROR: returnValue is not a pointer!\n";
                     returnValue->print(llvm::errs()); llvm::errs() << "\n";
                     throw std::runtime_error("returnValue must be a pointer to load from.");
                 }
-
-                auto* retPtr = returnValue->getType()->getPointerElementType();
-                auto* retLoad = builder.CreateLoad(retPtr, returnValue, LynxLabelTypeConstants::lynxTempReturnValue);
-                builder.CreateRet(returnValue);
+    
+                auto* elementTy = valueType->getPointerElementType();
+                llvm::Value* retLoad = builder.CreateLoad(elementTy, returnValue, LynxLabelTypeConstants::lynxTempReturnValue);
+                builder.CreateRet(retLoad);
             } else {
-                if(retType->isVoidTy()) {
+                if (retType->isVoidTy()) {
                     builder.CreateRetVoid();
                 } else {
-                    builder.CreateRet(returnValue);
+                    throw std::runtime_error("Function requires a non-void return value, but none was provided at exit block.");
                 }
             }
         }
-
+    
         return llvmFunction;
     }
 
     llvm::Value* FunctionNode::setReturnValue(std::shared_ptr<AstContext> astContext, llvm::Value* value) {
-        LOG_ERROR("Invoked ...");
-
         auto& builder = astContext->getBuilder();
         auto& context = astContext->getLLVMContext();
         auto* module = astContext->getModule();
-
+    
         if (builder.GetInsertBlock() == entryBlock) {
             return builder.CreateRet(value);
         }
-
+    
         if (!returnValue) {
-            llvm::Type* returnType = llvmFunction->getReturnType();
+            llvm::Type* retType = llvmFunction->getReturnType();
+            if (retType->isVoidTy()) {
+                throw std::runtime_error("Attempt to set return value for void function.");
+            }
+    
             llvm::Instruction* insertBefore = entryBlock->getFirstNonPHI();
             if (!insertBefore) {
                 insertBefore = &entryBlock->back();
             }
-
-            returnValue = new llvm::AllocaInst(returnType, 0, ".retValue", insertBefore);
+    
+            returnValue = new llvm::AllocaInst(retType, 0, ".ret_value", insertBefore);
         }
     
-        if (!exitBlock) {
-            exitBlock = llvm::BasicBlock::Create(context, "exit", llvmFunction);
-        }
+        if (!exitBlock) exitBlock = llvm::BasicBlock::Create(context, "exit", llvmFunction);
     
         builder.CreateStore(value, returnValue);
-
+    
         return builder.CreateBr(exitBlock);
     }
 
@@ -194,11 +187,6 @@ namespace LynxAst {
         clonedFunction->setOverride(isOverride);
         clonedFunction->setClazzNode(clazzNode); 
 
-        // // Reset IR-related fields
-        // clonedFunction->entryBlock = nullptr;
-        // clonedFunction->exitBlock = nullptr;
-        // clonedFunction->llvmFunction = nullptr;
-        // clonedFunction->returnValue = nullptr;
         return clonedFunction;
     }
 }

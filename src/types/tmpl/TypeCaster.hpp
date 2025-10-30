@@ -35,7 +35,6 @@
 #include <types/userdefined/MixinType.hpp>
 #include <types/userdefined/InterfaceType.hpp>
 
-
 #include <types/wrapper/ReferenceType.hpp>
 #include <types/wrapper/PointerType.hpp>
 

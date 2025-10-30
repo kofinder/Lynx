@@ -112,7 +112,7 @@ namespace LynxAst::StringUtils {
      * @brief Resolve the absolute import path of a module, relative to the project root.
      * 
      * Searches all given `sourceFolders` for a `.lynx` file matching the given `moduleName`. 
-     * If found, returns the path relative to the project root (`livechat`) without the `.lynx` extension.
+     * If found, returns the path relative to the project root (``) without the `.lynx` extension.
      * 
      * This preserves the top-level folder name (e.g., `libs/` or `src/`) 
      * so that the returned path matches the import style in code.
@@ -120,7 +120,7 @@ namespace LynxAst::StringUtils {
      * Example:
      * @code
      * resolveImportPath(
-     *     { "livechat/libs", "livechat/src" },
+     *     { "toy/libs", "toy/src" },
      *     "write_doc"
      * );
      * // returns "libs/document/interface/write_doc"
@@ -154,7 +154,7 @@ namespace LynxAst::StringUtils {
                 if (entry.path().filename() == importPath.filename()) {
 
                     // Make path relative to project root so "libs" is preserved
-                    fs::path relativePath = fs::relative(entry.path(), "livechat");
+                    fs::path relativePath = fs::relative(entry.path(), "toy");
 
                     // Remove extension
                     relativePath = relativePath.parent_path() / relativePath.stem();

@@ -1,12 +1,12 @@
 #include "Node.hpp"
 #include <logger/Logger.hpp>
 
-using namespace LynxLogger;
-
 namespace LynxAst {
     
-    void Node::setLineNumber(int lNo) {
-        this->lineNumber = lNo;
+    using namespace LynxLogger;
+
+    void Node::llvmPrint(llvm::Value* value) {
+        llvm::errs() << "Result > "; value->print(llvm::outs()); llvm::errs() << "\n";
     }
 
     void Node::startCodeGen(std::shared_ptr<AstContext> newCtx) {  
@@ -20,10 +20,7 @@ namespace LynxAst {
 
         // Generate code for this node using the next context, which contains the initialized types
         // This calls the pure virtual method codeGen, which must be implemented by derived classes
-        this->generateCode(nextCtx);
+        generateCode(nextCtx);
     } 
-
-    void Node::llvmPrint(llvm::Value* value) {
-        llvm::errs() << "Result > "; value->print(llvm::outs()); llvm::errs() << "\n";
-    }
+    
 }

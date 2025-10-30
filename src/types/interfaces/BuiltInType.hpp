@@ -15,9 +15,9 @@ namespace LynxTypes {
 
             explicit BuiltInType(AstContext* astContext) : BaseType(astContext) {}
 
-            inline bool isBuiltInType() const override { return true; }
+            inline bool isBuiltInType() const  noexcept override { return true; }
 
-            inline bool supportsAssignment() const override { return true; }
+            inline bool supportsAssignment() const noexcept override { return true; }
 
             llvm::Value* createValue(std::vector<llvm::Value*> values) const override {
                 astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));

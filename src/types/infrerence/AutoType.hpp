@@ -24,7 +24,7 @@ namespace LynxTypes {
 
             void accept(TypeVisitor& visitor) override;
 
-            inline bool isBuiltInType() const override { return true; }
+            inline bool isBuiltInType() const noexcept override { return true; }
 
             inline DataType getTypeTag() const override { return DataType::AUTO; }
 

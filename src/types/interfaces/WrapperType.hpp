@@ -12,7 +12,7 @@ namespace LynxTypes {
 
             explicit WrapperType(AstContext* astContext) : BaseType(astContext) {}
 
-            inline bool isWrapperType() const override { return true; }
+            inline bool isWrapperType() const noexcept override { return true; }
 
             llvm::Value* createValue(std::vector<llvm::Value*> values) const override {
                 astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));

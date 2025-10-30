@@ -466,8 +466,8 @@ primary_expression:
 ;
 
 unary_expression:
-  // TOK_PLUS primary_expression                         { $$ = new UnaryExpressionNode(OperatorType::PLUS, UnaryExpressionType::PREFIX, $2); }
-  // | TOK_MINUS primary_expression                      { $$ = new UnaryExpressionNode(OperatorType::MINUS, UnaryExpressionType::PREFIX, $2); }
+  // TOK_PLUS primary_expression                         { $$ = std::make_unique<UnaryExpressionNode>(OperatorType::PLUS, UnaryExpressionType::PREFIX, std::move($2)); }
+  // | TOK_MINUS primary_expression                      { $$ = std::make_unique<UnaryExpressionNode>(OperatorType::MINUS, UnaryExpressionType::PREFIX, std::move($2)); }
   TOK_LOGICAL_NOT primary_expression                  { $$ = std::make_unique<UnaryExpressionNode>(OperatorType::LOGICAL_NOT, UnaryExpressionType::PREFIX, std::move($2)); }
   | TOK_INCREMENT TOK_IDENTIFIER                      { $$ = std::make_unique<UnaryExpressionNode>(OperatorType::INCREMENT, UnaryExpressionType::PREFIX, std::move($2)); }
   | TOK_DECREMENT TOK_IDENTIFIER                      { $$ = std::make_unique<UnaryExpressionNode>(OperatorType::DECREMENT, UnaryExpressionType::PREFIX, std::move($2)); }
@@ -481,8 +481,8 @@ binary_expression:
   | primary_expression TOK_MULTIPLY primary_expression            { $$ = std::make_unique<BinaryExpressionNode>(OperatorType::MUL, std::move($1), std::move($3)); }
   | primary_expression TOK_DIVIDE primary_expression              { $$ = std::make_unique<BinaryExpressionNode>(OperatorType::DIV, std::move($1), std::move($3)); }
   | primary_expression TOK_BITWISE_XOR primary_expression         { $$ = std::make_unique<BinaryExpressionNode>(OperatorType::BITWISE_XOR, std::move($1), std::move($3)); }
-  | primary_expression TOK_L_AND primary_expression               { $$ = std::make_unique<BinaryExpressionNode>(OperatorType::LOGICAL_AND, std::move($1), std::move($3)); }
-  | primary_expression TOK_L_OR primary_expression                { $$ = std::make_unique<BinaryExpressionNode>(OperatorType::LOGICAL_OR, std::move($1), std::move($3)); }
+  | expression TOK_L_AND expression               { $$ = std::make_unique<BinaryExpressionNode>(OperatorType::LOGICAL_AND, std::move($1), std::move($3)); }
+  | expression TOK_L_OR expression                { $$ = std::make_unique<BinaryExpressionNode>(OperatorType::LOGICAL_OR, std::move($1), std::move($3)); }
   | primary_expression TOK_NULL_COALESCE primary_expression       { $$ = std::make_unique<BinaryExpressionNode>(OperatorType::NULL_COALESCE, std::move($1), std::move($3)); }
 ;
 

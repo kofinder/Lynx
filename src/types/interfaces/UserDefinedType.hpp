@@ -19,7 +19,7 @@ namespace LynxTypes {
         
             explicit UserDefinedType(AstContext* context) : BaseType(context) {}
 
-            inline bool isUserDefinedType() const override { return true; }
+            inline bool isUserDefinedType() const noexcept override { return true; }
 
             llvm::Value* createValue(LValueType value) const override {
                 astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));

@@ -18,13 +18,10 @@
 
 namespace LynxAst {
 
-    /**
-     * @class ExceptionHandlerNode
-     * @brief Manages try-catch-finally blocks in the AST, including code generation and exception handling.
-     */
     class ExceptionHandlerNode : public Node {
         
         private:
+        
             std::unique_ptr<StatementListNode> tryBlockStmts; 
 
             std::unique_ptr<StatementListNode> finallyBlockStmts;
@@ -32,7 +29,6 @@ namespace LynxAst {
             llvm::BasicBlock* exceptionBlock = nullptr;  
 
             std::map<std::shared_ptr<VariableType>, std::unique_ptr<StatementListNode>> catchBlocksStmts;  
-
 
         public:
             
@@ -51,7 +47,7 @@ namespace LynxAst {
                 catchBlocksStmts[exceptionType] = std::move(catchBlock);
             }
 
-            llvm::Value* handleFlow(AstContext& astContext, std::function<llvm::Value*(llvm::BasicBlock* normalBlock, llvm::BasicBlock* exceptionBlock)> handleOperation);
+            llvm::Value* handleFlow(const AstContext& astContext, std::function<llvm::Value*(llvm::BasicBlock* normalBlock, llvm::BasicBlock* exceptionBlock)> handleOperation);
 
             void setFinallyBlock(std::unique_ptr<StatementListNode> finallyBlock) { finallyBlockStmts = std::move(finallyBlock); }
 

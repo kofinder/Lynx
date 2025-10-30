@@ -33,6 +33,7 @@ namespace LynxCodegen {
 
             if (!sharedContext) {
                 sharedContext = std::make_shared<llvm::LLVMContext>();
+                LOG_INFO("generateModulesIR: lazily created sharedContext {}", (void*)sharedContext.get());
             }
 
             auto sharedTypes = std::make_shared<std::map<std::string, std::shared_ptr<BaseType>>>();

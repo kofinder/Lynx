@@ -63,7 +63,7 @@ namespace LynxAst {
     }
 
 
-    llvm::Value* ExceptionHandlerNode::handleFlow(AstContext& astContext, std::function<llvm::Value*(llvm::BasicBlock* normalBlock, llvm::BasicBlock* exceptionBlock)> handleOperation) {
+    llvm::Value* ExceptionHandlerNode::handleFlow(const AstContext& astContext, std::function<llvm::Value*(llvm::BasicBlock* normalBlock, llvm::BasicBlock* exceptionBlock)> handleOperation) {
         auto& context = astContext.getLLVMContext();
         auto& builder = astContext.getBuilder();
         auto scopeContext = astContext.getGlobalContext();

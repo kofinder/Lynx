@@ -28,8 +28,8 @@ configure:
 build: configure
 	@echo "Building in $(BUILD_DIR)"
 	cd $(BUILD_DIR) && cmake --build .
-	mv ${LSP_SERVER_NAME} ${LSP_CLIENT_DIR}/
-	mv ${GRAMMAR_JSON} ${LSP_CLIENT_DIR}/
+	# mv ${LSP_SERVER_NAME} ${LSP_CLIENT_DIR}/
+	# mv ${GRAMMAR_JSON} ${LSP_CLIENT_DIR}/
 
 
 install: build

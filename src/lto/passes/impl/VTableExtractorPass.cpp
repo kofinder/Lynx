@@ -71,7 +71,7 @@ namespace LynxLTO {
         }
     
         llvm::json::Value jsonVal = llvm::json::Value(std::move(outJson));
-        const std::string filePath = "livechat/build/vtable_metadata.json";
+        const std::string filePath = "toy/build/vtable_metadata.json";
 
         // Print JSON to console nicely formatted
        llvm::outs() << "[Lynx Reflection JSON]\n";
