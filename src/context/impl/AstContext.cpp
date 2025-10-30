@@ -57,17 +57,7 @@ namespace LynxContext {
         debugBuilder(std::make_shared<llvm::DIBuilder>(*module)),
         errors(std::make_shared<CompositeError>()),
         dataLayout(module->getDataLayout()),
-        types(sharedTypes ? sharedTypes : std::make_shared<std::map<std::string, std::shared_ptr<BaseType>>>()) {
-           
-            if (!llvmContext) {
-                LOG_ERROR("AstContext ctor: received null LLVMContext shared_ptr for module '{}'", moduleName);
-                throw std::runtime_error("AstContext requires a valid LLVMContext");
-            }
-        
-            LOG_INFO("AstContext created: module='{}' llvmContext={} modulePtr={} builderPtr={}",
-                moduleName, (void*)llvmContext.get(), (void*)module.get(), (void*)builder.get());
-        
-        }
+        types(sharedTypes ? sharedTypes : std::make_shared<std::map<std::string, std::shared_ptr<BaseType>>>()) {}
 
     std::shared_ptr<AstContext> AstContext::createContext() const {          
         auto newCtx = std::make_shared<AstContext>(
@@ -182,8 +172,8 @@ namespace LynxContext {
                 llvmType = llvmType->getPointerElementType();
             }
 
-            llvmType->print(llvm::errs()); llvm::errs() << " vs ";
-            valType->print(llvm::errs()); llvm::errs() << "\n";
+            // llvmType->print(llvm::errs()); llvm::errs() << " vs ";
+            // valType->print(llvm::errs()); llvm::errs() << "\n";
 
             if (llvmType == valType) return x.second;
                 

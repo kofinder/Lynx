@@ -15,13 +15,14 @@
 
 #include "Node.hpp"
 #include <optional>
+#include <stack>
 #include "StatementListNode.hpp"
 #include "ExceptionHandlerNode.hpp"
 #include "tmpl/ManglerTemplate.hpp"
 #include <constants/Parameter.hpp>
+#include "SuperConstructorCallNode.hpp"
 #include <constants/AccessModifierType.hpp>
 #include <constants/metadata/LabelTypeConstants.hpp>
-#include "SuperConstructorCallNode.hpp"
 
 namespace LynxAst {
 
@@ -38,9 +39,9 @@ namespace LynxAst {
 
         private:
 
-            llvm::FunctionType* createFnSignature(AstContext& astContext);
+            llvm::FunctionType* createFnSignature(const AstContext& astContext);
 
-            llvm::Value* finalizeExitBlock(AstContext& astContext);
+            llvm::Value* finalizeExitBlock(const AstContext& astContext);
 
         protected:
 
@@ -75,45 +76,45 @@ namespace LynxAst {
 
             llvm::Value* setReturnValue(std::shared_ptr<AstContext> astContext, llvm::Value* value);  
 
-            inline void setFunctionBody(std::unique_ptr<StatementListNode> stmts) { this->statements = std::move(stmts); }
+            void setFunctionBody(std::unique_ptr<StatementListNode> stmts) { statements = std::move(stmts); }
 
-            inline VariableType* getReturnType() const { return returnType.get(); }
+            [[nodiscard]] VariableType* getReturnType() const noexcept { return returnType.get(); }
 
-            inline const std::shared_ptr<std::vector<std::shared_ptr<Parameter>>> getFunctionParameter() const { return fnParams; }
+            [[nodiscard]] const std::shared_ptr<std::vector<std::shared_ptr<Parameter>>> getFunctionParameter() const noexcept { return fnParams; }
 
-            inline StatementListNode* getFunctionStatements() const { return statements.get(); }
+            StatementListNode* getFunctionStatements() const noexcept { return statements.get(); }
 
-            inline void setReturnType(std::shared_ptr<VariableType> retType) { this->returnType = std::move(retType); }
+            void setReturnType(std::shared_ptr<VariableType> retType) { returnType = std::move(retType); }
 
-            inline std::string getFunctionName() const { return fnName; }
+            std::string getFunctionName() const noexcept { return fnName; }
 
-            inline llvm::Function* getLLVMFunctionRef() const { return llvmFunction; }
+            llvm::Function* getLLVMFunctionRef() const noexcept { return llvmFunction; }
 
-            inline void setLLVMFunction(llvm::Function* llvmFunc) { llvmFunction = llvmFunc;  }
+            void setLLVMFunction(llvm::Function* llvmFunc) noexcept { llvmFunction = llvmFunc;  }
 
-            inline ExceptionHandlerNode* getExceptionHandler() {  return exceptionHandlers.top(); }
+            ExceptionHandlerNode* getExceptionHandler() const noexcept {  return exceptionHandlers.empty() ? nullptr : exceptionHandlers.top(); }
 
-            inline void pushExceptionHandler(ExceptionHandlerNode* node) { exceptionHandlers.push(node);  }
+            void pushExceptionHandler(ExceptionHandlerNode* node) noexcept { exceptionHandlers.push(node);  }
 
-            inline void popExceptionHandler() { this->exceptionHandlers.pop();  }
+            void popExceptionHandler() noexcept { exceptionHandlers.pop();  }
 
-            inline bool hasExceptionHandler() const { return !this->exceptionHandlers.empty(); }
+            bool hasExceptionHandler() const noexcept { return !exceptionHandlers.empty(); }
 
-            inline void setEntryBlock(llvm::BasicBlock* block) { this->entryBlock = block; }
+            void setEntryBlock(llvm::BasicBlock* block) noexcept { entryBlock = block; }
 
-            inline void setExitBlock(llvm::BasicBlock* block) { this->exitBlock = block; }
+            void setExitBlock(llvm::BasicBlock* block) noexcept { exitBlock = block; }
 
-            inline void setAccessModifier(AccessModifierType modifierType) { this->accessModifier = modifierType; }
+            void setAccessModifier(AccessModifierType modifierType) noexcept { accessModifier = modifierType; }
 
-            inline AccessModifierType getAccessModifier() const { return accessModifier; }
+            AccessModifierType getAccessModifier() const noexcept { return accessModifier; }
 
-            inline void setClazzNode(Node* classNodePtr) { this->clazzNode = classNodePtr; }
+            void setClazzNode(Node* classNodePtr) noexcept { clazzNode = classNodePtr; }
     
-            inline bool isClazzFunction() const { return this->clazzNode != nullptr; }
+            bool isClazzFunction() const noexcept { return clazzNode != nullptr; }
 
-            inline void setVirtual(bool m_virtual) { this->isVirtual = m_virtual; }
+            void setVirtual(bool value) noexcept { isVirtual = value; }
 
-            inline void setOverride(bool m_override) { this->isOverride = m_override; }
+            void setOverride(bool value) noexcept { isOverride = value; }
 
             std::string getSignatureString() const;
 

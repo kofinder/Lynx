@@ -1,9 +1,9 @@
 %{
-    #include <string>        // For string manipulation
-    #include <cstdlib>       // For std::atoi function
-    #include "parser.hpp"     // Include the Bison parser header
-    #include "LynxDriver.hpp"  // Include the driver class for scanner control
-    #include "LynxScanner.hpp" // Include the custom scanner header
+    #include <string> 
+    #include <cstdlib>
+    #include "parser.hpp"
+    #include "LynxDriver.hpp"
+    #include "LynxScanner.hpp"
     #include "LynxTokenizer.hpp"
 
     #undef YY_DECL
@@ -31,7 +31,6 @@
 "alignof"                               { return token::TOK_ALIGN_OF; }
 "alignas"                               { return token::TOK_ALIGN_AS; }
 "nullptr"                               { return token::TOK_NULL_PTR; }
-
 
 
 [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2} { return interpretDateTimeLiteral(yylval, yytext, driver); }
@@ -145,11 +144,13 @@ true|false|0|1                                      { return interpretBooleanLit
 
 
 namespace LynxLang {
+
     LynxScanner::LynxScanner() : LynxLangFlexLexer() {}
 
     LynxScanner::~LynxScanner() {}
 
     void LynxScanner::setDebug(bool b) { yy_flex_debug = b; }
+    
 }
 
 /* This implementation of LynxFlexLexer::yylex() is required to fill the
@@ -160,7 +161,6 @@ int LynxLangFlexLexer::yylex() {
     throw "Lexer returned some errors";
     return 0;
 }
-
 
 /* When the scanner receives an end-of-file indication from YY_INPUT, it then
  * checks the yywrap() function. If yywrap() returns false (zero), then it is
