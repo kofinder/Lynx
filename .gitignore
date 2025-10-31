@@ -50,4 +50,4 @@ extension/build
 
 backup
 
-src/lang/*
+#src/lang/
