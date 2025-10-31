@@ -18,3 +18,8 @@ int factorial_tail_recursion(int n, int accumulator) {
 
   return factorial_tail_recursion(n -1, accumulator * n);
 }
+
+
+double profit_calculation(double revenue, double cost) {
+    return revenue - cost;
+}

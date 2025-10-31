@@ -62,8 +62,17 @@ lynx.if.merge:                                    ; preds = %lynx.elseif.conditi
   br label %exit
 }
 
+; Function Attrs: alwaysinline norecurse nounwind uwtable
+define dso_local double @profit_calculation(double %revenue, double %cost) #1 !lynx.signature !3 {
+entry:
+  %lynx.subtmp = fsub double %revenue, %cost
+  ret double %lynx.subtmp
+}
+
 attributes #0 = { alwaysinline uwtable }
+attributes #1 = { alwaysinline norecurse nounwind uwtable }
 
 !0 = !{!"factorial_head_recursion(int, int)"}
 !1 = !{!"lynx.int.type"}
 !2 = !{!"factorial_tail_recursion(int, int, int)"}
+!3 = !{!"profit_calculation(double, double, double)"}

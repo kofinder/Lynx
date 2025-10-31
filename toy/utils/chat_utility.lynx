@@ -1,5 +1,1 @@
 
-int maxProfit(int sellingprice, int purchasePrice) {
-    int profit = sellingprice + purchasePrice;
-    return profit;
-}

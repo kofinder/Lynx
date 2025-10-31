@@ -1,5 +1,10 @@
 	.text
 	.file	"main"
+	.section	.rodata.cst8,"aM",@progbits,8
+	.p2align	3
+.LCPI0_0:
+	.quad	0x40a3880000000000
+	.text
 	.globl	main
 	.p2align	4, 0x90
 	.type	main,@function
@@ -10,6 +15,10 @@ main:
 	movl	$.LformatString, %edi
 	movl	$720, %esi
 	xorl	%eax, %eax
+	callq	printf@PLT
+	movsd	.LCPI0_0(%rip), %xmm0
+	movl	$.LformatString.1, %edi
+	movb	$1, %al
 	callq	printf@PLT
 	movl	$20, %eax
 	popq	%rcx
@@ -70,6 +79,17 @@ factorial_tail_recursion:
 	.size	factorial_tail_recursion, .Lfunc_end2-factorial_tail_recursion
 	.cfi_endproc
 
+	.globl	profit_calculation
+	.p2align	4, 0x90
+	.type	profit_calculation,@function
+profit_calculation:
+	.cfi_startproc
+	subsd	%xmm1, %xmm0
+	retq
+.Lfunc_end3:
+	.size	profit_calculation, .Lfunc_end3-profit_calculation
+	.cfi_endproc
+
 	.globl	ub_demo_function
 	.p2align	4, 0x90
 	.type	ub_demo_function,@function
@@ -85,18 +105,18 @@ ub_demo_function:
 	movl	%eax, -4(%rsp)
 	xorl	%ecx, %ecx
 	testb	%cl, %cl
-	jne	.LBB3_2
+	jne	.LBB4_2
 	addl	$1, %eax
 	retq
-.LBB3_2:
+.LBB4_2:
 	movl	%eax, %ecx
 	shrl	$31, %ecx
 	addl	%eax, %ecx
 	sarl	%ecx
 	movl	%ecx, %eax
 	retq
-.Lfunc_end3:
-	.size	ub_demo_function, .Lfunc_end3-ub_demo_function
+.Lfunc_end4:
+	.size	ub_demo_function, .Lfunc_end4-ub_demo_function
 	.cfi_endproc
 
 	.type	.LformatString,@object
@@ -104,5 +124,10 @@ ub_demo_function:
 .LformatString:
 	.asciz	"%d\n"
 	.size	.LformatString, 4
+
+	.type	.LformatString.1,@object
+.LformatString.1:
+	.asciz	"%lf\n"
+	.size	.LformatString.1, 5
 
 	.section	".note.GNU-stack","",@progbits
