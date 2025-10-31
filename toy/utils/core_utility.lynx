@@ -1,0 +1,20 @@
+
+int factorial_head_recursion(int n) {
+
+  if(n < 0 || n == 1) {
+    return 1; 
+  }
+
+  int result = factorial_head_recursion(n - 1);
+
+  return n * result;
+}
+
+int factorial_tail_recursion(int n, int accumulator) {
+
+  if(n < 0 || n == 1) {
+    return accumulator;
+  }
+
+  return factorial_tail_recursion(n -1, accumulator * n);
+}

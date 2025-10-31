@@ -1,0 +1,55 @@
+#ifndef LYNX_ITANIUM_MANGLER_HPP
+#define LYNX_ITANIUM_MANGLER_HPP
+
+#include <logger/Logger.hpp>
+#include <mangler/IMangleStrategy.hpp>
+#include <mangler/MangleParamter.hpp>
+#include <mangler/utils/TypeEncoderUtils.hpp>
+#include <mangler/constants/ItaniumManglerPrefix.hpp>
+#include <mangler/constants/ItaniumTypeEncoding.hpp>
+
+
+namespace LynxMangler {
+
+    using namespace LynxLogger;
+
+    class ItaniumMangler : public IMangleStrategy {
+
+        public:
+            
+            std::string mangleFunction(const std::string& funcName, const ParameterTypes& paramTypes) override {
+                std::string mangled = MANGLE_PREFIX;
+                mangled += encodeNameComponent(funcName);
+                mangled += encodeParameters(paramTypes);
+                return mangled;
+            }
+
+            std::string mangleMemberFunction(const std::string& className, const std::string& funcName, const ParameterTypes& paramTypes) override {
+                std::string mangled = MANGLE_PREFIX;
+                mangled += PREFIX_NESTED_NAME;
+                mangled += encodeNameComponent(className);
+                mangled += encodeNameComponent(funcName);
+                mangled += SUFFIX_END_NESTED_NAME;
+                mangled += encodeParameters(paramTypes);
+                return mangled;            
+            }
+
+            std::string mangleConstructor(const std::string& className, const ParameterTypes& paramTypes) override {
+                std::string mangled = MANGLE_PREFIX;
+                mangled += PREFIX_NESTED_NAME;
+                mangled += encodeNameComponent(className);
+                mangled += SUFFIX_CONSTRUCTOR_PRIMARY;
+                mangled += SUFFIX_END_NESTED_NAME;
+                mangled += encodeParameters(paramTypes);
+                return mangled;        
+            }
+
+            std::string mangleClass(const std::string& className) override {
+                std::string mangled = MANGLE_PREFIX;
+                mangled += encodeNameComponent(className);
+                return mangled;
+            }
+    };
+}
+
+#endif

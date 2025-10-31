@@ -1,0 +1,54 @@
+#ifndef LYNX_ENUM_DECLARATION_NODE_HPP
+#define LYNX_ENUM_DECLARATION_NODE_HPP
+
+#include "Node.hpp"
+#include <types/userdefined/EnumType.hpp>
+
+
+namespace LynxAst {
+
+    using namespace LynxTypes;
+    using namespace LynxConstants;
+
+    class EnumDeclarationNode: public Node {
+
+        protected:
+
+            std::string enumName;
+
+            std::vector<std::pair<std::string, std::variant<int, char, std::string>>> members;
+
+        private:
+
+            void buildEnumType(EnumType& enumType);
+
+            void emitEnumConstants(const AstContext& astContext, const EnumType& enumType);
+
+            std::vector<llvm::Constant*> generatePayload(const AstContext& astContext, EnumMember member);
+
+        public:
+
+            explicit EnumDeclarationNode(std::string name): enumName(std::move(name)) {}
+
+            EnumDeclarationNode(
+                std::string name, 
+                std::vector<std::pair<std::string, std::variant<int, char, std::string>>> memberList
+            ): enumName(std::move(name)), members(std::move(memberList)) {}
+
+            std::unique_ptr<Node> clone() const override;
+            
+            NodeType getNodeType() override { return NodeType::ENUM_NODE; }
+
+            llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
+
+            const std::string getEnumName() const { return enumName; }
+
+            void addMember(const std::string& name, const std::variant<int, char, std::string>& value);
+
+            inline std::vector<std::pair<std::string, std::variant<int, char, std::string>>> getMembers() const { return members; }
+
+            ~EnumDeclarationNode() override = default;
+    };
+}
+
+#endif

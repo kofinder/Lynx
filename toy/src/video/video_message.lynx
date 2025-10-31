@@ -1,0 +1,13 @@
+import "src/chat_message";
+
+class VideoMessage extends ChatMessage {
+    private string videoUrl;
+
+    public VideoMessage(string id, string roomId, boolean isOnline, int createdAt, char status, ChatUser author, string videoUrl) {
+        super(id, roomId, isOnline, createdAt, status, MessageType.VIDEO, author);
+        this.videoUrl = videoUrl;
+    }
+
+    public string getVideoUrl() { return videoUrl; }
+    public void setVideoUrl(string videoUrl) { this.videoUrl = videoUrl; }
+}

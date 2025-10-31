@@ -1,0 +1,15 @@
+import "src/chat_message";
+
+class AudioMessage extends ChatMessage {
+    
+    private int duration;
+
+    public AudioMessage(string id, string roomId, boolean isOnline, int createdAt, char status, ChatUser author, int duration) {
+        super(id, roomId, isOnline, createdAt, status, MessageType::AUDIO, author);
+        this.duration = duration;
+    }
+
+    public int getDuration() { return duration; }
+
+    public void setDuration(int duration) { this.duration = duration; }
+}

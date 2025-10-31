@@ -1,0 +1,199 @@
+#ifndef LYNX_PROGRAM_OPTION_CONFIG_HPP
+#define LYNX_PROGRAM_OPTION_CONFIG_HPP
+
+#include <string>
+#include <vector>
+#include <memory>
+#include <iostream>
+#include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/program_options/errors.hpp>
+#include "ProgramSourceProcessor.hpp"
+
+namespace LynxProgramConfig {
+
+    namespace po = boost::program_options;
+    namespace fs = boost::filesystem;
+
+
+    /**
+     * @brief Manages CLI program options using Boost.Program_options.
+     *
+     * Provides centralized parsing and access to CLI flags and arguments.
+     * 
+     * Supported commands:
+     *   - run         : Execute a .lynx file.
+     *   - build       : Compile the project.
+     *   - analyze     : Perform static analysis.
+     *   - create      : Create a new scaffold.
+     *   - clean       : Clean build artifacts.
+     *   - test        : Run unit tests.
+     *   - upgrade     : Upgrade dependencies/tools.
+     *   - downgrade   : Downgrade dependencies/tools.
+     *   - help        : Display command help.
+     */
+    class ProgramOptionConfig {
+
+        private:
+
+            std::string cmd;
+
+            po::variables_map vm;
+            
+            static bool is_initialized;
+
+        public:
+            std::string rootPath;
+            
+            std::string buildDir;
+
+            std::string configFile;
+
+            std::string entrySource;
+
+            std::vector<std::string> sourceFolders;
+
+            /**
+             * @brief Default constructor & Destructor
+             */
+            ProgramOptionConfig() noexcept = default;
+            ~ProgramOptionConfig() noexcept = default;
+
+            // Delete copy and move operations for singleton enforcement
+            ProgramOptionConfig(const ProgramOptionConfig&) = delete;
+            ProgramOptionConfig& operator=(const ProgramOptionConfig&) = delete;
+
+            /**
+             * @brief Access the singleton instance of the option config.
+             * 
+             * @return Reference to the singleton object.
+             */
+            static ProgramOptionConfig& instance() noexcept;
+
+            /**
+             * @brief Initializes the configuration from CLI args.
+             * 
+             * This must be called once in the main entry before using any accessors.
+             * 
+             * @param argc Argument count.
+             * @param argv Argument vector.
+             */
+            static void initialize(int argc, char const *argv[]);
+
+            /**
+             * @brief Returns the main CLI command (e.g., run, build).
+             * 
+             * @return Parsed command string.
+             */
+            const std::string& getCommand() const; 
+
+
+            /**
+             * @brief Returns the full parsed variables map.
+             * 
+             * @return Const reference to variable map.
+             */
+            const po::variables_map& getVarMap() const;
+
+            /**
+             * @brief Alternative accessor to retrieve options.
+             * 
+             * @return Const reference to variable map.
+             */
+            const po::variables_map& options() const;
+
+            /**
+             * @brief Gets the path to the YAML configuration file.
+             * 
+             * This is typically passed using `--config`.
+             * 
+             * @return Path to config file.
+             */
+            std::string configPath() const;
+
+            /**
+             * @brief Returns the entry file to run (.lynx file).
+             * 
+             * Retrieved using `--entry`.
+             * 
+             * @return Path to entry point file.
+             */
+            std::string entryFile() const;
+
+            /**
+             * @brief Indicates if debug mode is enabled.
+             * 
+             * Set using `--debug`.
+             * 
+             * @return true if debug mode is on.
+             */
+            bool isDebug() const;
+
+            /**
+             * @brief Indicates if dry-run mode is enabled.
+             * 
+             * Set using `--dry-run`.
+             * 
+             * @return true if dry-run is active.
+             */
+            bool isDryRun() const;
+
+            /**
+             * @brief Indicates if verbose logging is requested.
+             * 
+             * Set using `--verbose`.
+             * 
+             * @return true if verbose is enabled.
+             */
+            bool isVerbose() const;
+
+            /**
+             * @brief Checks if syntax highlighting is enabled.
+             * 
+             * @return true if syntax highlighting is turned on.
+             */
+            bool syntaxHighLight() const;
+
+            /**
+             * @brief Checks if source emission is required.
+             * 
+             * Relevant when generating intermediate or output code.
+             * 
+             * @return true if emitting source.
+             */
+            bool emitSource() const;
+
+            /**
+             * @brief Gets the custom output path (e.g., --output).
+             * 
+             * @return Output file or directory path.
+             */
+            std::string outputPath() const;
+
+            /**
+             * @brief Gets the requested state (e.g., visualization or compile phase).
+             * 
+             * Used for advanced flags like `--state`.
+             * 
+             * @return String representing the desired internal state.
+             */
+            std::string showState() const;
+
+            /**
+             * @brief Prints CLI banner, usage, and command help.
+             * 
+             * Called when user requests help or inputs an unknown command.
+             */
+            void printBanner() const;
+
+            /**
+             * @brief Load application root directory 
+             * 
+             * @param configFilePath 
+             */
+            void loadYamlConfig(const std::string& configFilePath);
+    };
+
+} 
+
+#endif 

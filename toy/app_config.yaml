@@ -1,0 +1,27 @@
+name: toy
+
+type: generic
+
+version: 1.0.0
+
+entry: main.lynx
+
+folders:
+  - libs
+  - src
+  - utils
+  - constants
+  - extenstions
+
+settings:
+  debug: true
+  optimize: false
+  build_dir: build
+
+
+exclude:
+  - test/
+  - experimental/
+  
+flags:
+  optimize: true

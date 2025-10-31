@@ -1,0 +1,86 @@
+{
+  "name": "Lynx Custom Theme",
+  "type": "dark",
+  "colors": {
+    "editor.background": "#1e1e1e",
+    "editor.foreground": "#d4d4d4"
+  },
+  "tokenColors": [
+    {
+      "scope": "keyword.control.lynx",
+      "settings": { "foreground": "#569CD6" }
+    },
+    {
+      "scope": "keyword.type.lynx",
+      "settings": { "foreground": "#4EC9B0" }
+    },
+    {
+      "scope": "constant.numeric.lynx",
+      "settings": { "foreground": "#B5CEA8" }
+    },
+    {
+      "scope": "string.quoted.double.lynx",
+      "settings": { "foreground": "#CE9178" }
+    },
+    {
+      "scope": "entity.name.function.lynx",
+      "settings": { "foreground": "#FFD700" }
+    },
+    {
+      "scope": "variable.other.lynx",
+      "settings": { "foreground": "#9CDCFE" }
+    },
+    {
+      "scope": "entity.name.type.class.lynx",
+      "settings": { "foreground": "#00FF00" }
+    },
+    {
+      "scope": "constant.other.enum.lynx",
+      "settings": { "foreground": "#00FF00" }
+    },
+    {
+      "scope": "punctuation.bracket.lynx",
+      "settings": { "foreground": "#D4D4A4" }
+    },
+    {
+      "scope": "punctuation.separator.lynx",
+      "settings": { "foreground": "#DCDCAA" }
+    },
+    {
+      "scope": "comment.line.double-slash.lynx, comment.block.lynx",
+      "settings": { "foreground": "#6A9955" }
+    },
+    {
+      "scope": "keyword.operator.*.lynx",
+      "settings": { "foreground": "#D4D4D4" }
+    },
+    {
+      "scope": "support.class.lynx",
+      "settings": { "foreground": "#4EC9B0" }
+    },
+    {
+      "scope": "keyword.declaration.lynx",
+      "settings": { "foreground": "#FF8800", "fontStyle": "bold" }
+    },
+    {
+      "scope": "keyword.declaration.inheritance.lynx",
+      "settings": { "foreground": "#C586C0", "fontStyle": "bold" }
+    },
+    {
+      "scope": "keyword.declaration.access.public.lynx",
+      "settings": { "foreground": "#00FFFF", "fontStyle": "bold" }
+    },
+    {
+      "scope": "keyword.declaration.access.private.lynx",
+      "settings": { "foreground": "#FF5555", "fontStyle": "bold" }
+    },
+    {
+      "scope": "keyword.declaration.access.protected.lynx",
+      "settings": { "foreground": "#FFAA00", "fontStyle": "bold" }
+    },
+    {
+      "scope": "keyword.declaration.access.default.lynx",
+      "settings": { "foreground": "#AAAAAA", "fontStyle": "bold" }
+    }    
+  ]
+}

@@ -1,0 +1,13 @@
+import "src/chat_message";
+
+class ImageMessage extends ChatMessage {
+    private string imageUrl;
+
+    public ImageMessage(string id, string roomId, boolean isOnline, int createdAt, char status, ChatUser author, string imageUrl) {
+        super(id, roomId, isOnline, createdAt, status, MessageType::IMAGE, author);
+        this.imageUrl = imageUrl;
+    }
+
+    public string getImageUrl() { return imageUrl; }
+    public void setImageUrl(string imageUrl) { this.imageUrl = imageUrl; }
+}

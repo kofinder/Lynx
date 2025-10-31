@@ -1,0 +1,11 @@
+
+import "utils/core_utility";
+
+int main() {
+
+  int result = factorial_head_recursion(6);
+
+  system.prettyPrint(result);
+    
+  return 20;
+}
