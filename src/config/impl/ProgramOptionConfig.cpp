@@ -74,12 +74,13 @@ namespace LynxProgramConfig {
             ("project", po::value<std::string>(), "Project name to create")
             ("type", po::value<std::string>()->default_value("generic"),
              "Type of project to create (web, console, etc.)"); 
-    
+
         po::options_description generate_opts("Generate Options");
         generate_opts.add_options()
             ("subcommand", po::value<std::string>(), "Subcommand to generate (e.g., module, component, plugin)")
-            ("name", po::value<std::string>(), "Name of the item to generate");
-    
+            ("name", po::value<std::string>(), "Name of the item to generate")
+            ("project", po::value<std::string>()->default_value("."), "Project path for generation");
+
         po::options_description all(all_opts_description.data());
         all.add(general).add(run_opts).add(misc_opts);
         if (self.cmd == "create") all.add(create_opts);

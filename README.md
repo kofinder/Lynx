@@ -111,3 +111,7 @@ You’re free to use, modify, and distribute it with proper attribution.
 
 ## Obfuscated C Code Contest
 - [IOCCC Source Code Repository](https://github.com/ioccc-src/winner)
+
+## CLI COMMAND
+- create project: ``make cli ARGS="create --project livechat --type web"``
+- create module: ``make cli ARGS="generate --subcommand module --name chat --project ./livechat"``

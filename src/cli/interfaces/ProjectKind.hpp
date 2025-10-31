@@ -1,86 +1,92 @@
-#pragma once
+#ifndef LYNX_CLI_PROJECT_KIND_HPP
+#define LYNX_CLI_PROJECT_KIND_HPP
+
 #include <string>
 #include <stdexcept>
 #include <algorithm>
 
-enum class ProjectKind {
-    Generic,        // Default / simple project
+namespace LynxCLI {
 
-    Web,            // Web applications (frontend/backends)
+    enum class ProjectKind {
+        Generic,        // Default / simple project
 
-    Console,        // CLI tools, terminal apps
+        Web,            // Web applications (frontend/backends)
 
-    Library,        // Reusable library project
+        Console,        // CLI tools, terminal apps
 
-    Service,        // Background service / daemon
+        Library,        // Reusable library project
 
-    Mobile,         // Mobile apps (iOS/Android)
+        Service,        // Background service / daemon
 
-    Game,           // Game projects (2D/3D)
+        Mobile,         // Mobile apps (iOS/Android)
 
-    Plugin,         // Plugin for another application or editor
+        Game,           // Game projects (2D/3D)
 
-    Test,           // Unit test or integration test project
+        Plugin,         // Plugin for another application or editor
 
-    Microservice,   // Microservice for distributed systems
+        Test,           // Unit test or integration test project
 
-    DataPipeline,   // Data processing / ETL pipelines
+        Microservice,   // Microservice for distributed systems
 
-    REST,           // REST API backend project
+        DataPipeline,   // Data processing / ETL pipelines
 
-    WebFlex,        // Frontend framework / SPA project
+        REST,           // REST API backend project
 
-    GraphQL,        // GraphQL API project
-    
-    Gateway         // API gateway or micro-gateway project
-};
+        WebFlex,        // Frontend framework / SPA project
 
-inline ProjectKind operator++(ProjectKind& kind, int) {
-    using IntType = typename std::underlying_type<ProjectKind>::type;
-    kind = static_cast<ProjectKind>(static_cast<IntType>(kind) + 1);
-    return kind;
-}
+        GraphQL,        // GraphQL API project
+        
+        Gateway         // API gateway or micro-gateway project
+    };
 
-inline ProjectKind parseStringToProjectKind(const std::string &name) {
-    std::string lowerName = name;
-    std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
+    inline ProjectKind operator++(ProjectKind& kind, int) {
+        using IntType = typename std::underlying_type<ProjectKind>::type;
+        kind = static_cast<ProjectKind>(static_cast<IntType>(kind) + 1);
+        return kind;
+    }
 
-    if (lowerName == "generic") return ProjectKind::Generic;
-    if (lowerName == "web") return ProjectKind::Web;
-    if (lowerName == "console") return ProjectKind::Console;
-    if (lowerName == "library") return ProjectKind::Library;
-    if (lowerName == "service") return ProjectKind::Service;
-    if (lowerName == "mobile") return ProjectKind::Mobile;
-    if (lowerName == "game") return ProjectKind::Game;
-    if (lowerName == "plugin") return ProjectKind::Plugin;
-    if (lowerName == "test") return ProjectKind::Test;
-    if (lowerName == "microservice") return ProjectKind::Microservice;
-    if (lowerName == "datapipeline") return ProjectKind::DataPipeline;
-    if (lowerName == "rest") return ProjectKind::REST;
-    if (lowerName == "webflex") return ProjectKind::WebFlex;
-    if (lowerName == "graphql") return ProjectKind::GraphQL;
-    if (lowerName == "gateway") return ProjectKind::Gateway;
+    inline ProjectKind parseStringToProjectKind(const std::string &name) {
+        std::string lowerName = name;
+        std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
 
-    throw std::invalid_argument("Unknown project type: " + name);
-}
+        if (lowerName == "generic") return ProjectKind::Generic;
+        if (lowerName == "web") return ProjectKind::Web;
+        if (lowerName == "console") return ProjectKind::Console;
+        if (lowerName == "library") return ProjectKind::Library;
+        if (lowerName == "service") return ProjectKind::Service;
+        if (lowerName == "mobile") return ProjectKind::Mobile;
+        if (lowerName == "game") return ProjectKind::Game;
+        if (lowerName == "plugin") return ProjectKind::Plugin;
+        if (lowerName == "test") return ProjectKind::Test;
+        if (lowerName == "microservice") return ProjectKind::Microservice;
+        if (lowerName == "datapipeline") return ProjectKind::DataPipeline;
+        if (lowerName == "rest") return ProjectKind::REST;
+        if (lowerName == "webflex") return ProjectKind::WebFlex;
+        if (lowerName == "graphql") return ProjectKind::GraphQL;
+        if (lowerName == "gateway") return ProjectKind::Gateway;
 
-inline std::string parseProjectKindToString(ProjectKind kind) {
-    switch (kind) {
-        case ProjectKind::Generic: return "generic";
-        case ProjectKind::Web: return "web";
-        case ProjectKind::Console: return "console";
-        case ProjectKind::Library: return "library";
-        case ProjectKind::Service: return "service";
-        case ProjectKind::Mobile: return "mobile";
-        case ProjectKind::Game: return "game";
-        case ProjectKind::Plugin: return "plugin";
-        case ProjectKind::Test: return "test";
-        case ProjectKind::Microservice: return "microservice";
-        case ProjectKind::DataPipeline: return "datapipeline";
-        case ProjectKind::REST: return "rest";
-        case ProjectKind::WebFlex: return "webflex";
-        case ProjectKind::GraphQL: return "graphql";
-        case ProjectKind::Gateway: return "gateway";
-        default: return "unknown";
+        throw std::invalid_argument("Unknown project type: " + name);
+    }
+
+    inline std::string parseProjectKindToString(ProjectKind kind) {
+        switch (kind) {
+            case ProjectKind::Generic: return "generic";
+            case ProjectKind::Web: return "web";
+            case ProjectKind::Console: return "console";
+            case ProjectKind::Library: return "library";
+            case ProjectKind::Service: return "service";
+            case ProjectKind::Mobile: return "mobile";
+            case ProjectKind::Game: return "game";
+            case ProjectKind::Plugin: return "plugin";
+            case ProjectKind::Test: return "test";
+            case ProjectKind::Microservice: return "microservice";
+            case ProjectKind::DataPipeline: return "datapipeline";
+            case ProjectKind::REST: return "rest";
+            case ProjectKind::WebFlex: return "webflex";
+            case ProjectKind::GraphQL: return "graphql";
+            case ProjectKind::Gateway: return "gateway";
+            default: return "unknown";
+        }
     }
 }
+#endif

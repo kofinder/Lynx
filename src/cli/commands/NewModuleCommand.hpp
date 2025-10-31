@@ -40,13 +40,10 @@ namespace LynxCLI {
             ) noexcept : projectPath(project), moduleName(module) {}
 
             void execute() override {
-                std::cout << "Adding new module '" << moduleName << "' to project at " << projectPath << std::endl;
-
                 if (!fs::exists(projectPath)) {
                     std::cerr << "Error: Project path does not exist!\n";
                     return;
                 }
-    
 
                 fs::path moduleDir = fs::path(projectPath) / "src" / moduleName;
                 if (!fs::exists(moduleDir)) {
@@ -72,7 +69,6 @@ namespace LynxCLI {
             std::string name() const noexcept override { return "generate"; }
 
             std::string description() const noexcept override { return "Generate a new Lynx module"; }
-
     };
 
 }

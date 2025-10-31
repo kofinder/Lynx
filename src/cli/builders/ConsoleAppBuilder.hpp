@@ -57,11 +57,9 @@ namespace LynxCLI {
         public:
 
             void build() override {
-                std::cout << "Creating console app project: " << projectName << std::endl;
                 createDirectories();
                 createFiles();
                 setupConfigs();
-                std::cout << "Console app project '" << projectName << "' created successfully!\n";
             }
 
     };

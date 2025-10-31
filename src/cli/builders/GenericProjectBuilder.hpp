@@ -55,7 +55,6 @@ namespace LynxCLI {
                     throw std::runtime_error("Failed to create configuration file for project: " + projectName);
                 }
             
-                // Convert ProjectKind to string
                 std::string kindStr = {"default"};
             
                 configFile << "name: " << projectName << "\n";
@@ -88,11 +87,9 @@ namespace LynxCLI {
         public:
 
             void build() override {
-                std::cout << "Creating generic project: " << projectName << std::endl;
                 createDirectories();
                 createFiles();
                 setupConfigs();
-                std::cout << "Project '" << projectName << "' created successfully!\n";        
             }
     };
 

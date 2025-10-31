@@ -46,13 +46,8 @@ namespace LynxCLI {
                 mainFile << "IO.println(\"Hello, WebApp!\");\n";
                 mainFile.close();
         
-                std::ofstream compFile(projectName + "/src/components/app_component.lynx");
-                compFile << "// Example component\n";
-                compFile << "IO.println(\"App Component Loaded\");\n";
-                compFile.close();
-        
-                std::ofstream utilFile(projectName + "/utils/dom_utils.lynx");
-                utilFile << "// DOM helper utilities\n";
+                std::ofstream utilFile(projectName + "/utils/core_utils.lynx");
+                utilFile << "// helper utilities\n";
                 utilFile.close();
             }
         
@@ -95,11 +90,9 @@ namespace LynxCLI {
         public:
 
             void build() override {
-                std::cout << "Creating web app project: " << projectName << std::endl;
                 createDirectories();
                 createFiles();
                 setupConfigs();
-                std::cout << "Web app project '" << projectName << "' created successfully!\n";  
             }
     };
 

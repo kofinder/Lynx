@@ -30,8 +30,9 @@ namespace LynxCLI {
             auto& config = ProgramOptionConfig::instance();
             auto subcommand = config.options()["subcommand"].as<std::string>();
             auto name = config.options()["name"].as<std::string>();
+            auto projectPath = config.options().count("project") ? config.options()["project"].as<std::string>() : ".";
             if (subcommand == "module") {
-                return std::make_unique<NewModuleCommand>(".", name);
+                return std::make_unique<NewModuleCommand>(projectPath, name);
             }
             throw std::invalid_argument("Unknown generate subcommand: " + subcommand);
         });
