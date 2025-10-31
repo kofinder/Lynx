@@ -40,7 +40,6 @@
 # debug information files
 *.dwo
 
-external
 
 /build
 
@@ -50,4 +49,4 @@ extension/build
 
 backup
 
-#src/lang/
+src/lang/
