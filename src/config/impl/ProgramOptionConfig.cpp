@@ -22,78 +22,102 @@ namespace LynxProgramConfig {
         return instance().vm;
     }
 
-    void ProgramOptionConfig::initialize(int argc, char const *argv[]) {
-
+    void ProgramOptionConfig::initialize(int argc, char const* argv[]) {
         if (is_initialized) {
-            std::cerr << "[Warning]! Detected multiple init of ProgramOptions!" << std::endl;
+            std::cerr << "[Warning] Detected multiple initializations of ProgramOptionConfig!\n";
             return;
-        } 
-
+        }
+    
         auto& self = ProgramOptionConfig::instance();
         is_initialized = true;
-
+    
         if (argc < 2) {
             self.printBanner();
             std::exit(EXIT_FAILURE);
         }
-        
+    
         self.cmd = argv[1];
         std::vector<std::string> args(argv + 2, argv + argc);
-
+    
         po::options_description general(general_opts_description.data());
-        const std::string help_option = std::string(command_help_key) + "," + std::string(command_help_shortcut);
-        const std::string config_option = std::string(option_config_key) + "," + std::string(option_config_shortcut);
-        const std::string verbose_option = std::string(option_verbose_key) + "," + std::string(option_verbose_shortcut);
+        const auto help_option     = std::string(command_help_key) + "," + std::string(command_help_shortcut);
+        const auto config_option   = std::string(option_config_key) + "," + std::string(option_config_shortcut);
+        const auto verbose_option  = std::string(option_verbose_key) + "," + std::string(option_verbose_shortcut);
+        
         general.add_options()
             (config_option.c_str(), po::value<std::string>()->default_value(config_file.data()), option_config_description.data())
             (verbose_option.c_str(), po::bool_switch()->default_value(false), option_verbose_description.data())
-            (help_option.c_str(), command_help_description.data());
-            
+            (help_option.c_str(), command_help_description.data())
+            ("version", "Show version info and exit");
+    
         po::options_description run_opts(run_opts_description.data());
-        const std::string entry_option = std::string(option_entry_key) + "," + std::string(option_entry_shortcut);
-        const std::string debug_option = std::string(option_debug_key) + "," + std::string(option_debug_shortcut);
-        const std::string dry_option = std::string(option_dryrun_key) + "," + std::string(option_dryrun_shortcut);
+        const auto entry_option   = std::string(option_entry_key) + "," + std::string(option_entry_shortcut);
+        const auto debug_option   = std::string(option_debug_key) + "," + std::string(option_debug_shortcut);
+        const auto dry_option     = std::string(option_dryrun_key) + "," + std::string(option_dryrun_shortcut);
+        
         run_opts.add_options()
             (entry_option.c_str(), po::value<std::string>(), option_entry_description.data())
             (debug_option.c_str(), po::bool_switch(), option_debug_description.data())
             (dry_option.c_str(), po::bool_switch(), option_dryrun_description.data());
-
+    
         po::options_description misc_opts(misc_opts_description.data());
-        const std::string highlight_option = std::string(option_highlight_key) + "," + std::string(option_highlight_shortcut);
+        const auto highlight_option = std::string(option_highlight_key) + "," + std::string(option_highlight_shortcut);
+        
         misc_opts.add_options()
             (highlight_option.c_str(), po::bool_switch(), option_highlight_description.data())
             ("emit,l", po::bool_switch(), "Emit intermediate code")
             ("output,o", po::value<std::string>(), "Output path")
-            ("state, s", po::value<std::string>(), "State visualization info");
-
+            ("state,s", po::value<std::string>(), "State visualization info");
+    
+        po::options_description create_opts("Create Options");
+        create_opts.add_options()
+            ("project", po::value<std::string>(), "Project name to create")
+            ("type", po::value<std::string>()->default_value("generic"),
+             "Type of project to create (web, console, etc.)"); 
+    
+        po::options_description generate_opts("Generate Options");
+        generate_opts.add_options()
+            ("subcommand", po::value<std::string>(), "Subcommand to generate (e.g., module, component, plugin)")
+            ("name", po::value<std::string>(), "Name of the item to generate");
+    
         po::options_description all(all_opts_description.data());
         all.add(general).add(run_opts).add(misc_opts);
-
+        if (self.cmd == "create") all.add(create_opts);
+        if (self.cmd == "generate") all.add(generate_opts);
+    
         if (self.cmd == "help") {
             self.printBanner();
             std::exit(EXIT_SUCCESS);
-        } 
-
+        }
+    
         try {
+
             po::store(po::command_line_parser(args).options(all).run(), self.vm);
             po::notify(self.vm);
-
+    
             if (self.vm.count("help")) {
                 std::cout << "Usage: lynx " << self.cmd << " [options]\n";
                 std::cout << all << "\n";
                 std::exit(EXIT_SUCCESS);
             }
-
-            const std::string yamlConfig = self.vm["config"].as<std::string>();
-            std::cout << "[Argument] input arguments: ==>" << argc << std::endl;                
-            self.loadYamlConfig(yamlConfig);        
+    
+            if (self.vm.count("version")) {
+                std::cout << "Lynx CLI version 0.1.0\n";
+                std::exit(EXIT_SUCCESS);
+            }
+    
+            if (self.vm.count("config")) {
+                const std::string yamlConfig = self.vm["config"].as<std::string>();
+                self.loadYamlConfig(yamlConfig);
+            }
+    
         } catch (const po::error& e) {
             std::cerr << "Option parsing error: " << e.what() << '\n';
             std::cout << "Usage: lynx " << self.cmd << " [options]\n";
             std::cout << all << "\n";
-            std::exit(EXIT_FAILURE);    
+            std::exit(EXIT_FAILURE);
         }
-    }
+    }    
 
     void ProgramOptionConfig::loadYamlConfig(const std::string& configFilePath) {
         try {

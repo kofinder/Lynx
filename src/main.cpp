@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "Lynx.hpp"
+#include <cli/CLI.hpp>  
 #include <llvm/Support/ManagedStatic.h>
 
 template<typename Func>
@@ -31,6 +32,13 @@ int main(int argc, char const *argv[]) {
     config.initialize(argc, argv);
     const std::string& cmd = config.getCommand();
 
+    if (cmd == "create" || cmd == "generate" || cmd == "scaffold") {
+        LynxCLI::CLI cli;
+        cli.run();
+        std::cout << LYNX_GREEN << "[Success] CLI command executed successfully." << LYNX_RESET << std::endl;
+        return EXIT_SUCCESS;
+    }
+    
     int exitCode = 0;
     {
         Lynx lynx(config);

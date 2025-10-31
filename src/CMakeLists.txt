@@ -43,6 +43,7 @@ add_subdirectory(platform)
 add_subdirectory(libruntime)
 add_subdirectory(collections)
 add_subdirectory(errors)
+add_subdirectory(cli)
 add_subdirectory(stdapi)
 
 set(MAIN_ENTRY_SOURCES main.cpp Lynx.hpp Lynx.cpp)
@@ -81,6 +82,7 @@ target_link_libraries(Lynx PUBLIC
     LynxJIT
     LynxResolver
     LynxProgramConfig
+    LynxCLI
     LynxCodegen
     LynxLinker
     LynxFunctionAttr

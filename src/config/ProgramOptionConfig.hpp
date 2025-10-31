@@ -10,10 +10,11 @@
 #include <boost/program_options/errors.hpp>
 #include "ProgramSourceProcessor.hpp"
 
-namespace po = boost::program_options;
-namespace fs = boost::filesystem;
-
 namespace LynxProgramConfig {
+
+    namespace po = boost::program_options;
+    namespace fs = boost::filesystem;
+
 
     /**
      * @brief Manages CLI program options using Boost.Program_options.

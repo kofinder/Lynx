@@ -44,6 +44,10 @@ execute: build
 	@echo "Running $(EXECUTABLE_NAME)"
 	./$(EXECUTABLE_NAME) run -c ${EXAMPLE_DIR}/app_config.yaml -e main.lynx
 
+cli: build
+	@echo "🦊 Running Lynx CLI with args: '$(ARGS)'"
+	./$(EXECUTABLE_NAME) $(ARGS);
+
 syntax:
 	@echo "Running Bison to generate parser and header..."
 	bison --report=all --report-file=$(BISON_REPORT) -d $(BISON_DIR)
@@ -66,4 +70,4 @@ clean:
 	cd ${BISON_DIR}/ && sh run.sh clean
 	#cd ${SKIA_DIR}/ && rm -rf out/Static
 
-.PHONY: all create configure install build validate execute debug trace clean syntax
+.PHONY: all create configure install build validate execute cli debug trace clean syntax
