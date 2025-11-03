@@ -3,7 +3,7 @@
 	.section	.rodata.cst8,"aM",@progbits,8
 	.p2align	3
 .LCPI0_0:
-	.quad	0x40a3880000000000
+	.quad	0x4039000000000000
 	.text
 	.globl	main
 	.p2align	4, 0x90
@@ -12,15 +12,11 @@ main:
 	.cfi_startproc
 	pushq	%rax
 	.cfi_def_cfa_offset 16
-	movl	$.LformatString, %edi
-	movl	$720, %esi
-	xorl	%eax, %eax
-	callq	printf@PLT
 	movsd	.LCPI0_0(%rip), %xmm0
-	movl	$.LformatString.1, %edi
+	movl	$.LformatString, %edi
 	movb	$1, %al
 	callq	printf@PLT
-	movl	$20, %eax
+	movl	$32, %eax
 	popq	%rcx
 	.cfi_def_cfa_offset 8
 	retq
@@ -90,6 +86,32 @@ profit_calculation:
 	.size	profit_calculation, .Lfunc_end3-profit_calculation
 	.cfi_endproc
 
+	.section	.rodata.cst8,"aM",@progbits,8
+	.p2align	3
+.LCPI4_0:
+	.quad	0x4059000000000000
+	.text
+	.globl	profit_margin
+	.p2align	4, 0x90
+	.type	profit_margin,@function
+profit_margin:
+	.cfi_startproc
+	movapd	%xmm0, %xmm2
+	xorpd	%xmm0, %xmm0
+	ucomisd	%xmm0, %xmm2
+	jne	.LBB4_1
+	jp	.LBB4_1
+	retq
+.LBB4_1:
+	movapd	%xmm2, %xmm0
+	subsd	%xmm1, %xmm0
+	divsd	%xmm2, %xmm0
+	mulsd	.LCPI4_0(%rip), %xmm0
+	retq
+.Lfunc_end4:
+	.size	profit_margin, .Lfunc_end4-profit_margin
+	.cfi_endproc
+
 	.globl	ub_demo_function
 	.p2align	4, 0x90
 	.type	ub_demo_function,@function
@@ -105,29 +127,24 @@ ub_demo_function:
 	movl	%eax, -4(%rsp)
 	xorl	%ecx, %ecx
 	testb	%cl, %cl
-	jne	.LBB4_2
+	jne	.LBB5_2
 	addl	$1, %eax
 	retq
-.LBB4_2:
+.LBB5_2:
 	movl	%eax, %ecx
 	shrl	$31, %ecx
 	addl	%eax, %ecx
 	sarl	%ecx
 	movl	%ecx, %eax
 	retq
-.Lfunc_end4:
-	.size	ub_demo_function, .Lfunc_end4-ub_demo_function
+.Lfunc_end5:
+	.size	ub_demo_function, .Lfunc_end5-ub_demo_function
 	.cfi_endproc
 
 	.type	.LformatString,@object
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .LformatString:
-	.asciz	"%d\n"
-	.size	.LformatString, 4
-
-	.type	.LformatString.1,@object
-.LformatString.1:
 	.asciz	"%lf\n"
-	.size	.LformatString.1, 5
+	.size	.LformatString, 5
 
 	.section	".note.GNU-stack","",@progbits

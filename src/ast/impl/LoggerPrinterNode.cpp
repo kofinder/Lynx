@@ -20,7 +20,7 @@ namespace LynxAst {
         }
 
         if (TypeChecker::is<StringType>(valueType))      return "%s\n";
-        if (TypeChecker::is<BooleanType>(valueType))     return "%d\n";  // true/false as 0/1
+        if (TypeChecker::is<BooleanType>(valueType))     return "%s\n";  // true/false as 0/1
         if (TypeChecker::is<CharType>(valueType))        return "%c\n";
         if (TypeChecker::is<ByteType>(valueType))        return "%d\n";
         if (TypeChecker::is<ShortType>(valueType))       return "%d\n";
@@ -60,16 +60,17 @@ namespace LynxAst {
         auto* llvmType = expressionValue->getType();
         std::vector<llvm::Value*> printfArgs;
 
-        // Get the format specifier for the given type
         std::string formatSpecifier = getFormatSpecifier(llvmType);
-        
-        // Create a global string for the format specifier
-        llvm::Value* formatString = builder.CreateGlobalStringPtr(formatSpecifier, "formatString");
-
+        auto* formatString = builder.CreateGlobalStringPtr(formatSpecifier, "formatString");
         printfArgs.push_back(formatString);
 
         if(TypeChecker::is<BooleanType>(llvmType)) {
-            auto* booleanAsString = builder.CreateSelect(expressionValue, builder.CreateGlobalStringPtr("true"), builder.CreateGlobalStringPtr("false"));
+            std::cout << "Boolean print lllllll" << formatSpecifier << std::endl;
+            auto* booleanAsString = builder.CreateSelect(
+                expressionValue, 
+                builder.CreateGlobalStringPtr("true"),
+                builder.CreateGlobalStringPtr("false")
+            );
             printfArgs.push_back(booleanAsString);
         } else if(TypeChecker::is<FloatType>(llvmType)) {
             auto* floatPromotion = builder.CreateFPExt(expressionValue, builder.getDoubleTy(), "promotedFloat");
@@ -83,9 +84,7 @@ namespace LynxAst {
                 structTy = llvm::dyn_cast<llvm::StructType>(llvmType);
             }
 
-            if (!structTy) {
-                throw std::runtime_error("Expected DateTime struct type");
-            }
+            if (!structTy) throw std::runtime_error("Expected DateTime struct type");
 
             // Extract fields in order
             llvm::Value* yearPtr = builder.CreateStructGEP(structTy, expressionValue, 0);
@@ -118,13 +117,10 @@ namespace LynxAst {
             printfArgs.push_back(millisecond);
 
         } else if(TypeChecker::is<EnumType>(llvmType)) {
-
             auto enumValue = builder.CreateExtractValue(expressionValue, {1}, "enum_value");
-
             auto intValue = builder.CreateExtractValue(enumValue, {0}, "id");
             auto charValue = builder.CreateExtractValue(enumValue, {1}, "name");
             auto stringValue = builder.CreateExtractValue(enumValue, {2}, "value");
-
             printfArgs.push_back(intValue);
             printfArgs.push_back(charValue);
             printfArgs.push_back(stringValue);
@@ -140,23 +136,13 @@ namespace LynxAst {
     }
 
     llvm::Value* LoggerPrinterNode::generateCode(std::shared_ptr<AstContext> astContext) {
-        LOG_INFO("Generating code for logging statement...");
+        LOG_INFO("IR Code Generation ...");
 
-        // Generate code for the expression to be logged
-        llvm::Value* expressionValue = this->expressionNode->generateCode(astContext);
-        if (!expressionValue) {
-            LOG_ERROR("Failed to generate code for expression.");
-            return nullptr;
-        }
+        auto* expressionValue = expressionNode->generateCode(astContext);
+        auto* printfFunction = getOrCreatePrintfFunction(astContext->getLLVMContext(), astContext->getModule());
+        auto printfArgs = preparePrintfArguments(astContext, expressionValue);
 
-        auto* module = astContext->getModule();
         auto& builder = astContext->getBuilder();
-        auto& context = astContext->getLLVMContext();
-
-        llvm::Function* printfFunction = getOrCreatePrintfFunction(context, module);
-
-        std::vector<llvm::Value*> printfArgs = preparePrintfArguments(astContext, expressionValue);
-
         return builder.CreateCall(printfFunction, printfArgs, "printfCall");
     }
 

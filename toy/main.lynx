@@ -2,17 +2,10 @@
 import "utils/core_utility";
 
 int main() {
+   
+  double margin = profit_margin(10000.0, 7500.0);
 
-  double revenue = 10000.0;
-  double cost = 7500.0;
-
+  system.prettyPrint(margin);
   
-  double profit = profit_calculation(revenue, cost);
-  int result = factorial_head_recursion(6);
-
-  system.prettyPrint(result);
-  
-  system.prettyPrint(profit);
-
-  return 20;
+  return 32;
 }

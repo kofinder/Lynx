@@ -11,6 +11,15 @@ using namespace LynxContext;
 
 namespace LynxAst::VariableUtils {
 
+    struct ResolvedVariable {
+
+        llvm::Value* value{nullptr};     // Loaded value (usable in expressions)
+
+        llvm::Value* reference{nullptr}; // Pointer reference (for store ops)
+
+    };
+
+
     /**
      * @brief Resolves a variable by name within the current AST context scope.
      *
@@ -27,7 +36,7 @@ namespace LynxAst::VariableUtils {
      * @return llvm::Value* The LLVM IR value loaded from the variable reference.
      *         Returns nullptr if resolution fails.
      */
-    inline llvm::Value* resolveVariable(AstContext* astContext, const std::string& variableName) {
+    inline ResolvedVariable resolveVariable(AstContext* astContext, const std::string& variableName) {
         LOG_INFO("Resolving variable: {}", variableName);
 
         auto& builder = astContext->getBuilder();
@@ -41,43 +50,45 @@ namespace LynxAst::VariableUtils {
         Node* variableNode = symbol->findVariable(variableName);
         if (!variableNode) {
             LOG_ERROR("Variable '{}' is not defined in this scope", variableName);
-            return nullptr;
+            return {};
         }
 
         // Ensure it's a valid variable declaration
         auto* variableDecl = dynamic_cast<VariableDeclarationNode*>(variableNode);
         if (!variableDecl) {
             LOG_ERROR("Invalid variable type. Expected VariableDeclarationNode.");
-            return nullptr;
+            return {};
         }
 
         // Get the LLVM reference to the variable
         llvm::Value* llvmVarRef = variableDecl->getLLVMVariableRef();
         if (!llvmVarRef) {
             LOG_ERROR("LLVM variable reference is null.");
-            return nullptr;
+            return {};
         }
 
         // Ensure the reference is a pointer
         if (!llvmVarRef->getType()->isPointerTy()) {
             LOG_ERROR("LLVM variable reference is not a pointer type.");
-            return nullptr;
+            return {};
         }
 
         // Load the value from memory
         llvm::Type* loadType = llvmVarRef->getType()->getPointerElementType();
         if (!loadType) {
             LOG_ERROR("Failed to determine pointer element type.");
-            return nullptr;
+            return {};
         }
 
         // If already a pointer to an object, no load
         if (llvmVarRef->getType()->isPointerTy() && llvmVarRef->getType()->getPointerElementType()->isStructTy()) {
             std::cerr << "already a pointer to an object, no need to load!\n";
-            return llvmVarRef;
+            return {};
         }
 
-        return builder.CreateLoad(loadType, llvmVarRef, variableName + "_load");
+        auto loaded = builder.CreateLoad(loadType, llvmVarRef, variableName + "_load");
+
+        return { loaded, llvmVarRef };
     }
 
     /**

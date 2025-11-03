@@ -43,7 +43,7 @@ namespace LynxAst {
         
                 std::string identifier = std::get<std::string>(value);
             
-                auto* resolved = VariableUtils::resolveVariable(astContext.get(), identifier);
+                auto* resolved = VariableUtils::resolveVariable(astContext.get(), identifier).value;
 
                 llvm::errs() << "resolved val ===>"; resolved->print(llvm::outs()); llvm::errs() << "\n";
                 llvm::errs() << "resolved type ===>"; resolved->getType()->print(llvm::outs()); llvm::errs() << "\n";

@@ -10,6 +10,7 @@
 #include "utils/LLVMFunctionUtils.hpp"
 #include <context/GlobalSymbolContext.hpp>
 #include <constants/LinkageType.hpp>
+#include "utils/NumericPromotion.hpp"
 #include <attributes/interfaces/FunctionAttributeInferer.hpp>
 
 namespace LynxAst {
@@ -18,6 +19,7 @@ namespace LynxAst {
     using namespace LynxContext;
     using namespace LynxConstants;
     using namespace LynxFunctionAttr;
+    using namespace TypePromotion;
 
     llvm::Value* FunctionNode::generateCode(std::shared_ptr<AstContext> astContext) {
 
@@ -127,30 +129,47 @@ namespace LynxAst {
     llvm::Value* FunctionNode::setReturnValue(std::shared_ptr<AstContext> astContext, llvm::Value* value) {
         auto& builder = astContext->getBuilder();
         auto& context = astContext->getLLVMContext();
-        auto* module = astContext->getModule();
     
-        if (builder.GetInsertBlock() == entryBlock) {
-            return builder.CreateRet(value);
+        if (!value) {
+            throw std::runtime_error("Attempt to set a null return value.");
         }
     
+        llvm::Type* retType = llvmFunction->getReturnType();
+        if (isNumericType(value->getType()) && isNumericType(retType)) {
+            value = matchConstantType(builder, value, retType);
+            if (value->getType() != retType) {
+                if (value->getType()->isIntegerTy() && retType->isIntegerTy()) {
+                    value = builder.CreateIntCast(value, retType, true, ".ret_cast");
+                } else if (value->getType()->isFloatingPointTy() && retType->isFloatingPointTy()) {
+                    if (value->getType()->getPrimitiveSizeInBits() < retType->getPrimitiveSizeInBits()) {
+                        value = builder.CreateFPExt(value, retType, ".ret_fpext");
+                    } else {
+                        value = builder.CreateFPTrunc(value, retType, ".ret_fptrunc");
+                    }
+                } else if (value->getType()->isIntegerTy() && retType->isFloatingPointTy()) {
+                    value = builder.CreateSIToFP(value, retType, ".ret_sitofp");
+                } else if (value->getType()->isFloatingPointTy() && retType->isIntegerTy()) {
+                    value = builder.CreateFPToSI(value, retType, ".ret_fptosi");
+                }
+            }
+        }
+    
+        if (builder.GetInsertBlock() == entryBlock) return builder.CreateRet(value);
+    
         if (!returnValue) {
-            llvm::Type* retType = llvmFunction->getReturnType();
             if (retType->isVoidTy()) {
                 throw std::runtime_error("Attempt to set return value for void function.");
             }
     
             llvm::Instruction* insertBefore = entryBlock->getFirstNonPHI();
-            if (!insertBefore) {
-                insertBefore = &entryBlock->back();
-            }
-    
+            if (!insertBefore) insertBefore = &entryBlock->back();
             returnValue = new llvm::AllocaInst(retType, 0, ".ret_value", insertBefore);
         }
     
-        if (!exitBlock) exitBlock = llvm::BasicBlock::Create(context, "exit", llvmFunction);
-    
         builder.CreateStore(value, returnValue);
-    
+
+        if (!exitBlock) exitBlock = llvm::BasicBlock::Create(context, "exit", llvmFunction);
+
         return builder.CreateBr(exitBlock);
     }
 
@@ -172,7 +191,6 @@ namespace LynxAst {
     }
 
     std::unique_ptr<Node> FunctionNode::clone() const {
-
         auto clonedFunction = std::make_unique<FunctionNode>(returnType, fnName, fnParams);
         std::unique_ptr<StatementListNode> clonedStatements;
        

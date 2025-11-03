@@ -4,18 +4,30 @@
 #include "Node.hpp"
 #include <constants/OperatorType.hpp>
 
-using namespace LynxConstants;
 
 namespace LynxAst {
-    
-    class BinaryExpressionNode: public Node {
+
+    using namespace LynxConstants;
+
+    class BinaryExpressionNode : public Node {
 
         private:
+
             std::unique_ptr<Node> leftOperand;
 
             std::unique_ptr<Node> rightOperand;
             
             OperatorType operatorType;
+
+            llvm::Value* generateIntegerCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+
+            llvm::Value* generateDoubleCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+
+            llvm::Value* generateBooleanCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+
+            llvm::Value* generateCharCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+
+            llvm::Value* generateStringCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
 
         public:
 
@@ -35,16 +47,6 @@ namespace LynxAst {
             NodeType getNodeType() override { return NodeType::BINARY_OPERATION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
-
-            llvm::Value* generateIntegerCode(llvm::Value* lhsValue, llvm::Value* rhsValue, std::shared_ptr<AstContext> ast_context);
-
-            llvm::Value* generateDoubleCode(llvm::Value* lhsValue, llvm::Value* rhsValue, std::shared_ptr<AstContext> ast_context);
-
-            llvm::Value* generateBooleanCode(llvm::Value* lhsValue, llvm::Value* rhsValue, std::shared_ptr<AstContext> ast_context);
-
-            llvm::Value* generateCharCode(llvm::Value* lhsValue, llvm::Value* rhsValue, std::shared_ptr<AstContext> ast_context);
-
-            llvm::Value* generateStringCode(llvm::Value* lhsValue, llvm::Value* rhsValue, std::shared_ptr<AstContext> ast_context);
 
             ~BinaryExpressionNode() override = default;
     };

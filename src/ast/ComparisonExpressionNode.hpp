@@ -8,7 +8,7 @@ using namespace LynxConstants;
 
 namespace LynxAst {
 
-    class ComparisonExpressionNode: public Node {
+    class ComparisonExpressionNode : public Node {
         
         private:
 
@@ -18,30 +18,30 @@ namespace LynxAst {
 
             std::unique_ptr<Node> rightOperand;
 
-            llvm::Value* generateIntegerCode(llvm::Value* lhsValue, llvm::Value* rhsValue, AstContext* astContext);
+            llvm::Value* generateIntegerCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
 
-            llvm::Value* generateDoubleCode(llvm::Value* lhsValue, llvm::Value* rhsValue, AstContext* astContext);
+            llvm::Value* generateDoubleCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
 
-            llvm::Value* generateBooleanCode(llvm::Value* lhsValue, llvm::Value* rhsValue, AstContext* astContext);
+            llvm::Value* generateBooleanCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
 
-            llvm::Value* generateCharCode(llvm::Value* lhsValue, llvm::Value* rhsValue, AstContext* astContext);
+            llvm::Value* generateCharCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
 
-            llvm::Value* generateStringCode(llvm::Value* lhsValue, llvm::Value* rhsValue, AstContext* astContext);
+            llvm::Value* generateStringCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
 
-            llvm::Value* generateEnumCode(llvm::Value* lhsValue, llvm::Value* rhsValue, AstContext* astContext);
+            llvm::Value* generateEnumCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
 
         public:
 
             ComparisonExpressionNode(
                 OperatorType oprType, 
                 std::unique_ptr<Node> rightNode
-            ): operatorType(oprType), rightOperand(std::move(rightNode)) {}
+            ) : operatorType(oprType), rightOperand(std::move(rightNode)) {}
 
             ComparisonExpressionNode(
                 OperatorType oprType, 
                 std::unique_ptr<Node> 
                 leftNode, std::unique_ptr<Node> rightNode
-            ): operatorType(oprType), leftOperand(std::move(leftNode)), rightOperand(std::move(rightNode)) {}
+            ) : operatorType(oprType), leftOperand(std::move(leftNode)), rightOperand(std::move(rightNode)) {}
 
             std::unique_ptr<Node> clone() const override;
             
