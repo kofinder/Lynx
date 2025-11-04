@@ -1,11 +1,12 @@
 
-import "utils/core_utility";
-
 int main() {
-   
-  double margin = profit_margin(10000.0, 7500.0);
+  
+  system.io.in("Enter a name:");
 
-  system.prettyPrint(margin);
+  string name = system.io.get();
+
+  system.println(name, "is my name!");
+
   
   return 32;
 }

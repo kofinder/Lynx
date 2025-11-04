@@ -44,6 +44,7 @@ add_subdirectory(libruntime)
 add_subdirectory(collections)
 add_subdirectory(errors)
 add_subdirectory(cli)
+add_subdirectory(system)
 add_subdirectory(stdapi)
 
 set(MAIN_ENTRY_SOURCES main.cpp Lynx.hpp Lynx.cpp)
@@ -144,6 +145,7 @@ target_link_libraries(LynxLSPServer PRIVATE
     LynxErrors
     LynxRuntime
     LynxCollection
+    LynxSystem
     nlohmann_json::nlohmann_json
     Boost::system
     Boost::filesystem

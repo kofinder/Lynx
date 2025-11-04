@@ -11,10 +11,10 @@ set(LIB_AST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/StatementNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/AssignmentExpressionNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/ArrayInitializerNode.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/impl/LoggerPrinterNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/FunctionCallNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/StatementListNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/IfStatementNode.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/impl/SystemStatementNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/SwitchStatementNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/UnaryExpressionNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/BinaryExpressionNode.cpp
@@ -53,12 +53,12 @@ set(LIB_AST_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/EnumValueExpressionNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ExpressionStatementNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/StatementNode.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/LoggerPrinterNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/AssignmentExpressionNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ArrayInitializerNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/FunctionCallNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/StatementListNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/IfStatementNode.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/SystemStatementNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/SwitchStatementNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ExceptionHandlerNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ForLoopStatementNode.hpp
@@ -128,6 +128,7 @@ target_link_libraries(LynxAst PRIVATE
     LynxLogger 
     LynxExceptions 
     LynxTypes 
+    LynxSystem
     LynxConstants 
     LynxContext 
     LynxCallConv

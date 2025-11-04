@@ -1,0 +1,189 @@
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Function.h>
+#include <types/tmpl/TypeChecker.hpp>
+#include <types/tmpl/TypeCaster.hpp>
+#include <llvm/Support/raw_ostream.h>
+
+namespace LynxSystem::SystemIO {
+
+    using namespace LynxTypes;
+
+    template <typename T>
+    concept LLVMTypeCheckable = requires(llvm::Type* type) {
+        { TypeChecker::is<T>(type) } -> std::convertible_to<bool>;
+    };
+
+    [[nodiscard]] inline constexpr std::string_view getFormatSpecifier(llvm::Type* const valueType) noexcept {
+        if (!valueType) return "%p\n";
+        if (TypeChecker::is<StringType>(valueType))      return "%s\n";
+        if (TypeChecker::is<BooleanType>(valueType))     return "%s\n";
+        if (TypeChecker::is<CharType>(valueType))        return "%c\n";
+        if (TypeChecker::is<ByteType>(valueType))        return "%d\n";
+        if (TypeChecker::is<ShortType>(valueType))       return "%d\n";
+        if (TypeChecker::is<IntegerType>(valueType))     return "%d\n";
+        if (TypeChecker::is<LongType>(valueType))        return "%ld\n";
+        if (TypeChecker::is<FloatType>(valueType))       return "%f\n";
+        if (TypeChecker::is<DoubleType>(valueType))      return "%lf\n";
+        if (TypeChecker::is<EnumType>(valueType))        return "Enum: [index: %d, value: %c, name: %s]\n";
+        if (TypeChecker::is<DateType>(valueType))        return "%04d-%02d-%02d\n";
+        if (TypeChecker::is<DateTimeType>(valueType))    return "%04d-%02d-%02dT%02d:%02d:%02d.%03d\n";
+        if (TypeChecker::is<ClassType>(valueType))       return "%p\n";
+        if (TypeChecker::is<ArrayType>(valueType))       return "[array]\n";
+        if (TypeChecker::is<FileType>(valueType))        return "[file]\n";
+
+        std::cerr << "[TypeChecker] Warning: Unrecognized type for format specifier\n";
+        return "%p\n";
+    }
+
+
+    template <LLVMTypeCheckable T>
+    [[nodiscard]] constexpr std::string_view getFormatSpecifierFor() noexcept {
+        if constexpr (std::is_same_v<T, StringType>)      return "%s\n";
+        else if constexpr (std::is_same_v<T, BooleanType>) return "%s\n";
+        else if constexpr (std::is_same_v<T, CharType>)    return "%c\n";
+        else if constexpr (std::is_same_v<T, ByteType> ||
+                        std::is_same_v<T, ShortType> ||
+                        std::is_same_v<T, IntegerType>) return "%d\n";
+        else if constexpr (std::is_same_v<T, LongType>)    return "%ld\n";
+        else if constexpr (std::is_same_v<T, FloatType>)   return "%f\n";
+        else if constexpr (std::is_same_v<T, DoubleType>)  return "%lf\n";
+        else if constexpr (std::is_same_v<T, EnumType>)    return "Enum: [index: %d, value: %c, name: %s]\n";
+        else if constexpr (std::is_same_v<T, DateType>)    return "%04d-%02d-%02d\n";
+        else if constexpr (std::is_same_v<T, DateTimeType>)return "%04d-%02d-%02dT%02d:%02d:%02d.%03d\n";
+        else if constexpr (std::is_same_v<T, ClassType>)   return "%p\n";
+        else if constexpr (std::is_same_v<T, ArrayType>)   return "[array]\n";
+        else if constexpr (std::is_same_v<T, FileType>)    return "[file]\n";
+        else return "%p\n";
+    }
+
+    [[nodiscard]] inline std::vector<llvm::Value*> preparePrintfArguments(
+        llvm::IRBuilder<>& builder, 
+        llvm::Module* module, 
+        llvm::Value* expressionValue
+    ) noexcept(false) {
+
+        auto* llvmType = expressionValue->getType();
+        std::vector<llvm::Value*> printfArgs;
+
+        const auto formatSpecifier = getFormatSpecifier(llvmType);
+        auto* formatString = builder.CreateGlobalStringPtr(std::string(formatSpecifier), "formatString");
+        printfArgs.push_back(formatString);
+
+        if(TypeChecker::is<BooleanType>(llvmType)) {
+            auto* booleanAsString = builder.CreateSelect(
+                expressionValue, 
+                builder.CreateGlobalStringPtr("true"),
+                builder.CreateGlobalStringPtr("false")
+            );
+            printfArgs.push_back(booleanAsString);
+        } else if(TypeChecker::is<FloatType>(llvmType)) {
+            auto* floatPromotion = builder.CreateFPExt(expressionValue, builder.getDoubleTy(), "promotedFloat");
+            printfArgs.push_back(floatPromotion);
+        } else if(TypeChecker::is<DateTimeType>(llvmType)) {
+
+            llvm::StructType* structTy = nullptr;
+            if (auto* ptrType = llvm::dyn_cast<llvm::PointerType>(llvmType)) {
+                structTy = llvm::dyn_cast<llvm::StructType>(ptrType->getPointerElementType());
+            } else {
+                structTy = llvm::dyn_cast<llvm::StructType>(llvmType);
+            }
+
+            if (!structTy) throw std::runtime_error("Expected DateTime struct type");
+
+            // Extract fields in order
+            llvm::Value* yearPtr = builder.CreateStructGEP(structTy, expressionValue, 0);
+            llvm::Value* year = builder.CreateLoad(builder.getInt32Ty(), yearPtr);
+
+            llvm::Value* monthPtr = builder.CreateStructGEP(structTy, expressionValue, 1);
+            llvm::Value* month = builder.CreateLoad(builder.getInt32Ty(), monthPtr);
+
+            llvm::Value* dayPtr = builder.CreateStructGEP(structTy, expressionValue, 2);
+            llvm::Value* day = builder.CreateLoad(builder.getInt32Ty(), dayPtr);
+
+            llvm::Value* hourPtr = builder.CreateStructGEP(structTy, expressionValue, 3);
+            llvm::Value* hour = builder.CreateLoad(builder.getInt32Ty(), hourPtr);
+
+            llvm::Value* minutePtr = builder.CreateStructGEP(structTy, expressionValue, 4);
+            llvm::Value* minute = builder.CreateLoad(builder.getInt32Ty(), minutePtr);
+
+            llvm::Value* secondPtr = builder.CreateStructGEP(structTy, expressionValue, 5);
+            llvm::Value* second = builder.CreateLoad(builder.getInt32Ty(), secondPtr);
+
+            llvm::Value* milliPtr = builder.CreateStructGEP(structTy, expressionValue, 6);
+            llvm::Value* millisecond = builder.CreateLoad(builder.getInt32Ty(), milliPtr);
+
+            printfArgs.push_back(year);
+            printfArgs.push_back(month);
+            printfArgs.push_back(day);
+            printfArgs.push_back(hour);
+            printfArgs.push_back(minute);
+            printfArgs.push_back(second);
+            printfArgs.push_back(millisecond);
+
+        } else if(TypeChecker::is<EnumType>(llvmType)) {
+            auto enumValue = builder.CreateExtractValue(expressionValue, {1}, "enum_value");
+            auto intValue = builder.CreateExtractValue(enumValue, {0}, "id");
+            auto charValue = builder.CreateExtractValue(enumValue, {1}, "name");
+            auto stringValue = builder.CreateExtractValue(enumValue, {2}, "value");
+            printfArgs.push_back(intValue);
+            printfArgs.push_back(charValue);
+            printfArgs.push_back(stringValue);
+
+        } else if(TypeChecker::is<CharType>(llvmType)) {
+            auto charValue = builder.CreateExtractValue(expressionValue, {0}, "char_extract_val");
+            printfArgs.push_back(charValue);
+        } else {
+            printfArgs.push_back(expressionValue);
+        }
+
+        return printfArgs;
+    }
+
+    [[nodiscard]] inline llvm::Function* getOrCreatePrintf(llvm::LLVMContext& context, llvm::Module* module) noexcept {
+        constexpr bool isVarArg = true;
+        auto* printfType = llvm::FunctionType::get(
+            llvm::Type::getInt32Ty(context),
+            { llvm::Type::getInt8PtrTy(context) },
+            isVarArg
+        );
+        return llvm::cast<llvm::Function>(module->getOrInsertFunction("printf", printfType).getCallee());
+    }
+    
+    [[nodiscard]] inline llvm::Function* getOrCreateScanf(llvm::LLVMContext& context, llvm::Module* module) noexcept {
+        constexpr bool isVarArg = true;
+        auto* scanfType = llvm::FunctionType::get(
+            llvm::Type::getInt32Ty(context),
+            { llvm::Type::getInt8PtrTy(context) },
+            isVarArg
+        );
+        return llvm::cast<llvm::Function>(module->getOrInsertFunction("scanf", scanfType).getCallee());
+    }
+
+
+    [[nodiscard]] inline llvm::Value* createPrintCall(llvm::IRBuilder<>& builder, llvm::Module* module, llvm::Value* value) noexcept(false) {
+        auto* printfFunc = getOrCreatePrintf(builder.getContext(), module);
+        const auto printfArgs = preparePrintfArguments(builder, module, value);
+        return builder.CreateCall(printfFunc, printfArgs, "printfCall");
+    }
+
+    template <LLVMTypeCheckable T>
+    [[nodiscard]] inline llvm::Value* createPrintCallFor(llvm::IRBuilder<>& builder, llvm::Module* module, llvm::Value* value) noexcept{
+        const auto fmt = std::string(getFormatSpecifierFor<T>());
+        auto* printfFunc = getOrCreatePrintf(builder.getContext(), module);
+        auto* fmtStr = builder.CreateGlobalStringPtr(fmt, "fmt");
+        return builder.CreateCall(printfFunc, {fmtStr, value}, "printfCall");
+    }
+
+    [[nodiscard]] inline llvm::Value* createReadIntCall(llvm::IRBuilder<>& builder, llvm::Module* module) noexcept{
+        auto* scanfFunc = getOrCreateScanf(builder.getContext(), module);
+        auto* format = builder.CreateGlobalStringPtr("%d", "scanf_fmt");
+        auto* tmpVar = builder.CreateAlloca(builder.getInt32Ty(), nullptr, "scanf_tmp");
+    
+        builder.CreateCall(scanfFunc, {format, tmpVar}, "scanfCall");
+        return builder.CreateLoad(builder.getInt32Ty(), tmpVar, "read_value");
+    }
+    
+    
+}

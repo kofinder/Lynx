@@ -25,6 +25,7 @@
 namespace LynxLTO {
 
     class LTOFacade {
+        
         private:
 
             llvm::LLVMContext &context;

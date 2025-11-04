@@ -1,0 +1,23 @@
+name: livechat
+type: web
+version: 0.1.0
+entry: main.lynx
+
+folders:
+  - libs
+  - src
+  - utils
+  - constants
+  - extensions
+
+settings:
+  debug: true
+  optimize: false
+  build_dir: build
+
+exclude:
+  - test/
+  - experimental/
+
+flags:
+  optimize: true

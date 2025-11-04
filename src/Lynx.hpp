@@ -9,17 +9,20 @@
 #include <codegen/IRGenerator.hpp>
 #include <boost/program_options.hpp>
 #include <llvm/Support/TargetSelect.h>
+#include <system/SystemModuleLoader.hpp>
 #include <boost/program_options/errors.hpp>
 #include <config/ProgramTerminalColor.hpp>
 #include <config/ProgramOptionConfig.hpp>
 #include <config/ProgramSourceProcessor.hpp>
 #include <analyzer/interfaces/SemanticAnalyzer.hpp>
 
+
 using namespace LynxJIT;
 using namespace LynxLTO;
 using namespace LynxLinker;
 using namespace LynxAnalyzer;
 using namespace LynxCodegen;
+using namespace LynxSystem;
 using namespace LynxProgramConfig;
 
 namespace po = boost::program_options;
@@ -44,6 +47,8 @@ class Lynx {
 
         std::unique_ptr<SemanticAnalyzer> semanticAnalyzer;
 
+        bool systemModulesInitialized = false;
+
         /**
          * @brief Initialize LLVM targets and necessary backend support.
          */
@@ -57,7 +62,12 @@ class Lynx {
 
     public:
     
-        explicit Lynx(ProgramOptionConfig& cfg) : config(cfg) {}
+        explicit Lynx(ProgramOptionConfig& cfg) : config(cfg) {
+            if (!systemModulesInitialized) {
+                SystemModuleLoader::initializeCoreModules();
+                systemModulesInitialized = true;
+            }    
+        }
 
         /**
          * @brief Parse the source files and prepare internal representation.
@@ -90,6 +100,11 @@ class Lynx {
          * @return Program exit code.
          */
         int executeJIT();
+
+        ~Lynx() {
+            SystemModuleLoader::shutdown();
+        }
+        
 
 };
 

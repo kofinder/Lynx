@@ -8,11 +8,12 @@
 #include "FunctionCallNode.hpp"
 #include "ChainedDereferenceNode.hpp"
 
-using namespace LynxContext;
-using namespace LynxConstants;
 
 namespace LynxAst {
-
+    
+    using namespace LynxContext;
+    using namespace LynxConstants;
+    
     class MethodCallNode : public Node {
 
         public:
