@@ -1,19 +1,34 @@
+/**
+ * @file AlwaysInlineHandler.hpp
+ * @brief Handler for applying the LLVM `AlwaysInline` attribute to small functions.
+ *
+ * @responsibilities
+ * - Checks the number of basic blocks in a function.
+ * - If the function has 5 or fewer blocks and is defined (not a declaration), applies the `AlwaysInline` attribute.
+ * - Part of a chain of function attribute handlers used by the Lynx compiler to optimize function calls.
+ *
+ * @namespace LynxFunctionAttr
+ * Contains classes that infer and apply LLVM function attributes in the Lynx compiler.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_FUNC_ALWAYS_INLINE_HANDLER_HPP
 #define LYNX_FUNC_ALWAYS_INLINE_HANDLER_HPP
 
 #include "interfaces/FunctionAttributeHandler.hpp"
 #include <logger/Logger.hpp>
-using namespace LynxLogger;
 
 namespace LynxFunctionAttr {
+
+    using namespace LynxLogger;
 
     class AlwaysInlineHandler : public FunctionAttributeHandler {
 
         protected:
         
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked AlwaysInlineHandler");
-
                 if (func->size() <= 5 && !func->isDeclaration()) {
                     builder.addAttribute(llvm::Attribute::AlwaysInline);
                     LOG_ERROR("Applied alwayinline attributes");

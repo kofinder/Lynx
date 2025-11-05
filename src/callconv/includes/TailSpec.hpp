@@ -1,12 +1,30 @@
+/**
+ * @file TailSpec.hpp
+ * @brief Defines a specification for detecting LLVM functions using the Tail calling convention.
+ *
+ * @responsibilities
+ * - Identifies LLVM functions declared with the `Tail` calling convention.
+ * - Maps the detected convention to `CallingConventionType::Tail` within the Lynx compiler.
+ * - Supports tail-call optimization and proper code generation for functions using this convention.
+ *
+ * @namespace LynxCallConv
+ * Contains specifications that identify LLVM calling conventions and map them
+ * to Lynx’s internal calling convention types.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_TAIL_CALLING_CONV_SPEC_HPP
 #define LYNX_TAIL_CALLING_CONV_SPEC_HPP
 
 #include <string>
 #include "CallingConventionSpecification.hpp"
 
-using namespace LynxConstants;
 
 namespace LynxCallConv {
+
+    using namespace LynxConstants;
 
     class TailSpec : public CallingConventionSpecification {
 
@@ -22,8 +40,6 @@ namespace LynxCallConv {
 
             ~TailSpec() override = default;
         };
-        
-        
         
 }
 

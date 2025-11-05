@@ -1,3 +1,52 @@
+/**
+ * @file VTableTemplate.hpp
+ * @brief Defines LLVM-based virtual table (vtable) emission utilities for class-like types.
+ * 
+ * This header provides an adaptable template-based implementation for constructing 
+ * and emitting LLVM IR representations of virtual tables (vtables) for Lynx’s 
+ * user-defined types — specifically classes and interfaces.
+ * 
+ * It abstracts away the details of LLVM structure creation, metadata association, 
+ * and function mapping for virtual dispatch systems. The design supports a unified 
+ * adapter-based approach that generalizes to multiple entity types (e.g., `ClassType`, 
+ * `InterfaceType`, and potentially `MixinType`).
+ * 
+ * **Key Responsibilities:**
+ * - Build LLVM `ConstantStruct` representations of vtables.
+ * - Populate vtables with function pointers corresponding to virtual methods.
+ * - Generate and attach metadata for reflection and debugging.
+ * - Register vtable globals with LLVM’s `GlobalVariable` and COMDAT systems.
+ * 
+ * **Design Overview:**
+ * - **Adapters (`ClassAdapter`, `InterfaceAdapter`)** abstract method name retrieval 
+ *   and LLVM type access for each entity kind.
+ * - **emitVTable()** constructs a fully-formed LLVM global representing the vtable 
+ *   and registers it in the module.
+ * 
+ * **Features:**
+ * - Extensible to new type categories (e.g., mixins).
+ * - Supports rich metadata emission for method signatures and ordering.
+ * - Integrates tightly with `VirtualTable` and `VTableType` runtime structures.
+ * 
+ * **Used By:**
+ * - Code generation passes that emit class and interface vtables.
+ * - The Lynx runtime type system for dynamic dispatch.
+ * - Reflection and debug metadata generation.
+ * 
+ * **Functions Overview:**
+ * - `emitVTable()` — Emits an LLVM vtable global for a given class/interface adapter.
+ * - `ClassAdapter` — Wraps `ClassType` for vtable emission.
+ * - `InterfaceAdapter` — Wraps `InterfaceType` for vtable emission.
+ * 
+ * @namespace LynxAst::Vtable
+ * Provides template-based utilities for generating LLVM virtual tables for Lynx AST types.
+ * 
+ * @see VirtualTable, VTableType, ClassType, InterfaceType, LLVMContext, Module
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+ */
+
 #ifndef LYNX_VTABLE_TEMPLATE_HPP
 #define LYNX_VTABLE_TEMPLATE_HPP
 

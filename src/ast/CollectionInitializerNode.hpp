@@ -1,3 +1,28 @@
+/**
+ * @file CollectionInitializerNode.hpp
+ * @brief Declares the CollectionInitializerNode class for initializing collections in the Lynx AST.
+ * 
+ * The CollectionInitializerNode class handles both sequential (lists) and associative (maps)
+ * collection initializations, supporting nested and type-consistent elements. It provides
+ * LLVM IR code generation for collection literals and manages internal type resolution.
+ * 
+ * **Key Responsibilities:**
+ * - Stores either a list or a map literal as the collection value.
+ * - Validates uniformity of nested lists.
+ * - Resolves variable types in context.
+ * - Generates LLVM IR for collection literals.
+ * - Supports cloning for AST transformations.
+ * 
+ * **Used By:**
+ * - AST nodes representing collection initializations.
+ * - Code generation routines for collection literals.
+ * 
+ * @see Node, LiteralListNode, LiteralMapNode, CollectionType
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_COLLECTION_INITIALIZER_NODE_HPP
 #define LYNX_COLLECTION_INITIALIZER_NODE_HPP
 
@@ -16,15 +41,18 @@
 #include <constants/VariableType.hpp>
 #include <types/interfaces/CollectionType.hpp>
 
-using namespace LynxContext;
-using namespace LynxTypes;
-using namespace LynxConstants;
 
 namespace LynxAst {
+
+    using namespace LynxContext;
+    using namespace LynxTypes;
+    using namespace LynxConstants;
+
 
     class CollectionInitializerNode : public Node {
 
         public:
+        
             using InitValueType = std::variant<
                 std::unique_ptr<LiteralListNode>,
                 std::unique_ptr<LiteralMapNode>

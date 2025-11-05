@@ -1,3 +1,19 @@
+/**
+ * @file ISystemModule.hpp
+ * @brief Declares the ISystemModule interface for defining system module behavior.
+ * 
+ * The ISystemModule interface serves as the base contract for all system modules 
+ * within the Lynx system. Each module implementing this interface must provide 
+ * an implementation of the `invoke` method, which executes a specific method 
+ * identified by name using the provided AST execution context and LLVM IR arguments.
+ * 
+ * This interface enables polymorphic interaction with various system modules, 
+ * allowing dynamic dispatch and modular extensibility within the compiler or runtime.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_ISYSTEM_MODULE_HPP
 #define LYNX_ISYSTEM_MODULE_HPP
 

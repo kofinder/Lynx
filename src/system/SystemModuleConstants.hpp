@@ -1,3 +1,20 @@
+/**
+ * @file SystemModuleConstants.hpp
+ * @brief Defines constant identifiers for system modules and their methods.
+ * 
+ * This header provides a centralized set of constant string definitions used 
+ * throughout the Lynx system to reference built-in modules and their methods 
+ * consistently. It ensures type safety, avoids hardcoded string literals, and 
+ * improves maintainability across module-related components.
+ * 
+ * **Defined Constants:**
+ * - **Modules:** `io`, `time`, `net`
+ * - **Methods:** `print`, `println`, `read`, `readInt`, `readLine`
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_SYSTEM_MODULE_CONSTANTS_HPP
 #define LYNX_SYSTEM_MODULE_CONSTANTS_HPP
 

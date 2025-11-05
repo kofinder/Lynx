@@ -1,3 +1,28 @@
+/**
+ * @file MixinDeclarationNode.hpp
+ * @brief Declares the MixinDeclarationNode class, representing mixin declarations in the Lynx AST.
+ * 
+ * The MixinDeclarationNode class models user-defined mixins, including their fields, methods, and
+ * inherited mixins. It supports semantic analysis, LLVM IR type generation, and method emission.
+ * 
+ * **Key Responsibilities:**
+ * - Stores the mixin name, fields, methods, and parent mixins.
+ * - Processes member nodes to separate methods and fields.
+ * - Generates LLVM struct and pointer types for the mixin.
+ * - Emits LLVM IR for member functions.
+ * - Supports deep cloning of the node and its members.
+ * 
+ * **Used By:**
+ * - AST construction and semantic analysis subsystems.
+ * - LLVM IR generation for user-defined mixin types.
+ * 
+ * @see FunctionNode, VariableDeclarationNode, MixinType, Mangle
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
 #ifndef LYNX_MIXIN_DECLARATION_NODE_HPP
 #define LYNX_MIXIN_DECLARATION_NODE_HPP
 

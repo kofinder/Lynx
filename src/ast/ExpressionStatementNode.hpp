@@ -1,12 +1,30 @@
+/**
+ * @file ExpressionStatementNode.hpp
+ * @brief Declares the ExpressionStatementNode class, representing expression statements in the Lynx AST.
+ * 
+ * The ExpressionStatementNode class models statements that are single expressions, such as
+ * assignments, function calls, or arithmetic expressions. It provides cloning, LLVM IR code
+ * generation, and encapsulates the underlying expression node.
+ * 
+ * **Key Responsibilities:**
+ * - Stores a single expression as a statement.
+ * - Generates LLVM IR for the expression.
+ * - Provides deep cloning for AST transformations.
+ * 
+ * **Used By:**
+ * - AST construction and semantic analysis subsystems.
+ * - LLVM IR generation for expression statements.
+ * 
+ * @see Node, ExpressionNode, AstContext
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
 #ifndef LYNX_EXPRESSION_STATEMENT_NODE_HPP
 #define LYNX_EXPRESSION_STATEMENT_NODE_HPP
-/**
- * @file BaseType.hpp
- * @brief Abstract base class representing various data types in the AST, including methods for LLVM code generation and type management.
- * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
- */
+
 
 #include "Node.hpp"
 #include <constants/Parameter.hpp>
@@ -16,15 +34,14 @@ using namespace LynxConstants;
 
 namespace LynxAst {
 
-    /**
-     * @class ExpressionNode
-     * @brief Base class for various expression types in the AST, supporting unary and binary operations.
-     */
-    class ExpressionStatementNode: public Node {
+    class ExpressionStatementNode : public Node {
+
         protected:
+
             std::unique_ptr<Node> expressionNode; 
 
         public:
+
             ExpressionStatementNode(std::unique_ptr<Node> operand): expressionNode(std::move(operand)) {}
 
             std::unique_ptr<Node> clone() const override;
@@ -35,7 +52,7 @@ namespace LynxAst {
 
             ~ExpressionStatementNode() override = default;
 
-        };
+    };
 }
 
 #endif

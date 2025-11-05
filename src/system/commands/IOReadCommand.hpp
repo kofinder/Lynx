@@ -1,3 +1,20 @@
+/**
+ * @file IOReadCommand.hpp
+ * @brief Defines the IOReadCommand class for handling system input operations.
+ * 
+ * The IOReadCommand class implements the ISystemCommand interface to provide 
+ * input functionality within the Lynx system. It facilitates reading data from 
+ * standard input or other sources, integrating the operation into the LLVM IR 
+ * generation process.
+ * 
+ * In its current form, the command demonstrates basic LLVM IR construction by 
+ * generating a call to a low-level I/O routine using a format string. Future 
+ * versions may extend this to support reading various data types or input targets.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_SYSTEM_IO_READ_COMMAND_HPP
 #define LYNX_SYSTEM_IO_READ_COMMAND_HPP
 

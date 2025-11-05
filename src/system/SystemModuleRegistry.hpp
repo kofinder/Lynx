@@ -1,3 +1,16 @@
+/**
+ * @file SystemModuleRegistry.hpp
+ * @brief Defines the SystemModuleRegistry class for managing system modules in the Lynx system.
+ * 
+ * The SystemModuleRegistry class provides a centralized mechanism to register and retrieve 
+ * system modules by name. Each module is associated with a factory function that creates 
+ * instances of objects implementing the ISystemModule interface. This registry enables 
+ * dynamic module management and simplifies module creation across the system.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_SYSTEM_MODULE_REGISTRY_HPP
 #define LYNX_SYSTEM_MODULE_REGISTRY_HPP
 

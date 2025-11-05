@@ -1,6 +1,3 @@
-#ifndef LYNX_CLI_CONSOLE_APP_BUILDER_HPP
-#define LYNX_CLI_CONSOLE_APP_BUILDER_HPP
-
 /**
  * @file ConsoleAppBuilder.hpp
  * @brief Builder for console (CLI) projects.
@@ -8,9 +5,12 @@
  * Sets up a folder structure, main entry file, and example code
  * for console-based applications.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
 */
+
+#ifndef LYNX_CLI_CONSOLE_APP_BUILDER_HPP
+#define LYNX_CLI_CONSOLE_APP_BUILDER_HPP
 
 #include <string>
 #include <filesystem>

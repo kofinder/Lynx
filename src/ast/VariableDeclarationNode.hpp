@@ -1,16 +1,31 @@
+/**
+ * @file VariableDeclarationNode.hpp
+ * @brief Declares the VariableDeclarationNode class, representing variable declarations in the AST.
+ * 
+ * VariableDeclarationNode models the declaration of local, global, and class member variables
+ * in the Lynx language. It supports optional initializers, type annotations, access modifiers,
+ * and tracks LLVM references for code generation.
+ * 
+ * **Key Responsibilities:**
+ * - Represent variable declarations with optional type and initializer.
+ * - Distinguish between class variables, local variables, and global variables.
+ * - Support mutable and captured-in-closure variables.
+ * - Provide LLVM IR code generation for all variable types.
+ * - Calculate array/collection size for multi-dimensional declarations.
+ * 
+ * **Used By:**
+ * - Semantic analyzer for type and scope checking.
+ * - IR generator for LLVM code emission.
+ * - Compiler passes that handle variable resolution and assignment.
+ * 
+ * @author Ko Thein (Nathan Mratt)
+ * @date November 2, 2024
+*/
+
 #ifndef LYNX_VARIABLE_DECLARATION_NODE_HPP
 #define LYNX_VARIABLE_DECLARATION_NODE_HPP
 
-/**
- * @file VariableDeclarationNode.hpp
- * @brief Class representing a variable declaration node in an abstract syntax tree (AST).
- * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
- */
-
 #include "Node.hpp"
-// #include "StatementListNode.hpp"
 #include <types/interfaces/BaseType.hpp>
 #include <constants/VariableType.hpp>
 #include <constants/DataType.hpp>

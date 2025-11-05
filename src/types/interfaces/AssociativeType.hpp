@@ -1,3 +1,30 @@
+/**
+ * @file AssociativeType.hpp
+ * @brief Declares the AssociativeType class, the abstract base for all key-value collection types.
+ *
+ * The AssociativeType class extends CollectionType to represent associative data structures such as
+ * maps, dictionaries, and hash tables within the Lynx type system. It defines the common interface
+ * for containers that store and access elements via keys rather than sequential indices.
+ *
+ * **Key Responsibilities:**
+ * - Defines the base interface for associative container types (Map, Dict, etc.).
+ * - Provides virtual methods for inserting, retrieving, and iterating over key-value pairs.
+ * - Integrates with LLVM to support runtime code generation for key-based lookups and mutations.
+ * - Supports compatibility checks with other associative container types.
+ *
+ * **Intended Derivatives:**
+ * - MapType
+ * - DictType
+ * - HashTableType
+ *
+ * **Design Notes:**
+ * - This class complements SequentialType, forming the foundation of Lynx's collection hierarchy.
+ * - Derived types must implement `getValueForKey()`, `insertElement(key, value)`, and `forEachKeyValue()`.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_ASSOCIATIVE_TYPE_HPP
 #define LYNX_ASSOCIATIVE_TYPE_HPP
 
@@ -5,13 +32,6 @@
 
 namespace LynxTypes {
 
-    /**
-     * @class AssociativeType
-     * @brief Abstract base class representing associative collections (key-value mappings).
-     * 
-     * Extends CollectionType to support key-value pairs, such as maps or dictionaries.
-     * Defines interfaces for accessing keys and values, inserting elements, iteration, and clearing.
-    */
     class AssociativeType : public CollectionType {
 
         public:

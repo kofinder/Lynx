@@ -1,3 +1,29 @@
+/**
+ * @file UserDefinedType.hpp
+ * @brief Declares the UserDefinedType class, the base abstraction for all user-defined types.
+ *
+ * The UserDefinedType class extends BaseType to represent complex, developer-defined data structures
+ * such as classes, interfaces, enumerations, and other custom constructs in the Lynx type system.
+ * It provides the shared interface for all types that are not built-in or collection-based, supporting
+ * polymorphism, cloning, and LLVM-backed value creation.
+ *
+ * **Key Responsibilities:**
+ * - Serves as the common base for user-declared entities like classes, interfaces, enums, and functions.
+ * - Enforces consistent value creation semantics across all custom-defined types.
+ * - Provides type compatibility checks for user-defined categories.
+ * - Integrates with the AstContext to enable type validation and LLVM IR generation.
+ *
+ * **Typical Derived Types:**
+ * - ClassType, InterfaceType, EnumType, DateType, FunctionType
+ *
+ * **Design Notes:**
+ * - Unlike BuiltInType or CollectionType, this represents higher-level, composite user abstractions.
+ * - Derived types must implement `clone()` and type-specific LLVM construction logic.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_USER_DEFINED_TYPE_HPP
 #define LYNX_USER_DEFINED_TYPE_HPP
 
@@ -6,13 +32,6 @@
 
 namespace LynxTypes {
 
-    /**
-     * @class UserDefinedType
-     * @brief Represents a user-defined structure or object with named fields.
-     * 
-     * Allows defining custom types like records, structs, or class-like entities.
-     * Supports introspection and member access.
-    */
     class UserDefinedType : public BaseType {
 
         public:

@@ -1,12 +1,37 @@
+/**
+ * @file ComparisonExpressionNode.hpp
+ * @brief Declares the ComparisonExpressionNode class representing comparison operations in the Lynx AST.
+ * 
+ * The ComparisonExpressionNode class handles binary and unary comparison operations between expressions,
+ * including type-specific code generation for integer, floating-point, boolean, char, string, and enum types.
+ * 
+ * **Key Responsibilities:**
+ * - Stores left and right operands for comparison operations.
+ * - Stores the comparison operator type (e.g., ==, !=, <, >).
+ * - Generates LLVM IR code specific to the operand types.
+ * - Supports cloning for AST transformations.
+ * 
+ * **Used By:**
+ * - Expression evaluation nodes in the compiler.
+ * - Code generation for comparison operations.
+ * 
+ * @see Node, OperatorType
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
 #ifndef LYNX_COMPARISION_EXPRESSION_NODE_HPP
 #define LYNX_COMPARISION_EXPRESSION_NODE_HPP
 
 #include "Node.hpp"
 #include <constants/OperatorType.hpp>
 
-using namespace LynxConstants;
 
 namespace LynxAst {
+
+    using namespace LynxConstants;
 
     class ComparisonExpressionNode : public Node {
         

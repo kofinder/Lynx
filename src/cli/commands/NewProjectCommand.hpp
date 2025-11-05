@@ -1,6 +1,3 @@
-#ifndef LYNX_CLI_NEW_PROJECT_COMMAND_HPP
-#define LYNX_CLI_NEW_PROJECT_COMMAND_HPP
-
 /**
  * @file NewModuleCommand.hpp
  * @brief Command to create a new module inside an existing project.
@@ -8,9 +5,12 @@
  * This command validates that the module does not already exist and
  * generates the directory structure and boilerplate for the module.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
 */
+
+#ifndef LYNX_CLI_NEW_PROJECT_COMMAND_HPP
+#define LYNX_CLI_NEW_PROJECT_COMMAND_HPP
 
 #include <string>
 #include "factories/ProjectFactory.hpp"

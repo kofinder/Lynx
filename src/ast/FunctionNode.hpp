@@ -1,17 +1,31 @@
-#ifndef LYNX_FUNCTION_NODE_HPP
-#define LYNX_FUNCTION_NODE_HPP
-
 /**
  * @file FunctionNode.hpp
- * @brief Defines the FunctionNode class, representing a function definition in the AST.
+ * @brief Declares the FunctionNode class, representing functions/methods in the Lynx AST.
  * 
- * The FunctionNode class models function definitions within the abstract syntax tree (AST),
- * providing support for function name, return type, parameters, and body statements. 
- * This class includes methods to generate LLVM IR for function entry, exit, and signature.
+ * The FunctionNode class models both standalone functions and class methods. It stores
+ * function metadata including name, return type, parameters, access modifiers, and the function body.
+ * It supports code generation via LLVM IR, exception handling, and deep cloning for AST transformations.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
- */
+ * **Key Responsibilities:**
+ * - Stores function metadata: name, return type, parameters, access modifier, virtual/override flags.
+ * - Manages function body via StatementListNode and exception handlers.
+ * - Generates LLVM IR for function definition, calls, and return values.
+ * - Provides deep cloning and signature generation for type checking and mangling.
+ * - Integrates with class context for method dispatch and inheritance.
+ * 
+ * **Used By:**
+ * - AST construction and semantic analysis subsystems.
+ * - LLVM IR code generation for functions and class methods.
+ * 
+ * @see Node, StatementListNode, Parameter, AstContext
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
+#ifndef LYNX_FUNCTION_NODE_HPP
+#define LYNX_FUNCTION_NODE_HPP
 
 #include "Node.hpp"
 #include <optional>

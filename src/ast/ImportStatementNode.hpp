@@ -1,3 +1,27 @@
+/**
+ * @file ImportStatementNode.hpp
+ * @brief Declares the ImportStatementNode class, representing import statements in the Lynx AST.
+ * 
+ * The ImportStatementNode class models module import statements in Lynx, including default imports,
+ * named imports, and import types (static, regular, or wildcard). It also integrates with the runtime
+ * to initialize module classes as necessary.
+ * 
+ * **Key Responsibilities:**
+ * - Stores module name, import type, default alias, and optionally named symbols.
+ * - Provides functionality for runtime module initialization.
+ * - Supports deep cloning of import statements.
+ * - Generates LLVM IR or runtime setup code for imported modules.
+ * 
+ * **Used By:**
+ * - AST construction and semantic analysis subsystems.
+ * - Runtime module and symbol initialization.
+ * 
+ * @see ImportType, ImportSymbol, RuntimeModuleType
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_IMPORT_STATEMENT_NODE_HPP
 #define LYNX_IMPORT_STATEMENT_NODE_HPP
 

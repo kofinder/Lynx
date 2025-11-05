@@ -38,8 +38,6 @@ namespace LynxConstants {
         }
     }
 
-    // ------------------------------------------------------------------------
-
     enum class ManglerKind {
         CLASS,
         INTERFACE,

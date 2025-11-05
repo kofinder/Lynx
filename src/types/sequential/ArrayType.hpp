@@ -1,3 +1,35 @@
+/**
+ * @file ArrayType.hpp
+ * @brief Defines the ArrayType class representing fixed-size or dynamically sized arrays in the Lynx type system.
+ *
+ * The `ArrayType` encapsulates sequences of elements of a single type, supporting
+ * indexing, element access, and LLVM IR generation for array operations.
+ *
+ * **Key Responsibilities:**
+ * - Represents arrays of a specific element type and size.
+ * - Supports variable instantiation, value creation, and assignment for arrays.
+ * - Provides utilities to compute element pointers for single or multi-dimensional arrays.
+ * - Integrates with `TypeVisitor` for semantic checks.
+ * - Produces DWARF-compatible debug information for array types.
+ *
+ * **Integration Points:**
+ * - Used in array declarations, indexing operations, loops, and multi-dimensional arrays.
+ * - Works with any type as the element type, including user-defined and built-in types.
+ * - Provides default values for array elements.
+ *
+ * **LLVM Details:**
+ * - Maps to `llvm::ArrayType` or sequential LLVM types depending on element type and size.
+ * - Provides pointer types and element pointers for efficient LLVM IR code generation.
+ * - Supports both single and multi-dimensional indexing.
+ *
+ * **Additional Features:**
+ * - Provides methods for querying element type and number of elements.
+ * - Supports type equality checks and cloning for array types.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_ARRAY_TYPE_HPP
 #define LYNX_ARRAY_TYPE_HPP
 

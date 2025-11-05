@@ -1,18 +1,31 @@
-#ifndef LYNX_FUNCTION_CALL_NODE_HPP 
-#define LYNX_FUNCTION_CALL_NODE_HPP
-
 /**
  * @file FunctionCallNode.hpp
- * @brief Defines the FunctionCallNode class, representing a function call in the AST.
+ * @brief Declares the FunctionCallNode class, representing function and method calls in the Lynx AST.
  * 
- * The FunctionCallNode class models function calls within the abstract syntax tree (AST),
- * providing support for the function name, arguments, and, if applicable, object and class 
- * context for method calls. This class includes methods to generate LLVM IR for function 
- * invocations, object creation, and method calls.
+ * The FunctionCallNode class models invocations of functions, including standalone functions,
+ * class methods, and object constructors. It stores the function name, arguments, and optional
+ * context such as class or object name. LLVM IR generation is supported for both local and
+ * imported functions.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 5, 2024
- */
+ * **Key Responsibilities:**
+ * - Stores function metadata: name, class name, object name, and argument list.
+ * - Generates LLVM IR for function or method calls, including imported functions.
+ * - Provides deep cloning of the node and its arguments.
+ * - Supports checks for object creation and class method calls.
+ * 
+ * **Used By:**
+ * - AST construction and semantic analysis subsystems.
+ * - LLVM IR generation for function invocation.
+ * 
+ * @see Node, FunctionNode, ExpressionNode, AstContext
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
+#ifndef LYNX_FUNCTION_CALL_NODE_HPP 
+#define LYNX_FUNCTION_CALL_NODE_HPP
 
 #include "Node.hpp"
 #include "FunctionNode.hpp"

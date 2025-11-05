@@ -1,3 +1,25 @@
+
+/**
+ * @file AdvancedLTOOptimizationStrategy.hpp
+ * @brief Implements an advanced LTO optimization strategy using LLVM passes.
+ *
+ * The `AdvancedLTOOptimizationStrategy` class extends `DefaultLTOOptimizationStrategy`
+ * to provide a highly optimized LLVM pass pipeline. It applies interprocedural,
+ * function-level, loop, scalar, and vectorization optimizations to improve
+ * performance and reduce code size for compiled modules.
+ *
+ * **Key Responsibilities:**
+ * - Apply module-level interprocedural optimizations (e.g., GlobalDCE, MergeFunctions, Inliner).
+ * - Apply function-level optimizations (e.g., EarlyCSE, Reassociate, JumpThreading, ADCE, LICM).
+ * - Apply loop transformations and vectorization (LoopUnroll, LoopVectorize, SLPVectorizer).
+ * - Coordinate analyses via LLVM's PassBuilder and pass managers.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+ */
+
+
+
 #ifndef LYNX_ADVANCED_LTO_OPTIMIZATION_STRATEGY_HPP
 #define LYNX_ADVANCED_LTO_OPTIMIZATION_STRATEGY_HPP
 
@@ -17,7 +39,6 @@
 // #include "llvm/Transforms/Scalar/TailCallElim.h"
 #include "llvm/Transforms/Utils/Mem2Reg.h"
 
-// IPO optimizations
 #include "llvm/Transforms/IPO/Inliner.h"
 #include "llvm/Transforms/IPO/AlwaysInliner.h"
 #include "llvm/Transforms/IPO/GlobalDCE.h"
@@ -26,14 +47,9 @@
 #include "llvm/Transforms/IPO/MergeFunctions.h"
 // #include "llvm/Transforms/IPO/PostOrderFunctionAttrs.h"
 
-// Loop/vector optimizations
 #include "llvm/Transforms/Vectorize/LoopVectorize.h"
 #include "llvm/Transforms/Vectorize/SLPVectorizer.h"
-
-// Strategy interface
 #include "DefaultLTOOptimizationStrategy.hpp"
-
-// LOGGER
 #include <logger/Logger.hpp>
 
 using namespace LynxLogger;

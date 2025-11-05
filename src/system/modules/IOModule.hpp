@@ -1,3 +1,20 @@
+/**
+ * @file IOModule.cpp
+ * @brief Implements the IOModule class for managing I/O command execution.
+ * 
+ * The IOModule class provides an interface for executing input and output operations
+ * within the Lynx system. It registers available I/O commands—such as `in` for reading 
+ * input and `out` for printing output—and delegates execution to the corresponding 
+ * command objects.
+ * 
+ * The module integrates with the AST execution context and LLVM IR builder, allowing 
+ * I/O operations to be seamlessly compiled into LLVM IR instructions. Unrecognized 
+ * method calls are logged as errors.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_SYSTEM_IO_MODULE_HPP
 #define LYNX_SYSTEM_IO_MODULE_HPP
 

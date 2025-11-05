@@ -1,3 +1,14 @@
+/**
+ * @file Linker.hpp
+ * @brief LLVM-based module linker for Lynx language projects.
+ *
+ * This class handles linking multiple LLVM modules, writing LLVM IR to files,
+ * and managing the main module of the compilation unit. It encapsulates
+ * the logic for merging modules, dumping IR, and finalizing linked output.
+ *
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
 
 #ifndef LYNX_LINKER_HPP
 #define LYNX_LINKER_HPP

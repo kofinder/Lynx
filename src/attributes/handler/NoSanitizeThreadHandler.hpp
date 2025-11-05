@@ -1,11 +1,28 @@
+/**
+ * @file NoSanitizeThreadHandler.hpp
+ * @brief Handler that manages functions that should not have thread sanitizer attributes applied.
+ *
+ * @responsibilities
+ * - Part of the function attribute handler chain in the Lynx compiler.
+ * - Ensures that functions marked to skip thread sanitization do not receive sanitizer attributes.
+ *
+ * @namespace LynxFunctionAttr
+ * Contains classes that infer and apply LLVM function attributes in the Lynx compiler.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 5, 2025
+*/
+
 #ifndef LYNX_FUNC_NO_SANITIZE_THREAD_HANDLER_HPP
 #define LYNX_FUNC_NO_SANITIZE_THREAD_HANDLER_HPP
 
 #include "interfaces/FunctionAttributeHandler.hpp"
 #include <logger/Logger.hpp>
-using namespace LynxLogger;
 
 namespace LynxFunctionAttr {
+
+    using namespace LynxLogger;
+
 
     class NoSanitizeThreadHandler : public FunctionAttributeHandler {
         protected:

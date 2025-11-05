@@ -1,3 +1,26 @@
+/**
+ * @file TopologicalSort.hpp
+ * @brief Declares the TopologicalSort class for computing compilation order of Lynx modules.
+ * 
+ * The TopologicalSort class provides functionality to analyze module import dependencies
+ * and produce a topologically sorted order of files. This ensures that each module
+ * is processed only after all of its dependencies have been resolved, which is critical
+ * for correct LLVM IR generation and compilation.
+ * 
+ * **Key Responsibilities:**
+ * - Maintains a dependency graph mapping files to the modules they import.
+ * - Performs depth-first search (DFS) to detect cyclic dependencies.
+ * - Produces a topologically sorted list of module paths.
+ * 
+ * **Used By:**
+ * - IRPlanner to determine compilation order for code generation.
+ * - IRGenerator to orchestrate module-level LLVM IR generation.
+ * 
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
+
 #ifndef LYNX_TOPOLOGICAL_SORT_HPP
 #define LYNX_TOPOLOGICAL_SORT_HPP
 
@@ -8,13 +31,6 @@
 
 namespace LynxCodegen {
 
-    /**
-     * @brief Utility class for computing a topological order of source files based on import dependencies.
-     *
-     * This class is designed to resolve the order in which source modules should be processed,
-     * such that dependencies (imports) are always handled before the modules that depend on them.
-     * It detects cycles and avoids redundant traversal using DFS.
-     */
     class TopologicalSort {
 
         private:

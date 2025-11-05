@@ -1,3 +1,28 @@
+/**
+ * @file ClazzDeclarationNode.hpp
+ * @brief Declares the ClazzDeclarationNode class representing class declarations in the Lynx AST.
+ * 
+ * The ClazzDeclarationNode class handles user-defined classes, including their fields, methods,
+ * constructors, inheritance, interfaces, and mixins. It supports LLVM IR generation for class
+ * types and manages virtual tables for method dispatch.
+ * 
+ * **Key Responsibilities:**
+ * - Stores class name, fields, methods, and constructors.
+ * - Handles inheritance, interfaces, and mixins.
+ * - Generates LLVM IR for class definitions and member functions.
+ * - Supports virtual tables for polymorphic dispatch.
+ * - Provides cloning for AST transformations.
+ * 
+ * **Used By:**
+ * - AST nodes representing class declarations.
+ * - Code generation routines for user-defined types.
+ * 
+ * @see Node, FunctionNode, ClazzConstructorNode, ClassType, VirtualTable
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_CLAZZ_DECLARATION_NODE_HPP
 #define LYNX_CLAZZ_DECLARATION_NODE_HPP
 

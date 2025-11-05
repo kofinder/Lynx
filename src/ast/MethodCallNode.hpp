@@ -1,3 +1,29 @@
+/**
+ * @file MethodCallNode.hpp
+ * @brief Declares the MethodCallNode class, representing method calls on objects in the Lynx AST.
+ * 
+ * The MethodCallNode class models calls to methods on objects, handling both built-in/library types
+ * and user-defined types (classes, interfaces, and mixins). It supports LLVM IR code generation, null-safe
+ * dispatch, and runtime or compile-time method resolution.
+ * 
+ * **Key Responsibilities:**
+ * - Encapsulates the function call node and target object node.
+ * - Classifies the method call target (built-in, library, or user-defined type).
+ * - Dispatches methods with correct LLVM IR generation, including virtual method handling.
+ * - Supports null-safe calls and chained method calls.
+ * - Provides deep cloning of the node and its components.
+ * 
+ * **Used By:**
+ * - AST construction and semantic analysis subsystems.
+ * - LLVM IR generation for object-oriented method calls.
+ * 
+ * @see FunctionCallNode, ChainedDereferenceNode
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
 #ifndef LYNX_METHOD_CALL_NODE_HPP
 #define LYNX_METHOD_CALL_NODE_HPP
 

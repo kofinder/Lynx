@@ -1,3 +1,28 @@
+/**
+ * @file ObjectCreationNode.hpp
+ * @brief Declares the ObjectCreationNode class, representing object instantiation in the Lynx AST.
+ * 
+ * The ObjectCreationNode class models the creation of objects, including constructor argument evaluation,
+ * LLVM IR type conversion, and constructor calls. It maintains the variable type and a list of arguments
+ * used during object instantiation.
+ * 
+ * **Key Responsibilities:**
+ * - Stores the variable type of the object being created.
+ * - Maintains a list of constructor arguments.
+ * - Resolves LLVM types and callable information for constructor calls.
+ * - Supports LLVM IR generation for object allocation and constructor invocation.
+ * - Provides deep cloning of the node and its arguments.
+ * 
+ * **Used By:**
+ * - AST construction and semantic analysis subsystems.
+ * - LLVM IR code generation for object creation expressions.
+ * 
+ * @see ExpressionNode, VariableType, ClazzDeclarationNode, ClazzConstructorNode
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_OBJECT_CREATION_NODE_HPP
 #define LYNX_OBJECT_CREATION_NODE_HPP
 
@@ -8,9 +33,9 @@
 #include "tmpl/ManglerTemplate.hpp"
 #include <constants/NodeType.hpp>
 
-using namespace LynxConstants;
-
 namespace LynxAst {
+
+    using namespace LynxConstants;
 
     typedef struct { 
         std::vector<llvm::Type*> argTypes; 

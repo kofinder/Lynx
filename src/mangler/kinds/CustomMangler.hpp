@@ -1,3 +1,28 @@
+/**
+ * @file CustomMangler.hpp
+ * @brief Implements a custom mangling strategy for the Lynx compiler.
+ *
+ * The `CustomMangler` class provides a user-defined name mangling strategy
+ * that conforms to the `IMangleStrategy` interface. It allows mangling of:
+ * - Free functions
+ * - Member functions
+ * - Constructors
+ * - Class names
+ *
+ * **Note:** Currently, all mangling methods return `nullptr`. These should be
+ * implemented to generate valid mangled names according to the Lynx custom mangling rules.
+ *
+ * Example Usage:
+ * @code
+ * LynxMangler::CustomMangler mangler;
+ * auto mangledName = mangler.mangleFunction("foo", params);
+ * @endcode
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
+
 #ifndef LYNX_CUSTOM_MANGLER_HPP
 #define LYNX_CUSTOM_MANGLER_HPP
 

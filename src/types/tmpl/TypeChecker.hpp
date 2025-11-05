@@ -1,3 +1,16 @@
+/**
+ * @file TypeChecker.hpp
+ * @brief Provides LLVM IR type-checking utilities for Lynx types.
+ *
+ * This header defines templated functions to verify if an LLVM `Type*` corresponds
+ * to a specific Lynx type, including built-in, user-defined, sequential, associative,
+ * and wrapper types. These utilities assist in semantic analysis, code generation,
+ * and type inference by enabling safe runtime type inspection.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_TYPE_CHECKER_HPP
 #define LYNX_TYPE_CHECKER_HPP
 

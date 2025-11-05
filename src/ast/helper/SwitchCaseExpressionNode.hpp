@@ -1,3 +1,31 @@
+/**
+ * @file SwitchCaseExpressionNode.hpp
+ * @brief Declares the SwitchCaseExpressionNode class representing constant expressions 
+ *        used in switch-case statements within the Lynx AST.
+ * 
+ * The SwitchCaseExpressionNode class models both qualified and unqualified constant values 
+ * used in `case` labels of switch statements. It supports integer, character, and identifier-based 
+ * expressions, resolving their corresponding LLVM IR constants or variables during code generation.
+ * 
+ * **Key Responsibilities:**
+ * - Stores case constant values (int, char, or qualified identifier).
+ * - Generates LLVM IR constants or resolved variable references.
+ * - Differentiates between literal and qualified case constants.
+ * - Supports cloning for AST transformations and optimizations.
+ * 
+ * **Used By:**
+ * - Switch statement handling and code generation.
+ * - Constant evaluation within control-flow constructs.
+ * 
+ * @see Node, AstContext, VariableUtils
+ * 
+ * @note Qualified constants may reference variables, enum fields, or global symbols. 
+ *       String literals are not supported as case constants.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_SWITCH_CASE_EXPRESSION_NODE_HPP
 #define LYNX_SWITCH_CASE_EXPRESSION_NODE_HPP
 
@@ -5,13 +33,6 @@
 #include "utils/VariableUtils.hpp"
 
 namespace LynxAst {
-
-    /**
-     * @brief Represents a constant expression node used in a switch-case statement.
-     * 
-     * This node encapsulates either a constant literal (integer or character) or a qualified
-     * identifier (e.g., enum reference) to be used as a switch case label.
-    */
 
     class SwitchCaseExpressionNode : public Node {
 
@@ -35,19 +56,15 @@ namespace LynxAst {
              * @param astContext Shared pointer to the current AST context.
              * @return llvm::Value* The resolved LLVM IR value, or nullptr on failure.
             */
-            llvm::Value* emitQualifiedConstant(std::shared_ptr<AstContext> astContext) {
-                LOG_INFO("Procced ..............");
-        
+            llvm::Value* emitQualifiedConstant(std::shared_ptr<AstContext> astContext) {        
                 auto& builder = astContext->getBuilder();
                 auto* module = astContext->getModule();
         
                 std::string identifier = std::get<std::string>(value);
-            
                 auto* resolved = VariableUtils::resolveVariable(astContext.get(), identifier).value;
 
                 llvm::errs() << "resolved val ===>"; resolved->print(llvm::outs()); llvm::errs() << "\n";
                 llvm::errs() << "resolved type ===>"; resolved->getType()->print(llvm::outs()); llvm::errs() << "\n";
-
 
                 if (resolved) {
                     if(resolved->getType()->isStructTy()) {
@@ -109,7 +126,6 @@ namespace LynxAst {
 
             explicit SwitchCaseExpressionNode(const std::pair<std::string, std::string>& qualifiedId): isQualified(true) {
                 value = "enum." + qualifiedId.first + "." + qualifiedId.second;
-                std::cerr << "hello world" << std::endl;
             }
 
             std::unique_ptr<Node> clone() const override {

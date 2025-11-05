@@ -1,3 +1,18 @@
+/**
+ * @file TypeUtils.hpp
+ * @brief Utility functions for handling LLVM and Lynx type conversions and operations.
+ *
+ * This header provides helper functions for creating and managing LLVM `StructType`s,
+ * safely setting struct bodies, appending non-null types to containers, and converting
+ * LLVM types to Lynx `BaseType` instances, including user-defined classes, interfaces,
+ * mixins, and enums.
+ *
+ * These utilities simplify type management during code generation and type resolution
+ * in the Lynx compiler.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
 
 #ifndef LYNX_TYPE_UTILS_HPP
 #define LYNX_TYPE_UTILS_HPP

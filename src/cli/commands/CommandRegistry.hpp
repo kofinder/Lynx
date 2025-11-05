@@ -1,5 +1,3 @@
-#ifndef LYNX_CLI_COMMAND_REGISTRY_HPP
-#define LYNX_CLI_COMMAND_REGISTRY_HPP
 
 /**
  * @file CommandRegistry.hpp
@@ -9,9 +7,12 @@
  * allowing registration and dynamic instantiation. Commands are stored
  * as factories to enable lazy creation on demand.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
 */
+
+#ifndef LYNX_CLI_COMMAND_REGISTRY_HPP
+#define LYNX_CLI_COMMAND_REGISTRY_HPP
 
 #include <string>
 #include <unordered_map>

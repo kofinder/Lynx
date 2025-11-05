@@ -1,3 +1,45 @@
+/**
+ * @file MemberProcessorTemplate.hpp
+ * @brief Defines the generic `Processor` class template for organizing and cloning 
+ *        class or interface member nodes in the Lynx Abstract Syntax Tree (AST).
+ * 
+ * The `Processor` template serves as a core utility for class-like node processing 
+ * within the Lynx compiler’s AST system. It provides type-safe logic to separate, 
+ * clone, and categorize class members into **methods**, **fields**, and optionally 
+ * **constructors**, maintaining consistent ownership relationships and ensuring 
+ * proper initialization of each node type.
+ * 
+ * **Key Responsibilities:**
+ * - Deep clone AST member nodes for encapsulated class or interface declarations.
+ * - Categorize nodes into function, variable, and constructor groups.
+ * - Automatically generate default constructors when none are provided.
+ * - Establish ownership relationships between class nodes and their members.
+ * 
+ * **Features:**
+ * - Generic and reusable through the `OwnerType` template parameter.
+ * - Ensures strong ownership semantics via `std::unique_ptr` cloning.
+ * - Supports both constructor-aware and constructor-agnostic processing.
+ * - Integrates seamlessly with the AST node hierarchy (e.g., `FunctionNode`, `VariableDeclarationNode`, `ClazzConstructorNode`).
+ * 
+ * **Used By:**
+ * - `ClazzDeclarationNode` and other class-like AST structures.
+ * - The semantic analysis and code generation stages that depend on fully 
+ *   resolved class member structures.
+ * 
+ * @tparam OwnerType The AST node type representing the owning structure 
+ *         (e.g., a class or interface declaration node).
+ * 
+ * @see FunctionNode, VariableDeclarationNode, ClazzConstructorNode, Node
+ * 
+ * @namespace LynxAst::Members
+ * Provides tools for managing member nodes of class-like constructs in the Lynx AST.
+ * 
+ * @note Automatically injects a default public constructor if none is defined.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_MEMBER_PROCESSOR_TEMPLATE_HPP
 #define LYNX_MEMBER_PROCESSOR_TEMPLATE_HPP
 

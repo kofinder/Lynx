@@ -1,3 +1,31 @@
+/**
+ * @file IntegerType.hpp
+ * @brief Defines the IntegerType class representing the built-in integer type in the Lynx type system.
+ *
+ * The `IntegerType` encapsulates signed 32-bit integers within the Lynx language.
+ * It provides mechanisms for LLVM IR generation, semantic analysis, and debug metadata emission.
+ *
+ * **Key Responsibilities:**
+ * - Represents 32-bit signed integers (`int` in C/C++).
+ * - Generates the corresponding LLVM IR type (`llvm::Type::getInt32Ty()`).
+ * - Supports variable instantiation, assignment, and literal value creation.
+ * - Integrates with `TypeVisitor` and `TypeMethodResolver` for semantic checks and method resolution.
+ * - Produces DWARF-compatible debug information for source-level debugging.
+ *
+ * **Integration Points:**
+ * - Used in arithmetic operations, loops, array indexing, and numeric expressions.
+ * - Often interoperates with `ByteType`, `ShortType`, and `LongType` for implicit conversions.
+ * - Default initialization yields zero (`0`).
+ *
+ * **LLVM Details:**
+ * - Maps to 32-bit integer (`i32`) type.
+ * - Provides pointer type and size/alignment according to target `DataLayout`.
+ * - Default LLVM value: `ConstantInt::get(Type::getInt32Ty(), 0)`.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_INTEGER_TYPE_HPP
 #define LYNX_INTEGER_TYPE_HPP
 

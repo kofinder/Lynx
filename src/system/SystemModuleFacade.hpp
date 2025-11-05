@@ -1,3 +1,16 @@
+/**
+ * @file SystemModuleFacade.hpp
+ * @brief Defines the SystemModuleFacade class for unified access to system modules.
+ * 
+ * The SystemModuleFacade class provides a simplified interface for invoking methods 
+ * on registered system modules within the Lynx system. It acts as a bridge between 
+ * the abstract syntax tree (AST) execution context and the underlying module 
+ * implementations, handling module lookup and method dispatch.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_SYSTEM_MODULE_FACADE_HPP
 #define LYNX_SYSTEM_MODULE_FACADE_HPP
 

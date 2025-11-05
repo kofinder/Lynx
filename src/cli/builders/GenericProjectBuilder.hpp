@@ -1,6 +1,3 @@
-#ifndef LYNX_CLI_GENERIC_PROJECT_BUILDER_HPP
-#define LYNX_CLI_GENERIC_PROJECT_BUILDER_HPP
-
 /**
  * @file GenericProjectBuilder.hpp
  * @brief Builder for a generic project scaffold.
@@ -8,10 +5,12 @@
  * Produces a simple default project layout with minimal configuration,
  * suitable for small utilities, libraries, or placeholders.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
 */
 
+#ifndef LYNX_CLI_GENERIC_PROJECT_BUILDER_HPP
+#define LYNX_CLI_GENERIC_PROJECT_BUILDER_HPP
 
 #include <string>
 #include <filesystem>

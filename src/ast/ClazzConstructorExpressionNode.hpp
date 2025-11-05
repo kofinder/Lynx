@@ -1,3 +1,26 @@
+/**
+ * @file ClazzConstructorExpressionNode.hpp
+ * @brief Declares the ClazzConstructorExpressionNode class representing field assignments in constructors.
+ * 
+ * The ClazzConstructorExpressionNode class handles expressions used in class constructors
+ * to assign values to fields, either from constructor arguments or object creation expressions.
+ * It supports LLVM IR code generation and cloning for AST transformations.
+ * 
+ * **Key Responsibilities:**
+ * - Stores field name and associated argument or object creation.
+ * - Generates LLVM IR for field initialization in constructors.
+ * - Supports cloning for AST transformations.
+ * 
+ * **Used By:**
+ * - ClazzConstructorNode for initializing class fields.
+ * - Code generation routines for constructor expressions.
+ * 
+ * @see Node, ObjectCreationNode, ClassType
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_CLAZZ_CONSTRUCTOR_EXPRESSION_NODE_HPP
 #define LYNX_CLAZZ_CONSTRUCTOR_EXPRESSION_NODE_HPP
 

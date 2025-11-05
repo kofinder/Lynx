@@ -1,3 +1,25 @@
+/**
+ * @file MemoryManager.hpp
+ * @brief Declares the MemoryManager class for allocation tracking and memory management in the Lynx runtime.
+ * 
+ * The MemoryManager class wraps a garbage-collected allocator (e.g., Boehm GC) to provide centralized
+ * memory allocation, tracking, and diagnostics across the core runtime. It supports optional labeling
+ * of allocations for debugging and leak detection.
+ * 
+ * **Key Responsibilities:**
+ * - Allocate heap memory for runtime objects with optional labels.
+ * - Track live allocations to facilitate memory diagnostics.
+ * - Deallocate memory and maintain allocation metadata.
+ * - Provide utilities to report memory leaks or usage statistics.
+ * 
+ * **Used By:**
+ * - Core runtime components requiring dynamic memory allocation.
+ * - Debugging and testing subsystems for memory tracking.
+ * 
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_CORE_MEMORY_MANAGER_HPP
 #define LYNX_CORE_MEMORY_MANAGER_HPP
 

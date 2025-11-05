@@ -1,3 +1,36 @@
+/**
+ * @file EnumType.hpp
+ * @brief Defines the EnumType class representing user-defined enumerations in the Lynx type system.
+ *
+ * The `EnumType` encapsulates named constant values (enumerators) within the Lynx language.
+ * It provides mechanisms for LLVM IR generation, semantic analysis, and debug metadata emission.
+ *
+ * **Key Responsibilities:**
+ * - Represents user-defined enumerations (`enum`) in Lynx.
+ * - Tracks enum members and their associated values.
+ * - Generates LLVM IR types for enum instances, including optional union types for storage.
+ * - Supports variable instantiation, assignment, and default value creation.
+ * - Integrates with `TypeVisitor` for semantic checks.
+ * - Produces DWARF-compatible debug information for enums.
+ *
+ * **Integration Points:**
+ * - Used in variable declarations, assignments, comparisons, and switch/case expressions.
+ * - Supports member lookup by name and optional global constant registration for each member.
+ * - Interoperates with other integer or numeric types when necessary.
+ *
+ * **LLVM Details:**
+ * - Maps to `llvm::StructType` and optionally a union type for enum value storage.
+ * - Provides pointer type and size/alignment according to target `DataLayout`.
+ * - Maintains a mapping from LLVM type to `EnumType` for retrieval.
+ *
+ * **Additional Features:**
+ * - Provides utilities to add, retrieve, and enumerate enum members.
+ * - Supports optional registration of global LLVM constants for enum members.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_ENUM_TYPE_HPP
 #define LYNX_ENUM_TYPE_HPP
 

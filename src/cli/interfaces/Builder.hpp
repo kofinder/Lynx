@@ -1,6 +1,3 @@
-#ifndef LYNX_CLI_BUILDER_HPP
-#define LYNX_CLI_BUILDER_HPP
-
 /**
  * @file Builder.hpp
  * @brief Abstract base class for project builders.
@@ -9,9 +6,12 @@
  * Concrete builders like WebAppBuilder or ConsoleAppBuilder will
  * implement the specific project structure generation logic.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
 */
+
+#ifndef LYNX_CLI_BUILDER_HPP
+#define LYNX_CLI_BUILDER_HPP
 
 #include <string>
 #include "ProjectKind.hpp"

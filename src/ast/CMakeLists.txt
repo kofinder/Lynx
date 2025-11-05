@@ -103,7 +103,6 @@ set(LIB_AST_HELPER
 set(LIB_AST_TEMPLATES
     ${CMAKE_CURRENT_SOURCE_DIR}/tmpl/ManglerTemplate.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/tmpl/LLVMFunctionTemplate.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/tmpl/CollectionInitializer.hpp
 )
 
 set(LIB_AST_UTILS

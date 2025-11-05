@@ -1,13 +1,30 @@
+/**
+ * @file ExceptionHandlerNode.hpp
+ * @brief Declares the ExceptionHandlerNode class, representing try-catch-finally blocks in the Lynx AST.
+ * 
+ * The ExceptionHandlerNode class models exception handling constructs, including try blocks, 
+ * multiple catch blocks, and an optional finally block. It provides LLVM IR generation, deep cloning, 
+ * and mechanisms for managing control flow during exceptions.
+ * 
+ * **Key Responsibilities:**
+ * - Stores try block, multiple catch blocks, and finally block statements.
+ * - Supports flow handling for normal and exceptional control paths.
+ * - Generates LLVM IR for exception handling.
+ * - Provides deep cloning for AST transformations.
+ * 
+ * **Used By:**
+ * - AST construction and semantic analysis.
+ * - LLVM IR generation for exception handling constructs.
+ * 
+ * @see Node, StatementListNode, AstContext
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_EXCEPTION_HANDLER_NODE_HPP
 #define LYNX_EXCEPTION_HANDLER_NODE_HPP
 
-/**
- * @file ExceptionHandlerNode.hpp
- * @brief Represents a node in the AST for handling try-catch-finally blocks.
- * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
- */
 
 #include "Node.hpp"
 #include "StatementListNode.hpp"

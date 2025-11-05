@@ -1,19 +1,16 @@
+/**
+ * @file PACCallerUtils.hpp
+ * @brief Utility class for Pointer Authentication Code (PAC) operations in LLVM IR.
+ *
+ * Provides helpers for signing, authenticating, and safely calling function pointers
+ * with PAC intrinsics in LLVM.
+ *
+ * Author: Ko Thein (Nathan Mratt)
+ * Date: November 4, 2025
+*/
+
 #ifndef LYNX_PAC_CALLER_UTILS_HPP
 #define LYNX_PAC_CALLER_UTILS_HPP
-
-
-/**
- * @brief Utility class for managing LLVM Pointer Authentication (PAC) intrinsics.
- *
- * This header provides the @c CallerUtils class which wraps LLVM IRBuilder
- * to insert PAC (Pointer Authentication Code) intrinsics for signing,
- * authenticating, and safely calling function pointers.
- *
- * Usage:
- * - Sign pointers before storing them.
- * - Authenticate pointers before dereferencing or calling.
- * - Use @c call() for secure automatic function pointer invocation.
-*/
 
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Constants.h"

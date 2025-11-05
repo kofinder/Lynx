@@ -1,3 +1,25 @@
+/**
+ * @file BuiltInType.hpp
+ * @brief Declares the BuiltInType class, the abstract base for all built-in primitive types.
+ * 
+ * The BuiltInType class extends the BaseType interface to represent all primitive data types 
+ * directly supported by the Lynx language (e.g., integers, floating-point numbers, characters, strings).
+ * It provides default behavior for built-in types, including assignment support, type compatibility checks, 
+ * and LLVM size/alignment computation.
+ * 
+ * **Key Responsibilities:**
+ * - Serves as the common superclass for all primitive (non-user-defined) types.
+ * - Provides base implementations for assignment and conversion compatibility.
+ * - Integrates with LLVM’s DataLayout for size and alignment information.
+ * - Handles unsupported value creation signatures gracefully via runtime error reporting.
+ * 
+ * **Typical Derived Types:**
+ * - IntType, FloatType, DoubleType, CharType, StringType, BoolType, etc.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_BUILT_INS_TYPE_HPP
 #define LYNX_BUILT_INS_TYPE_HPP
 

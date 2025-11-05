@@ -1,6 +1,3 @@
-#ifndef LYNX_CLI_NEW_MODULE_COMMAND_HPP
-#define LYNX_CLI_NEW_MODULE_COMMAND_HPP
-
 /**
  * @file NewProjectCommand.hpp
  * @brief Command to create a new project scaffold.
@@ -9,9 +6,12 @@
  * based on the requested ProjectKind. It validates that the project
  * does not already exist before creation.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
 */
+
+#ifndef LYNX_CLI_NEW_MODULE_COMMAND_HPP
+#define LYNX_CLI_NEW_MODULE_COMMAND_HPP
 
 
 #include <string>

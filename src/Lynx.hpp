@@ -1,3 +1,24 @@
+/**
+ * @file Lynx.hpp
+ * @brief Defines the `Lynx` class, the main driver for compiling and executing Lynx programs.
+ *
+ * The `Lynx` class orchestrates the full compilation and execution pipeline, including
+ * source processing, semantic analysis, LLVM IR generation, linking, LTO optimization,
+ * and JIT execution. It also manages system module initialization and integrates
+ * with the compiler's backend and runtime components.
+ *
+ * **Key Responsibilities:**
+ * - Initialize LLVM targets and system modules.
+ * - Load and parse program source files.
+ * - Perform semantic analysis on parsed ASTs.
+ * - Generate and manage LLVM IR modules.
+ * - Link modules and optionally perform LTO optimizations.
+ * - Execute programs using JIT compilation.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_HPP
 #define LYNX_HPP
 
@@ -101,11 +122,7 @@ class Lynx {
          */
         int executeJIT();
 
-        ~Lynx() {
-            SystemModuleLoader::shutdown();
-        }
-        
-
+        ~Lynx() { SystemModuleLoader::shutdown(); }
 };
 
 #endif

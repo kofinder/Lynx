@@ -1,3 +1,31 @@
+/**
+ * @file LongType.hpp
+ * @brief Defines the LongType class representing the built-in long integer type in the Lynx type system.
+ *
+ * The `LongType` encapsulates signed 64-bit integers within the Lynx language.
+ * It provides mechanisms for LLVM IR generation, semantic analysis, and debug metadata emission.
+ *
+ * **Key Responsibilities:**
+ * - Represents 64-bit signed integers (`long` in C/C++).
+ * - Generates the corresponding LLVM IR type (`llvm::Type::getInt64Ty()`).
+ * - Supports variable instantiation, assignment, and literal value creation.
+ * - Integrates with `TypeVisitor` and `TypeMethodResolver` for semantic checks and method resolution.
+ * - Produces DWARF-compatible debug information for source-level debugging.
+ *
+ * **Integration Points:**
+ * - Used in arithmetic operations, loops, array indexing, and numeric expressions.
+ * - Interoperates with `IntegerType`, `ShortType`, and `ByteType` for implicit conversions.
+ * - Default initialization yields zero (`0L`).
+ *
+ * **LLVM Details:**
+ * - Maps to 64-bit integer (`i64`) type.
+ * - Provides pointer type and size/alignment according to target `DataLayout`.
+ * - Default LLVM value: `ConstantInt::get(Type::getInt64Ty(), 0)`.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_LONG_TYPE_HPP
 #define LYNX_LONG_TYPE_HPP
 

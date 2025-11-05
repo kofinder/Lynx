@@ -1,13 +1,30 @@
-#ifndef LYNX_LITERAL_NODE_HPP
-#define LYNX_LITERAL_NODE_HPP
-
 /**
  * @file LiteralNode.hpp
- * @brief Class representing a literal node in the abstract syntax tree (AST), encapsulating variable types and their associated values.
+ * @brief Declares the LiteralNode class, representing literal values in the Lynx AST.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
+ * The LiteralNode class models constant literal values such as integers, floats, booleans,
+ * strings, dates, files, and null. It supports type tracking, LLVM IR code generation,
+ * and deep cloning of literal nodes.
+ * 
+ * **Key Responsibilities:**
+ * - Stores the literal value and its associated data type.
+ * - Supports various literal types including BYTE, SHORT, INT, LONG, FLOAT, DOUBLE, BOOLEAN, CHAR, STRING, NULLPTR, DATE, DATETIME, and FILE.
+ * - Provides methods to inspect literal type and value.
+ * - Generates LLVM IR code for literal values.
+ * - Supports deep cloning of the node.
+ * 
+ * **Used By:**
+ * - AST construction and semantic analysis subsystems.
+ * - LLVM IR generation for constant expressions.
+ * 
+ * @see DataType, LValueType
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
 */
+
+#ifndef LYNX_LITERAL_NODE_HPP
+#define LYNX_LITERAL_NODE_HPP
 
 #include <variant>
 #include "Node.hpp"

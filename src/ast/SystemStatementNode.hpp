@@ -1,3 +1,20 @@
+/**
+ * @file SystemNode.hpp
+ * @brief Declares the SystemStatementNode class for system-level function calls in the AST.
+ * 
+ * SystemStatementNode represents calls to system or runtime functions, optionally within a specific module.
+ * It supports arguments as a vector of ExpressionNode instances.
+ * 
+ * Responsibilities:
+ * - Store the module and method names.
+ * - Store arguments for the system call.
+ * - Generate LLVM IR for system calls.
+ * - Support cloning for AST transformations and analyses.
+ * 
+ * @author Ko Thein
+ * @date November 4, 2024
+*/
+
 #ifndef LYNX_SYSTEM_NODE_HPP
 #define LYNX_SYSTEM_NODE_HPP
 

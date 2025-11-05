@@ -1,3 +1,20 @@
+/**
+ * @file DFSUtils.hpp
+ * @brief Provides utilities for depth-first search and topological sorting of mixins.
+ *
+ * This header defines functions and enums to perform DFS-based traversal of 
+ * `MixinType` hierarchies, detect cycles, and generate a topological ordering
+ * of mixins. It is primarily used during type resolution and mixin composition
+ * in the Lynx compiler.
+ *
+ * **Key Components:**
+ * - `VisitState` enum: Tracks DFS visitation status.
+ * - `topoDFS`: Recursively visits mixins, detects cycles, and produces a topological order.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_TYPE_DFS_UTILS_HPP
 #define LYNX_TYPE_DFS_UTILS_HPP
 

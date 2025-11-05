@@ -1,3 +1,26 @@
+/**
+ * @file Error.hpp
+ * @brief Declares the abstract LynxError class, the base for all compiler/runtime errors.
+ * 
+ * LynxError defines the common interface for all error types in the Lynx compiler
+ * and runtime. It supports the Visitor pattern via `accept()`, optional hierarchical
+ * error composition, and standard `what()` messaging from `std::exception`.
+ * 
+ * **Key Responsibilities:**
+ * - Provide a common interface for all errors.
+ * - Enable tree-like composition of errors via `add()` and `getChildren()`.
+ * - Integrate with ErrorVisitor for type-specific handling.
+ * - Ensure consistent error messaging via `what()`.
+ * 
+ * **Used By:**
+ * - All concrete error types such as ParserError, SemanticError, LinkError, etc.
+ * - Compiler diagnostics and runtime error reporting systems.
+ * 
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
+
 #ifndef LYNX_ERROR_HPP
 #define LYNX_ERROR_HPP
 

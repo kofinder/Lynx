@@ -1,3 +1,15 @@
+/**
+ * @file ProgramSyntaxColor.hpp
+ * @brief Defines ANSI color codes for syntax highlighting in Lynx programs.
+ * 
+ * This header provides a set of macros for safely coloring different elements of Lynx source code
+ * when outputting to the terminal. It is intended for use in program visualization, REPLs, logs,
+ * or any textual output that benefits from syntax differentiation.
+ * 
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+ */
+
 #ifndef LYNX_PROGRAM_SYNTAX_COLOR_HPP
 #define LYNX_PROGRAM_SYNTAX_COLOR_HPP
 

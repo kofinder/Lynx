@@ -1,3 +1,22 @@
+/**
+ * @file VirtualCallOptimizationPass.hpp
+ * @brief Defines a pass for optimizing virtual function calls in LLVM modules.
+ *
+ * The `VirtualCallOptimizationPass` class leverages LLVM's new pass manager and
+ * `PassInfoMixin` to analyze virtual calls within a module and replace them with
+ * optimized alternatives where possible, improving runtime performance by
+ * reducing indirection and enabling further compiler optimizations.
+ *
+ * **Key Responsibilities:**
+ * - Identify virtual calls across the module.
+ * - Replace eligible virtual calls with direct calls.
+ * - Preserve analyses that remain valid after optimization.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
+
 #ifndef LYNX_VIRTUAL_CALL_OPTIMIZATION_PASS_HPP
 #define LYNX_VIRTUAL_CALL_OPTIMIZATION_PASS_HPP
 
@@ -6,8 +25,10 @@
 namespace LynxLTO {
 
     class VirtualCallOptimizationPass : public llvm::PassInfoMixin<VirtualCallOptimizationPass> {
+
         public:
-            llvm::PreservedAnalyses run(llvm::Module &M, llvm::ModuleAnalysisManager &MAM);
+
+            llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
     };
 
 }

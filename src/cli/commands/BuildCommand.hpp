@@ -1,6 +1,3 @@
-#ifndef LYNX_CLI_BUILD_COMMAND_HPP
-#define LYNX_CLI_BUILD_COMMAND_HPP
-
 /**
  * @file BuildCommand.hpp
  * @brief Command to build the current project.
@@ -9,9 +6,12 @@
  * build steps defined for the project. It integrates with the
  * Lynx build system.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
 */
+
+#ifndef LYNX_CLI_BUILD_COMMAND_HPP
+#define LYNX_CLI_BUILD_COMMAND_HPP
 
 #include <iostream>
 #include "interfaces/Command.hpp"

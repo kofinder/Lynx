@@ -6,8 +6,8 @@
  * @brief Declares the AstContext class for managing AST types, 
  * LLVM context, and utilities for syntax tree operations.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 3, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 3, 2024
  */
 
 #include <iostream>  

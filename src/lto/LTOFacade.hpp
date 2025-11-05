@@ -1,3 +1,21 @@
+/**
+ * @file LTOFacade.hpp
+ * @brief Provides a facade for performing Link-Time Optimization (LTO) on LLVM modules.
+ *
+ * The `LTOFacade` class simplifies the process of applying LTO optimizations to LLVM
+ * modules. It integrates an optimization strategy, handles target machine setup, and
+ * provides methods to emit optimized LLVM bitcode or assembly files.
+ *
+ * **Key Responsibilities:**
+ * - Apply LTO optimizations using a pluggable strategy (`DefaultLTOOptimizationStrategy`).
+ * - Emit LLVM bitcode to files.
+ * - Emit assembly files for the host target.
+ * - Configure target machine and data layout automatically.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+ */
+
 #ifndef LYNX_LTO_FACADE_HPP
 #define LYNX_LTO_FACADE_HPP
 

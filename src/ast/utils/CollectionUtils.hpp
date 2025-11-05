@@ -1,3 +1,23 @@
+/**
+ * @file CollectionUtils.hpp
+ * @brief Utility functions to assist with collection memory operations during LLVM IR code generation.
+ * 
+ * The CollectionUtils namespace provides helper functions for efficiently copying constant
+ * array or struct data into runtime memory (alloca) during code generation.
+ * 
+ * **Key Responsibilities:**
+ * - Emit LLVM IR memcpy from constant sources to runtime memory.
+ * - Handles type casting and alignment for safe memory copy.
+ * 
+ * **Used By:**
+ * - Code generation routines for arrays, structs, and collections.
+ * 
+ * @see AstContext, llvm::IRBuilder, llvm::Constant
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_COLLECTION_UTILS
 #define LYNX_COLLECTION_UTILS
 

@@ -1,3 +1,15 @@
+/**
+ * @file NumericPromotionUtils.hpp
+ * @brief Utilities for promoting numeric LLVM values to a common type for binary operations.
+ *
+ * Provides compile-time and runtime numeric type ranking, type checking,
+ * and promotion of operands to a common type using LLVM IRBuilder.
+ * 
+ * Author: Ko Thein (Nathan Mratt)
+ * Date: November 4, 2025
+*/
+
+
 #ifndef LYNX_NUMERIC_PROMOTION_UTILS_HPP
 #define LYNX_NUMERIC_PROMOTION_UTILS_HPP
 

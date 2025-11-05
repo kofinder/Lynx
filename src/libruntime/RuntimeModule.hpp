@@ -1,3 +1,42 @@
+/**
+ * @file RuntimeModule.hpp
+ * @brief Defines the abstract base class for all Lynx runtime modules.
+ * 
+ * The `RuntimeModule` class serves as the foundational interface for all 
+ * dynamically loadable Lynx runtime modules (e.g., Filesystem, Collections, Datetime). 
+ * Each derived module must implement class and function registration routines 
+ * used to extend the Lynx runtime environment with new functionality.
+ * 
+ * **Key Responsibilities:**
+ * - Provide virtual methods for class and function registration.
+ * - Define a uniform interface for module identification via `name()`.
+ * - Enable polymorphic behavior for all runtime modules.
+ * 
+ * **Usage Notes:**
+ * - Concrete implementations should override `registerClasses()` and `registerFunctions()`
+ *   to populate runtime registries with available classes and functions.
+ * - The `name()` method must return a consistent module identifier string.
+ * - Intended to be instantiated via the `RuntimeModuleFactory`.
+ * 
+ * **Example Implementation:**
+ * @code
+ * class FilesystemModule : public RuntimeModule {
+ * public:
+ *     void registerClasses(RuntimeClassRegistry& registry) override { ... }
+ *     void registerFunctions(RuntimeFunctionRegistry& registry) override { ... }
+ *     std::string name() const override { return "filesystem"; }
+ * };
+ * @endcode
+ * 
+ * @see RuntimeModuleFactory, RuntimeModuleLoader, RuntimeClassRegistry, RuntimeFunctionRegistry
+ * 
+ * @namespace LynxLibRuntime
+ * Provides runtime module management and dynamic extension utilities for the Lynx execution environment.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_LIB_RUNTIME_MODULE_HPP
 #define LYNX_LIB_RUNTIME_MODULE_HPP
 
@@ -8,17 +47,6 @@
 
 namespace LynxLibRuntime {
 
-    /**
-     * @class RuntimeModule
-     * @brief Abstract base class for all runtime standard library modules.
-     *
-     * Each runtime module (e.g., Filesystem, Collections, Datetime) must inherit
-     * from this interface and implement the required methods to register
-     * its runtime functions and provide its identity.
-     *
-     * This class follows the Strategy and Interface patterns, enabling polymorphic
-     * registration of runtime APIs.
-     */
     class RuntimeModule {
 
         public:

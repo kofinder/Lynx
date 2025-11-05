@@ -1,3 +1,29 @@
+/**
+ * @file CallingConventionSpecification.hpp
+ * @brief Defines the abstract interface for calling convention specifications.
+ * 
+ * This file introduces the `CallingConventionSpecification` abstract base class,
+ * which represents a single rule or condition used to determine whether an LLVM
+ * function matches a particular calling convention type.
+ * 
+ * Each subclass defines its own logic in `isSatisfiedBy()` to check attributes,
+ * function properties, or patterns that correspond to a specific calling convention.
+ * 
+ * This class is used by `CallingConventionInferer` to iterate through multiple
+ * specifications and infer the most appropriate calling convention.
+ * 
+ * @see CallingConventionInferer
+ * @see AndSpecification
+ * @see HasAttributeSpec
+ * @see IsVarArgSpec
+ * 
+ * @namespace LynxCallConv
+ * Provides specification-based mechanisms for identifying LLVM calling conventions.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+ */
+
 #ifndef LYNX_CALLING_CONV_SPECIFICATION_HPP
 #define LYNX_CALLING_CONV_SPECIFICATION_HPP
 
@@ -10,13 +36,6 @@ using namespace LynxLogger;
 
 namespace LynxCallConv {
 
-    /**
-     * @brief Abstract base class representing a specification for a calling convention.
-     * 
-     * This interface is used to check whether a given LLVM function satisfies
-     * a certain calling convention specification and to retrieve the corresponding
-     * calling convention type.
-    */
     class CallingConventionSpecification {
 
         public:

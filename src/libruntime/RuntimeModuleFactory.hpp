@@ -1,3 +1,41 @@
+/**
+ * @file RuntimeModuleFactory.hpp
+ * @brief Declares the RuntimeModuleFactory class responsible for creating Lynx runtime module instances.
+ * 
+ * The RuntimeModuleFactory provides a centralized mechanism for instantiating built-in 
+ * runtime modules based on their enumerated type (`RuntimeModuleType`). Each supported 
+ * module type corresponds to a specialized `RuntimeModule` subclass (e.g., `FilesystemModule`, 
+ * `CollectionModule`).
+ * 
+ * **Key Responsibilities:**
+ * - Encapsulate creation logic for all core runtime modules.
+ * - Provide an extensible switch-based factory method.
+ * - Return module instances as smart pointers for safe lifetime management.
+ * 
+ * **Design Notes:**
+ * - Uses `std::unique_ptr` to ensure exclusive ownership of created modules.
+ * - Modules that are unsupported or unimplemented return `nullptr`.
+ * - Easily extendable by adding new cases to the `create()` function.
+ * 
+ * **Used By:**
+ * - `RuntimeModuleLoader` for dynamic module initialization.
+ * - Lynx runtime core systems requiring module registration.
+ * 
+ * **Example Usage:**
+ * @code
+ * auto module = RuntimeModuleFactory::create(RuntimeModuleType::FILESYSTEM);
+ * if (module) module->registerFunctions();
+ * @endcode
+ * 
+ * @see RuntimeModuleLoader, RuntimeModule, RuntimeModuleType
+ * 
+ * @namespace LynxLibRuntime
+ * Provides runtime module management utilities for the Lynx execution environment.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_LIB_RUNTIME_MODULE_FACTORY_HPP
 #define LYNX_LIB_RUNTIME_MODULE_FACTORY_HPP
 
@@ -14,14 +52,6 @@ using namespace LynxConstants;
 
 namespace LynxLibRuntime {
 
-    /**
-     * @class RuntimeModuleFactory
-     * @brief Factory for creating instances of runtime modules based on their type.
-     *
-     * This factory encapsulates the logic of instantiating different types of
-     * runtime modules. It decouples creation logic from module consumers,
-     * following the Factory design pattern.
-     */
     class RuntimeModuleFactory {
 
         public:

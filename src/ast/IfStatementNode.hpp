@@ -1,28 +1,38 @@
+/**
+ * @file IfStatementNode.hpp
+ * @brief Declares the IfStatementNode class, representing conditional "if" statements in the Lynx AST.
+ * 
+ * The IfStatementNode class models conditional branching with if, else-if, and optional else blocks.
+ * It stores conditions and their corresponding statements and supports code generation via LLVM IR.
+ * 
+ * **Key Responsibilities:**
+ * - Stores multiple conditional branches with associated statement blocks.
+ * - Supports else branch as the default fallback.
+ * - Generates LLVM IR for conditional branching.
+ * - Provides deep cloning of the node and its branches.
+ * 
+ * **Used By:**
+ * - AST construction and semantic analysis subsystems.
+ * - LLVM IR generation for control flow.
+ * 
+ * @see DataType, LValueType
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
 #ifndef LYNX_IF_STATEMENT_NODE_HPP
 #define LYNX_IF_STATEMENT_NODE_HPP
-
-/**
- * @class IfStatementNode
- * @brief Represents an `if` or `if-else` statement in the Abstract Syntax Tree (AST).
- *
- * This class is used to model conditional statements (`if`, `if-else`) in the AST.
- * It supports generating LLVM IR for these constructs and managing branches and conditions.
- *
- * Key Responsibilities:
- * - Store conditions and corresponding statements.
- * - Generate LLVM IR for the if-else chain.
- * - Support adding new branches and else blocks.
- */
 
 #include "Node.hpp" 
 #include <constants/DataType.hpp> 
 #include <constants/LValueType.hpp> 
 
-using namespace LynxConstants;
-
 namespace LynxAst {
 
-    
+    using namespace LynxConstants;
+
     class IfStatementNode : public Node {
         
         private:

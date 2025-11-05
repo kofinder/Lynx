@@ -1,3 +1,21 @@
+/**
+ * @file FunctionDocExtractorPass.hpp
+ * @brief Defines a pass to extract function-level documentation from LLVM modules.
+ *
+ * The `FunctionDocExtractorPass` class leverages LLVM's new pass manager and
+ * `PassInfoMixin` to analyze and extract documentation or metadata associated
+ * with functions within a module. This can be used for tooling, reporting,
+ * or automated documentation generation.
+ *
+ * **Key Responsibilities:**
+ * - Traverse all functions in a module.
+ * - Extract documentation, comments, or metadata.
+ * - Preserve analyses that remain valid after the pass.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_FUNCTION_DOC_EXTRACTOR_PASS_HPP
 #define LYNX_FUNCTION_DOC_EXTRACTOR_PASS_HPP
 
@@ -6,8 +24,10 @@
 namespace LynxLTO {
 
     class FunctionDocExtractorPass : public llvm::PassInfoMixin<FunctionDocExtractorPass> {
+
         public:
-            llvm::PreservedAnalyses run(llvm::Module &M, llvm::ModuleAnalysisManager &MAM);
+
+            llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
     };
 
 }

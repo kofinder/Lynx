@@ -1,3 +1,42 @@
+/**
+ * @file ClassType.hpp
+ * @brief Defines the ClassType class representing user-defined classes in the Lynx type system.
+ *
+ * The `ClassType` encapsulates user-defined classes that can inherit from a single base class,
+ * implement multiple interfaces, and use mixins. It supports fields, methods, constructors,
+ * virtual method dispatch, LLVM IR generation, and debug metadata.
+ *
+ * **Key Responsibilities:**
+ * - Represents user-defined classes in the Lynx language.
+ * - Supports single inheritance (base class) and multiple interface implementation.
+ * - Supports mixins to extend functionality with fields and methods.
+ * - Tracks methods, fields, and constructors, including virtual methods for polymorphism.
+ * - Generates LLVM IR struct and pointer types for class instances.
+ * - Maintains a global LLVM vtable for virtual method dispatch.
+ * - Integrates with `TypeVisitor` for semantic analysis.
+ * - Produces DWARF-compatible debug information for class types.
+ *
+ * **Integration Points:**
+ * - Used for object instantiation, assignment, and polymorphic method calls.
+ * - Supports virtual function dispatch via vtables.
+ * - Interoperates with `MixinType` and `InterfaceType` for mixin and interface handling.
+ * - Provides field and method lookup tables for LLVM code generation.
+ *
+ * **LLVM Details:**
+ * - Maps to `llvm::StructType` with optional pointer types.
+ * - Provides cached LLVM type and pointer type for performance.
+ * - Maintains a single global LLVM vtable per class containing virtual method pointers.
+ * - Supports binding vtable pointers in object instances.
+ *
+ * **Additional Features:**
+ * - Provides utilities for checking inheritance, interface implementation, and mixin usage.
+ * - Maintains method-to-index and field-to-index mappings for efficient LLVM layout.
+ * - Preserves constructor, method, and field registration and lookup.
+ * - Supports scoring and selecting viable method candidates for overload resolution.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+ */
 
 #ifndef LYNX_CLASS_TYPE_HPP
 #define LYNX_CLASS_TYPE_HPP

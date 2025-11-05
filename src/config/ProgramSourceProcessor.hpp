@@ -1,3 +1,28 @@
+/**
+ * @file ProgramOptionConfig.hpp
+ * @brief Declares the ProgramOptionConfig class for centralized CLI option management in the Lynx compiler.
+ * 
+ * The ProgramOptionConfig class provides a singleton-based interface to parse, store, and access
+ * command-line arguments and program options for Lynx applications. It leverages Boost.Program_options
+ * to support a variety of commands such as `run`, `build`, `analyze`, `create`, `clean`, `test`,
+ * `upgrade`, `downgrade`, and `help`.
+ * 
+ * **Key Responsibilities:**
+ * - Parse and validate CLI arguments and options.
+ * - Provide accessors for commonly used program paths, entry files, build directories, and source folders.
+ * - Track flags such as debug, dry-run, verbosity, syntax highlighting, and source emission.
+ * - Provide utility methods to print banners, usage, and help information.
+ * - Load additional configuration from YAML files for project-specific settings.
+ * 
+ * **Used By:**
+ * - The main Lynx program entry point to determine the execution workflow.
+ * - Build, run, and analysis subsystems to configure program behavior based on CLI options.
+ * - Utility scripts and tools interacting with the Lynx compiler framework.
+ * 
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+ */
+
 #ifndef LYNX_PROGRAM_SOURCE_PROCESSOR_HPP
 #define LYNX_PROGRAM_SOURCE_PROCESSOR_HPP
 

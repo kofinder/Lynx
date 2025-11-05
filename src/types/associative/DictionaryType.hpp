@@ -1,3 +1,34 @@
+/**
+ * @file DictionaryType.hpp
+ * @brief Defines the DictionaryType class representing associative key-value maps in the Lynx type system.
+ *
+ * The `DictionaryType` encapsulates collections that map unique keys to corresponding values.
+ * It supports insertion, lookup, deletion, and LLVM IR generation for associative operations.
+ *
+ * **Key Responsibilities:**
+ * - Represents dynamically sized key-value maps with specific key and value types.
+ * - Supports variable instantiation, assignment, and value creation.
+ * - Provides utilities for key-based element access and manipulation.
+ * - Integrates with `TypeVisitor` for semantic checks.
+ * - Produces DWARF-compatible debug information for dictionary types.
+ *
+ * **Integration Points:**
+ * - Used in dictionary declarations, key-based access, and iteration.
+ * - Keys and values can be of any type, including user-defined and built-in types.
+ * - Provides default values for keys and values where appropriate.
+ *
+ * **LLVM Details:**
+ * - Maps to appropriate LLVM types for associative storage and key-value access.
+ * - Provides pointer types and efficient mechanisms for LLVM IR code generation.
+ *
+ * **Additional Features:**
+ * - Supports querying both key and value types.
+ * - Supports type equality checks and cloning for dictionary types.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_DICTIONARY_TYPE_HPP
 #define LYNX_DICTIONARY_TYPE_HPP
 

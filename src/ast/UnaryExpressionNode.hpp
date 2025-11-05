@@ -1,3 +1,20 @@
+/**
+ * @file UnaryExpressionNode.hpp
+ * @brief Declares the UnaryExpressionNode class representing unary expressions in the AST.
+ * 
+ * UnaryExpressionNode models unary operations in the Lynx language, such as increment/decrement,
+ * logical NOT, and other unary operators applied to variables or expressions.
+ * 
+ * **Key Responsibilities:**
+ * - Represent unary operations in the AST.
+ * - Store the operator type and target (variable name or expression node).
+ * - Generate LLVM IR code for unary operations.
+ * - Handle increment/decrement and logical NOT operations internally.
+ * 
+ * @author Ko Thein
+ * @date November 4, 2024
+*/
+
 #ifndef LYNX_UNARY_EXPRESSION_NODE_HPP
 #define LYNX_UNARY_EXPRESSION_NODE_HPP
 

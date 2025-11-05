@@ -1,3 +1,31 @@
+/**
+ * @file ShortType.hpp
+ * @brief Defines the ShortType class representing the built-in short integer type in the Lynx type system.
+ *
+ * The `ShortType` encapsulates signed 16-bit integers within the Lynx language.
+ * It provides mechanisms for LLVM IR generation, semantic analysis, and debug metadata emission.
+ *
+ * **Key Responsibilities:**
+ * - Represents 16-bit signed integers (`short` in C/C++).
+ * - Generates the corresponding LLVM IR type (`llvm::Type::getInt16Ty()`).
+ * - Supports variable instantiation, assignment, and literal value creation.
+ * - Integrates with `TypeVisitor` and `TypeMethodResolver` for semantic checks and method resolution.
+ * - Produces DWARF-compatible debug information for source-level debugging.
+ *
+ * **Integration Points:**
+ * - Used in arithmetic operations, loops, array indexing, and numeric expressions.
+ * - Interoperates with `ByteType` and `IntegerType` for implicit conversions.
+ * - Default initialization yields zero (`0`).
+ *
+ * **LLVM Details:**
+ * - Maps to 16-bit integer (`i16`) type.
+ * - Provides pointer type and size/alignment according to target `DataLayout`.
+ * - Default LLVM value: `ConstantInt::get(Type::getInt16Ty(), 0)`.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_SHORT_TYPE_HPP
 #define LYNX_SHORT_TYPE_HPP
 

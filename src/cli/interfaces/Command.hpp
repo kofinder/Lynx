@@ -1,6 +1,3 @@
-#ifndef LYNX_CLI_COMMAND_HPP
-#define LYNX_CLI_COMMAND_HPP
-
 /**
  * @file Command.hpp
  * @brief Abstract base class for all CLI commands.
@@ -8,9 +5,12 @@
  * This interface defines the core behavior for CLI commands in the Lynx project.
  * All commands must implement the execute method and provide their name and description.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
 */
+
+#ifndef LYNX_CLI_COMMAND_HPP
+#define LYNX_CLI_COMMAND_HPP
 
 #include <string>
 

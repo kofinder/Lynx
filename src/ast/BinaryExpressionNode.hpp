@@ -1,3 +1,28 @@
+/**
+ * @file BinaryExpressionNode.hpp
+ * @brief Declares the BinaryExpressionNode class representing binary operations in the Lynx AST.
+ * 
+ * The BinaryExpressionNode class handles binary operations between expressions, supporting
+ * integer, double, boolean, char, and string types. It provides LLVM IR code generation
+ * specific to the operand types and supports cloning for AST transformations.
+ * 
+ * **Key Responsibilities:**
+ * - Stores left and right operands for binary operations.
+ * - Stores the operator type (e.g., +, -, *, /, etc.).
+ * - Generates LLVM IR code for type-specific operations.
+ * - Supports cloning for AST transformations.
+ * 
+ * **Used By:**
+ * - Expression evaluation nodes in the compiler.
+ * - Code generation routines for binary operations.
+ * 
+ * @see Node, OperatorType
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
 #ifndef LYNX_BINARY_OPERATION_NODE_HPP
 #define LYNX_BINARY_OPERATION_NODE_HPP
 

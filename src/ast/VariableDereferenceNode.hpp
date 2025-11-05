@@ -1,13 +1,29 @@
-#ifndef LYNX_VARIABLE_DEREFERENCE_NODE_HPP
-#define LYNX_VARIABLE_DEREFERENCE_NODE_HPP
-
 /**
  * @file VariableDereferenceNode.hpp
- * @brief Class representing a variable dereference in the abstract syntax tree (AST).
+ * @brief Declares the VariableDereferenceNode class, representing variable and array access in the AST.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
- */
+ * VariableDereferenceNode models both simple variable dereferences and array element accesses.
+ * It encapsulates either an IdentifierNode (for simple variable access) or an ArrayAccessNode (for array indexing),
+ * and provides the interface for code generation, cloning, and type-safe access.
+ * 
+ * **Key Responsibilities:**
+ * - Wrap identifier or array access in a uniform node type.
+ * - Provide factory methods to create variable or array access nodes.
+ * - Expose type-safe accessors depending on the dereference type.
+ * - Support LLVM IR code generation through `generateCode`.
+ * - Support AST cloning via `clone()`.
+ * 
+ * **Used By:**
+ * - Semantic analyzer for variable and array usage.
+ * - IR generator for code emission.
+ * - Any compiler phase requiring unified representation of dereference operations.
+ * 
+ * @author Ko Thein (Nathan Mratt)
+ * @date November 2, 2024
+*/
+
+#ifndef LYNX_VARIABLE_DEREFERENCE_NODE_HPP
+#define LYNX_VARIABLE_DEREFERENCE_NODE_HPP
 
 #include "Node.hpp"
 #include "LiteralNode.hpp"

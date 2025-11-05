@@ -1,3 +1,28 @@
+/**
+ * @file FunctionAttributeBuilder.hpp
+ * @brief Utility class for constructing and applying LLVM function attributes.
+ * 
+ * The `FunctionAttributeBuilder` class provides a fluent interface for configuring
+ * LLVM function attributes at various levels (function, return value, and parameters).
+ * It is used to apply optimization hints and constraints that guide LLVM’s code generation
+ * and optimization passes.
+ * 
+ * **Responsibilities:**
+ * - Collect and manage function attributes before applying them.
+ * - Support function-level, return-level, and parameter-level attribute application.
+ * - Provide a chainable builder API for readability and convenience.
+ * 
+ * @see llvm::Function, llvm::AttrBuilder, llvm::AttributeList
+ * @namespace LynxFunctionAttr
+ * Provides helper classes and utilities for managing LLVM function attributes in Lynx.
+ * 
+ * @note This class simplifies LLVM attribute management, ensuring consistency
+ *       across code generation stages within the Lynx compiler.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_FUNCTION_ATTRS_BUILDER_HPP
 #define LYNX_FUNCTION_ATTRS_BUILDER_HPP
 
@@ -7,14 +32,6 @@
 
 
 namespace LynxFunctionAttr {
-
-    /**
-     * @brief Helper class to build and apply LLVM function attributes.
-     *
-     * FunctionAttributeBuilder provides a convenient way to add attributes at the
-     * function level, return value, and individual parameters, and then apply
-     * them all at once to the target llvm::Function.
-     */
 
     class FunctionAttributeBuilder {
 
