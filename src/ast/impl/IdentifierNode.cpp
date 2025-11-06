@@ -29,7 +29,7 @@ namespace LynxAst {
             return derefVariable;
         }
 
-        if(auto* derefVariable = VariableUtils::resolveVariable(astContext.get(), identifierName).value) {
+        if(auto* derefVariable = VariableUtils::resolveVariable(*astContext, identifierName).value) {
             LOG_INFO("[Resolve] Identifier '{}' found as local variable", identifierName);
             return derefVariable;
         }

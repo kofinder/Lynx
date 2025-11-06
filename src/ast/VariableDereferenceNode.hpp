@@ -50,21 +50,21 @@ namespace LynxAst {
 
         public:
 
-            static std::unique_ptr<VariableDereferenceNode> createFromIdentifier(std::unique_ptr<IdentifierNode> id) {
+            [[nodiscard]] static std::unique_ptr<VariableDereferenceNode> createFromIdentifier(std::unique_ptr<IdentifierNode> id) {
                 auto node = std::make_unique<VariableDereferenceNode>();
                 node->identifierAccessNode = std::move(id);
                 node->dereferenceType = DereferenceAccessType::VARIABLE_ACCESS;
                 return node;
             }
         
-            static std::unique_ptr<VariableDereferenceNode> createFromArray(std::unique_ptr<ArrayAccessNode> array) {
+            [[nodiscard]] static std::unique_ptr<VariableDereferenceNode> createFromArray(std::unique_ptr<ArrayAccessNode> array) {
                 auto node = std::make_unique<VariableDereferenceNode>();
                 node->arrayAccessNode = std::move(array);
                 node->dereferenceType = DereferenceAccessType::ARRAY_ACCESS;
                 return node;
             }
             
-            NodeType getNodeType() override { return NodeType::VARIABLE_DEREFERENCE_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::VARIABLE_DEREFERENCE_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
@@ -86,7 +86,7 @@ namespace LynxAst {
                 return arrayAccessNode.get();
             }
 
-            ~VariableDereferenceNode() override {}
+            ~VariableDereferenceNode() override = default;
     };
 }
 

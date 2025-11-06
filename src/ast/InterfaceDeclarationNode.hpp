@@ -55,6 +55,8 @@ namespace LynxAst {
 
             std::unique_ptr<std::vector<std::unique_ptr<VariableDeclarationNode>>> fields;
 
+        private:
+
             void processMembers(std::unique_ptr<std::vector<std::unique_ptr<Node>>> members);
 
             void attachFunctionSignature(llvm::Function* fn, const std::string& signature);
@@ -90,17 +92,17 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::INTERFACE_DECLARATION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::INTERFACE_DECLARATION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
-            inline bool hasParentInterfaces() const { return !inheritIfaces.empty(); }
+            [[nodiscard]] inline bool hasParentInterfaces() const noexcept { return !inheritIfaces.empty(); }
 
-            inline const std::string& getInterfaceName() const { return interfaceName; }
+            [[nodiscard]] inline const std::string& getInterfaceName() const noexcept { return interfaceName; }
 
-            inline const std::vector<std::string>& getParentInterfaceNames() const { return inheritIfaces; }
+            [[nodiscard]] inline const std::vector<std::string>& getParentInterfaceNames() const noexcept { return inheritIfaces; }
 
-            inline const std::string getQualifiedName() const { return Mangle::get(ManglerKind::CLASS, interfaceName); }
+            [[nodiscard]] inline const std::string getQualifiedName() const noexcept { return Mangle::get(ManglerKind::CLASS, interfaceName); }
 
             ~InterfaceDeclarationNode() override = default;
     };

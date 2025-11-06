@@ -46,7 +46,7 @@ namespace LynxAst {
 
             LiteralMapNode() : pairs(std::make_unique<std::vector<std::unique_ptr<LiteralPairNode>>>()) {}
 
-            NodeType getNodeType() override { return NodeType::LITERAL_MAP_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::LITERAL_MAP_NODE; }
 
             inline const auto& getPairs() const { return pairs; }
 

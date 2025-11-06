@@ -41,6 +41,8 @@ namespace LynxAst {
 
             std::vector<std::unique_ptr<Node>> conditions; 
 
+        private:
+
             llvm::Value* generateIfElseIf(const AstContext& astContext);
 
         public:
@@ -54,7 +56,7 @@ namespace LynxAst {
         
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::IF_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::IF_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 

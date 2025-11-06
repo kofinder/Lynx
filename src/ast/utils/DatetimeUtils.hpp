@@ -83,7 +83,7 @@ namespace LynxAst::DateTimeUtils {
      * @param args List of constructor arguments (should be constants).
      * @return A pair of vectors: first = LLVM values, second = LLVM types.
     */
-    inline std::pair<std::vector<llvm::Value*>, std::vector<llvm::Type*>> generateDateTime(AstContext& astContext, std::vector<std::unique_ptr<ExpressionNode>>& args) {
+    inline std::pair<std::vector<llvm::Value*>, std::vector<llvm::Type*>> generateDateTime(const AstContext& astContext, std::vector<std::unique_ptr<ExpressionNode>>& args) {
 
         constexpr int kExpectedFields = 8;
         auto& ctx = astContext.getLLVMContext();

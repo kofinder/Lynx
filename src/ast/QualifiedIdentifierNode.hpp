@@ -39,9 +39,11 @@ namespace LynxAst {
 
             std::unique_ptr<QualifiedPrefixType> qualifiedPrefixType;
 
-            llvm::Value* emitEnumValue(AstContext& context);
+        private:
 
-            llvm::Value* emitSystemValue(AstContext& context);
+            llvm::Value* emitEnumValue(const AstContext& context);
+
+            llvm::Value* emitSystemValue(const AstContext& context);
 
         public:
 
@@ -50,7 +52,7 @@ namespace LynxAst {
                 std::unique_ptr<QualifiedPrefixType> prefixNode
             ) : identifierName(name), qualifiedPrefixType(std::move(prefixNode)) {}
 
-            NodeType getNodeType() override { return NodeType::QUALIFIED_IDENTIFIER_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::QUALIFIED_IDENTIFIER_NODE; }
 
             std::unique_ptr<Node> clone() const override;
 

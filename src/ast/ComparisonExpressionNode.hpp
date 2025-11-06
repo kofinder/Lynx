@@ -43,17 +43,19 @@ namespace LynxAst {
 
             std::unique_ptr<Node> rightOperand;
 
-            llvm::Value* generateIntegerCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+        private:
 
-            llvm::Value* generateDoubleCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+            llvm::Value* generateIntegerCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) const;
 
-            llvm::Value* generateBooleanCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+            llvm::Value* generateDoubleCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) const;
 
-            llvm::Value* generateCharCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+            llvm::Value* generateBooleanCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) const;
 
-            llvm::Value* generateStringCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+            llvm::Value* generateCharCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) const;
 
-            llvm::Value* generateEnumCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+            llvm::Value* generateStringCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) const;
+
+            llvm::Value* generateEnumCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) const;
 
         public:
 
@@ -70,7 +72,7 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
             
-            NodeType getNodeType() override { return NodeType::COMPARE_OPERATION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::COMPARE_OPERATION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 

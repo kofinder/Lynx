@@ -42,7 +42,7 @@ namespace LynxAst {
                 std::unique_ptr<Node> endExpr
             ): conditionExpression(std::move(conditionExpr)), thenExpression(std::move(thenExpr)), endExpression(std::move(endExpr)) {}
 
-            NodeType getNodeType() override { return NodeType::TERNARY_OPERATOR_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::TERNARY_OPERATOR_NODE; }
 
             std::unique_ptr<Node> clone() const override ;
 

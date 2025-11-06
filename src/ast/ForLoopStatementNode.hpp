@@ -60,7 +60,7 @@ namespace LynxAst {
         
             std::unique_ptr<Node> clone() const override;
             
-            NodeType getNodeType() override { return NodeType::LOOP_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::LOOP_NODE; }
         
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
         

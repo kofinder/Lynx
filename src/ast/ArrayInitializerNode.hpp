@@ -55,6 +55,8 @@ namespace LynxAst {
 
             DataType arrayType;
 
+        private:
+        
             llvm::Value* generateBooleanArray(std::shared_ptr<AstContext> astContext);
 
             llvm::Value* generateByteArray(std::shared_ptr<AstContext> astContext);
@@ -91,7 +93,7 @@ namespace LynxAst {
                 return std::make_unique<ArrayInitializerNode>(*this); 
             }
 
-            NodeType getNodeType() override { return NodeType::ARRAY_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::ARRAY_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 

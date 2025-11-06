@@ -99,7 +99,7 @@ namespace LynxAst {
                 std::unique_ptr<Node> rightNode
             ) : operatorType(operType), leftOperand(std::move(leftNode)), rightOperand(std::move(rightNode)) {}
 
-            NodeType getNodeType() override { return NodeType::SWITCH_CASE_CONSTANT_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::SWITCH_CASE_CONSTANT_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override {
                 auto* currentBlock = astContext->getBuilder().GetInsertBlock();

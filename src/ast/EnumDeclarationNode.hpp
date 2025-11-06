@@ -43,11 +43,11 @@ namespace LynxAst {
 
         private:
 
-            void buildEnumType(EnumType& enumType);
+            void buildEnumType(EnumType& enumType) const;
 
-            void emitEnumConstants(const AstContext& astContext, const EnumType& enumType);
+            void emitEnumConstants(const AstContext& astContext, const EnumType& enumType) const;
 
-            std::vector<llvm::Constant*> generatePayload(const AstContext& astContext, EnumMember member);
+            std::vector<llvm::Constant*> generatePayload(const AstContext& astContext, EnumMember member) const;
 
         public:
 
@@ -60,7 +60,7 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
             
-            NodeType getNodeType() override { return NodeType::ENUM_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::ENUM_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
@@ -68,7 +68,7 @@ namespace LynxAst {
 
             void addMember(const std::string& name, const std::variant<int, char, std::string>& value);
 
-            inline std::vector<std::pair<std::string, std::variant<int, char, std::string>>> getMembers() const { return members; }
+            [[nodiscard]] inline std::vector<std::pair<std::string, std::variant<int, char, std::string>>> getMembers() const noexcept { return members; }
 
             ~EnumDeclarationNode() override = default;
     };

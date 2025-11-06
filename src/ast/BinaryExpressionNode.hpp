@@ -43,6 +43,8 @@ namespace LynxAst {
             std::unique_ptr<Node> rightOperand;
             
             OperatorType operatorType;
+            
+        private:
 
             llvm::Value* generateIntegerCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
 
@@ -69,7 +71,7 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::BINARY_OPERATION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::BINARY_OPERATION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 

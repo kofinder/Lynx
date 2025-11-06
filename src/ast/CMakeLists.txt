@@ -29,7 +29,6 @@ set(LIB_AST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/MixinDeclarationNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/InterfaceDeclarationNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/ObjectCreationNode.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/impl/ObjectAccessNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/MethodCallNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/ArrayAccessNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/ChainedDereferenceNode.cpp
@@ -73,7 +72,6 @@ set(LIB_AST_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/MixinDeclarationNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/InterfaceDeclarationNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ObjectCreationNode.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ObjectAccessNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MethodCallNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ArrayAccessNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MethodCallNode.hpp

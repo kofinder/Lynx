@@ -96,7 +96,7 @@ namespace LynxAst {
         
             std::unique_ptr<Node> clone() const override;
         
-            NodeType getNodeType() override { return NodeType::VARIABLE_DECLARATION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::VARIABLE_DECLARATION_NODE; }
         
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
                             
@@ -104,22 +104,20 @@ namespace LynxAst {
 
             void setClazzNode(std::unique_ptr<Node> clazz) { clazzNode = std::move(clazz); }
         
-            bool isClassVariable() const { return clazzNode != nullptr; }
+            [[nodiscard]] bool isClassVariable() const { return clazzNode != nullptr; }
         
-            llvm::Value* getLLVMVariableRef() const { return llvmVariableRef; }
-            
+            [[nodiscard]] llvm::Value* getLLVMVariableRef() const { return llvmVariableRef; }
             void setLLVMVariableRef(llvm::Value* val) { llvmVariableRef = val; }
         
-            BaseType* getBaseType() const { return baseType; }
-            const std::string& getVariableName() const { return variableName; }
-            VariableType* getVariableType() const { return variableType.get(); }
+            [[nodiscard]] BaseType* getBaseType() const { return baseType; }
+            [[nodiscard]] const std::string& getVariableName() const { return variableName; }
+            [[nodiscard]] VariableType* getVariableType() const { return variableType.get(); }
         
-            bool hasInitializer() const { return initialValueNode != nullptr; }
-            Node* getInitializer() const { return initialValueNode.get(); }
+            [[nodiscard]] bool hasInitializer() const { return initialValueNode != nullptr; }
+            [[nodiscard]] Node* getInitializer() const { return initialValueNode.get(); }
         
             void setAccessModifier(AccessModifierType modifier) { accessModifier = modifier; }
-            
-            AccessModifierType getAccessModifier() const { return accessModifier; }
+            [[nodiscard]] inline constexpr AccessModifierType getAccessModifier() const { return accessModifier; }
         
             size_t calculateDeclaredSize(const std::vector<int>& dimensions, size_t index = 0) const noexcept {
                 if (index >= dimensions.size()) return 1;

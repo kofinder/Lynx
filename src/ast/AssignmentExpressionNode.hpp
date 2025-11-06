@@ -52,6 +52,12 @@ namespace LynxAst {
 
             OperatorType operatorType;
 
+        private:
+
+            llvm::Value* generateComplexAssign(const AstContext& context);
+
+            llvm::Value* generateSimpleAssign(const AstContext& context);
+
         public:
             
             explicit AssignmentExpressionNode(
@@ -59,7 +65,7 @@ namespace LynxAst {
                 OperatorType oprType, 
                 std::unique_ptr<Node> exprNode, 
                 AssignExpressionType assignType
-            ): varName(std::move(valName)), operatorType(oprType), expressionNode(std::move(exprNode)), assignExprType(assignType) {}
+            ) : varName(std::move(valName)), operatorType(oprType), expressionNode(std::move(exprNode)), assignExprType(assignType) {}
 
             explicit AssignmentExpressionNode(
                 const std::string valName, 
@@ -67,36 +73,32 @@ namespace LynxAst {
                 OperatorType oprType, 
                 std::unique_ptr<Node> exprNode, 
                 AssignExpressionType assignType
-            ): varName(std::move(valName)), baseName(std::move(bizName)), operatorType(oprType), expressionNode(std::move(exprNode)), assignExprType(assignType) {}
+            ) : varName(std::move(valName)), baseName(std::move(bizName)), operatorType(oprType), expressionNode(std::move(exprNode)), assignExprType(assignType) {}
            
             explicit AssignmentExpressionNode(
                 std::unique_ptr<Node> assignNode, 
                 OperatorType oprType, 
                 std::unique_ptr<Node> exprNode, 
                 AssignExpressionType assignType
-            ): assignableNode(std::move(assignNode)), operatorType(oprType), expressionNode(std::move(exprNode)), assignExprType(assignType) {}
+            ) : assignableNode(std::move(assignNode)), operatorType(oprType), expressionNode(std::move(exprNode)), assignExprType(assignType) {}
         
-            NodeType getNodeType() override { return NodeType::ASSIGNMENT_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::ASSIGNMENT_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
             std::unique_ptr<Node> clone() const override;
            
-            llvm::Value* generateComplexAssign(std::shared_ptr<AstContext> astContext);
-
-            llvm::Value* generateSimpleAssign(std::shared_ptr<AstContext> astContext);
-           
-            inline std::string getVarName() const { return varName; }
+            [[nodiscard]] inline std::string getVarName() const noexcept { return varName; }
             
-            inline std::string getBaseName() const { return baseName;  }
+            [[nodiscard]] inline std::string getBaseName() const noexcept { return baseName;  }
 
-            constexpr inline AssignExpressionType getAssignExprType() const { return assignExprType; }
+            [[nodiscard]] constexpr inline AssignExpressionType getAssignExprType() const noexcept { return assignExprType; }
 
-            constexpr inline OperatorType getOperatorType() const { return operatorType; }
+            [[nodiscard]] constexpr inline OperatorType getOperatorType() const noexcept { return operatorType; }
 
-            inline Node* getAssignExprNode() const { return expressionNode.get(); }
+            [[nodiscard]] inline Node* getAssignExprNode() const noexcept { return expressionNode.get(); }
 
-            inline Node* getAssignableNode() const { return assignableNode.get(); }
+            [[nodiscard]] inline Node* getAssignableNode() const noexcept { return assignableNode.get(); }
 
             ~AssignmentExpressionNode() override = default;
     };

@@ -60,7 +60,7 @@ namespace LynxAst {
 
             int evaluate() const;
             
-            NodeType getNodeType() override { return NodeType::ENUM_VALUE_EXPRESSION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::ENUM_VALUE_EXPRESSION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override { return nullptr; }
 

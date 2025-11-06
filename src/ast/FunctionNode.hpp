@@ -84,11 +84,11 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
         
-            NodeType getNodeType() override { return NodeType::FUNCTION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::FUNCTION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
-            llvm::Value* setReturnValue(std::shared_ptr<AstContext> astContext, llvm::Value* value);  
+            llvm::Value* setReturnValue(const AstContext& astContext, llvm::Value* value);  
 
             void setFunctionBody(std::unique_ptr<StatementListNode> stmts) { statements = std::move(stmts); }
 
@@ -96,17 +96,17 @@ namespace LynxAst {
 
             [[nodiscard]] const std::shared_ptr<std::vector<std::shared_ptr<Parameter>>> getFunctionParameter() const noexcept { return fnParams; }
 
-            StatementListNode* getFunctionStatements() const noexcept { return statements.get(); }
+            [[nodiscard]] inline StatementListNode* getFunctionStatements() const noexcept { return statements.get(); }
 
             void setReturnType(std::shared_ptr<VariableType> retType) { returnType = std::move(retType); }
 
-            std::string getFunctionName() const noexcept { return fnName; }
+            [[nodiscard]] inline std::string getFunctionName() const noexcept { return fnName; }
 
-            llvm::Function* getLLVMFunctionRef() const noexcept { return llvmFunction; }
+            [[nodiscard]] inline llvm::Function* getLLVMFunctionRef() const noexcept { return llvmFunction; }
 
             void setLLVMFunction(llvm::Function* llvmFunc) noexcept { llvmFunction = llvmFunc;  }
 
-            ExceptionHandlerNode* getExceptionHandler() const noexcept {  return exceptionHandlers.empty() ? nullptr : exceptionHandlers.top(); }
+            [[nodiscard]] inline ExceptionHandlerNode* getExceptionHandler() const noexcept {  return exceptionHandlers.empty() ? nullptr : exceptionHandlers.top(); }
 
             void pushExceptionHandler(ExceptionHandlerNode* node) noexcept { exceptionHandlers.push(node);  }
 
@@ -120,19 +120,19 @@ namespace LynxAst {
 
             void setAccessModifier(AccessModifierType modifierType) noexcept { accessModifier = modifierType; }
 
-            AccessModifierType getAccessModifier() const noexcept { return accessModifier; }
+            [[nodiscard]] inline constexpr AccessModifierType getAccessModifier() const noexcept { return accessModifier; }
 
             void setClazzNode(Node* classNodePtr) noexcept { clazzNode = classNodePtr; }
     
-            bool isClazzFunction() const noexcept { return clazzNode != nullptr; }
+            [[nodiscard]] inline bool isClazzFunction() const noexcept { return clazzNode != nullptr; }
 
             void setVirtual(bool value) noexcept { isVirtual = value; }
 
             void setOverride(bool value) noexcept { isOverride = value; }
 
-            std::string getSignatureString() const;
+            [[nodiscard]] std::string getSignatureString() const;
 
-            std::string getCurrentClazzName() const;
+            [[nodiscard]] std::string getCurrentClazzName() const;
 
             ~FunctionNode() override = default;
     };

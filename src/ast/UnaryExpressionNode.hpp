@@ -38,6 +38,8 @@ namespace LynxAst {
             std::unique_ptr<Node> expressionNode;
             
             UnaryExpressionType unaryExpressionType;
+            
+        private:
 
             llvm::Value* handleIncrementOrDecrement(const AstContext& astContext, llvm::Value* valueInstance, llvm::Type* loadType, llvm::Value* llvmVarRef, bool isIncrement);
 
@@ -59,7 +61,7 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::UNARY_OPERATION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::UNARY_OPERATION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 

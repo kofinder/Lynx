@@ -54,7 +54,7 @@ namespace LynxAst {
         return llvm::ConstantInt::getFalse(astContext->getLLVMContext());
     }
 
-    llvm::Value* ComparisonExpressionNode::generateIntegerCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) {        
+    llvm::Value* ComparisonExpressionNode::generateIntegerCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) const {        
         LOG_WARN("IR Code Generation ......");
 
         const bool isUnsigned = lhsValue->getType()->isIntegerTy() && !lhsValue->getType()->getScalarSizeInBits();
@@ -86,7 +86,7 @@ namespace LynxAst {
         );
     }
 
-    llvm::Value* ComparisonExpressionNode::generateDoubleCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) {
+    llvm::Value* ComparisonExpressionNode::generateDoubleCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) const {
         LOG_WARN("IR Code Generation ......");
 
         const auto resolveComparisonOperator = [this]() noexcept -> std::optional<std::pair<llvm::CmpInst::Predicate, const char*>> {
@@ -117,7 +117,7 @@ namespace LynxAst {
         );
     }
 
-    llvm::Value* ComparisonExpressionNode::generateBooleanCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) {
+    llvm::Value* ComparisonExpressionNode::generateBooleanCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) const {
         LOG_WARN("IR Code Generation ......");
         const auto resolveComparisonOperator = [this]() noexcept -> std::optional<std::pair<llvm::CmpInst::Predicate, const char*>> {
             switch (operatorType) {
@@ -144,7 +144,7 @@ namespace LynxAst {
     }
 
 
-    llvm::Value* ComparisonExpressionNode::generateCharCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) {
+    llvm::Value* ComparisonExpressionNode::generateCharCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) const {
         LOG_WARN("IR Code Generation ......");
         const auto resolveComparisonOperator = [this]() noexcept -> std::optional<std::pair<llvm::CmpInst::Predicate, const char*>> {
             switch (operatorType) {
@@ -188,7 +188,7 @@ namespace LynxAst {
         );
     }
 
-    llvm::Value* ComparisonExpressionNode::generateStringCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) {
+    llvm::Value* ComparisonExpressionNode::generateStringCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) const {
         LOG_WARN("IR Code Generation ......");
         const auto resolveComparisonOperator = [this]() noexcept -> std::optional<std::pair<llvm::CmpInst::Predicate, const char*>> {
             switch (operatorType) {
@@ -227,7 +227,7 @@ namespace LynxAst {
         );
     }
 
-    llvm::Value* ComparisonExpressionNode::generateEnumCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) {
+    llvm::Value* ComparisonExpressionNode::generateEnumCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) const {
         LOG_WARN("IR Code Generation ......");
         const auto resolveEnumPredicate = [this]() noexcept -> std::optional<std::pair<llvm::CmpInst::Predicate, const char*>>  {
             switch (operatorType) {

@@ -15,9 +15,8 @@ namespace LynxAst {
     using namespace LynxTypes;
     using namespace LynxConstants;
 
-
     llvm::Value* ImportStatementNode::generateCode(std::shared_ptr<AstContext> astContext) {
-        LOG_INFO("Generating code for import statement: {} ", moduleName);
+        LOG_WARN("IR Code Generation ..: {} ", moduleName);
 
         auto* module = astContext->getModule();
         auto& context = astContext->getLLVMContext();
@@ -26,7 +25,7 @@ namespace LynxAst {
         RuntimeModuleType moduleType = parseModuleType(moduleName);
         bool isRuntime = RuntimeModuleLoader::loadModule(moduleType);
         if(isRuntime) {
-            initializeRuntimeClassesForModule(astContext.get(), moduleType);
+            initializeRuntimeClassesForModule(*astContext, moduleType);
             return nullptr;
         }
 
@@ -47,7 +46,7 @@ namespace LynxAst {
         return nullptr;
     }
 
-    void ImportStatementNode::initializeRuntimeClassesForModule(AstContext* astContext, RuntimeModuleType moduleType) {
+    void ImportStatementNode::initializeRuntimeClassesForModule(const AstContext& astContext, RuntimeModuleType moduleType) {
         LOG_INFO("This is system module {}.", moduleName);
         auto& classRegistry = RuntimeClassRegistry::getInstance();
         switch (moduleType) {

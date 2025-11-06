@@ -36,11 +36,11 @@ namespace LynxAst::VariableUtils {
      * @return llvm::Value* The LLVM IR value loaded from the variable reference.
      *         Returns nullptr if resolution fails.
      */
-    inline ResolvedVariable resolveVariable(AstContext* astContext, const std::string& variableName) {
+    inline ResolvedVariable resolveVariable(const AstContext& astContext, const std::string& variableName) {
         LOG_INFO("Resolving variable: {}", variableName);
 
-        auto& builder = astContext->getBuilder();
-        auto symbol = astContext->getGlobalContext();
+        auto& builder = astContext.getBuilder();
+        auto symbol = astContext.getGlobalContext();
 
         if (!symbol) {
             throw std::runtime_error("Scope context is null in resolveVariable()");

@@ -50,6 +50,8 @@ namespace LynxAst {
             
             std::unique_ptr<std::vector<std::unique_ptr<ExpressionNode>>> arguments;
 
+        private:
+
             llvm::Value* generateFunctionCallIR(const AstContext& astContext, llvm::Function* calleeFunction, llvm::ArrayRef<llvm::Value*> args = llvm::None);
 
             llvm::Value* generateImportedFunctionCallIR(const AstContext& astContext, llvm::ArrayRef<llvm::Value*> args = llvm::None);
@@ -65,13 +67,13 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::FUNCTION_CALL_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::FUNCTION_CALL_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
             void setArguments(std::unique_ptr<std::vector<std::unique_ptr<ExpressionNode>>> args) noexcept { arguments = std::move(args); }
 
-            const std::vector<std::unique_ptr<ExpressionNode>>& getArguments() const {  return *arguments; }
+            [[nodiscard]] inline const std::vector<std::unique_ptr<ExpressionNode>>& getArguments() const noexcept {  return *arguments; }
 
             std::unique_ptr<std::vector<std::unique_ptr<ExpressionNode>>> takeArguments() { return std::move(arguments); }
             
@@ -79,15 +81,15 @@ namespace LynxAst {
 
             void setObjectName(const std::string& objName) { objectName = objName; }
 
-            bool isObjectCreation() const { return !className.empty(); }
+            [[nodiscard]] inline bool isObjectCreation() const noexcept { return !className.empty(); }
 
             bool isClassMethodCall() const { return !objectName.empty(); }
 
             void setFunctionName(const std::string& fnName) { functionName = fnName; }
 
-            const std::string& getFunctionName() const { return functionName; }
+            [[nodiscard]] inline const std::string& getFunctionName() const noexcept { return functionName; }
 
-            std::string getClazzInstanceName() const { return "new_" + objectName; }
+            [[nodiscard]] inline std::string getClazzInstanceName() const noexcept { return "new_" + objectName; }
 
             ~FunctionCallNode() override = default;
     };

@@ -37,7 +37,7 @@ namespace LynxContext {
              * @throws If the LLVM type is not sized.
              */
             static llvm::Value* allocate(
-                AstContext& astContext,
+                const AstContext& astContext,
                 llvm::Type* llvmType,
                 const std::string& name = "heap_alloc"
             ) {
@@ -84,7 +84,7 @@ namespace LynxContext {
              * @return A pointer to the LLVM function representing malloc.
              */
             static llvm::Function* getOrInsertMallocFunction(
-                AstContext& astContext,
+                const AstContext& astContext,
                 llvm::Type* sizeArgType,
                 const std::string& fnName = "GC_malloc"
             ) {
@@ -117,7 +117,7 @@ namespace LynxContext {
              * @return A pointer to the allocated object (LLVM Value).
              */
             static llvm::Value* allocateTyped(
-                AstContext& astContext,
+                const AstContext& astContext,
                 llvm::Type* llvmType,
                 const std::string& name = "heap_alloc"
             ) {

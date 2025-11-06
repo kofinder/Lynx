@@ -61,7 +61,7 @@ namespace LynxAst {
                 auto* module = astContext->getModule();
         
                 std::string identifier = std::get<std::string>(value);
-                auto* resolved = VariableUtils::resolveVariable(astContext.get(), identifier).value;
+                auto* resolved = VariableUtils::resolveVariable(*astContext, identifier).value;
 
                 llvm::errs() << "resolved val ===>"; resolved->print(llvm::outs()); llvm::errs() << "\n";
                 llvm::errs() << "resolved type ===>"; resolved->getType()->print(llvm::outs()); llvm::errs() << "\n";
@@ -140,7 +140,7 @@ namespace LynxAst {
                 return nullptr;        
             }
 
-            NodeType getNodeType() override { return NodeType::SWITCH_CASE_CONSTANT_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::SWITCH_CASE_CONSTANT_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override {
                 if(isQualified) return emitQualifiedConstant(astContext);

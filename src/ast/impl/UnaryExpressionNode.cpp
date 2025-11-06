@@ -26,7 +26,7 @@ namespace LynxAst {
             valueInstance = expressionNode->generateCode(astContext);
             valueType = valueInstance->getType();
         } else {
-            auto resolved = resolveVariable(astContext.get(), variableName);
+            auto resolved = resolveVariable(*astContext, variableName);
             if (!resolved.value || !resolved.reference) {
                 LOG_ERROR("Failed to resolve variable '{}'", variableName);
                 throw std::runtime_error("Variable resolution failed.");

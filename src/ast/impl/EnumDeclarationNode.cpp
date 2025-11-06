@@ -28,7 +28,7 @@ namespace LynxAst {
         return nullptr;
     }
 
-    void EnumDeclarationNode::buildEnumType(EnumType& enumType) {
+    void EnumDeclarationNode::buildEnumType(EnumType& enumType) const {
         int nextAutoValue = 0;
 
         for (const auto& [memberName, value] : members) {
@@ -59,7 +59,7 @@ namespace LynxAst {
         }
     }
 
-    std::vector<llvm::Constant*> EnumDeclarationNode::generatePayload(const AstContext& astContext, EnumMember member) {
+    std::vector<llvm::Constant*> EnumDeclarationNode::generatePayload(const AstContext& astContext, EnumMember member) const {
         auto* module = astContext.getModule();
         auto& context = astContext.getLLVMContext();
 
@@ -107,7 +107,7 @@ namespace LynxAst {
         return {intPayload, charPayload, stringPayload};
     }
 
-    void EnumDeclarationNode::emitEnumConstants(const AstContext& astContext, const EnumType& enumType) {
+    void EnumDeclarationNode::emitEnumConstants(const AstContext& astContext, const EnumType& enumType) const {
         auto* module = astContext.getModule();
         auto& context = astContext.getLLVMContext();
         auto* llvmType = enumType.getLLVMType();

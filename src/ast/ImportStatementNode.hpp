@@ -31,11 +31,12 @@
 #include <constants/ImportType.hpp>
 #include <constants/runtime/RumtimeModuleType.hpp>
 
-using namespace LynxConstants;
 
 namespace LynxAst {
+
+    using namespace LynxConstants;
     
-    class ImportStatementNode: public Node {
+    class ImportStatementNode : public Node {
         
         private:
 
@@ -46,8 +47,10 @@ namespace LynxAst {
             std::string defaultImportAlias;
 
             std::optional<std::vector<std::unique_ptr<ImportSymbol>>> namedSymbols;
+        
+        private:
 
-            void initializeRuntimeClassesForModule(AstContext* astContext, RuntimeModuleType moduleType);
+            void initializeRuntimeClassesForModule(const AstContext& astContext, RuntimeModuleType moduleType);
             
         public:
 
@@ -68,19 +71,19 @@ namespace LynxAst {
                 const std::string& defaultAlias = ""
             ) : moduleName(module), importType(type), namedSymbols(std::move(symbols)), defaultImportAlias(defaultAlias) {}
 
-            NodeType getNodeType() override { return NodeType::IMPORT_STATEMENT_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::IMPORT_STATEMENT_NODE; }
 
             std::unique_ptr<Node> clone() const override;
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
-            const std::string& getModuleName() const { return moduleName; }
+            [[nodiscard]] const std::string& getModuleName() const { return moduleName; }
 
-            const std::optional<std::vector<std::unique_ptr<ImportSymbol>>>& getNamedSymbols() const { return namedSymbols; }
+            [[nodiscard]] const std::optional<std::vector<std::unique_ptr<ImportSymbol>>>& getNamedSymbols() const noexcept { return namedSymbols; }
 
-            const std::string& getDefaultImportAlias() const { return defaultImportAlias; }
+            [[nodiscard]] const std::string& getDefaultImportAlias() const noexcept { return defaultImportAlias; }
 
-            constexpr ImportType getImportType() const { return importType; }
+            [[nodiscard]] inline constexpr ImportType getImportType() const noexcept { return importType; }
         
             ~ImportStatementNode() override = default;
     };

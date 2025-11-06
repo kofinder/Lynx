@@ -36,7 +36,7 @@ namespace LynxAst {
     using namespace LynxContext;
     using namespace LynxConstants;
 
-    class PrimaryExpressionNode: public Node {
+    class PrimaryExpressionNode : public Node {
 
         private:
 
@@ -58,11 +58,11 @@ namespace LynxAst {
             
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::PRIMARY_EXPR_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::PRIMARY_EXPR_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
-            Node* getInnerExpression() const { return innerExpNode.get(); }
+            [[nodiscard]] Node* getInnerExpression() const { return innerExpNode.get(); }
     
             constexpr inline PrimaryExpressionType getPrimaryExpressionType() const { return primaryExpType; }
 

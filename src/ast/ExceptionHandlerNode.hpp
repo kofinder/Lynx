@@ -53,7 +53,7 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::EXCEPTION_HANDLE_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::EXCEPTION_HANDLE_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 

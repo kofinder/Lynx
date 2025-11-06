@@ -48,7 +48,7 @@ namespace LynxAst {
                 std::unique_ptr<Node> v
             ): key(std::move(k)), value(std::move(v)) {}
 
-            NodeType getNodeType() override { return NodeType::LITERAL_PAIR_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::LITERAL_PAIR_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override {
                 throw std::runtime_error("LiteralListNode::generateCode should be handled by parent.");        

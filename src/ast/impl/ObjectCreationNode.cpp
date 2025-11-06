@@ -21,14 +21,14 @@ namespace LynxAst {
 
 
     llvm::Value* ObjectCreationNode::generateCode(std::shared_ptr<AstContext> astContext)  {
-        LOG_INFO("Variable Type ...{}", variableType->name);
+        LOG_WARN("IR Code Generation ...", variableType->name);
 
         auto callableInfo = resolveCallableLLVMInfo(*astContext);
 
         return generate(*astContext, callableInfo);
     }
 
-    llvm::Value* ObjectCreationNode::generate(AstContext& astContext, const CallableInfo& callableInfo) {
+    llvm::Value* ObjectCreationNode::generate(const AstContext& astContext, const CallableInfo& callableInfo) {
 
         auto [argTypes, argValues, objectType, baseType] = callableInfo;
 
@@ -41,7 +41,7 @@ namespace LynxAst {
         return newInstance;
     }
 
-    void ObjectCreationNode::emitConstructorCall(AstContext& astContext, llvm::Value* newInstance, const CallableInfo& callableInfo) {
+    void ObjectCreationNode::emitConstructorCall(const AstContext& astContext, llvm::Value* newInstance, const CallableInfo& callableInfo) {
         auto [argTypes, argValues, objectType, baseType] = callableInfo;
 
         auto clazzType = TypeCasting::castType<ClassType>(baseType);
@@ -100,7 +100,7 @@ namespace LynxAst {
         builder.CreateCall(ctorFn, ctorArgs);
     }
     
-    CallableInfo ObjectCreationNode::resolveCallableLLVMInfo(AstContext& astContext) {
+    CallableInfo ObjectCreationNode::resolveCallableLLVMInfo(const AstContext& astContext) {
         std::vector<llvm::Value*> ctorArgs;
         std::vector<llvm::Type*> ctorArgTypes;
 
@@ -169,7 +169,7 @@ namespace LynxAst {
         }
     }
 
-    std::tuple<llvm::Type*, BaseType*>  ObjectCreationNode::convertToLLVMType(AstContext& astContext) {
+    std::tuple<llvm::Type*, BaseType*>  ObjectCreationNode::convertToLLVMType(const AstContext& astContext) {
 
         if (variableType->type == DataType::OTHER) {
             if (auto baseType = astContext.findType(variableType->name)) {

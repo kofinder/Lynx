@@ -51,7 +51,7 @@ namespace LynxAst {
                 std::unique_ptr<std::vector<std::unique_ptr<ExpressionNode>>> args
             ) : moduleName(std::move(mod)), methodName(std::move(method)), arguments(std::move(args)) {}
 
-            NodeType getNodeType() override { return NodeType::SYSTEM_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::SYSTEM_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 

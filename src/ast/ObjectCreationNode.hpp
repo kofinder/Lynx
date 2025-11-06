@@ -52,15 +52,17 @@ namespace LynxAst {
 
             std::unique_ptr<std::vector<std::unique_ptr<ExpressionNode>>> arguments;
 
-            CallableInfo resolveCallableLLVMInfo(AstContext& astContext);
+        private:
 
-            std::tuple<llvm::Type*, BaseType*> convertToLLVMType(AstContext& astContext);
+            CallableInfo resolveCallableLLVMInfo(const AstContext& astContext);
+
+            std::tuple<llvm::Type*, BaseType*> convertToLLVMType(const AstContext& astContext);
 
             std::string getMangleName(const CallableInfo& callableInfo) const;
             
-            llvm::Value* generate(AstContext& astContext, const CallableInfo& callableInfo);
+            llvm::Value* generate(const AstContext& astContext, const CallableInfo& callableInfo);
 
-            void emitConstructorCall(AstContext& astContext, llvm::Value* newInstance, const CallableInfo& callableInfo);
+            void emitConstructorCall(const AstContext& astContext, llvm::Value* newInstance, const CallableInfo& callableInfo);
 
         public:
 
@@ -71,11 +73,11 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override; 
 
-            NodeType getNodeType() override { return NodeType::OBJECT_CREATION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::OBJECT_CREATION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
-            const std::vector<std::unique_ptr<ExpressionNode>>& getArguments() const { return *arguments; }
+            [[nodiscard]] const std::vector<std::unique_ptr<ExpressionNode>>& getArguments() const { return *arguments; }
             
             ~ObjectCreationNode() override = default;
     };

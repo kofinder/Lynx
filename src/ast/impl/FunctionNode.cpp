@@ -126,9 +126,9 @@ namespace LynxAst {
         return llvmFunction;
     }
 
-    llvm::Value* FunctionNode::setReturnValue(std::shared_ptr<AstContext> astContext, llvm::Value* value) {
-        auto& builder = astContext->getBuilder();
-        auto& context = astContext->getLLVMContext();
+    llvm::Value* FunctionNode::setReturnValue(const AstContext& astContext, llvm::Value* value) {
+        auto& builder = astContext.getBuilder();
+        auto& context = astContext.getLLVMContext();
     
         if (!value) {
             throw std::runtime_error("Attempt to set a null return value.");

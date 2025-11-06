@@ -45,6 +45,8 @@ namespace LynxAst {
 
             std::unique_ptr<std::vector<std::unique_ptr<SwitchCaseBlockNode>>> basicBlocks;
 
+        private:
+
             llvm::ConstantInt* tryGetCaseConstant(llvm::Value* value);
             
         public:
@@ -54,7 +56,7 @@ namespace LynxAst {
             ) : levelExpression(std::move(levelExprNode)),
                 basicBlocks(std::make_unique<std::vector<std::unique_ptr<SwitchCaseBlockNode>>>())  {}
 
-            NodeType getNodeType() override { return NodeType::SWITCH_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::SWITCH_NODE; }
 
             std::unique_ptr<Node> clone() const override;
 
@@ -62,11 +64,11 @@ namespace LynxAst {
 
             void pushBasicBlock(std::unique_ptr<SwitchCaseBlockNode> node) { basicBlocks->push_back(std::move(node));  }
 
-            inline const std::vector<std::unique_ptr<SwitchCaseBlockNode>>& getBasicBlocks() const { return *basicBlocks; }
+            [[nodiscard]] inline const std::vector<std::unique_ptr<SwitchCaseBlockNode>>& getBasicBlocks() const { return *basicBlocks; }
     
-            Node* getLevelExpression() const { return levelExpression.get(); }
+            [[nodiscard]] Node* getLevelExpression() const { return levelExpression.get(); }
 
-            bool hasDefaultBlock() const;
+            [[nodiscard]] bool hasDefaultBlock() const;
 
             ~SwitchStatementNode() override = default;
     };

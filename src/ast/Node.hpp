@@ -92,7 +92,7 @@ namespace LynxAst {
              * Must be implemented by derived classes to indicate what kind of node this is (e.g., expression, declaration).
              * @return The type of the node as a NodeType.
              */
-            virtual NodeType getNodeType() = 0;
+            virtual inline constexpr NodeType getNodeType() = 0;
 
             /**
              * @brief Create a deep copy of the node.

@@ -37,7 +37,7 @@ namespace LynxAst {
 
         ValuePlaceholderNode(llvm::Value* tempValue) : value(tempValue) {}
 
-        NodeType getNodeType() override { return NodeType::VALUE_PLACEHOLDER_NODE;  }
+        inline constexpr NodeType getNodeType() override { return NodeType::VALUE_PLACEHOLDER_NODE;  }
 
         llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override { return value; }
 

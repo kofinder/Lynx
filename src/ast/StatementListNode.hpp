@@ -51,7 +51,7 @@ namespace LynxAst {
                 pushStatement(std::move(stmtNode)); 
             }
 
-            NodeType getNodeType() override { return NodeType::STATEMENT_LIST_NODE; } 
+            inline constexpr NodeType getNodeType() override { return NodeType::STATEMENT_LIST_NODE; } 
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;  
 
@@ -61,11 +61,11 @@ namespace LynxAst {
 
             VariableDeclarationNode* findLocal(const std::string& varName);  
 
-            const std::vector<std::unique_ptr<Node>>& getStatements() const {  return statements; }
+            [[nodiscard]] const std::vector<std::unique_ptr<Node>>& getStatements() const {  return statements; }
         
-            const std::map<std::string, VariableDeclarationNode*>& getLocalKeyValue() const { return locals; }
+            [[nodiscard]] const std::map<std::string, VariableDeclarationNode*>& getLocalKeyValue() const { return locals; }
 
-            void pushStatement(std::unique_ptr<Node> stmtNode) { this->statements.push_back(std::move(stmtNode)); }             
+            void pushStatement(std::unique_ptr<Node> stmtNode) { statements.push_back(std::move(stmtNode)); }             
 
             ~StatementListNode() override = default;
             

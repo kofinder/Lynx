@@ -77,15 +77,15 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::LITERAL_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::LITERAL_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
-            inline bool isNull() const noexcept {  return valueType == DataType::NULLPTR;  }
+            [[nodiscard]] inline bool isNull() const noexcept {  return valueType == DataType::NULLPTR;  }
    
-            inline constexpr DataType getVariableType() const noexcept { return valueType; }
+            [[nodiscard]] inline constexpr DataType getVariableType() const noexcept { return valueType; }
 
-            inline LValueType getLiteralValue() const noexcept { return literalData; }
+            [[nodiscard]] inline LValueType getLiteralValue() const noexcept { return literalData; }
 
             ~LiteralNode() override = default;
     };

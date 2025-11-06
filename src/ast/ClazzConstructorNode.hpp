@@ -78,15 +78,15 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::CLAZZ_CONSTRUCTOR_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::CLAZZ_CONSTRUCTOR_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
             inline std::shared_ptr<std::vector<std::shared_ptr<Parameter>>> getParameters() const { return parameters; }
 
-            std::string getQualifiedName(const AstContext& context) const;
+            [[nodiscard]] std::string getQualifiedName(const AstContext& context) const;
 
-            const std::string& originalName() const { return constructorName; }
+            [[nodiscard]] const std::string& originalName() const noexcept { return constructorName; }
 
             ~ClazzConstructorNode() override = default;
     };

@@ -46,11 +46,11 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
                 
-            NodeType getNodeType() override { return NodeType::IDENTIFIER_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::IDENTIFIER_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
-            const std::string& getName() const { return identifierName; }
+            [[nodiscard]] const std::string& getName() const noexcept { return identifierName; }
     };
 }
 

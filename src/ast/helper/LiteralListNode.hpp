@@ -52,7 +52,7 @@ namespace LynxAst {
                 return clonedList;
             }
 
-            NodeType getNodeType() override { return NodeType::LITERAL_LIST_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::LITERAL_LIST_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override {
                 throw std::runtime_error("LiteralListNode::generateCode should be handled by parent.");

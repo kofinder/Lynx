@@ -30,9 +30,10 @@
 #include <constants/Parameter.hpp>
 #include <constants/expressions/ExpressionType.hpp>
 
-using namespace LynxConstants;
 
 namespace LynxAst {
+
+    using namespace LynxConstants;
 
     class ExpressionStatementNode : public Node {
 
@@ -46,7 +47,7 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::EXPRESSION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::EXPRESSION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 

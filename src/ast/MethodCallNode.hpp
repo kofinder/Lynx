@@ -63,7 +63,7 @@ namespace LynxAst {
                     "MethodCallInfo can only be instantiated with InterfaceType, ClassType, or MixinType"
                 );
             
-                AstContext& astContext;             
+                const AstContext& astContext;             
 
                 const Adapter& usrDefinedType; // can be interface type or class Type
                    
@@ -85,9 +85,11 @@ namespace LynxAst {
 
             std::unique_ptr<Node> objectTargetNode;
 
-            std::tuple<std::string, std::vector<llvm::Type*>, std::vector<llvm::Value*>> extractMethodCall(const AstContext& astContext);
+        private:
 
-            llvm::Value* createNullSafeCall(AstContext& astContext, llvm::Value* objectPtr, const std::function<llvm::Value*()>& generateCall);
+            std::tuple<std::string, std::vector<llvm::Type*>, std::vector<llvm::Value*>> extractMethodCall(const AstContext& astContext) const;
+
+            llvm::Value* createNullSafeCall(const AstContext& astContext, llvm::Value* objectPtr, const std::function<llvm::Value*()>& generateCall);
             
             /**
              * @brief Handles method calls on built-in or library types.
@@ -105,7 +107,7 @@ namespace LynxAst {
             * @param baseType representing the result of datatype
              * @return LLVM value representing the result of the call.
             */
-            llvm::Value* dispatchUserDefinedMethod(AstContext& astContext, 
+            llvm::Value* dispatchUserDefinedMethod(const AstContext& astContext, 
                 const BaseType& baseType, 
                 llvm::Value* objectValue,
                 std::string funcName,
@@ -124,7 +126,7 @@ namespace LynxAst {
              *         - Type category as string ("File", "DateTime", "Array", "other")
              *         - Boolean indicating whether it's a user-defined type
              */
-            std::tuple<llvm::Value*, BaseType*, bool> classifyMethodTarget(AstContext& astContext);
+            std::tuple<llvm::Value*, BaseType*, bool> classifyMethodTarget(const AstContext& astContext) const;
 
             /**
              * @brief Dispatches a virtual method call at runtime.
@@ -136,7 +138,7 @@ namespace LynxAst {
              * @return LLVM value of the method call result
              */
             template <typename Adapter>
-            llvm::Value* dispatchMethod(const MethodCallInfo<Adapter>& info);
+            llvm::Value* dispatchMethod(const MethodCallInfo<Adapter>& info) const;
 
             /**
              * @brief Invokes a method, choosing compile-time or runtime dispatch.
@@ -147,20 +149,24 @@ namespace LynxAst {
              * @return LLVM value of the method call result
              */
             template <typename Adapter>
-            llvm::Value* invokeMethod(const MethodCallInfo<Adapter>& info);
+            llvm::Value* invokeMethod(const MethodCallInfo<Adapter>& info) const;
 
         public:
 
             MethodCallNode(
                 std::unique_ptr<FunctionCallNode> fnCallNode, 
                 std::unique_ptr<Node> targetNode
-            ): functionCallNode(std::move(fnCallNode)), objectTargetNode(std::move(targetNode)) {}
+            ) noexcept : functionCallNode(std::move(fnCallNode)), objectTargetNode(std::move(targetNode)) {}
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::METHOD_CALL_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::METHOD_CALL_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
+
+            [[nodiscard]] inline Node* getObjectTarget() const noexcept { return objectTargetNode.get(); }
+
+            [[nodiscard]] inline FunctionCallNode* getFunctionCall() const noexcept { return functionCallNode.get(); }
 
             ~MethodCallNode() override = default;
     };
