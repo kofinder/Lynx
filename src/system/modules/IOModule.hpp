@@ -22,24 +22,58 @@
 #include <functional>
 #include "system/ISystemModule.hpp"
 #include "system/ISystemCommand.hpp"
-#include "commands/IOPrintCommand.hpp"
-#include "commands/IOReadCommand.hpp"
 #include "tmpl/SystemModuleTemplate.hpp"
+
+// IO WRITE
+#include "commands/io/impl/IOPrintOutCommand.hpp"
+#include "commands/io/impl/IOPrintfCommand.hpp"
+#include "commands/io/impl/IOPrintlnCommand.hpp"
+
+// IO READ
+#include "commands/io/impl/IOReadLineCommand.hpp"
+#include "commands/io/impl/IOReadByteCommand.hpp"
+#include "commands/io/impl/IOReadShortCommand.hpp"
+#include "commands/io/impl/IOReadIntCommand.hpp"
+#include "commands/io/impl/IOReadLongCommand.hpp"
+#include "commands/io/impl/IOReadFloatCommand.hpp"
+#include "commands/io/impl/IOReadDoubleCommand.hpp"
+#include "commands/io/impl/IOReadCharCommand.hpp"
+#include "commands/io/impl/IOReadBoolCommand.hpp"
+#include "commands/io/impl/IOReadMapCommand.hpp"
+#include "commands/io/impl/IOReadArrayCommand.hpp"
+#include "commands/io/impl/IOReadObjectCommand.hpp"
+
 
 namespace LynxSystem {
 
     using namespace LynxSystem::meta;
 
-    class IOModule : public ISystemModule {
+    class IOModule final: public ISystemModule {
 
         public:
 
             IOModule() {
-                registerCommand<IOReadCommand>("in", commands);
-                registerCommand<IOPrintCommand>("out", commands);    
+                // write
+                registerCommand<IOPrintOutCommand>("out", commands); 
+                registerCommand<IOPrintfCommand>("printf", commands);   
+                registerCommand<IOPrintlnCommand>("println", commands);
+
+                // read
+                registerCommand<IOReadLineCommand>("in", commands);
+                registerCommand<IOReadByteCommand>("getByte", commands);
+                registerCommand<IOReadShortCommand>("getShort", commands);
+                registerCommand<IOReadIntCommand>("getInt", commands);
+                registerCommand<IOReadLongCommand>("getLong", commands);
+                registerCommand<IOReadFloatCommand>("getFloat", commands);
+                registerCommand<IOReadDoubleCommand>("getDouble", commands);
+                registerCommand<IOReadCharCommand>("getChar", commands);
+                registerCommand<IOReadBoolCommand>("getBool", commands);
+                registerCommand<IOReadMapCommand>("getMap", commands);
+                registerCommand<IOReadArrayCommand>("getArray", commands);
+                registerCommand<IOReadObjectCommand>("getObject", commands);    
             }
 
-            llvm::Value* invoke(std::shared_ptr<AstContext> context, const std::string& methodName, std::vector<llvm::Value*> calleeArgs) override {
+            llvm::Value* invokeCommand(std::shared_ptr<AstContext> context, const std::string& methodName, std::vector<llvm::Value*> calleeArgs) override {
                 auto it = commands.find(methodName);
                 if (it == commands.end()) {
                     LOG_ERROR("Unknown IO method: {}", methodName);
@@ -49,7 +83,7 @@ namespace LynxSystem {
                 return command->execute(context, calleeArgs);        
             }
         
-            ~IOModule() override = default;
+            ~IOModule() noexcept override = default;
 
         private:    
 
@@ -57,7 +91,6 @@ namespace LynxSystem {
 
             std::unordered_map<std::string, CommandFactory> commands;
     };
-        
     
 }
 

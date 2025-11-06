@@ -29,7 +29,7 @@ namespace LynxSystem {
             llvm::Value* invokeMethod(std::shared_ptr<AstContext> context, const std::string& moduleName, const std::string& methodName, std::vector<llvm::Value*> calleeArgs) {
                 auto module = SystemModuleRegistry::getModule(moduleName);
                 if (!module) return nullptr;
-                return module->invoke(context, methodName, calleeArgs);            
+                return module->invokeCommand(context, methodName, calleeArgs);            
             }
     };
 }

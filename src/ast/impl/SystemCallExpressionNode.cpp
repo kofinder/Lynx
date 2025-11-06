@@ -1,4 +1,4 @@
-#include "SystemStatementNode.hpp"
+#include "SystemCallExpressionNode.hpp"
 #include "tmpl/CloneNodeTemplate.hpp"
 #include <system/SystemModuleFacade.hpp>
 
@@ -6,7 +6,7 @@ namespace LynxAst {
 
     using LynxSystem::SystemModuleFacade;
 
-    llvm::Value* SystemStatementNode::generateCode(std::shared_ptr<AstContext> astContext) {
+    llvm::Value* SystemCallExpressionNode::generateCode(std::shared_ptr<AstContext> astContext) {
         LOG_ERROR("IR Code Generation: {} {}", moduleName, methodName);
 
         if (methodName.empty()) {
@@ -27,12 +27,12 @@ namespace LynxAst {
         return result;
     }
 
-    std::unique_ptr<Node> SystemStatementNode::clone() const {
+    std::unique_ptr<Node> SystemCallExpressionNode::clone() const {
         auto clonedArgs = Cloneable::cloneNodeVector(arguments);
         if (!moduleName.empty()) {
-            return std::make_unique<SystemStatementNode>(moduleName, methodName, std::move(clonedArgs));
+            return std::make_unique<SystemCallExpressionNode>(moduleName, methodName, std::move(clonedArgs));
         } else {
-            return std::make_unique<SystemStatementNode>(methodName, std::move(clonedArgs));
+            return std::make_unique<SystemCallExpressionNode>(methodName, std::move(clonedArgs));
         }
     }
 

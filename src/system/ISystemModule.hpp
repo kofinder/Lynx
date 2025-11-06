@@ -29,9 +29,9 @@ namespace LynxSystem {
 
         public:
         
-            virtual ~ISystemModule() = default;
+            virtual ~ISystemModule() noexcept = default;
 
-            virtual llvm::Value* invoke(std::shared_ptr<AstContext> context, const std::string& methodName, std::vector<llvm::Value*> calleeArgs) = 0;
+            virtual llvm::Value* invokeCommand(std::shared_ptr<AstContext> context, const std::string& methodName, std::vector<llvm::Value*> calleeArgs) = 0;
     };
         
 }

@@ -228,39 +228,43 @@ namespace LynxSystem::utils {
         return llvm::cast<llvm::Function>(module->getOrInsertFunction("scanf", scanfType).getCallee());
     }
 
-    /**
-     * @brief Emits a `printf` call for the given LLVM value.
-    */
-    [[nodiscard]] inline llvm::Value* createPrintCall(llvm::IRBuilder<>& builder, llvm::Module* module, llvm::Value* value) noexcept(false) {
-        auto* printfFunc = getOrCreatePrintf(builder.getContext(), module);
-        const auto printfArgs = preparePrintfArguments(builder, module, value);
-        return builder.CreateCall(printfFunc, printfArgs, "printfCall");
-    }
-
-    /**
-     * @brief Emits a type-specific `printf` call for a compile-time known type `T`.
-    */
-    template <LLVMTypeCheckable T>
-    [[nodiscard]] inline llvm::Value* createPrintCallFor(llvm::IRBuilder<>& builder, llvm::Module* module, llvm::Value* value) noexcept{
-        const auto fmt = std::string(getFormatSpecifierFor<T>());
-        auto* printfFunc = getOrCreatePrintf(builder.getContext(), module);
-        auto* fmtStr = builder.CreateGlobalStringPtr(fmt, "fmt");
-        return builder.CreateCall(printfFunc, {fmtStr, value}, "printfCall");
-    }
-
-    /**
-     * @brief Emits a `scanf` call that reads an integer value from input.
-    */
-    [[nodiscard]] inline llvm::Value* createReadIntCall(llvm::IRBuilder<>& builder, llvm::Module* module) noexcept{
-        auto* scanfFunc = getOrCreateScanf(builder.getContext(), module);
-        auto* format = builder.CreateGlobalStringPtr("%d", "scanf_fmt");
-        auto* tmpVar = builder.CreateAlloca(builder.getInt32Ty(), nullptr, "scanf_tmp");
-    
-        builder.CreateCall(scanfFunc, {format, tmpVar}, "scanfCall");
-        return builder.CreateLoad(builder.getInt32Ty(), tmpVar, "read_value");
-    }
-    
-    
 }
 
 #endif
+
+
+
+
+    // /**
+    //  * @brief Emits a `printf` call for the given LLVM value.
+    // */
+    // [[nodiscard]] inline llvm::Value* createPrintCall(llvm::IRBuilder<>& builder, llvm::Module* module, llvm::Value* value) noexcept(false) {
+    //     auto* printfFunc = getOrCreatePrintf(builder.getContext(), module);
+    //     const auto printfArgs = preparePrintfArguments(builder, module, value);
+    //     return builder.CreateCall(printfFunc, printfArgs, "printfCall");
+    // }
+
+    // /**
+    //  * @brief Emits a type-specific `printf` call for a compile-time known type `T`.
+    // */
+    // template <LLVMTypeCheckable T>
+    // [[nodiscard]] inline llvm::Value* createPrintCallFor(llvm::IRBuilder<>& builder, llvm::Module* module, llvm::Value* value) noexcept{
+    //     const auto fmt = std::string(getFormatSpecifierFor<T>());
+    //     auto* printfFunc = getOrCreatePrintf(builder.getContext(), module);
+    //     auto* fmtStr = builder.CreateGlobalStringPtr(fmt, "fmt");
+    //     return builder.CreateCall(printfFunc, {fmtStr, value}, "printfCall");
+    // }
+
+    // /**
+    //  * @brief Emits a `scanf` call that reads an integer value from input.
+    // */
+    // [[nodiscard]] inline llvm::Value* createReadIntCall(llvm::IRBuilder<>& builder, llvm::Module* module) noexcept{
+    //     auto* scanfFunc = getOrCreateScanf(builder.getContext(), module);
+    //     auto* format = builder.CreateGlobalStringPtr("%d", "scanf_fmt");
+    //     auto* tmpVar = builder.CreateAlloca(builder.getInt32Ty(), nullptr, "scanf_tmp");
+    
+    //     builder.CreateCall(scanfFunc, {format, tmpVar}, "scanfCall");
+    //     return builder.CreateLoad(builder.getInt32Ty(), tmpVar, "read_value");
+    // }
+    
+    
