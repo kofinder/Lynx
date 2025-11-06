@@ -8,6 +8,8 @@ file(GLOB_RECURSE SYSTEM_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/commands/*.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/modules/*.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tmpl/*.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/utils/*.hpp"
 )
 
 add_library(LynxSystem STATIC ${SYSTEM_SOURCES} ${SYSTEM_HEADERS})

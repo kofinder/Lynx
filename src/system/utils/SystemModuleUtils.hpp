@@ -1,3 +1,32 @@
+/**
+ * @file LLVMIOUtils.hpp
+ * @brief Utility functions and type-safe helpers for I/O operations in LLVM IR.
+ *
+ * This header defines a collection of low-level LLVM utilities used by
+ * Lynx’s system modules to perform input and output operations (e.g., printf/scanf).
+ * It includes type-aware format specifier generation, argument preparation,
+ * and code emission utilities for printing or reading values in LLVM IR.
+ *
+ * The utilities rely on Lynx’s `TypeChecker` and `TypeCaster` templates
+ * to associate high-level language types with LLVM IR types, ensuring that
+ * generated I/O calls are both type-correct and semantically consistent.
+ *
+ * Key features:
+ * - Compile-time type introspection via `LLVMTypeCheckable` concept.
+ * - Automatic format specifier inference for Lynx language types.
+ * - LLVM IR builder utilities for `printf` and `scanf` creation.
+ * - Type-specific printing and reading of primitive and composite types.
+ *
+ * @note These functions are part of the internal LLVM code generation layer
+ *       and are not intended for direct use outside of system module contexts.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+ */
+
+#ifndef LYNX_SYSTEM_MODULE_UTILS_HPP
+#define LYNX_SYSTEM_MODULE_UTILS_HPP
+
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/LLVMContext.h>
@@ -6,15 +35,30 @@
 #include <types/tmpl/TypeCaster.hpp>
 #include <llvm/Support/raw_ostream.h>
 
-namespace LynxSystem::SystemIO {
+namespace LynxSystem::utils {
 
     using namespace LynxTypes;
 
+    /**
+     * @brief Concept to ensure that a type can be validated through TypeChecker.
+     *
+     * Requires that `TypeChecker::is<T>(llvm::Type*)` exists and returns a boolean.
+    */
     template <typename T>
     concept LLVMTypeCheckable = requires(llvm::Type* type) {
         { TypeChecker::is<T>(type) } -> std::convertible_to<bool>;
     };
 
+    /**
+     * @brief Returns a printf-style format specifier for a given LLVM type.
+     *
+     * Determines the appropriate format string for printing a value of
+     * the provided LLVM type. It performs runtime type checks using
+     * `TypeChecker::is<T>()` for all supported Lynx types.
+     *
+     * @param valueType LLVM type of the value being printed.
+     * @return A string_view containing the format specifier.
+    */
     [[nodiscard]] inline constexpr std::string_view getFormatSpecifier(llvm::Type* const valueType) noexcept {
         if (!valueType) return "%p\n";
         if (TypeChecker::is<StringType>(valueType))      return "%s\n";
@@ -37,7 +81,12 @@ namespace LynxSystem::SystemIO {
         return "%p\n";
     }
 
-
+    /**
+     * @brief Compile-time retrieval of format specifier for a given Lynx type.
+     *
+     * @tparam T  A type that satisfies the LLVMTypeCheckable concept.
+     * @return The corresponding printf format string.
+    */
     template <LLVMTypeCheckable T>
     [[nodiscard]] constexpr std::string_view getFormatSpecifierFor() noexcept {
         if constexpr (std::is_same_v<T, StringType>)      return "%s\n";
@@ -58,6 +107,18 @@ namespace LynxSystem::SystemIO {
         else return "%p\n";
     }
 
+    /**
+     * @brief Prepares argument list for a `printf` call based on the given value.
+     *
+     * Automatically constructs the vector of arguments required for calling
+     * `printf()` in LLVM IR. Handles type-specific transformations (e.g.,
+     * boolean to string, float promotion, struct field extraction).
+     *
+     * @param builder IRBuilder used to generate the call.
+     * @param module  LLVM module where the global string constants will be created.
+     * @param expressionValue LLVM value representing the expression to print.
+     * @return Vector of LLVM values representing `printf` arguments.
+    */
     [[nodiscard]] inline std::vector<llvm::Value*> preparePrintfArguments(
         llvm::IRBuilder<>& builder, 
         llvm::Module* module, 
@@ -141,6 +202,9 @@ namespace LynxSystem::SystemIO {
         return printfArgs;
     }
 
+    /**
+     * @brief Retrieves (or inserts) the `printf` function declaration into the module.
+    */
     [[nodiscard]] inline llvm::Function* getOrCreatePrintf(llvm::LLVMContext& context, llvm::Module* module) noexcept {
         constexpr bool isVarArg = true;
         auto* printfType = llvm::FunctionType::get(
@@ -151,6 +215,9 @@ namespace LynxSystem::SystemIO {
         return llvm::cast<llvm::Function>(module->getOrInsertFunction("printf", printfType).getCallee());
     }
     
+    /**
+     * @brief Retrieves (or inserts) the `scanf` function declaration into the module.
+    */
     [[nodiscard]] inline llvm::Function* getOrCreateScanf(llvm::LLVMContext& context, llvm::Module* module) noexcept {
         constexpr bool isVarArg = true;
         auto* scanfType = llvm::FunctionType::get(
@@ -161,13 +228,18 @@ namespace LynxSystem::SystemIO {
         return llvm::cast<llvm::Function>(module->getOrInsertFunction("scanf", scanfType).getCallee());
     }
 
-
+    /**
+     * @brief Emits a `printf` call for the given LLVM value.
+    */
     [[nodiscard]] inline llvm::Value* createPrintCall(llvm::IRBuilder<>& builder, llvm::Module* module, llvm::Value* value) noexcept(false) {
         auto* printfFunc = getOrCreatePrintf(builder.getContext(), module);
         const auto printfArgs = preparePrintfArguments(builder, module, value);
         return builder.CreateCall(printfFunc, printfArgs, "printfCall");
     }
 
+    /**
+     * @brief Emits a type-specific `printf` call for a compile-time known type `T`.
+    */
     template <LLVMTypeCheckable T>
     [[nodiscard]] inline llvm::Value* createPrintCallFor(llvm::IRBuilder<>& builder, llvm::Module* module, llvm::Value* value) noexcept{
         const auto fmt = std::string(getFormatSpecifierFor<T>());
@@ -176,6 +248,9 @@ namespace LynxSystem::SystemIO {
         return builder.CreateCall(printfFunc, {fmtStr, value}, "printfCall");
     }
 
+    /**
+     * @brief Emits a `scanf` call that reads an integer value from input.
+    */
     [[nodiscard]] inline llvm::Value* createReadIntCall(llvm::IRBuilder<>& builder, llvm::Module* module) noexcept{
         auto* scanfFunc = getOrCreateScanf(builder.getContext(), module);
         auto* format = builder.CreateGlobalStringPtr("%d", "scanf_fmt");
@@ -187,3 +262,5 @@ namespace LynxSystem::SystemIO {
     
     
 }
+
+#endif

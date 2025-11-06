@@ -22,17 +22,35 @@
 #include <functional>
 #include "system/ISystemModule.hpp"
 #include "system/ISystemCommand.hpp"
+#include "commands/IOPrintCommand.hpp"
+#include "commands/IOReadCommand.hpp"
+#include "tmpl/SystemModuleTemplate.hpp"
 
 namespace LynxSystem {
+
+    using namespace LynxSystem::meta;
 
     class IOModule : public ISystemModule {
 
         public:
 
-            IOModule();
+            IOModule() {
+                registerCommand<IOReadCommand>("in", commands);
+                registerCommand<IOPrintCommand>("out", commands);    
+            }
 
-            llvm::Value* invoke(std::shared_ptr<AstContext> context, const std::string& methodName, std::vector<llvm::Value*> calleeArgs) override;
+            llvm::Value* invoke(std::shared_ptr<AstContext> context, const std::string& methodName, std::vector<llvm::Value*> calleeArgs) override {
+                auto it = commands.find(methodName);
+                if (it == commands.end()) {
+                    LOG_ERROR("Unknown IO method: {}", methodName);
+                    return nullptr;
+                }
+                auto command = it->second();
+                return command->execute(context, calleeArgs);        
+            }
         
+            ~IOModule() override = default;
+
         private:    
 
             using CommandFactory = std::function<std::unique_ptr<ISystemCommand>()>;

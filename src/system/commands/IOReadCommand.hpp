@@ -22,24 +22,22 @@
 #include <functional>
 #include "system/ISystemModule.hpp"
 #include "system/ISystemCommand.hpp"
-#include "utils/SystemIO.hpp"
+#include "utils/SystemModuleUtils.hpp"
 #include <context/AstContext.hpp>
 
 namespace LynxSystem {
+
+    using namespace LynxSystem::utils;
 
     class IOReadCommand : public ISystemCommand {
 
         public:
 
-            llvm::Value* execute(std::shared_ptr<AstContext> ctx, std::vector<llvm::Value*> calleeArgs) override {
-
-                std::cout << "Execute" << std::endl;
-
-                auto& builder = ctx->getBuilder();
-                auto* module = ctx->getModule();
-                llvm::Value* format = builder.CreateGlobalStringPtr("%d", "scanf_fmt");
-
-                return SystemIO::createPrintCall(builder, module, format);
+            llvm::Value* execute(std::shared_ptr<AstContext> context, std::vector<llvm::Value*> calleeArgs) override {
+                std::cout << "IP Print command \n";
+                auto& builder = context->getBuilder();
+                auto* module = context->getModule();
+                return createReadIntCall(builder, module);            
             }
     };
         

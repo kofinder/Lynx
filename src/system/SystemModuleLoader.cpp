@@ -9,7 +9,6 @@ namespace LynxSystem {
 
     bool SystemModuleLoader::initialized = false;
 
-
     void SystemModuleLoader::initializeCoreModules() {
 
         if (initialized) {
@@ -46,9 +45,7 @@ namespace LynxSystem {
             LOG_WARN("SystemModuleLoader::shutdown() called before initialization.");
             return;
         }
-    
-        LOG_INFO("Shutting down all registered system modules...");
-    
+        
         try {
             SystemModuleRegistry::clear();
             initialized = false;

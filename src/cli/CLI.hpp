@@ -46,12 +46,6 @@ namespace LynxCLI {
 
             CLI() = default;     
 
-            /**
-             * @brief Starts the CLI, parsing the command and executing it.
-             * 
-             * This method initializes the command registry and dispatches
-             * the command specified by the ProgramOptionConfig instance.
-            */
             void run(); 
 
             ~CLI() = default;

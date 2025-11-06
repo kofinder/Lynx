@@ -43,7 +43,7 @@ namespace LynxAst {
             explicit SystemStatementNode(
                 std::string method,
                 std::unique_ptr<std::vector<std::unique_ptr<ExpressionNode>>> args
-            ) : methodName(std::move(method)), arguments(std::move(args)) {}
+            ) : moduleName("system"), methodName(std::move(method)), arguments(std::move(args)) {}
 
             explicit SystemStatementNode(
                 std::string mod,

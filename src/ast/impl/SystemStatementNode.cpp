@@ -9,8 +9,8 @@ namespace LynxAst {
     llvm::Value* SystemStatementNode::generateCode(std::shared_ptr<AstContext> astContext) {
         LOG_ERROR("IR Code Generation: {} {}", moduleName, methodName);
 
-        if (moduleName.empty() || methodName.empty()) {
-            LOG_ERROR("Invalid system statement: missing module/method name");
+        if (methodName.empty()) {
+            LOG_ERROR("Invalid system statement: missing method name");
             return nullptr;
         }    
 

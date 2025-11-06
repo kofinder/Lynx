@@ -1,12 +1,8 @@
 
 int main() {
   
-  system.io.in("Enter a name:");
+  system.io.out("Hello World");
+  system.io.in();
 
-  string name = system.io.get();
-
-  system.println(name, "is my name!");
-
-  
   return 32;
 }

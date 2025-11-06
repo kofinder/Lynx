@@ -21,15 +21,24 @@
 #include <functional>
 #include "system/ISystemModule.hpp"
 #include "system/ISystemCommand.hpp"
+#include "utils/SystemModuleUtils.hpp"
 
 namespace LynxSystem {
+
+    using namespace LynxSystem::utils;
 
     class IOPrintCommand : public ISystemCommand {
 
         public:
 
-            llvm::Value* execute(std::shared_ptr<AstContext> ctx, std::vector<llvm::Value*> calleeArgs) override {
-                return nullptr;
+            llvm::Value* execute(std::shared_ptr<AstContext> context, std::vector<llvm::Value*> calleeArgs) override {
+                std::cout << "Execute" << std::endl;
+
+                auto& builder = context->getBuilder();
+                auto* module = context->getModule();
+                llvm::Value* format = builder.CreateGlobalStringPtr("%d", "scanf_fmt");
+
+                return createPrintCall(builder, module, format);
             }
     };
         
