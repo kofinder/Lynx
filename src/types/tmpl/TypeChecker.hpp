@@ -103,6 +103,7 @@ namespace LynxTypes::TypeChecker {
             if (structType->getNumElements() == 1) {
                 if (structType->getElementType(0)->isIntegerTy(8)) {
                     if (structType->getName() == MetadataTypeConstants::structureCharType) {
+                        std::cout << "YAY, Its works now" << std::endl;
                         return true;
                     }
                 }

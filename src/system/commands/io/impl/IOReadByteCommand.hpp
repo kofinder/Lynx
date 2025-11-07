@@ -33,19 +33,10 @@ namespace LynxSystem {
             llvm::Value* execute(std::shared_ptr<AstContext> context, std::vector<llvm::Value*> /*calleeArgs*/) override {
                 auto& builder = context->getBuilder();
                 auto* module = context->getModule();
-                
-                auto* tmp = builder.CreateAlloca(builder.getInt8Ty(), nullptr, "byte_tmp");
-                auto* readValue = emitScanfRead(builder, module, "%hhd", builder.getInt8Ty());
-                builder.CreateStore(readValue, tmp);
-                
-                return builder.CreateLoad(builder.getInt8Ty(), tmp, "read_byte");     
+                return emitScanfRead(builder, module, "%hhd", builder.getInt32Ty());
             }
-
     };
         
 }
 
 #endif
-
-
-

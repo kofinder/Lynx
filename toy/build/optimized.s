@@ -5,38 +5,67 @@
 	.type	main,@function
 main:
 	.cfi_startproc
-	pushq	%rbx
+	pushq	%rbp
 	.cfi_def_cfa_offset 16
-	subq	$1040, %rsp
-	.cfi_def_cfa_offset 1056
-	.cfi_offset %rbx, -16
-	movl	$.Lfmt.2, %edi
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	subq	$1048, %rsp
+	.cfi_def_cfa_offset 1072
+	.cfi_offset %rbx, -24
+	.cfi_offset %rbp, -16
+	movl	$.Lfmt.9, %edi
 	movl	$.Llynx.string.constant, %esi
 	xorl	%eax, %eax
 	callq	printf@PLT
-	leaq	16(%rsp), %rbx
+	leaq	24(%rsp), %rbx
 	movl	$.Lread_line_fmt, %edi
 	movq	%rbx, %rsi
 	xorl	%eax, %eax
 	callq	scanf@PLT
-	movl	$.Lfmt.2, %edi
+	movl	$.Lfmt.9, %edi
 	movl	$.Llynx.string.constant.1, %esi
 	xorl	%eax, %eax
 	callq	printf@PLT
-	leaq	12(%rsp), %rsi
-	movl	$.Lscanf_fmt, %edi
+	leaq	20(%rsp), %rsi
+	movl	$.Lscanf_fmt.11, %edi
 	xorl	%eax, %eax
 	callq	scanf@PLT
-	movl	12(%rsp), %ecx
-	movl	$.Lfmt.5, %edi
+	movl	20(%rsp), %ebp
+	movl	$.Lfmt.9, %edi
 	movl	$.Llynx.string.constant.4, %esi
-	movq	%rbx, %rdx
 	xorl	%eax, %eax
 	callq	printf@PLT
-	movl	$32, %eax
-	addq	$1040, %rsp
-	.cfi_def_cfa_offset 16
+	leaq	16(%rsp), %rsi
+	movl	$.Lscanf_fmt.7, %edi
+	xorl	%eax, %eax
+	callq	scanf@PLT
+	movss	16(%rsp), %xmm0
+	movss	%xmm0, 8(%rsp)
+	movl	$.Lfmt.9, %edi
+	movl	$.Llynx.string.constant.8, %esi
+	xorl	%eax, %eax
+	callq	printf@PLT
+	leaq	12(%rsp), %rsi
+	movl	$.Lscanf_fmt.11, %edi
+	xorl	%eax, %eax
+	callq	scanf@PLT
+	cmpl	$0, 12(%rsp)
+	movss	8(%rsp), %xmm0
+	cvtss2sd	%xmm0, %xmm0
+	movl	$.L__unnamed_1, %eax
+	movl	$.L__unnamed_2, %ecx
+	cmoveq	%rax, %rcx
+	movl	$.Lfmt.13, %edi
+	movq	%rbx, %rsi
+	movl	%ebp, %edx
+	movb	$1, %al
+	callq	printf@PLT
+	xorl	%eax, %eax
+	addq	$1048, %rsp
+	.cfi_def_cfa_offset 24
 	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
 	.cfi_def_cfa_offset 8
 	retq
 .Lfunc_end0:
@@ -92,28 +121,49 @@ ub_demo_function:
 	.asciz	"Enter your age: "
 	.size	.Llynx.string.constant.1, 17
 
-	.type	.Lfmt.2,@object
-	.section	.rodata.str1.1,"aMS",@progbits,1
-.Lfmt.2:
-	.asciz	"%s"
-	.size	.Lfmt.2, 3
-
-	.type	.Lscanf_fmt,@object
-.Lscanf_fmt:
-	.asciz	"%d"
-	.size	.Lscanf_fmt, 3
-
 	.type	.Llynx.string.constant.4,@object
-	.section	.rodata,"a",@progbits
 	.p2align	4
 .Llynx.string.constant.4:
-	.asciz	"Name: {}, Age: {}"
-	.size	.Llynx.string.constant.4, 18
+	.asciz	"Enter a height: "
+	.size	.Llynx.string.constant.4, 17
 
-	.type	.Lfmt.5,@object
+	.type	.Lscanf_fmt.7,@object
 	.section	.rodata.str1.1,"aMS",@progbits,1
-.Lfmt.5:
-	.asciz	"%s %s %d\n"
-	.size	.Lfmt.5, 10
+.Lscanf_fmt.7:
+	.asciz	"%f"
+	.size	.Lscanf_fmt.7, 3
+
+	.type	.Llynx.string.constant.8,@object
+	.section	.rodata,"a",@progbits
+	.p2align	4
+.Llynx.string.constant.8:
+	.asciz	"Are you single? (0 = false, 1 = true): "
+	.size	.Llynx.string.constant.8, 40
+
+	.type	.Lfmt.9,@object
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.Lfmt.9:
+	.asciz	"%s"
+	.size	.Lfmt.9, 3
+
+	.type	.Lscanf_fmt.11,@object
+.Lscanf_fmt.11:
+	.asciz	"%d"
+	.size	.Lscanf_fmt.11, 3
+
+	.type	.Lfmt.13,@object
+.Lfmt.13:
+	.asciz	"Name: %s, Age: %d, Height: %f, Status: %s"
+	.size	.Lfmt.13, 42
+
+	.type	.L__unnamed_1,@object
+.L__unnamed_1:
+	.asciz	"false"
+	.size	.L__unnamed_1, 6
+
+	.type	.L__unnamed_2,@object
+.L__unnamed_2:
+	.asciz	"true"
+	.size	.L__unnamed_2, 5
 
 	.section	".note.GNU-stack","",@progbits

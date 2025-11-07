@@ -19,12 +19,14 @@
 
 #include <unordered_map>
 #include <functional>
+#include <types/tmpl/TypeCaster.hpp>
 #include "system/ISystemCommand.hpp"
 #include "utils/SystemModuleUtils.hpp"
 
 namespace LynxSystem {
 
     using namespace LynxSystem::utils;
+    using namespace LynxTypes;
 
     class IOReadBizCommand : public ISystemCommand {
 
@@ -49,12 +51,19 @@ namespace LynxSystem {
              * @param valueType  LLVM type to read into.
              * @return LLVM Value representing the loaded input.
             */
-            [[nodiscard]] llvm::Value* emitScanfRead(llvm::IRBuilder<>& builder, llvm::Module* module, const std::string& fmt, llvm::Type* valueType) const noexcept {
+            [[nodiscard]] llvm::Value* emitScanfRead(llvm::IRBuilder<>& builder, llvm::Module* module, const std::string& fmt, llvm::Type* valueType, bool returnPointer = false) const noexcept {
+    
                 auto* scanfFunc = getOrCreateScanf(builder.getContext(), module);
-                auto* format = builder.CreateGlobalStringPtr(fmt, "scanf_fmt");
+                auto* formatStr = builder.CreateGlobalStringPtr(fmt, "scanf_fmt");
+            
                 auto* tmpVar = builder.CreateAlloca(valueType, nullptr, "scanf_tmp");
-                builder.CreateCall(scanfFunc, {format, tmpVar}, "scanfCall");
+            
+                builder.CreateCall(scanfFunc, {formatStr, tmpVar}, "scanf_call");
+            
+                if (returnPointer) return tmpVar;
+            
                 return builder.CreateLoad(valueType, tmpVar, "read_value");
+            
             }
     };
         

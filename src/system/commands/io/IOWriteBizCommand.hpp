@@ -73,6 +73,12 @@ namespace LynxSystem {
 
                 return printfArgs;
             }
+
+            llvm::Value* extractInnerValue(llvm::IRBuilder<>& builder, llvm::Value* var, llvm::Type* structType) const {
+                llvm::Value* innerPtr = builder.CreateStructGEP(structType, var, 0, "inner_ptr");
+                llvm::Type* innerTy = structType->getStructElementType(0);
+                return builder.CreateLoad(innerTy, innerPtr, "inner_val");
+            }
     
     };
         

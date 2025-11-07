@@ -33,7 +33,7 @@ namespace LynxSystem {
 
             IOPrintfCommand() noexcept = default;
             ~IOPrintfCommand() noexcept override = default;
-
+        
             llvm::Value* execute(std::shared_ptr<AstContext> context, std::vector<llvm::Value*> calleeArgs) override {
                 auto& builder = context->getBuilder();
                 auto* module = context->getModule();
@@ -75,6 +75,7 @@ namespace LynxSystem {
                     }
                 }
 
+
                 // Prepare LLVM printf arguments
                 std::vector<llvm::Value*> printfArgs;
                 auto* fmtStr = builder.CreateGlobalStringPtr(finalFmt, "fmt");
@@ -86,7 +87,6 @@ namespace LynxSystem {
                     if (!arg) continue;
 
                     auto argsVec = preparePrintfArguments(builder, module, arg);
-                    // Skip first element (format) because already used
                     printfArgs.insert(printfArgs.end(), argsVec.begin() + 1, argsVec.end());
                 }
 
@@ -98,3 +98,4 @@ namespace LynxSystem {
 }
 
 #endif
+

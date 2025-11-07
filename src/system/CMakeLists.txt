@@ -34,6 +34,7 @@ target_link_libraries(LynxSystem PUBLIC
     LynxContext
     LynxConstants
     LynxAst
+    LynxTypes
     ${llvm_libs}
 )
 

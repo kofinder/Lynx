@@ -33,19 +33,35 @@ namespace LynxSystem {
             llvm::Value* execute(std::shared_ptr<AstContext> context, std::vector<llvm::Value*> /*calleeArgs*/) override {
                 auto& builder = context->getBuilder();
                 auto* module = context->getModule();
-                
-                auto* tmp = builder.CreateAlloca(builder.getInt8Ty(), nullptr, "char_tmp");
-                auto* readValue = emitScanfRead(builder, module, " %c", builder.getInt8Ty());
-                builder.CreateStore(readValue, tmp);
 
-                return builder.CreateLoad(builder.getInt8Ty(), tmp, "read_char");     
+                // something need to refactor this
+                return emitScanfRead(builder, module, "%c", builder.getInt8Ty(), true);
             }
-
     };
         
 }
 
 #endif
+    
 
 
+// auto& builder = context->getBuilder();
+// auto* module = context->getModule();
 
+// // Allocate char variable
+// auto* tempChar = builder.CreateAlloca(builder.getInt8Ty(), nullptr, "char_tmp");
+
+// // Attach metadata
+// if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(tempChar)) {
+//     auto* md = llvm::MDNode::get(builder.getContext(),
+//                                  llvm::MDString::get(builder.getContext(), MetadataTypeConstants::structureCharType));
+//     allocaInst->setMetadata(MetadataTypeConstants::lynxDataType, md);
+// }
+
+// // Call scanf
+// auto* scanfFunc = getOrCreateScanf(builder.getContext(), module);
+// auto* fmt = builder.CreateGlobalStringPtr("%c", "scanf_fmt");
+// builder.CreateCall(scanfFunc, {fmt, tempChar}, "scanf_call");
+
+// // Return the pointer (AllocaInst), metadata attached here
+// return tempChar;
