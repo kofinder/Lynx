@@ -1,3 +1,23 @@
+/**
+ * @file FullLTO.hpp
+ * @brief Implements Full Link-Time Optimization (FullLTO) for LLVM modules.
+ *
+ * The `FullLTO` class extends `DefaultLTOOptimizationStrategy` to provide
+ * comprehensive FullLTO optimization for LLVM modules. It constructs and executes
+ * a complete LLVM pass pipeline, including default optimization passes and
+ * custom passes such as VTable extraction, access modifier adjustments, and
+ * undefined behavior detection.
+ *
+ * **Key Responsibilities:**
+ * - Verify LLVM modules before optimization.
+ * - Build and run LLVM's FullLTO pass pipeline with `PassBuilder` and `ModulePassManager`.
+ * - Inject custom passes after standard optimizations.
+ * - Ensure optimized modules maintain correctness and apply project-specific analyses.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_FULL_LTO_HPP
 #define LYNX_FULL_LTO_HPP
 
@@ -19,9 +39,10 @@
 #include "passes/UndenfinedBehaviorPass.hpp"
 #include "strategy/DefaultLTOOptimizationStrategy.hpp"
 
-using namespace LynxLogger;
 
 namespace LynxLTO {
+
+    using namespace LynxLogger;
 
     class FullLTO : public DefaultLTOOptimizationStrategy {
 

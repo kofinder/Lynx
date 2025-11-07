@@ -1,3 +1,24 @@
+/**
+ * @file Lynx.hpp
+ * @brief Defines the `Lynx` class, the main driver for compiling and executing Lynx programs.
+ *
+ * The `Lynx` class orchestrates the full compilation and execution pipeline, including
+ * source processing, semantic analysis, LLVM IR generation, linking, LTO optimization,
+ * and JIT execution. It also manages system module initialization and integrates
+ * with the compiler's backend and runtime components.
+ *
+ * **Key Responsibilities:**
+ * - Initialize LLVM targets and system modules.
+ * - Load and parse program source files.
+ * - Perform semantic analysis on parsed ASTs.
+ * - Generate and manage LLVM IR modules.
+ * - Link modules and optionally perform LTO optimizations.
+ * - Execute programs using JIT compilation.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_HPP
 #define LYNX_HPP
 
@@ -9,17 +30,20 @@
 #include <codegen/IRGenerator.hpp>
 #include <boost/program_options.hpp>
 #include <llvm/Support/TargetSelect.h>
+#include <system/SystemModuleLoader.hpp>
 #include <boost/program_options/errors.hpp>
 #include <config/ProgramTerminalColor.hpp>
 #include <config/ProgramOptionConfig.hpp>
 #include <config/ProgramSourceProcessor.hpp>
 #include <analyzer/interfaces/SemanticAnalyzer.hpp>
 
+
 using namespace LynxJIT;
 using namespace LynxLTO;
 using namespace LynxLinker;
 using namespace LynxAnalyzer;
 using namespace LynxCodegen;
+using namespace LynxSystem;
 using namespace LynxProgramConfig;
 
 namespace po = boost::program_options;
@@ -44,6 +68,8 @@ class Lynx {
 
         std::unique_ptr<SemanticAnalyzer> semanticAnalyzer;
 
+        bool systemModulesInitialized = false;
+
         /**
          * @brief Initialize LLVM targets and necessary backend support.
          */
@@ -57,7 +83,12 @@ class Lynx {
 
     public:
     
-        explicit Lynx(ProgramOptionConfig& cfg) : config(cfg) {}
+        explicit Lynx(ProgramOptionConfig& cfg) : config(cfg) {
+            if (!systemModulesInitialized) {
+                SystemModuleLoader::initializeCoreModules();
+                systemModulesInitialized = true;
+            }    
+        }
 
         /**
          * @brief Parse the source files and prepare internal representation.
@@ -91,6 +122,7 @@ class Lynx {
          */
         int executeJIT();
 
+        ~Lynx() { SystemModuleLoader::shutdown(); }
 };
 
 #endif

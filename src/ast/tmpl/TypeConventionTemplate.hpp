@@ -1,3 +1,45 @@
+/**
+ * @file TypeConventionTemplate.hpp
+ * @brief Defines a set of type conversion utilities for mapping between Lynx AST types
+ *        (`BaseType`, `VariableType`, etc.) and LLVM IR types.
+ * 
+ * This header provides foundational conversion utilities that bridge the Lynx compiler’s 
+ * type system with LLVM’s intermediate representation. It enables seamless translation 
+ * of high-level language types to their corresponding LLVM types for code generation, 
+ * while maintaining flexibility for user-defined and intrinsic types.
+ * 
+ * **Key Responsibilities:**
+ * - Resolve and convert `VariableType` to `BaseType` representations.
+ * - Map `BaseType` objects to corresponding `llvm::Type*` constructs.
+ * - Handle both built-in and user-defined (custom) types through `AstContext`.
+ * - Convert lists of parameters (`Parameter`) to LLVM-compatible type vectors.
+ * 
+ * **Features:**
+ * - Type-safe conversion via template-based parameter handling.
+ * - Transparent support for pointer-based LLVM types (`ClassType`, `InterfaceType`, etc.).
+ * - Overloaded functions for both `shared_ptr` and raw pointer parameter forms.
+ * - Integrates with the `TypeCaster` subsystem for dynamic type resolution.
+ * 
+ * **Used By:**
+ * - Function and method code generation (`FunctionNode`, `ClazzConstructorNode`).
+ * - Type checking and symbol resolution subsystems.
+ * - LLVM function signature and call instruction generation.
+ * 
+ * **Functions Overview:**
+ * - `convertToBaseRawType` — Returns a raw pointer to a resolved `BaseType`.
+ * - `convertToBaseType` — Produces a deep-cloned `BaseType` from a `VariableType`.
+ * - `convertToLLVMType` — Converts a `BaseType` or `VariableType` into an LLVM IR type.
+ * - `convertToLLVMTypes` — Converts a vector of function parameters into LLVM IR types.
+ * 
+ * @namespace LynxAst::TypeConv
+ * Provides conversion utilities bridging Lynx AST types and LLVM IR types.
+ * 
+ * @see BaseType, VariableType, AstContext, Parameter, TypeCaster
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+ */
+
 #ifndef LYNX_TYPE_CONVENTION_TEMPLATE_HPP
 #define LYNX_TYPE_CONVENTION_TEMPLATE_HPP
 

@@ -22,3 +22,15 @@ int factorial_tail_recursion(int n, int accumulator) {
 double profit_calculation(double revenue, double cost) {
     return revenue - cost;
 }
+
+double profit_margin(double revenue, double cost) {
+  if (revenue == 0.0) {
+    return 0.0;
+  }
+
+  double profit = profit_calculation(revenue, cost);
+
+  double margin = (profit / revenue) * 100.0;
+
+  return margin;
+}

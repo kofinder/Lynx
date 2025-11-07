@@ -1,3 +1,29 @@
+/**
+ * @file SequentialType.hpp
+ * @brief Declares the SequentialType class, the abstract base for all ordered collection types.
+ * 
+ * The SequentialType class extends CollectionType to represent ordered collections such as arrays, 
+ * lists, vectors, queues, and stacks within the Lynx type system. It provides the foundational 
+ * interface and behavior common to all sequential containers, supporting element access, iteration, 
+ * and structural operations.
+ * 
+ * **Key Responsibilities:**
+ * - Defines the interface for sequential data structures (index-based access, iteration, clearing).
+ * - Establishes type compatibility rules for related sequential collection types.
+ * - Provides default error handling for unsupported operations, ensuring derived classes override them properly.
+ * - Integrates with LLVM IR generation through the AstContext for semantic validation and code generation.
+ * 
+ * **Typical Derived Types:**
+ * - ArrayType, VectorType, ListType, QueueType, StackType
+ * 
+ * **Design Notes:**
+ * - All sequential containers are ordered and homogeneous by design.
+ * - Derived classes must implement core operations such as element retrieval, insertion, and cloning.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_SEQUENTIAL_TYPE_HPP
 #define LYNX_SEQUENTIAL_TYPE_HPP
 
@@ -5,13 +31,6 @@
 
 namespace LynxTypes {
 
-    /**
-     * @class SequentialType
-     * @brief Abstract base class representing sequential collections (ordered lists or arrays).
-     * 
-     * Extends CollectionType to support collections where elements are accessed by numeric indices.
-     * Defines interfaces for element access, iteration, and clearing the collection.
-    */
     class SequentialType : public CollectionType {
 
         public:

@@ -1,3 +1,23 @@
+/**
+ * @file DateTimeUtils.hpp
+ * @brief Utility functions to generate LLVM DateTime struct values during code generation.
+ * 
+ * The DateTimeUtils namespace provides helpers to construct LLVM constants representing
+ * DateTime values, either from the current local time or from constructor arguments.
+ * 
+ * **Key Responsibilities:**
+ * - Generate LLVM constant values and types for DateTime structs.
+ * - Support current local time and argument-based initialization.
+ * 
+ * **Used By:**
+ * - Code generation routines for DateTime literals and constructor expressions.
+ * 
+ * @see AstContext, ExpressionNode
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_DATE_TIME_UTILS
 #define LYNX_DATE_TIME_UTILS
 
@@ -63,7 +83,7 @@ namespace LynxAst::DateTimeUtils {
      * @param args List of constructor arguments (should be constants).
      * @return A pair of vectors: first = LLVM values, second = LLVM types.
     */
-    inline std::pair<std::vector<llvm::Value*>, std::vector<llvm::Type*>> generateDateTime(AstContext& astContext, std::vector<std::unique_ptr<ExpressionNode>>& args) {
+    inline std::pair<std::vector<llvm::Value*>, std::vector<llvm::Type*>> generateDateTime(const AstContext& astContext, std::vector<std::unique_ptr<ExpressionNode>>& args) {
 
         constexpr int kExpectedFields = 8;
         auto& ctx = astContext.getLLVMContext();

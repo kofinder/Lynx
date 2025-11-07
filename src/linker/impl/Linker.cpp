@@ -9,11 +9,12 @@
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/raw_ostream.h>
 
-using namespace LynxLogger;
 
 namespace fs = boost::filesystem;
 
 namespace LynxLinker {
+
+    using namespace LynxLogger;
 
     void Linker::setLinkedModule(std::unique_ptr<llvm::Module> finalModule) {
         mainModule = std::move(finalModule);

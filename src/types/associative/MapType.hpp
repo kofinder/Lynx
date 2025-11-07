@@ -1,3 +1,34 @@
+/**
+ * @file MapType.hpp
+ * @brief Defines the MapType class representing associative key-value mappings in the Lynx type system.
+ *
+ * The `MapType` encapsulates dynamically sized collections that map unique keys to values.
+ * It provides key-based access, insertion, assignment, and LLVM IR generation support for maps.
+ *
+ * **Key Responsibilities:**
+ * - Represents associative maps with specific key and value types.
+ * - Supports variable instantiation, assignment, and value creation.
+ * - Provides key-based element access and manipulation utilities.
+ * - Integrates with `TypeVisitor` for semantic checks.
+ * - Produces DWARF-compatible debug information for map types.
+ *
+ * **Integration Points:**
+ * - Used in map declarations, key-based retrieval, and iteration.
+ * - Keys and values can be any built-in or user-defined types.
+ * - Provides default values for keys and values where applicable.
+ *
+ * **LLVM Details:**
+ * - Maps to LLVM types suitable for associative storage and efficient key-value access.
+ * - Provides pointer types for IR generation and element manipulation.
+ *
+ * **Additional Features:**
+ * - Supports querying both key and value types.
+ * - Supports type equality checks and cloning for map types.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_MAP_TYPE_HPP
 #define LYNX_MAP_TYPE_HPP
 

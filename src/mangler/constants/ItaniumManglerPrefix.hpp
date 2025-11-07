@@ -1,3 +1,31 @@
+/**
+ * @file ItaniumManglerPrefix.hpp
+ * @brief Defines prefix and suffix constants for Itanium C++ name mangling.
+ *
+ * This header provides the string constants used in the Itanium C++ ABI for
+ * encoding function names, class names, nested names, special member functions,
+ * thunks, typeinfo, vtables, guard variables, and global constructors/destructors.
+ *
+ * Key Constants:
+ * - `MANGLE_PREFIX`: Base prefix for all mangled C++ names (`_Z`).
+ * - `PREFIX_NESTED_NAME` / `SUFFIX_END_NESTED_NAME`: Marks nested scopes (namespaces, classes).
+ * - `SUFFIX_CONSTRUCTOR_PRIMARY`, `SUFFIX_CONSTRUCTOR_COMPLETE`, `SUFFIX_CONSTRUCTOR_ALLOCATING`: Encodes special constructors.
+ * - `SUFFIX_DESTRUCTOR_BASE`, `SUFFIX_DESTRUCTOR_COMPLETE`, `SUFFIX_DESTRUCTOR_DELETING`: Encodes special destructors.
+ * - `PREFIX_TYPEINFO`, `PREFIX_VTABLE`, `PREFIX_VTT`: Used for RTTI and virtual table symbols.
+ * - `PREFIX_GUARD_VARIABLE`: Used for static local variable guards.
+ * - `PREFIX_NON_VIRTUAL_THUNK`, `PREFIX_VIRTUAL_THUNK`, `PREFIX_COVARIANT_THUNK`: Encodes thunk functions.
+ * - `PREFIX_GLOBAL_CTOR`, `PREFIX_GLOBAL_DTOR`: Encodes global constructors and destructors.
+ *
+ * Example Usage:
+ * @code
+ * std::string mangledName = MANGLE_PREFIX + PREFIX_NESTED_NAME + encodeName("MyClass") + SUFFIX_END_NESTED_NAME;
+ * @endcode
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
+
 #ifndef LYNX_ITANIUM_MANGLER_PREFIX_HPP
 #define LYNX_ITANIUM_MANGLER_PREFIX_HPP
 

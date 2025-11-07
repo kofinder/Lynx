@@ -30,7 +30,9 @@ namespace LynxConstants {
 
         PRIMARY_EXPR = 17,
 
-        STATIC_METHOD_CALL_EXPR
+        STATIC_METHOD_CALL_EXPR,
+        
+        SYSTEM_CALL_EXPR,
 
     };  
 }

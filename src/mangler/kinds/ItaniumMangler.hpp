@@ -1,3 +1,34 @@
+/**
+ * @file ItaniumMangler.hpp
+ * @brief Implements the Itanium C++ ABI-style name mangling strategy for Lynx.
+ *
+ * The `ItaniumMangler` class implements the `IMangleStrategy` interface and provides
+ * methods to mangle:
+ * - Free functions
+ * - Member functions
+ * - Constructors
+ * - Class names
+ *
+ * Mangling follows the Itanium C++ ABI conventions, using prefixes, nested names,
+ * and parameter type encoding as defined in ItaniumTypeEncoding and ItaniumManglerPrefix.
+ *
+ * Example Usage:
+ * @code
+ * LynxMangler::ItaniumMangler mangler;
+ * std::string mangled = mangler.mangleFunction("foo", params);
+ * @endcode
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
+
+
+
+
+
+
+
 #ifndef LYNX_ITANIUM_MANGLER_HPP
 #define LYNX_ITANIUM_MANGLER_HPP
 

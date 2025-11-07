@@ -1,3 +1,21 @@
+/**
+ * @file ThinLTO.hpp
+ * @brief Implements Thin Link-Time Optimization (ThinLTO) for LLVM modules.
+ *
+ * The `ThinLTO` class extends `DefaultLTOOptimizationStrategy` to provide
+ * ThinLTO-specific optimization passes for LLVM modules. It verifies modules
+ * before and after optimization and uses LLVM's legacy pass manager and
+ * PassManagerBuilder to apply ThinLTO passes.
+ *
+ * **Key Responsibilities:**
+ * - Verify LLVM modules before and after optimization.
+ * - Apply ThinLTO passes using LLVM's PassManagerBuilder.
+ * - Integrate seamlessly with the LTOFacade optimization workflow.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+ */
+
 #ifndef LYNX_THIN_LTO_HPP
 #define LYNX_THIN_LTO_HPP
 
@@ -7,9 +25,9 @@
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 #include "strategy/DefaultLTOOptimizationStrategy.hpp"
 
-using namespace LynxLogger;
-
 namespace LynxLTO {
+
+    using namespace LynxLogger;
 
     class ThinLTO : public DefaultLTOOptimizationStrategy {
 

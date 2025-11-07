@@ -1,3 +1,15 @@
+/**
+ * @file JITFactory.hpp
+ * @brief Factory for creating JIT engine instances.
+ *
+ * This header defines the JITFactory class, which provides a
+ * unified interface to construct different JIT backends such as
+ * MCJITEngine or ORCJITEngine.
+ *
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_JIT_FACTORY_HPP
 #define LYNX_JIT_FACTORY_HPP
 

@@ -1,3 +1,29 @@
+/**
+ * @file FunctionAttributeHandler.hpp
+ * @brief Defines the base class for handling LLVM function attributes through a chain of responsibility.
+ * 
+ * The `FunctionAttributeHandler` class provides an extensible framework to apply 
+ * various function-level attributes in LLVM using a **chain-of-responsibility pattern**.
+ * 
+ * Each handler in the chain can implement a specific type of attribute logic 
+ * (e.g., optimization, safety, or calling convention attributes). 
+ * The chain allows multiple handlers to apply attributes sequentially 
+ * using a shared `FunctionAttributeBuilder`.
+ * 
+ * @see FunctionAttributeBuilder
+ * @see llvm::Function
+ * 
+ * @note This design allows modular extension of LLVM function attribute logic
+ *       without coupling or repetitive attribute configuration code.
+ * 
+ * @namespace LynxFunctionAttr
+ * Provides builder and handler utilities for LLVM function attributes in Lynx.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
 #ifndef LYNX_FUNCTION_ATTRS_HANDLER_HPP
 #define LYNX_FUNCTION_ATTRS_HANDLER_HPP
 
@@ -9,14 +35,6 @@
 #include "FunctionAttributeBuilder.hpp"
 
 namespace LynxFunctionAttr {
-
-    /**
-     * @brief Abstract base class for applying function attributes using a chain-of-responsibility pattern.
-     *
-     * This class allows you to define handlers that apply specific LLVM attributes to functions
-     * using a customizable and composable pipeline. Each handler can perform an operation and
-     * delegate to the next in the chain.
-     */
 
     class FunctionAttributeHandler {
 

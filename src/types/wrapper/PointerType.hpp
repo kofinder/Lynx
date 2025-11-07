@@ -1,3 +1,22 @@
+/**
+ * @file PointerType.hpp
+ * @brief Defines the `PointerType` class representing pointer types in the Lynx type system.
+ *
+ * The `PointerType` class models pointer semantics, including LLVM type generation,
+ * instance creation, assignment, and value handling. It extends `WrapperType` and
+ * provides specialized methods for debug metadata, type comparisons, and cloning.
+ *
+ * **Key Responsibilities:**
+ * - Represents pointer types (`T*`) in Lynx.
+ * - Generates LLVM IR types and default values.
+ * - Supports instance creation, assignment, and value operations.
+ * - Emits DWARF-compliant debug information for pointers.
+ * - Supports cloning and type comparison operations.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+ */
+
 #ifndef LYNX_POINTER_TYPE_HPP
 #define LYNX_POINTER_TYPE_HPP
 

@@ -1,3 +1,31 @@
+/**
+ * @file ManglingEngine.hpp
+ * @brief Provides a high-level interface for name mangling using configurable strategies.
+ *
+ * The `ManglingEngine` class encapsulates a `ManglingContext` and simplifies the process
+ * of mangling function names, member functions, constructors, and class names. It allows
+ * selecting a mangling strategy (Itanium, Microsoft, or Lynx custom) at construction.
+ *
+ * **Key Features:**
+ * - Initializes the mangling context with a chosen `ManglerType`.
+ * - Delegates mangling requests to the `ManglingContext`.
+ * - Provides `mangle()` for mangling names based on `MangleParameter`.
+ * - Move-only semantics: copy operations are deleted, move operations are defaulted.
+ * - Throws exceptions if an unsupported mangler type is requested or if required parameters
+ *   are missing for the mangler kind.
+ *
+ * Usage Example:
+ * @code
+ * LynxMangler::ManglingEngine engine(LynxConstants::ManglerType::ITANIUM);
+ * std::string mangledName = engine.mangle(
+ *     LynxMangler::MangleParameter::makeFunction("foo", params)
+ * );
+ * @endcode
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_MANGLING_ENGINE_HPP
 #define LYNX_MANGLING_ENGINE_HPP
 
@@ -13,15 +41,6 @@
 
 namespace LynxMangler {
     
-    /**
-     * @brief Core engine for applying different name mangling strategies.
-     *
-     * The ManglingEngine uses the Strategy design pattern via the NameManglingContext
-     * to apply a specific mangling algorithm depending on the provided ManglerType.
-     * 
-     * Supported mangling types include Itanium (GCC), Microsoft, and a custom Lynx format.
-     * Provides a clean dispatch system for different mangling operations via function mapping.
-    */
     class ManglingEngine {
 
         private: 

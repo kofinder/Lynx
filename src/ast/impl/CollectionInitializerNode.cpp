@@ -8,7 +8,7 @@
 namespace LynxAst {
 
     llvm::Value* CollectionInitializerNode::generateCode(std::shared_ptr<AstContext> astContext) {
-        LOG_ERROR("Dispatched..........");
+        LOG_WARN("IR Code Generation.");
         auto& builder = astContext->getBuilder();
         auto variableType = nullptr;
         llvm::Value* result = generateLLVMFromCollection(this, variableType, astContext);
@@ -27,12 +27,12 @@ namespace LynxAst {
             if (!literalNode) {
                 throw std::runtime_error("Non-literal node passed to extractLiteralValue");
             }            
-            return extractLiteralValue(literalNode, varType->type, astContext.get());
+            return extractLiteralValue(literalNode, varType->type, *astContext);
         }
     
         if (auto collectionNode = dynamic_cast<CollectionInitializerNode*>(node)) {
-            const CollectionType* baseType = getCollectionType(*varType, astContext.get());            
-            resolveInternalTypes(varType, astContext.get());
+            const CollectionType* baseType = getCollectionType(*varType, *astContext);            
+            resolveInternalTypes(varType, *astContext);
 
             if (!baseType) {
                 std::cerr << "Invalid collection type: " << toString(varType->type) << "\n";
@@ -82,9 +82,9 @@ namespace LynxAst {
     }
 
 
-    const CollectionType* CollectionInitializerNode::getCollectionType(const VariableType& varType, AstContext* astContext) {
+    const CollectionType* CollectionInitializerNode::getCollectionType(const VariableType& varType, const AstContext& astContext) const noexcept {
         auto dataType = varType.type;
-        auto collectionType = astContext->findType(dataType);
+        auto collectionType = astContext.findType(dataType);
         auto* baseType = collectionType.get();
         switch (dataType) {
             case DataType::ARRAY: return TypeCasting::castType<ArrayType>(baseType);
@@ -101,14 +101,14 @@ namespace LynxAst {
         }
     }
 
-    llvm::Value* CollectionInitializerNode::extractLiteralValue(const Node* node,  DataType dataType, AstContext* astContext) {
+    llvm::Value* CollectionInitializerNode::extractLiteralValue(const Node* node,  DataType dataType, const AstContext& astContext) const {
         if (auto literalNode = dynamic_cast<const LiteralNode*>(node)) {
             if (!literalNode) {
                 throw std::runtime_error("Non-literal node passed to extractLiteralValue");
             }
         
-            auto& builder = astContext->getBuilder();
-            auto& context = astContext->getLLVMContext();
+            auto& builder = astContext.getBuilder();
+            auto& context = astContext.getLLVMContext();
             if(dataType == DataType::BYTE) {
                 auto value = std::get<uint8_t>(literalNode->getLiteralValue());
                 return llvm::ConstantInt::get(llvm::Type::getInt1Ty(context), value);
@@ -138,14 +138,14 @@ namespace LynxAst {
                 llvm::StringRef strRef(value);
                 return llvm::ConstantDataArray::getString(context, strRef, true);
             } else {
-                astContext->reportError(makeRuntimeError("Non-literal node passed to extractLiteralValue"));
+                std::cerr << "Non-literal node passed to extractLiteralValue \n";
                 return nullptr;
             }
         }
         throw std::runtime_error("Non-literal node passed to extractLiteralValue");    
     }
 
-    bool CollectionInitializerNode::isNestedListUniform(const std::vector<std::unique_ptr<Node>>& values) const {
+    bool CollectionInitializerNode::isNestedListUniform(const std::vector<std::unique_ptr<Node>>& values) const noexcept {
         if (values.empty()) return true;
         auto firstNested = dynamic_cast<const CollectionInitializerNode*>(values[0].get());
         if (!firstNested) return false;
@@ -157,7 +157,7 @@ namespace LynxAst {
         return true;    
     }
 
-    const std::string CollectionInitializerNode::mangleSequentialName(CollectionType* collectionType, std::vector<llvm::Value*> values) const {
+    std::string CollectionInitializerNode::mangleSequentialName(const CollectionType* collectionType, const std::vector<llvm::Value*>& values) const noexcept {
         std::stringstream ss;
         std::string prefix;
         switch (collectionType->getTypeTag()) {
@@ -175,8 +175,7 @@ namespace LynxAst {
         return ss.str();   
     }
     
-
-    const std::string CollectionInitializerNode::mangleAssociativeName(CollectionType* collectionType, std::vector<std::pair<llvm::Value*, llvm::Value*>> pairs) const {
+    std::string CollectionInitializerNode::mangleAssociativeName(const CollectionType* collectionType, const std::vector<std::pair<llvm::Value*, llvm::Value*>>& pairs) const noexcept {
         std::stringstream ss;
 
         std::string prefix;
@@ -196,7 +195,7 @@ namespace LynxAst {
     }    
 
 
-    size_t CollectionInitializerNode::getElementsCount() const {
+    size_t CollectionInitializerNode::getElementsCount() const noexcept {
         if (isList()) {
             const auto& listNode = std::get<std::unique_ptr<LiteralListNode>>(value);
             if (!listNode) return 0;
@@ -208,15 +207,14 @@ namespace LynxAst {
         }
     }
 
-    void CollectionInitializerNode::resolveInternalTypes(std::shared_ptr<VariableType> varType, AstContext* context) {
-        if (!varType || !context) return;
+    void CollectionInitializerNode::resolveInternalTypes(const std::shared_ptr<VariableType>& varType, const AstContext& context) const noexcept {
 
         // Recursively resolve internal types of generic arguments
         for (auto& generic : varType->genericArguments) {
             resolveInternalTypes(generic, context);
         }
 
-        auto base = context->findType(varType->type);
+        auto base = context.findType(varType->type);
         if (!base) {
             std::cerr << "Error: No base type found for " << toString(varType->type) << std::endl;
             return;

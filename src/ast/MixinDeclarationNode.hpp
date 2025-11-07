@@ -1,3 +1,28 @@
+/**
+ * @file MixinDeclarationNode.hpp
+ * @brief Declares the MixinDeclarationNode class, representing mixin declarations in the Lynx AST.
+ * 
+ * The MixinDeclarationNode class models user-defined mixins, including their fields, methods, and
+ * inherited mixins. It supports semantic analysis, LLVM IR type generation, and method emission.
+ * 
+ * **Key Responsibilities:**
+ * - Stores the mixin name, fields, methods, and parent mixins.
+ * - Processes member nodes to separate methods and fields.
+ * - Generates LLVM struct and pointer types for the mixin.
+ * - Emits LLVM IR for member functions.
+ * - Supports deep cloning of the node and its members.
+ * 
+ * **Used By:**
+ * - AST construction and semantic analysis subsystems.
+ * - LLVM IR generation for user-defined mixin types.
+ * 
+ * @see FunctionNode, VariableDeclarationNode, MixinType, Mangle
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
 #ifndef LYNX_MIXIN_DECLARATION_NODE_HPP
 #define LYNX_MIXIN_DECLARATION_NODE_HPP
 
@@ -30,6 +55,8 @@ namespace LynxAst {
             std::unique_ptr<std::vector<std::unique_ptr<FunctionNode>>> methods;
 
             std::unique_ptr<std::vector<std::unique_ptr<VariableDeclarationNode>>> fields;
+        
+        private:
 
             void processMembers(std::unique_ptr<std::vector<std::unique_ptr<Node>>> members);
 
@@ -62,19 +89,19 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::MIXIN_DECLARATION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::MIXIN_DECLARATION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
             
-            inline const std::string& getOriginalName() const { return mixinName; }
+            [[nodiscard]] inline const std::string& getOriginalName() const { return mixinName; }
 
-            inline bool hasParentMixins() const { return !inheritMixins.empty(); }
+            [[nodiscard]] inline bool hasParentMixins() const { return !inheritMixins.empty(); }
 
-            inline llvm::StructType* getStructType() const { return llvmStructType; }
+            [[nodiscard]] inline llvm::StructType* getStructType() const { return llvmStructType; }
 
-            inline llvm::PointerType* getPointerType() const { return llvmPointerType; }
+            [[nodiscard]] inline llvm::PointerType* getPointerType() const { return llvmPointerType; }
 
-            inline const std::string getQualifiedName() const { return Mangle::get(ManglerKind::CLASS, mixinName); }
+            [[nodiscard]] inline const std::string getQualifiedName() const { return Mangle::get(ManglerKind::CLASS, mixinName); }
             
             ~MixinDeclarationNode() override = default;
 

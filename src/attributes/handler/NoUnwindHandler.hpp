@@ -1,3 +1,19 @@
+/**
+ * @file NoUnwindHandler.hpp
+ * @brief Handler that applies the LLVM NoUnwind attribute to functions that cannot throw exceptions.
+ *
+ * @responsibilities
+ * - Part of the function attribute handler chain in the Lynx compiler.
+ * - Analyzes the function body to determine if it may throw.
+ * - Applies the LLVM `NoUnwind` attribute to functions that are guaranteed not to throw.
+ *
+ * @namespace LynxFunctionAttr
+ * Contains classes that infer and apply LLVM function attributes in the Lynx compiler.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 5, 2025
+*/
+
 #ifndef LYNX_FUNC_NO_UNWIND_HANDLER_HPP
 #define LYNX_FUNC_NO_UNWIND_HANDLER_HPP
 

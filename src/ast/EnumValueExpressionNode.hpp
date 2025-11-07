@@ -1,14 +1,39 @@
+/**
+ * @file EnumValueExpressionNode.hpp
+ * @brief Declares the EnumValueExpressionNode class for evaluating enum value expressions in the Lynx AST.
+ * 
+ * The EnumValueExpressionNode class represents expressions used to compute enum values, including
+ * literal values and binary operations. It supports evaluation at compile-time and integrates
+ * with the AST infrastructure for cloning and code generation.
+ * 
+ * **Key Responsibilities:**
+ * - Represents integer values or binary operations for enum values.
+ * - Supports evaluation of constant expressions at compile time.
+ * - Provides deep cloning for AST transformations.
+ * 
+ * **Used By:**
+ * - Enum declaration and initialization.
+ * - AST semantic analysis and constant folding.
+ * 
+ * @see Node, OperatorType, AstContext
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
 #ifndef LYNX_ENUM_VALUE_EXPRESSION_NODE_HPP
 #define LYNX_ENUM_VALUE_EXPRESSION_NODE_HPP
 
 #include "Node.hpp"
 #include <constants/OperatorType.hpp>
 
-using namespace LynxConstants;
 
 namespace LynxAst {
 
-    class EnumValueExpressionNode: public Node {
+    using namespace LynxConstants;
+
+    class EnumValueExpressionNode : public Node {
 
         private:
 
@@ -35,7 +60,7 @@ namespace LynxAst {
 
             int evaluate() const;
             
-            NodeType getNodeType() override { return NodeType::ENUM_VALUE_EXPRESSION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::ENUM_VALUE_EXPRESSION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override { return nullptr; }
 

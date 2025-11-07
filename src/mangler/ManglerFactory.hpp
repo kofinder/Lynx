@@ -1,3 +1,27 @@
+/**
+ * @file ManglerFactory.hpp
+ * @brief Provides a factory for creating name mangling strategy instances.
+ *
+ * This header defines the `ManglerFactory` class, which generates instances of 
+ * classes implementing the `IMangleStrategy` interface. The factory allows selection 
+ * of different mangling schemes, including Itanium, Microsoft, and a custom Lynx mangler.
+ *
+ * **Key Features:**
+ * - Centralized creation of mangler strategies based on `ManglerType`.
+ * - Returns a `std::unique_ptr<IMangleStrategy>` to the selected mangler.
+ * - Throws exceptions for unknown or unsupported mangler types.
+ *
+ * Usage Example:
+ * @code
+ * auto mangler = ManglerFactory::create(ManglerType::ITANIUM);
+ * std::string mangledName = mangler->mangleFunction("foo", params);
+ * @endcode
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
+
 #ifndef LYNX_MANGLER_FACTORY_HPP
 #define LYNX_MANGLER_FACTORY_HPP
 
@@ -8,16 +32,11 @@
 #include "kinds/MicrosoftMangler.hpp"
 #include <constants/ManglerType.hpp>
 
-using namespace LynxConstants;
 
 namespace LynxMangler {
 
-    /**
-     * @brief Factory class to create instances of IMangleStrategy based on the specified ManglerType.
-     * 
-     * This class provides a static interface to instantiate different mangling strategies
-     * (e.g., Itanium, Microsoft, or custom manglers). Extend this factory to support new mangling styles.
-    */
+    using namespace LynxConstants;
+
     class ManglerFactory {
 
         public:

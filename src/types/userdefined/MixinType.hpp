@@ -1,3 +1,38 @@
+/**
+ * @file MixinType.hpp
+ * @brief Defines the MixinType class representing user-defined mixins in the Lynx type system.
+ *
+ * The `MixinType` encapsulates user-defined mixin classes that can provide fields and methods 
+ * to other types in the Lynx language. It supports inheritance from multiple parent mixins,
+ * method resolution, field access, LLVM IR generation, and debug metadata.
+ *
+ * **Key Responsibilities:**
+ * - Represents user-defined mixins that can be combined with other types.
+ * - Tracks fields and methods defined in the mixin, including flattened members after semantic analysis.
+ * - Supports inheritance from multiple parent mixins.
+ * - Generates LLVM IR struct and pointer types for mixins.
+ * - Provides mechanisms for instance creation, assignment, and default values.
+ * - Integrates with `TypeVisitor` for semantic checks and `MethodType` resolution.
+ * - Produces DWARF-compatible debug information for mixin types.
+ *
+ * **Integration Points:**
+ * - Used for multiple inheritance, method resolution, and field access in mixin-enabled classes.
+ * - Supports super calls to parent mixins for methods and fields.
+ * - Provides lookup tables for fields and methods for efficient LLVM code generation.
+ *
+ * **LLVM Details:**
+ * - Maps to `llvm::StructType` with optional pointer types.
+ * - Provides cached LLVM type and pointer type for performance.
+ * - Allows registration and retrieval from LLVM type to `MixinType` mapping.
+ *
+ * **Additional Features:**
+ * - Maintains flattened member lists for semantic analysis and LLVM layout.
+ * - Preserves method insertion order for LLVM layout consistency.
+ * - Provides utility methods to check for fields, methods, and parent mixins.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
 
 #ifndef LYNX_MIXIN_TYPE_HPP
 #define LYNX_MIXIN_TYPE_HPP

@@ -47,6 +47,8 @@ namespace LynxConstants {
         DECREMENT, 
 
         LOGICAL_NOT,  
+        
+        BITWISE_NOT,
 
         BITWISE_XOR,
         

@@ -1,3 +1,24 @@
+/**
+ * @file SemanticThreadPool.hpp
+ * @brief Declares the SemanticThreadPool class for parallel semantic analysis.
+ * 
+ * The SemanticThreadPool efficiently distributes AST semantic checks across multiple worker threads.
+ * It provides task queuing, thread management, and synchronization for semantic analysis tasks in the Lynx compiler.
+ * 
+ * **Key Responsibilities:**
+ * - Manage a pool of worker threads for concurrent execution.
+ * - Queue and execute semantic analysis tasks in parallel.
+ * - Track active tasks and allow waiting for completion.
+ * - Handle clean shutdown and resource management.
+ * 
+ * **Used By:**
+ * - SemanticAnalyzer to perform multi-threaded analysis of AST nodes.
+ * - Any subsystem requiring task parallelization with thread safety guarantees.
+ * 
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_SEMANTIC_THREAD_POOL_HPP
 #define LYNX_SEMANTIC_THREAD_POOL_HPP
 

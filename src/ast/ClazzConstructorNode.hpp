@@ -1,3 +1,27 @@
+/**
+ * @file ClazzConstructorNode.hpp
+ * @brief Declares the ClazzConstructorNode class representing class constructors in the Lynx AST.
+ * 
+ * The ClazzConstructorNode class handles constructor declarations for user-defined classes,
+ * including parameters, constructor body expressions, access modifiers, and optional super calls.
+ * It supports LLVM IR code generation and cloning for AST transformations.
+ * 
+ * **Key Responsibilities:**
+ * - Stores constructor name, parameters, body expressions, and access modifier.
+ * - Handles optional super constructor calls.
+ * - Generates LLVM IR for constructor code.
+ * - Supports cloning for AST transformations.
+ * 
+ * **Used By:**
+ * - ClazzDeclarationNode for class initialization.
+ * - Code generation routines for constructors.
+ * 
+ * @see Node, Parameter, SuperConstructorCallNode
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_CLAZZ_CONSTRUCTOR_NODE_HPP
 #define LYNX_CLAZZ_CONSTRUCTOR_NODE_HPP
 
@@ -9,9 +33,10 @@
 #include <constants/AccessModifierType.hpp>
 #include <constants/Parameter.hpp>
 
-using namespace LynxConstants;
 
 namespace LynxAst {
+
+    using namespace LynxConstants;
 
     class ClazzConstructorNode : public Node {
 
@@ -53,15 +78,15 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::CLAZZ_CONSTRUCTOR_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::CLAZZ_CONSTRUCTOR_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
             inline std::shared_ptr<std::vector<std::shared_ptr<Parameter>>> getParameters() const { return parameters; }
 
-            std::string getQualifiedName(const AstContext& context) const;
+            [[nodiscard]] std::string getQualifiedName(const AstContext& context) const;
 
-            const std::string& originalName() const { return constructorName; }
+            [[nodiscard]] const std::string& originalName() const noexcept { return constructorName; }
 
             ~ClazzConstructorNode() override = default;
     };

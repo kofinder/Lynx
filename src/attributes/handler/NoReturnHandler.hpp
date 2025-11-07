@@ -1,11 +1,28 @@
+/**
+ * @file NoReturnHandler.hpp
+ * @brief Handler that applies the `NoReturn` attribute to functions like abort or exit.
+ *
+ * @responsibilities
+ * - Part of the function attribute handler chain in the Lynx compiler.
+ * - Detects functions that never return (e.g., abort, exit) and applies the LLVM `NoReturn` attribute.
+ *
+ * @namespace LynxFunctionAttr
+ * Contains classes that infer and apply LLVM function attributes in the Lynx compiler.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 5, 2025
+*/
+
 #ifndef LYNX_FUNC_NO_RETURN_HANDLER_HPP
 #define LYNX_FUNC_NO_RETURN_HANDLER_HPP
 
 #include "interfaces/FunctionAttributeHandler.hpp"
 #include <logger/Logger.hpp>
-using namespace LynxLogger;
 
 namespace LynxFunctionAttr {
+
+    using namespace LynxLogger;
+
 
     class NoReturnHandler : public FunctionAttributeHandler {
 

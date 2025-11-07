@@ -1,3 +1,25 @@
+/**
+ * @file ProgramOptionConstant.hpp
+ * @brief Defines constant values and metadata for CLI commands and options in the Lynx compiler.
+ * 
+ * This header centralizes all string literals, default paths, and descriptions used for command-line
+ * interface (CLI) commands, options, and shortcuts. It ensures consistency across the Lynx compiler
+ * tools and simplifies maintenance when adding or updating CLI functionality.
+ * 
+ * **Key Responsibilities:**
+ * - Provide default filenames and entry points for Lynx projects (`.lynx` files, config files).
+ * - Define string keys, shortcuts, and descriptions for core commands like `run`, `build`, `analyze`, etc.
+ * - Define common CLI options including `--config`, `--entry`, `--debug`, `--dry-run`, `--verbose`, and `--highlight`.
+ * - Support additional commands for versioning, project initialization, system checks, and package management.
+ * 
+ * **Used By:**
+ * - ProgramOptionConfig and CLI parsers to validate, display, and execute commands.
+ * - Build, run, and analysis subsystems to interpret user input consistently.
+ * 
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_PROGRAM_OPTION_CONSTANT_HPP
 #define LYNX_PROGRAM_OPTION_CONSTANT_HPP
 

@@ -2,58 +2,42 @@
 #include "ClazzDeclarationNode.hpp"
 #include "ArrayAccessNode.hpp"
 #include "IdentifierNode.hpp"
+#include "utils/VariableUtils.hpp"
 #include "tmpl/CloneNodeTemplate.hpp"
 #include "AssignmentExpressionNode.hpp"
 #include "VariableDeclarationNode.hpp"
 
 namespace LynxAst {
 
+    using namespace VariableUtils;
+
     llvm::Value* AssignmentExpressionNode::generateCode(std::shared_ptr<AstContext> astContext) {
+        LOG_WARN("IR Code Generation .....");
         if(assignExprType == AssignExpressionType::SIMPLE_ASSIGN) {
-           return generateSimpleAssign(astContext);
+           return generateSimpleAssign(*astContext);
         } else {
-            return generateComplexAssign(astContext);
+            return generateComplexAssign(*astContext);
         }
     }
 
-    llvm::Value* AssignmentExpressionNode::generateComplexAssign(std::shared_ptr<AstContext> astContext) {
-        LOG_INFO("Dispatched ....");
+    llvm::Value* AssignmentExpressionNode::generateComplexAssign(const AstContext& astContext) {
 
-        auto synbol = astContext->getGlobalContext();
-        Node* varNode = synbol->findVariable(this->varName);
-
-        if(varNode == nullptr) {
-            LOG_ERROR("Invalid variable name: {}", this->varName);
-            throw std::runtime_error("Invalid variable name");
+        auto resolved = resolveVariable(astContext, varName);
+        if (!resolved.value || !resolved.reference) {
+            LOG_ERROR("Failed to resolve variable '{}'", varName);
+            throw std::runtime_error("Variable resolution failed.");
         }
 
-        auto* variable = dynamic_cast<VariableDeclarationNode*>(varNode);
-        if (!variable) {
-            LOG_ERROR("Variable '{}' is not of type VariableDeclarationNode.", this->varName);
-            throw std::runtime_error("Invalid variable type for unary operation.");
-        }
-
-        llvm::Value* llvmVarRef = variable->getLLVMVariableRef();
-        if (!llvmVarRef || !llvmVarRef->getType()->isPointerTy()) {
-            LOG_ERROR("Variable '{}' is not a valid pointer.", this->varName);
-            throw std::runtime_error("Invalid LLVM variable reference.");
-        }
-
-        llvm::Type* loadType = llvmVarRef->getType()->getPointerElementType();
-        if (!loadType) {
-            LOG_ERROR("Failed to determine pointer element type.");
-            throw std::runtime_error("Failed to determine pointer element type.");
-        }
-        
-        auto* module = astContext->getModule();
-        auto& context = astContext->getLLVMContext();
-        auto& builder = astContext->getBuilder();
-
-        llvm::Value* lhsValue = builder.CreateLoad(loadType, llvmVarRef);
-        llvm::Value* rhsValue = this->expressionNode->generateCode(astContext->createContext());
+        llvm::Type* valueType = resolved.value->getType();
+        llvm::Value* llvmVarRef = resolved.reference;
         llvm::Value* newValue = nullptr;
 
-        switch (this->operatorType) {
+
+        auto& builder = astContext.getBuilder();
+        auto* lhsValue = builder.CreateLoad(valueType, llvmVarRef);
+        auto* rhsValue = expressionNode->generateCode(astContext.createContext());
+
+        switch (operatorType) {
             case PLUS_ASSIGN:
                 newValue = builder.CreateAdd(lhsValue, rhsValue, llvm::Twine(LynxLabelTypeConstants::assignAdd));
                 builder.CreateStore(newValue, llvmVarRef);
@@ -98,14 +82,10 @@ namespace LynxAst {
         return newValue;
     }
     
-    llvm::Value* AssignmentExpressionNode::generateSimpleAssign(std::shared_ptr<AstContext> astContext) {
-        LOG_INFO("Invoked Simple Assign....");
-        auto* module = astContext->getModule();
-        auto& context = astContext->getLLVMContext();
-        auto& builder = astContext->getBuilder();
-        
-        llvm::Value* lhsPtr = assignableNode->generateCode(astContext->createContext());
-        llvm::Value* rhsValue = expressionNode->generateCode(astContext->createContext());
+    llvm::Value* AssignmentExpressionNode::generateSimpleAssign(const AstContext& astContext) {
+        auto& builder = astContext.getBuilder();
+        auto* lhsPtr = assignableNode->generateCode(astContext.createContext());
+        auto* rhsValue = expressionNode->generateCode(astContext.createContext());
 
         if (!lhsPtr || !rhsValue) {
             LOG_ERROR("Null in assignment operands.");

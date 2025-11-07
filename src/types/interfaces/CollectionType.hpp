@@ -1,3 +1,26 @@
+/**
+ * @file CollectionType.hpp
+ * @brief Declares the CollectionType class, the abstract base for all collection and container types.
+ * 
+ * The CollectionType class extends the BaseType interface to represent container-like data structures 
+ * such as arrays, lists, maps, and sets within the Lynx type system. It defines the common interface 
+ * and semantics for both sequential (list-like) and associative (key-value) collections.
+ * 
+ * **Key Responsibilities:**
+ * - Defines a uniform interface for collection manipulation (insertion, retrieval, iteration, clearing).
+ * - Supports both sequential (index-based) and associative (key-based) collection models.
+ * - Provides metadata about size, capacity, ordering, uniqueness, and homogeneity.
+ * - Serves as the base class for specialized collection types such as ArrayType, MapType, and SetType.
+ * 
+ * **Design Notes:**
+ * - Integrates with LLVM IR generation for runtime representation of collection structures.
+ * - Relies on the AstContext for error reporting and type context resolution.
+ * - Derived types must implement element/value management and cloning behavior.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_COLLECTION_TYPE_HPP
 #define LYNX_COLLECTION_TYPE_HPP
 
@@ -7,11 +30,6 @@
 
 namespace LynxTypes {
 
-    /**
-     * Base class for all collection types.
-     * Provides a polymorphic interface for collections such as arrays, maps, sets, etc.
-     * Supports querying collection properties and common operations.
-    */
     class CollectionType : public BaseType {
 
         protected:

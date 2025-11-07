@@ -1,3 +1,23 @@
+/**
+ * @file FileUtils.hpp
+ * @brief Utility functions for file and string handling during LLVM code generation.
+ * 
+ * The FileUtils namespace provides helper functions for string literal extraction,
+ * type casting to C-style strings, and other basic file-related operations in the AST.
+ * 
+ * **Key Responsibilities:**
+ * - Cast LLVM values to `i8*` (C-style string pointers) for code generation.
+ * - Extract string literals from expression nodes safely.
+ * 
+ * **Used By:**
+ * - Code generation routines that require constant string handling.
+ * 
+ * @see AstContext, ExpressionNode, LiteralNode, PrimaryExpressionNode
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_FILE_UTILS_HPP
 #define LYNX_FILE_UTILS_HPP
 

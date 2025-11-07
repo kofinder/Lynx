@@ -1,7 +1,3 @@
-#ifndef LYNX_CLI_WEB_APP_BUILDER_HPP
-#define LYNX_CLI_WEB_APP_BUILDER_HPP
-
-
 /**
  * @file WebAppBuilder.hpp
  * @brief Builder for web application projects.
@@ -9,9 +5,12 @@
  * Sets up frontend and backend folders, sample configuration files,
  * and initial code for web projects.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
 */
+
+#ifndef LYNX_CLI_WEB_APP_BUILDER_HPP
+#define LYNX_CLI_WEB_APP_BUILDER_HPP
 
 
 #include <string>

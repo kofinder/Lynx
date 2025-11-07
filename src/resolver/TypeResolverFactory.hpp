@@ -1,3 +1,29 @@
+/**
+ * @file TypeResolverFactory.hpp
+ * @brief Factory for creating type-specific method resolvers in the Lynx language.
+ *
+ * The `TypeResolverFactory` class provides a static interface to create instances
+ * of `TypeMethodResolver` for different `DataType` enumerations. This allows
+ * centralized management of type-specific method resolution logic.
+ *
+ * Supported types include:
+ * - BYTE, SHORT, INT, LONG, FLOAT, DOUBLE
+ * - CHAR, BOOLEAN
+ * - STRING, DATETIME
+ * - AUTO
+ *
+ * Example usage:
+ * @code
+ * auto resolver = LynxResolver::TypeResolverFactory::forType(LynxConstants::DataType::INT);
+ * if (resolver) {
+ *     resolver->resolveMethod("toString");
+ * }
+ * @endcode
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_TYPE_RESOLVER_FACTORY_HPP
 #define LYNX_TYPE_RESOLVER_FACTORY_HPP
 
@@ -6,7 +32,6 @@
 #include "IntMethodResolver.hpp"
 #include "DateTimeMethodResolver.hpp"
 #include <constants/DataType.hpp>
-
 
 #include "ByteMethodResolver.hpp"
 #include "ShortMethodResolver.hpp"
@@ -20,17 +45,10 @@
 #include "StringMethodResolver.hpp"
 #include "AutoMethodResolver.hpp"
 
-using namespace LynxConstants;
 
 namespace LynxResolver {
 
-    /**
-     * @class TypeResolverFactory
-     * @brief Factory for creating the correct TypeMethodResolver instance based on DataType.
-     *
-     * This class provides a single static method `forType()` that acts as a dispatcher for type-based
-     * method resolution. It returns a unique pointer to a subclass of TypeMethodResolver.
-     */
+    using namespace LynxConstants;
 
     class TypeResolverFactory {
 

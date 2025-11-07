@@ -1,3 +1,38 @@
+/**
+ * @file LLVMManglarTemplate.hpp
+ * @brief Declares name mangling and demangling utilities for functions and 
+ *        classes within the Lynx compiler’s LLVM backend.
+ * 
+ * The LLVMManglarTemplate utilities provide a unified interface for generating 
+ * and decoding mangled symbol names following the Itanium C++ ABI scheme. 
+ * These tools are essential for ensuring consistent symbol resolution across 
+ * function overloads, class methods, and constructors during code generation 
+ * and linkage.
+ * 
+ * **Key Responsibilities:**
+ * - Generate mangled names for functions, member functions, and constructors.
+ * - Support both `BaseType` and `llvm::Type` parameter signatures.
+ * - Provide generic and type-safe demangling utilities for class and method names.
+ * - Integrate with the `ManglingEngine` for Itanium ABI-compliant encoding.
+ * 
+ * **Used By:**
+ * - Code generation and linking stages.
+ * - Symbol resolution, debugging, and reflection mechanisms.
+ * 
+ * @see ManglingEngine, MangleParameter, BaseType, llvm::Type
+ * 
+ * @note All mangling operations default to the Itanium ABI convention for 
+ *       cross-platform consistency. Demangling utilities support both 
+ *       class-level and method-level extraction.
+ * 
+ * @namespace LynxAst::Mangle
+ * Provides a collection of utilities for symbol name mangling and demangling 
+ * within the Lynx compiler's LLVM-based backend.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_LLVM_MANGLAR_TEMPLATE_HPP
 #define LYNX_LLVM_MANGLAR_TEMPLATE_HPP
 

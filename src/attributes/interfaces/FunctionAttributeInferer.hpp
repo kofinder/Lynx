@@ -1,3 +1,28 @@
+/**
+ * @file FunctionAttributeInferer.hpp
+ * @brief Declares the FunctionAttributeInferer class for automated LLVM function attribute inference.
+ * 
+ * The `FunctionAttributeInferer` class manages a chain of `FunctionAttributeHandler` instances
+ * to automatically analyze, infer, and apply LLVM function attributes such as:
+ * - `AlwaysInline`, `NoUnwind`, or `ReadNone` for optimization.
+ * - `NonNull`, `NoAlias` for return and parameter safety.
+ * 
+ * This system enables **automated function attribute inference** by composing handlers
+ * that each encapsulate specific rules. The inferer initializes and triggers the handler chain,
+ * ensuring attributes are applied consistently and efficiently across generated LLVM functions.
+ * 
+ * @see FunctionAttributeHandler
+ * @see FunctionAttributeBuilder
+ * @see llvm::Function
+ * 
+ * @namespace LynxFunctionAttr
+ * Provides builder and inference utilities for LLVM function attributes in Lynx.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
 #ifndef LYNX_FUNCTION_ATTRS_INFERER_HPP
 #define LYNX_FUNCTION_ATTRS_INFERER_HPP
 
@@ -8,16 +33,9 @@
 
 namespace LynxFunctionAttr {
 
-    /**
-     * @brief Central orchestrator that runs a chain of attribute inference handlers on LLVM functions.
-     *
-     * This class initializes and manages a chain of `FunctionAttributeHandler` instances.
-     * It provides a single entry point to infer and apply various safe or optimized function attributes
-     * to an LLVM `Function`, based on the handlers registered in the chain.
-     */
 
     class FunctionAttributeInferer {
-        /// Head of the chain of attribute handlers.
+        
         std::unique_ptr<FunctionAttributeHandler> head;
     
     public:

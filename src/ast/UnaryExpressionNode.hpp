@@ -1,3 +1,20 @@
+/**
+ * @file UnaryExpressionNode.hpp
+ * @brief Declares the UnaryExpressionNode class representing unary expressions in the AST.
+ * 
+ * UnaryExpressionNode models unary operations in the Lynx language, such as increment/decrement,
+ * logical NOT, and other unary operators applied to variables or expressions.
+ * 
+ * **Key Responsibilities:**
+ * - Represent unary operations in the AST.
+ * - Store the operator type and target (variable name or expression node).
+ * - Generate LLVM IR code for unary operations.
+ * - Handle increment/decrement and logical NOT operations internally.
+ * 
+ * @author Ko Thein
+ * @date November 4, 2024
+*/
+
 #ifndef LYNX_UNARY_EXPRESSION_NODE_HPP
 #define LYNX_UNARY_EXPRESSION_NODE_HPP
 
@@ -5,10 +22,12 @@
 #include <constants/OperatorType.hpp>
 #include <constants/expressions/UnaryExpressionType.hpp>
 
-using namespace LynxConstants;
 
 namespace LynxAst {
-    class UnaryExpressionNode: public Node {
+    
+    using namespace LynxConstants;
+
+    class UnaryExpressionNode : public Node {
 
         private:
 
@@ -19,21 +38,32 @@ namespace LynxAst {
             std::unique_ptr<Node> expressionNode;
             
             UnaryExpressionType unaryExpressionType;
+            
+        private:
+
+            llvm::Value* handleIncrementOrDecrement(const AstContext& astContext, llvm::Value* valueInstance, llvm::Type* loadType, llvm::Value* llvmVarRef, bool isIncrement);
+
+            llvm::Value* handleLogicalNot(const AstContext& astContext, llvm::Value* valueInstance, llvm::Type* loadType);
 
         public:
-            explicit UnaryExpressionNode(OperatorType oprType, UnaryExpressionType unaryExprType, std::string varName): operatorType(oprType), unaryExpressionType(unaryExprType), variableName(std::move(varName)) {}
 
-            explicit UnaryExpressionNode(OperatorType oprType, UnaryExpressionType unaryExprType, std::unique_ptr<Node> exprNode): operatorType(oprType), unaryExpressionType(unaryExprType), expressionNode(std::move(exprNode)) {}
+            explicit UnaryExpressionNode(
+                OperatorType oprType, 
+                UnaryExpressionType unaryExprType,
+                std::string varName
+            ) : operatorType(oprType), unaryExpressionType(unaryExprType), variableName(std::move(varName)) {}
+
+            explicit UnaryExpressionNode(
+                OperatorType oprType, 
+                UnaryExpressionType unaryExprType, 
+                std::unique_ptr<Node> exprNode
+            ) : operatorType(oprType), unaryExpressionType(unaryExprType), expressionNode(std::move(exprNode)) {}
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::UNARY_OPERATION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::UNARY_OPERATION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
-
-            llvm::Value* handleIncrementOrDecrement(std::shared_ptr<AstContext> astContext, llvm::Value* valueInstance, llvm::Type* loadType, llvm::Value* llvmVarRef, bool isIncrement);
-
-            llvm::Value* handleLogicalNot(std::shared_ptr<AstContext> astContext, llvm::Value* valueInstance, llvm::Type* loadType);
 
             ~UnaryExpressionNode() override = default;
     };

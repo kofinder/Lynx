@@ -37,9 +37,7 @@ namespace LynxTypes {
 
         auto& builder = astContext->getBuilder();
         llvm::Type* charType = computeLLVMType();
-
         llvm::Value* var = builder.CreateAlloca(charType, nullptr, variableName);
-
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::structureCharType));
             allocaInst->setMetadata(MetadataTypeConstants::lynxDataType, metadata);

@@ -1,3 +1,28 @@
+/**
+ * @file ProgramTerminalColor.hpp
+ * @brief Provides ANSI escape sequences for terminal text coloring and styling.
+ * 
+ * This header defines a comprehensive set of macros for foreground colors, background colors,
+ * and text styles (bold, underline, blink, reverse, hidden) compatible with most UNIX-like terminals.
+ * It is intended to be used for formatting console output in Lynx programs, CLI tools, and utilities.
+ * 
+ * **Features:**
+ * - Standard and bright foreground colors.
+ * - Standard and bright background colors.
+ * - Text styles: bold, dim, underline, blink, reverse, hidden.
+ * - Reset macro to revert all styles.
+ * - Separator macro for visually dividing terminal sections.
+ * 
+ * **Usage Example:**
+ * ```cpp
+ * std::cout << LYNX_BOLD << LYNX_RED << "Error: File not found!" << LYNX_RESET << std::endl;
+ * ```
+ * 
+ * Author: Ko Thein (Nathan Mratt)
+ * Date: November 2, 2024
+ */
+
+
 #ifndef LYNX_PROGRAM_TERMINAL_COLOR_HPP
 #define LYNX_PROGRAM_TERMINAL_COLOR_HPP
 

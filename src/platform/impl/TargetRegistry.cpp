@@ -4,10 +4,8 @@
 
 namespace LynxPlatform {
 
-    // Static member initialization
     std::vector<const Bitcode *> *TargetRegistry::libs = nullptr;
 
-    // Private constructor
     TargetRegistry::TargetRegistry() 
         : m_dispatch(nullptr),
         m_dispatch_macos(nullptr),
@@ -17,9 +15,6 @@ namespace LynxPlatform {
         }
     }
 
-    /**
-     * @brief Registers a Bitcode library in the global registry.
-     */
     void TargetRegistry::RegisterTarget(const Bitcode *lib) {
         if (!libs) {
             libs = new std::vector<const Bitcode *>();
@@ -27,15 +22,11 @@ namespace LynxPlatform {
         libs->push_back(lib);
     }
 
-    /**
-     * @brief Returns the singleton instance of the target registry.
-     */
     TargetRegistry *TargetRegistry::getTargetLibRegistry() {
         static TargetRegistry instance;
 
         if (libs && !libs->empty()) {
             for (const Bitcode *lib : *libs) {
-                // Categorize and store Bitcode libraries by type and attributes
                 switch (lib->getType()) {
                     case Bitcode::BitcodeType::Dispatch:
                         if (lib->getOS() == TargetOSType::macos)
@@ -47,13 +38,13 @@ namespace LynxPlatform {
                         instance.m_builtins[(static_cast<uint32_t>(lib->getOS()) << 16) | static_cast<uint32_t>(lib->getArch())] = lib;
                         break;
                     case Bitcode::BitcodeType::LYNX_target:
-                        instance.m_targets[(static_cast<uint32_t>(lib->getISPCTarget()) << 24) |
+                        instance.m_targets[(static_cast<uint32_t>(lib->getLynxTarget()) << 24) |
                                         (static_cast<uint32_t>(lib->getOS()) << 16) |
                                         static_cast<uint32_t>(lib->getArch())] = lib;
                         instance.m_supported_oses.set(static_cast<int>(lib->getOS()));
                         break;
                     case Bitcode::BitcodeType::Stdlib:
-                        instance.m_stdlibs[(static_cast<uint32_t>(lib->getISPCTarget()) << 24) |
+                        instance.m_stdlibs[(static_cast<uint32_t>(lib->getLynxTarget()) << 24) |
                                         (static_cast<uint32_t>(lib->getOS()) << 16) |
                                         static_cast<uint32_t>(lib->getArch())] = lib;
                         instance.m_supported_oses.set(static_cast<int>(lib->getOS()));
@@ -66,18 +57,12 @@ namespace LynxPlatform {
         return &instance;
     }
 
-    /**
-     * @brief Returns the dispatch library for a specified OS.
-     */
     const Bitcode *TargetRegistry::getDispatchLibrary(const TargetOSType os) const {
         if (os == TargetOSType::macos && m_dispatch_macos)
             return m_dispatch_macos;
         return m_dispatch;
     }
 
-    /**
-     * @brief Returns the builtins-c library for a specific OS and architecture.
-     */
     const Bitcode *TargetRegistry::getBuiltinsCLibray(TargetOSType os, ArchType arch) const {
         uint32_t key = (static_cast<uint32_t>(os) << 16) | static_cast<uint32_t>(arch);
         auto it = m_builtins.find(key);
@@ -85,9 +70,6 @@ namespace LynxPlatform {
         return nullptr;
     }
 
-    /**
-     * @brief Returns the ISPC target library for the given target, OS, and architecture.
-     */
     const Bitcode *TargetRegistry::getTargetLibray(LynxTargetType target, TargetOSType os, ArchType arch) const {
         uint32_t key = (static_cast<uint32_t>(target) << 24) | (static_cast<uint32_t>(os) << 16) | static_cast<uint32_t>(arch);
         auto it = m_targets.find(key);
@@ -95,9 +77,6 @@ namespace LynxPlatform {
         return nullptr;
     }
 
-    /**
-     * @brief Returns the ISPC stdlib library for the given target, OS, and architecture.
-     */
     const Bitcode *TargetRegistry::getStdLibray(LynxTargetType target, TargetOSType os, ArchType arch) const {
         uint32_t key = (static_cast<uint32_t>(target) << 24) | (static_cast<uint32_t>(os) << 16) | static_cast<uint32_t>(arch);
         auto it = m_stdlibs.find(key);
@@ -105,9 +84,6 @@ namespace LynxPlatform {
         return nullptr;
     }
 
-    /**
-     * @brief Checks for missing bitcode libraries and returns their filenames.
-     */
     std::vector<std::string> TargetRegistry::checkBitcodeLibs() const {
         std::vector<std::string> missing;
 
@@ -133,14 +109,7 @@ namespace LynxPlatform {
         return missing;
     }
 
-    /**
-     * @brief Prints a matrix of supported targets, OSes, and architectures.
-     */
     void TargetRegistry::printSupportMatrix() const {
-        // std::cout << "Supported Operating Systems: " << getSupportedOSes() << "\n";
-        // std::cout << "Supported Architectures: " << getSupportedArchTypes() << "\n";
-        // std::cout << "Supported Targets: " << getSupportedTargets() << "\n";
-
         auto missing = checkBitcodeLibs();
         if (!missing.empty()) {
             std::cout << "Warning: Missing bitcode libraries:\n";
@@ -149,9 +118,6 @@ namespace LynxPlatform {
         }
     }
 
-    /**
-     * @brief Returns a comma-separated string listing supported architecture types.
-     */
     std::string TargetRegistry::getSupportedArchTypes() {
         std::set<ArchType> archs;
         for (const auto& kv : m_builtins)
@@ -166,9 +132,6 @@ namespace LynxPlatform {
         return ss.str();
     }
 
-    /**
-     * @brief Returns a comma-separated string listing supported Lynx targets.
-     */
     std::string TargetRegistry::getSupportedTargets() {
         std::set<LynxTargetType> targets;
         for (const auto& kv : m_targets)
@@ -183,9 +146,6 @@ namespace LynxPlatform {
         return ss.str();
     }
 
-    /**
-     * @brief Returns a comma-separated string listing supported operating systems.
-     */
     std::string TargetRegistry::getSupportedOSes() {
         std::stringstream ss;
         bool first = true;
@@ -199,9 +159,6 @@ namespace LynxPlatform {
         return ss.str();
     }
 
-    /**
-     * @brief Determines whether a combination of target, OS, and architecture is supported.
-     */
     bool TargetRegistry::isSupported(LynxTargetType target, TargetOSType os, ArchType arch) const {
         uint32_t key = (static_cast<uint32_t>(target) << 24) | (static_cast<uint32_t>(os) << 16) | static_cast<uint32_t>(arch);
         if (m_targets.find(key) != m_targets.end()) return true;

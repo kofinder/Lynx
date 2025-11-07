@@ -1,14 +1,29 @@
+/**
+ * @file StatementListNode.hpp
+ * @brief Declares the StatementListNode class, representing a collection of statements in the Lynx AST.
+ * 
+ * The StatementListNode class manages a list of statements along with their local variable declarations.
+ * It provides functionality for adding statements, managing local variables, and generating LLVM IR code
+ * for the complete list of statements.
+ * 
+ * **Key Responsibilities:**
+ * - Stores a list of statement nodes in the order they appear.
+ * - Maintains a mapping of local variable names to their declaration nodes.
+ * - Provides methods to add statements, create locals, and search for local variables.
+ * - Supports LLVM IR generation for the entire statement list.
+ * 
+ * **Used By:**
+ * - AST construction and semantic analysis subsystems.
+ * - LLVM IR generation for blocks of statements, functions, and method bodies.
+ * 
+ * @see VariableDeclarationNode
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_STATEMENT_LIST_NODE_HPP
 #define LYNX_STATEMENT_LIST_NODE_HPP
-
-/**  
- * @class StatementListNode  
- *   
- * @brief Represents a node in the abstract syntax tree that contains a list of statements.  
- 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 3, 2024
- */  
 
 #include <vector>  
 #include <map>  
@@ -16,17 +31,11 @@
 #include "Node.hpp"
 #include "VariableDeclarationNode.hpp"
 
-using namespace LynxConstants;
-
 namespace LynxAst {
 
-    /**
-    * This class manages a collection of statement nodes and their local variable declarations.   
-    * It provides functionality to add statements, manage local variables, and code generation for   
-    * the statement list.        
-    */
+    using namespace LynxConstants;
 
-    class StatementListNode: public Node {  
+    class StatementListNode : public Node {  
 
         private:  
 
@@ -42,7 +51,7 @@ namespace LynxAst {
                 pushStatement(std::move(stmtNode)); 
             }
 
-            NodeType getNodeType() override { return NodeType::STATEMENT_LIST_NODE; } 
+            inline constexpr NodeType getNodeType() override { return NodeType::STATEMENT_LIST_NODE; } 
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;  
 
@@ -52,11 +61,11 @@ namespace LynxAst {
 
             VariableDeclarationNode* findLocal(const std::string& varName);  
 
-            const std::vector<std::unique_ptr<Node>>& getStatements() const {  return statements; }
+            [[nodiscard]] const std::vector<std::unique_ptr<Node>>& getStatements() const {  return statements; }
         
-            const std::map<std::string, VariableDeclarationNode*>& getLocalKeyValue() const { return locals; }
+            [[nodiscard]] const std::map<std::string, VariableDeclarationNode*>& getLocalKeyValue() const { return locals; }
 
-            void pushStatement(std::unique_ptr<Node> stmtNode) { this->statements.push_back(std::move(stmtNode)); }             
+            void pushStatement(std::unique_ptr<Node> stmtNode) { statements.push_back(std::move(stmtNode)); }             
 
             ~StatementListNode() override = default;
             

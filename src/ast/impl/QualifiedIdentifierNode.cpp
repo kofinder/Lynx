@@ -1,7 +1,6 @@
 #include "QualifiedIdentifierNode.hpp"
 #include <context/GlobalSymbolContext.hpp>
 #include "tmpl/CloneNodeTemplate.hpp"
-#include "constants/AstConstants.hpp"
 #include <constants/LinkageType.hpp>
 #include <types/tmpl/TypeCaster.hpp>
 #include <logger/Logger.hpp>
@@ -11,10 +10,11 @@ namespace LynxAst {
     using namespace LynxLogger;
     using namespace LynxTypes;
     using namespace LynxConstants;
-    using namespace constants;
+
+    constexpr std::string_view enum_prefix_namespace = "enum";
 
     llvm::Value* QualifiedIdentifierNode::generateCode(std::shared_ptr<AstContext> astContext) {
-        LOG_INFO("Generate Qualified Node ....{}", identifierName);
+        LOG_WARN("IR Code Generation  ....{}", identifierName);
 
         auto systemType = qualifiedPrefixType->getPrefixType();
 
@@ -25,9 +25,7 @@ namespace LynxAst {
         return emitSystemValue(*astContext);
     }
 
-    llvm::Value* QualifiedIdentifierNode::emitEnumValue(AstContext& astContext) {
-
-        LOG_INFO("Emit Enum Value ................! {}", identifierName);
+    llvm::Value* QualifiedIdentifierNode::emitEnumValue(const AstContext& astContext) {
 
         auto* module = astContext.getModule();
 
@@ -53,7 +51,7 @@ namespace LynxAst {
         return nullptr;        
     }
 
-    llvm::Value* QualifiedIdentifierNode::emitSystemValue(AstContext& astContext) {
+    llvm::Value* QualifiedIdentifierNode::emitSystemValue(const AstContext& astContext) {
         LOG_ERROR("Emit System Value ................!");
         return nullptr;
     }

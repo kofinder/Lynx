@@ -1,3 +1,31 @@
+/**
+ * @file ItaniumTypeEncoding.hpp
+ * @brief Defines string constants for Itanium C++ ABI type encoding.
+ *
+ * This header provides the canonical encodings for primitive types, user-defined
+ * types, container types, and other common constructs as used in Itanium C++ name
+ * mangling. These constants are referenced when constructing mangled names for
+ * functions, methods, classes, and templates.
+ *
+ * Categories of Constants:
+ * - **Fundamental Types:** VOID, BOOL, BYTE, CHAR, STRING, SHORT, INT, LONG, FLOAT, DOUBLE.
+ * - **Date/Time and Other Special Types:** DATE, DATETIME, ENUM, CLAZZ, INTERFACE, FILE, AUTO.
+ * - **Containers and Collections:** COLLECTION, ARRAY, VECTOR, LIST, SET, MAP, STACK, QUEUE, TREE, GRAPH, HEAP, DICT.
+ * - **Pointers, References, and Functions:** FUNCTION, REFERENCE, POINTER, LVALUE_REF, RVALUE_REF.
+ * - **Signed/Unsigned Variants and Extended Types:** SIGNED_CHAR, UNSIGNED_CHAR, UNSIGNED_SHORT, UNSIGNED_INT, UNSIGNED_LONG, LONG_LONG, UNSIGNED_LONG_LONG, LONG_DOUBLE, FLOAT128, PPC_DOUBLE_DOUBLE.
+ * - **Struct and Token Encodings:** STRUCT_PREFIX, STRUCT_SUFFIX, TOKEN.
+ * - **Function Start/End Encodings:** FUNCTION_START, FUNCTION_END.
+ *
+ * Example Usage:
+ * @code
+ * std::string typeCode = INT;  // Encodes 'int' type
+ * std::string ptrCode = POINTER + INT; // Encodes 'int*'
+ * @endcode
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_ITANIUM_TYPE_ENCODING_HPP
 #define LYNX_ITANIUM_TYPE_ENCODING_HPP
 

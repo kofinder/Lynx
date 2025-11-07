@@ -1,3 +1,25 @@
+/**
+ * @file IRPlanner.hpp
+ * @brief Declares the IRPlanner class responsible for determining the compilation order of Lynx modules.
+ * 
+ * The IRPlanner analyzes parsed Lynx AST modules and their import dependencies to generate
+ * a topologically sorted list of modules. This ensures that each module is compiled only
+ * after all its dependencies have been processed.
+ * 
+ * **Key Responsibilities:**
+ * - Resolves import statements to actual `.lynx` source file paths.
+ * - Constructs a dependency graph between modules.
+ * - Produces a topologically sorted order of modules for IR generation.
+ * - Provides access to the ordered module list for downstream IR generation or linking.
+ * 
+ * **Used By:**
+ * - IRGenerator to orchestrate LLVM IR generation in correct dependency order.
+ * - Build system and compiler backend for dependency management.
+ * 
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_IR_PLANNER_HPP
 #define LYNX_IR_PLANNER_HPP
 

@@ -1,3 +1,34 @@
+/**
+ * @file FileType.hpp
+ * @brief Defines the FileType class representing the built-in file type in the Lynx type system.
+ *
+ * The `FileType` encapsulates file handles and operations for working with files
+ * in the Lynx language. It provides mechanisms for LLVM IR generation, semantic analysis,
+ * and debug metadata emission.
+ *
+ * **Key Responsibilities:**
+ * - Represents file objects used for reading, writing, and managing files.
+ * - Supports variable instantiation, assignment, and default value creation.
+ * - Integrates with `TypeVisitor` for semantic checks.
+ * - Produces DWARF-compatible debug information for file types.
+ *
+ * **Integration Points:**
+ * - Used in file I/O operations such as open, read, write, and close.
+ * - Interacts with system-level or standard library APIs for file management.
+ * - Default initialization represents an invalid or closed file handle.
+ *
+ * **LLVM Details:**
+ * - Maps to `llvm::StructType` for representing the file handle or file object.
+ * - Provides pointer type and size/alignment according to target `DataLayout`.
+ * - Maintains a static cached LLVM type for performance.
+ *
+ * **Additional Features:**
+ * - Provides utilities for type comparison, cloning, and debug name resolution.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_FILE_TYPE_HPP
 #define LYNX_FILE_TYPE_HPP
 

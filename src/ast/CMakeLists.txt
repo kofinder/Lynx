@@ -11,10 +11,10 @@ set(LIB_AST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/StatementNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/AssignmentExpressionNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/ArrayInitializerNode.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/impl/LoggerPrinterNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/FunctionCallNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/StatementListNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/IfStatementNode.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/impl/SystemCallExpressionNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/SwitchStatementNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/UnaryExpressionNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/BinaryExpressionNode.cpp
@@ -29,7 +29,6 @@ set(LIB_AST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/MixinDeclarationNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/InterfaceDeclarationNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/ObjectCreationNode.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/impl/ObjectAccessNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/MethodCallNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/ArrayAccessNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/impl/ChainedDereferenceNode.cpp
@@ -53,12 +52,12 @@ set(LIB_AST_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/EnumValueExpressionNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ExpressionStatementNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/StatementNode.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/LoggerPrinterNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/AssignmentExpressionNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ArrayInitializerNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/FunctionCallNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/StatementListNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/IfStatementNode.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/SystemCallExpressionNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/SwitchStatementNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ExceptionHandlerNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ForLoopStatementNode.hpp
@@ -73,7 +72,6 @@ set(LIB_AST_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/MixinDeclarationNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/InterfaceDeclarationNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ObjectCreationNode.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ObjectAccessNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MethodCallNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ArrayAccessNode.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MethodCallNode.hpp
@@ -103,7 +101,6 @@ set(LIB_AST_HELPER
 set(LIB_AST_TEMPLATES
     ${CMAKE_CURRENT_SOURCE_DIR}/tmpl/ManglerTemplate.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/tmpl/LLVMFunctionTemplate.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/tmpl/CollectionInitializer.hpp
 )
 
 set(LIB_AST_UTILS
@@ -128,6 +125,7 @@ target_link_libraries(LynxAst PRIVATE
     LynxLogger 
     LynxExceptions 
     LynxTypes 
+    LynxSystem
     LynxConstants 
     LynxContext 
     LynxCallConv

@@ -16,6 +16,7 @@ namespace LynxTypes {
             const BaseType* createWithConst(bool newIsConst) const override;
 
         public:
+        
             explicit DoubleType(AstContext* context) : BuiltInType(context) {}
 
             void accept(TypeVisitor& visitor) override;

@@ -1,3 +1,25 @@
+/**
+ * @file TypeMethodResolver.hpp
+ * @brief Abstract base class for resolving methods on specific types in Lynx.
+ *
+ * The `TypeMethodResolver` provides an interface for type-specific method resolution.
+ * Subclasses implement logic to map method names and arguments to LLVM IR operations
+ * appropriate for the type they handle.
+ *
+ * Example usage:
+ * @code
+ * std::unique_ptr<TypeMethodResolver> resolver = TypeResolverFactory::forType(DataType::INT);
+ * llvm::Value* result = resolver->resolveMethod("toString", instanceValue, argValues, astContext);
+ * @endcode
+ *
+ * Each concrete resolver (e.g., IntMethodResolver, StringMethodResolver) implements
+ * the `resolveMethod` function according to the semantics of the type.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
+
 #ifndef LYNX_TYPE_METHOD_RESOLVER_HPP
 #define LYNX_TYPE_METHOD_RESOLVER_HPP
 
@@ -14,15 +36,6 @@ using namespace LynxContext;
 
 namespace LynxResolver {
 
-    /**
-     * @class TypeMethodResolver
-     * @brief Abstract interface for resolving method calls on specific types at compile time.
-     *
-     * Subclasses of this interface handle type-specific method dispatch during
-     * IR generation (e.g., `int.abs()`, `datetime.getYear()`, etc.).
-     * 
-     * Each type (int, float, DateTime, etc.) provides its own implementation.
-    */
     class TypeMethodResolver {
 
         public:

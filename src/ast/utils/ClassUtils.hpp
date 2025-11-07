@@ -1,3 +1,25 @@
+/**
+ * @file ClassUtils.hpp
+ * @brief Utility functions to assist with field access and manipulation for class code generation using LLVM.
+ * 
+ * These functions help load from and store to class fields (typically from the `this` pointer) during LLVM IR generation.
+ * This includes resolving field metadata, accessing field values, and assigning new values to fields.
+ * 
+ * **Key Responsibilities:**
+ * - Resolve class field context including struct type, `this` pointer, and field index.
+ * - Load and store values from/to class fields using LLVM IRBuilder.
+ * - Support `super` method resolution for class and mixin types.
+ * - Helper functions to simplify field access in instance methods.
+ * 
+ * **Used By:**
+ * - Code generation routines for class field manipulation in instance methods.
+ * 
+ * @see AstContext, ClassType, MixinType
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_CLASS_CODEGEN_UTILS_HPP
 #define LYNX_CLASS_CODEGEN_UTILS_HPP
 
@@ -9,14 +31,6 @@
 #include <types/tmpl/TypeCaster.hpp>
 #include <context/GlobalSymbolContext.hpp>
 
-
-/**
- * @file ClassCodegenUtils.hpp
- * @brief Utility functions to assist with field access and manipulation for class code generation using LLVM.
- *
- * These functions help load from and store to class fields (typically from the `this` pointer) during LLVM IR generation.
- * This includes resolving field metadata, accessing field values, and assigning new values to fields.
-*/
 namespace LynxAst::ClassUtils {
 
     using namespace LynxLogger;

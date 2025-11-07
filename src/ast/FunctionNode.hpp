@@ -1,17 +1,31 @@
-#ifndef LYNX_FUNCTION_NODE_HPP
-#define LYNX_FUNCTION_NODE_HPP
-
 /**
  * @file FunctionNode.hpp
- * @brief Defines the FunctionNode class, representing a function definition in the AST.
+ * @brief Declares the FunctionNode class, representing functions/methods in the Lynx AST.
  * 
- * The FunctionNode class models function definitions within the abstract syntax tree (AST),
- * providing support for function name, return type, parameters, and body statements. 
- * This class includes methods to generate LLVM IR for function entry, exit, and signature.
+ * The FunctionNode class models both standalone functions and class methods. It stores
+ * function metadata including name, return type, parameters, access modifiers, and the function body.
+ * It supports code generation via LLVM IR, exception handling, and deep cloning for AST transformations.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
- */
+ * **Key Responsibilities:**
+ * - Stores function metadata: name, return type, parameters, access modifier, virtual/override flags.
+ * - Manages function body via StatementListNode and exception handlers.
+ * - Generates LLVM IR for function definition, calls, and return values.
+ * - Provides deep cloning and signature generation for type checking and mangling.
+ * - Integrates with class context for method dispatch and inheritance.
+ * 
+ * **Used By:**
+ * - AST construction and semantic analysis subsystems.
+ * - LLVM IR code generation for functions and class methods.
+ * 
+ * @see Node, StatementListNode, Parameter, AstContext
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
+#ifndef LYNX_FUNCTION_NODE_HPP
+#define LYNX_FUNCTION_NODE_HPP
 
 #include "Node.hpp"
 #include <optional>
@@ -70,11 +84,11 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
         
-            NodeType getNodeType() override { return NodeType::FUNCTION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::FUNCTION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
-            llvm::Value* setReturnValue(std::shared_ptr<AstContext> astContext, llvm::Value* value);  
+            llvm::Value* setReturnValue(const AstContext& astContext, llvm::Value* value);  
 
             void setFunctionBody(std::unique_ptr<StatementListNode> stmts) { statements = std::move(stmts); }
 
@@ -82,17 +96,17 @@ namespace LynxAst {
 
             [[nodiscard]] const std::shared_ptr<std::vector<std::shared_ptr<Parameter>>> getFunctionParameter() const noexcept { return fnParams; }
 
-            StatementListNode* getFunctionStatements() const noexcept { return statements.get(); }
+            [[nodiscard]] inline StatementListNode* getFunctionStatements() const noexcept { return statements.get(); }
 
             void setReturnType(std::shared_ptr<VariableType> retType) { returnType = std::move(retType); }
 
-            std::string getFunctionName() const noexcept { return fnName; }
+            [[nodiscard]] inline std::string getFunctionName() const noexcept { return fnName; }
 
-            llvm::Function* getLLVMFunctionRef() const noexcept { return llvmFunction; }
+            [[nodiscard]] inline llvm::Function* getLLVMFunctionRef() const noexcept { return llvmFunction; }
 
             void setLLVMFunction(llvm::Function* llvmFunc) noexcept { llvmFunction = llvmFunc;  }
 
-            ExceptionHandlerNode* getExceptionHandler() const noexcept {  return exceptionHandlers.empty() ? nullptr : exceptionHandlers.top(); }
+            [[nodiscard]] inline ExceptionHandlerNode* getExceptionHandler() const noexcept {  return exceptionHandlers.empty() ? nullptr : exceptionHandlers.top(); }
 
             void pushExceptionHandler(ExceptionHandlerNode* node) noexcept { exceptionHandlers.push(node);  }
 
@@ -106,19 +120,19 @@ namespace LynxAst {
 
             void setAccessModifier(AccessModifierType modifierType) noexcept { accessModifier = modifierType; }
 
-            AccessModifierType getAccessModifier() const noexcept { return accessModifier; }
+            [[nodiscard]] inline constexpr AccessModifierType getAccessModifier() const noexcept { return accessModifier; }
 
             void setClazzNode(Node* classNodePtr) noexcept { clazzNode = classNodePtr; }
     
-            bool isClazzFunction() const noexcept { return clazzNode != nullptr; }
+            [[nodiscard]] inline bool isClazzFunction() const noexcept { return clazzNode != nullptr; }
 
             void setVirtual(bool value) noexcept { isVirtual = value; }
 
             void setOverride(bool value) noexcept { isOverride = value; }
 
-            std::string getSignatureString() const;
+            [[nodiscard]] std::string getSignatureString() const;
 
-            std::string getCurrentClazzName() const;
+            [[nodiscard]] std::string getCurrentClazzName() const;
 
             ~FunctionNode() override = default;
     };

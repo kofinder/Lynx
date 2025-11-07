@@ -1,3 +1,25 @@
+/**
+ * @file ProjectKind.hpp
+ * @brief Defines the ProjectKind enumeration and related utility functions for project type management.
+ * 
+ * The ProjectKind enumeration represents various categories of Lynx CLI projects, 
+ * including generic applications, web projects, libraries, services, games, and more.
+ * This enumeration enables consistent project classification and supports both 
+ * serialization and deserialization from string representations.
+ * 
+ * **Features:**
+ * - Provides a strongly-typed enum for different project kinds.
+ * - Includes utility functions to convert between string names and enum values.
+ * - Supports lowercase case-insensitive parsing for user input flexibility.
+ * 
+ * **Available Project Types:**
+ * - Generic, Web, Console, Library, Service, Mobile, Game, Plugin, Test,
+ *   Microservice, DataPipeline, REST, WebFlex, GraphQL, Gateway
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_CLI_PROJECT_KIND_HPP
 #define LYNX_CLI_PROJECT_KIND_HPP
 

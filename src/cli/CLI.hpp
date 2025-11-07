@@ -15,8 +15,8 @@
  *  - Validate and dispatch commands from user input.
  *  - Handle unknown or unsupported commands gracefully.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
 */
 #include <string>
 
@@ -46,12 +46,6 @@ namespace LynxCLI {
 
             CLI() = default;     
 
-            /**
-             * @brief Starts the CLI, parsing the command and executing it.
-             * 
-             * This method initializes the command registry and dispatches
-             * the command specified by the ProgramOptionConfig instance.
-            */
             void run(); 
 
             ~CLI() = default;

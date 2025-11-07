@@ -1,3 +1,33 @@
+/**
+ * @file TypeEncoderUtils.hpp
+ * @brief Utilities for encoding and serializing types for Itanium-style name mangling.
+ *
+ * This header provides helper functions to convert LLVM types, BaseType objects,
+ * and primitive data types into string representations suitable for mangling.
+ * It supports both primitive and user-defined types (classes, interfaces, enums)
+ * and includes functions to serialize parameters and names according to the Itanium ABI.
+ *
+ * Main functionalities:
+ * - `serializeType(llvm::Type*)` / `serializeType(DataType)`: Converts a type to a string code.
+ * - `encodeNameComponent(const std::string&)`: Encodes a name with its length (e.g., "3foo").
+ * - `encodeType(const std::string&)`: Placeholder for encoding string-type arguments.
+ * - `encodeLLVMType(llvm::Type*)`: Encodes LLVM types including user-defined types.
+ * - `encodeBaseType(const BaseType*)`: Encodes BaseType-derived objects.
+ * - `encodeParameters(const ParameterTypes&)`: Serializes a vector of parameter types into mangled form.
+ *
+ * Example Usage:
+ * @code
+ * llvm::Type* llvmType = ...;
+ * std::string encoded = LynxMangler::encodeLLVMType(llvmType);
+ * std::vector<BaseType*> params = ...;
+ * std::string mangledParams = LynxMangler::encodeParameters(params);
+ * @endcode
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
+
 #ifndef LYNX_TYPE_ENCODER_UTILS_HPP
 #define LYNX_TYPE_ENCODER_UTILS_HPP
 

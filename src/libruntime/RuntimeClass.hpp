@@ -1,3 +1,41 @@
+/**
+ * @file RuntimeClass.hpp
+ * @brief Base abstraction for Lynx runtime-exposed classes.
+ * 
+ * The `RuntimeClass` represents a dynamically registered class within the Lynx
+ * runtime environment. Runtime classes encapsulate methods that can be invoked
+ * from within the language runtime, providing bindings to native functionality
+ * such as file handling, collections, or networking.
+ * 
+ * **Key Features:**
+ * - Serves as a base for all runtime-exposed classes.
+ * - Allows registration of native methods into the runtime function registry.
+ * - Supports lookup and invocation of registered methods at runtime.
+ * 
+ * **Usage Example:**
+ * @code
+ * class FileRuntimeClass : public RuntimeClass {
+ * public:
+ *     std::string getName() const override { return "File"; }
+ *     
+ *     void registerMethods(RuntimeFunctionRegistry& registry) override {
+ *         registry.registerFunction("File::open", std::make_shared<FileOpenFunction>());
+ *         registry.registerFunction("File::close", std::make_shared<FileCloseFunction>());
+ *     }
+ * };
+ * @endcode
+ * 
+ * @see RuntimeFunctionRegistry, RuntimeFunction, RuntimeValue
+ * 
+ * @namespace LynxLibRuntime
+ * Contains components related to the Lynx Runtime Library, including modules,
+ * runtime functions, and dynamic class registration.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
 #ifndef LYNX_LIB_RUNTIME_CLASS_HPP
 #define LYNX_LIB_RUNTIME_CLASS_HPP
 
@@ -19,15 +57,8 @@ using namespace LynxTypes;
 
 namespace LynxLibRuntime {
 
-    // A shorthand type for a list of expression arguments passed to instance creation
     using ArgumentExprs = std::vector<std::unique_ptr<ExpressionNode>>;
 
-    /**
-     * @brief Abstract base class for all runtime types.
-     *
-     * This interface defines how user-defined types (e.g., File, Image, Resource)
-     * are constructed, initialized, and registered in the runtime system.
-    */
     class RuntimeClass {
 
         protected:

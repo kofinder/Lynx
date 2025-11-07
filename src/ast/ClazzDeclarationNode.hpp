@@ -1,3 +1,28 @@
+/**
+ * @file ClazzDeclarationNode.hpp
+ * @brief Declares the ClazzDeclarationNode class representing class declarations in the Lynx AST.
+ * 
+ * The ClazzDeclarationNode class handles user-defined classes, including their fields, methods,
+ * constructors, inheritance, interfaces, and mixins. It supports LLVM IR generation for class
+ * types and manages virtual tables for method dispatch.
+ * 
+ * **Key Responsibilities:**
+ * - Stores class name, fields, methods, and constructors.
+ * - Handles inheritance, interfaces, and mixins.
+ * - Generates LLVM IR for class definitions and member functions.
+ * - Supports virtual tables for polymorphic dispatch.
+ * - Provides cloning for AST transformations.
+ * 
+ * **Used By:**
+ * - AST nodes representing class declarations.
+ * - Code generation routines for user-defined types.
+ * 
+ * @see Node, FunctionNode, ClazzConstructorNode, ClassType, VirtualTable
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_CLAZZ_DECLARATION_NODE_HPP
 #define LYNX_CLAZZ_DECLARATION_NODE_HPP
 
@@ -34,6 +59,8 @@ namespace LynxAst {
             std::unique_ptr<std::vector<std::unique_ptr<VariableDeclarationNode>>> fields;
 
             std::unique_ptr<std::vector<std::unique_ptr<ClazzConstructorNode>>> constructors;
+
+        private:
 
             void generateDefaultCtor();
 
@@ -98,25 +125,25 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::CLAZZ_DECLARATION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::CLAZZ_DECLARATION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
             
-            inline const std::string& getOriginalName() const { return className; }
+            [[nodiscard]] inline const std::string& getOriginalName() const noexcept { return className; }
 
-            inline bool hasInterfaces() const { return !inheritClass->interfaces.empty(); }
+            [[nodiscard]] inline bool hasInterfaces() const noexcept { return !inheritClass->interfaces.empty(); }
 
-            inline bool hasMixins() const { return !inheritClass->mixins.empty(); }
+            [[nodiscard]] inline bool hasMixins() const noexcept { return !inheritClass->mixins.empty(); }
 
-            inline bool hasBaseClass() const { return inheritClass && inheritClass->baseClass.has_value(); }
+            [[nodiscard]] inline bool hasBaseClass() const noexcept { return inheritClass && inheritClass->baseClass.has_value(); }
 
-            inline llvm::StructType* getStructType() const { return llvmStructType; }
+            [[nodiscard]] inline llvm::StructType* getStructType() const noexcept { return llvmStructType; }
 
-            inline llvm::PointerType* getPointerType() { return llvmPointerType; }
+            [[nodiscard]] inline llvm::PointerType* getPointerType() noexcept { return llvmPointerType; }
 
-            inline const std::string getQualifiedClassName() const { return Mangle::get(ManglerKind::CLASS, className); }
+            [[nodiscard]] inline const std::string getQualifiedClassName() const noexcept { return Mangle::get(ManglerKind::CLASS, className); }
 
-            inline const std::vector<std::unique_ptr<ClazzConstructorNode>>& getConstructors() const { return *constructors; }
+            [[nodiscard]] inline const std::vector<std::unique_ptr<ClazzConstructorNode>>& getConstructors() const noexcept { return *constructors; }
             
             ~ClazzDeclarationNode() override = default;
     };

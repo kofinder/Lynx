@@ -1,3 +1,32 @@
+/**
+ * @file ByteType.hpp
+ * @brief Defines the ByteType class representing the built-in 8-bit byte type in the Lynx type system.
+ *
+ * The `ByteType` class models the `byte` primitive type within the Lynx language.
+ * It extends `BuiltInType` to provide LLVM IR generation, default value construction,
+ * assignment handling, and DWARF-compatible debug metadata.
+ *
+ * **Key Responsibilities:**
+ * - Represents 8-bit unsigned integer values (`0–255`).
+ * - Provides LLVM IR type generation (`i8`).
+ * - Implements default initialization (`0`) and assignment operations.
+ * - Supports cloning and visitor integration for semantic analysis.
+ * - Emits debug type information for tooling and debuggers.
+ *
+ * **Integration Points:**
+ * - Used in code generation for low-level operations, buffers, and memory manipulation.
+ * - Commonly used as the base element type for byte arrays and streams.
+ * - Works with `TypeVisitor` and `TypeMethodResolver` to expose language-level methods or operators.
+ *
+ * **LLVM Details:**
+ * - Maps to `llvm::Type::getInt8Ty()` for representation.
+ * - Default value: zero-initialized `i8`.
+ * - Size: 8 bits; alignment determined by target data layout.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_BYTE_TYPE_HPP
 #define LYNX_BYTE_TYPE_HPP
 
@@ -20,6 +49,7 @@ namespace LynxTypes {
             const BaseType* createWithConst(bool newIsConst) const override;
 
         public:
+        
             explicit ByteType(AstContext* context) : BuiltInType(context) {}
 
             void accept(TypeVisitor& visitor) override;

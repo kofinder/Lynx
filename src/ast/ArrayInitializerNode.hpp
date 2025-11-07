@@ -1,3 +1,27 @@
+/**
+ * @file ArrayInitializerNode.hpp
+ * @brief Declares the ArrayInitializerNode class representing array literals in the Lynx AST.
+ * 
+ * The ArrayInitializerNode class handles single- and multi-dimensional array initializations
+ * for various types (byte, short, int, long, float, double, char, bool, string). It supports
+ * LLVM IR code generation for arrays and cloning for AST transformations.
+ * 
+ * **Key Responsibilities:**
+ * - Stores single- and multi-dimensional arrays using type-safe variants.
+ * - Provides LLVM IR generation for all supported array types.
+ * - Supports cloning and size computation.
+ * - Supports generation of global arrays in LLVM.
+ * 
+ * **Used By:**
+ * - AST nodes representing array literals.
+ * - Code generation routines for array initialization.
+ * 
+ * @see Node, DataType
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_ARRAY_INITIALIZER_NODE_HPP
 #define LYNX_ARRAY_INITIALIZER_NODE_HPP
 
@@ -6,10 +30,11 @@
 #include <optional>
 #include <constants/DataType.hpp>
 
-using namespace LynxConstants;
 
 namespace LynxAst {
     
+    using namespace LynxConstants;
+
     class ArrayInitializerNode: public Node {
 
         private:
@@ -30,6 +55,8 @@ namespace LynxAst {
 
             DataType arrayType;
 
+        private:
+        
             llvm::Value* generateBooleanArray(std::shared_ptr<AstContext> astContext);
 
             llvm::Value* generateByteArray(std::shared_ptr<AstContext> astContext);
@@ -66,7 +93,7 @@ namespace LynxAst {
                 return std::make_unique<ArrayInitializerNode>(*this); 
             }
 
-            NodeType getNodeType() override { return NodeType::ARRAY_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::ARRAY_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 

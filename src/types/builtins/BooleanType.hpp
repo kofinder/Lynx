@@ -1,3 +1,32 @@
+/**
+ * @file BooleanType.hpp
+ * @brief Defines the BooleanType class representing the built-in boolean type in the Lynx type system.
+ *
+ * The `BooleanType` class models the `bool` type in the Lynx programming language.
+ * It extends the `BuiltInType` base class, providing LLVM IR type generation, 
+ * codegen behavior for assignments and instantiation, and debug metadata emission.
+ *
+ * **Key Responsibilities:**
+ * - Represents boolean literals and variables (`true`, `false`).
+ * - Provides LLVM IR type mapping (i1).
+ * - Implements default initialization and assignment operations.
+ * - Supports conversion to string (for output operations such as `println`).
+ * - Emits DWARF-compliant debug type information for booleans.
+ *
+ * **Integration Points:**
+ * - Used by the semantic analyzer and IR builder for type checking and codegen.
+ * - Resolved via `BuiltInType` factory methods or type inference in expressions.
+ * - Compatible with `TypeMethodResolver` for potential boolean-specific methods (e.g., logical operations).
+ *
+ * **LLVM Details:**
+ * - Maps to `llvm::Type::getInt1Ty()` for boolean representation.
+ * - Default value: `false`.
+ * - Size in bits: 1 (as per LLVM data layout).
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_BOOLEAN_TYPE_HPP
 #define LYNX_BOOLEAN_TYPE_HPP
 

@@ -1,17 +1,28 @@
-#ifndef LYNX_NODE_HPP
-#define LYNX_NODE_HPP
-
 /**
  * @file Node.hpp
- * @brief Abstract base class representing a node in an abstract syntax tree (AST).
+ * @brief Declares the abstract base Node class for the Lynx AST.
  * 
- * This class serves as the foundation for all nodes in the AST, providing a common interface
- * for code generation and type identification. Derived classes will implement specific node types,
- * such as expressions, literals, and declarations.
+ * The Node class is the root of the AST hierarchy, defining the common interface and behavior
+ * for all AST nodes in the Lynx compiler. It provides basic functionality such as line number
+ * tracking, LLVM code generation scaffolding, and deep cloning support.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
- */
+ * **Key Responsibilities:**
+ * - Stores the source line number for error reporting and debugging.
+ * - Defines pure virtual interfaces for LLVM code generation (`generateCode`), node type identification (`getNodeType`), and deep cloning (`clone`).
+ * - Provides utility methods for debugging (e.g., `llvmPrint`) and code generation preparation (`startCodeGen`).
+ * 
+ * **Used By:**
+ * - All derived AST nodes, including expression nodes, statement nodes, and type nodes.
+ * - Semantic analysis and LLVM IR generation subsystems.
+ * 
+ * @see NodeType, AstContext
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+#ifndef LYNX_NODE_HPP
+#define LYNX_NODE_HPP
 
 #include <iostream>
 #include "llvm/IR/Value.h"
@@ -81,7 +92,7 @@ namespace LynxAst {
              * Must be implemented by derived classes to indicate what kind of node this is (e.g., expression, declaration).
              * @return The type of the node as a NodeType.
              */
-            virtual NodeType getNodeType() = 0;
+            virtual inline constexpr NodeType getNodeType() = 0;
 
             /**
              * @brief Create a deep copy of the node.

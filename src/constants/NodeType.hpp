@@ -40,6 +40,7 @@ namespace LynxConstants {
         UNARY_OPERATION_NODE = 150,
         COMPARE_OPERATION_NODE,     // 151
         LOG_NODE,                   // 152
+        SYSTEM_NODE,
         
         FUNCTION_NODE = 160,  
         METHOD_CALL_NODE = 161,

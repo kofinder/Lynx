@@ -1,3 +1,33 @@
+/**
+ * @file TypeVisitor.hpp
+ * @brief Defines the visitor interface for traversing different type nodes in Lynx.
+ *
+ * The `TypeVisitor` class provides a visitor interface for various built-in and user-defined
+ * types in the Lynx type system. It follows the Visitor design pattern, allowing different
+ * operations to be performed on type instances without modifying the type classes themselves.
+ *
+ * Supported Type Nodes:
+ * - Built-in types: ByteType, ShortType, IntegerType, LongType, FloatType, DoubleType, BooleanType, CharType, StringType.
+ * - User-defined types: DateTimeType.
+ * - Inferred types: AutoType.
+ *
+ * Usage Example:
+ * @code
+ * class PrintTypeVisitor : public LynxResolver::TypeVisitor {
+ *     void visit(ByteType& type) override { std::cout << "ByteType\n"; }
+ *     void visit(IntegerType& type) override { std::cout << "IntegerType\n"; }
+ *     ...
+ * };
+ * 
+ * ByteType b;
+ * PrintTypeVisitor visitor;
+ * b.accept(visitor); // hypothetical accept function in ByteType
+ * @endcode
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_TYPE_VISITOR_HPP
 #define LYNX_TYPE_VISITOR_HPP
 
@@ -13,17 +43,11 @@
 #include <types/builtins/StringType.hpp>
 #include <types/userdefined/DateTimeType.hpp>
 
-using namespace LynxTypes;
 
 namespace LynxResolver {
 
-    /**
-     * @class TypeVisitor
-     * @brief Interface for visiting different types in the Lynx type system.
-     *
-     * Each method should implement behavior for the corresponding concrete type.
-     * Used for code generation, method resolution, type checking, etc.
-    */
+    using namespace LynxTypes;
+
     class TypeVisitor {
 
         public:

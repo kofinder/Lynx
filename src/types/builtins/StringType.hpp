@@ -1,3 +1,31 @@
+/**
+ * @file StringType.hpp
+ * @brief Defines the StringType class representing the built-in string type in the Lynx type system.
+ *
+ * The `StringType` encapsulates text data within the Lynx language.
+ * It provides mechanisms for LLVM IR generation, semantic analysis, and debug metadata emission.
+ *
+ * **Key Responsibilities:**
+ * - Represents sequences of characters (`String` in Lynx).
+ * - Generates the corresponding LLVM IR type (typically a pointer to character array or custom string struct).
+ * - Supports variable instantiation, assignment, and literal value creation.
+ * - Integrates with `TypeVisitor` and `TypeMethodResolver` for semantic checks and method resolution.
+ * - Produces DWARF-compatible debug information for source-level debugging.
+ *
+ * **Integration Points:**
+ * - Used in string concatenation, printing, comparisons, and indexing.
+ * - Interoperates with `CharType` for single-character operations.
+ * - Default initialization yields an empty string (`""`).
+ *
+ * **LLVM Details:**
+ * - Maps to LLVM representation for string storage (e.g., `i8*` or custom struct pointer).
+ * - Provides pointer type and size/alignment according to target `DataLayout`.
+ * - Default LLVM value: typically a null pointer or empty string constant.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_STRING_TYPE_HPP
 #define LYNX_STRING_TYPE_HPP
 

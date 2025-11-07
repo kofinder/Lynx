@@ -1,3 +1,37 @@
+/**
+ * @file LLVMFunctionTemplate.hpp
+ * @brief Declares LLVM function utilities for applying attributes and calling 
+ *        conventions in the Lynx compiler's code generation pipeline.
+ * 
+ * The LLVMFunctionTemplate utilities provide helper functions to configure LLVM 
+ * function metadata, including attributes and calling conventions. These tools 
+ * are used by the Lynx compiler backend to ensure correct function behavior, 
+ * optimization hints, and ABI conformance during LLVM IR generation.
+ * 
+ * **Key Responsibilities:**
+ * - Apply LLVM function attributes based on `FunctionAttributeType` flags.
+ * - Convert internal calling convention types to LLVM calling conventions.
+ * - Automatically infer and apply appropriate calling conventions via 
+ *   `CallingConventionInferer`.
+ * 
+ * **Used By:**
+ * - Code generation passes for function definition and declaration.
+ * - Backend compilation components managing LLVM IR function creation.
+ * 
+ * @see FunctionAttributeType, CallingConventionType, CallingConventionInferer
+ * 
+ * @note The utilities in this file provide a centralized mechanism for function 
+ *       attribute and calling convention management. They ensure consistency 
+ *       between user-defined attributes and LLVM IR-level semantics.
+ * 
+ * @namespace LynxAst
+ * Provides LLVM IR-related utilities for applying function attributes and 
+ * calling conventions during code generation.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_LLVM_FUNCTION_TEMPLATE_HPP
 #define LYNX_LLVM_FUNCTION_TEMPLATE_HPP
 
@@ -12,8 +46,6 @@
 #include <constants/CallingConventionType.hpp>
 #include <callconv/CallingConventionInferer.hpp>
 
-
-using namespace LynxConstants;
 
 namespace LynxAst {
     

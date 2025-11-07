@@ -1,3 +1,22 @@
+/**
+ * @file DateTimeMethodResolver.hpp
+ * @brief Concrete TypeMethodResolver for the `DateTime` type.
+ *
+ * `DateTimeMethodResolver` implements the `resolveMethod` interface to handle
+ * method calls on `DateTime` instances in Lynx. It maps method names to their
+ * corresponding LLVM IR instructions or runtime operations for date and time manipulation.
+ *
+ * Example usage:
+ * @code
+ * DateTimeMethodResolver resolver;
+ * llvm::Value* result = resolver.resolveMethod("addDays", dateInstance, {llvmArg}, astContext);
+ * @endcode
+ *
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
+
 #ifndef LYNX_DATE_TIME_METHOD_RESOLVER_HPP
 #define LYNX_DATE_TIME_METHOD_RESOLVER_HPP
 

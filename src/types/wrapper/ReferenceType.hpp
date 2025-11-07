@@ -1,3 +1,23 @@
+/**
+ * @file ReferenceType.hpp
+ * @brief Defines the `ReferenceType` class representing reference types in the Lynx type system.
+ *
+ * The `ReferenceType` class models reference semantics (`T&`) in Lynx. It extends
+ * `WrapperType` and provides methods for LLVM type generation, instance creation,
+ * assignment, value handling, and debug metadata emission.
+ *
+ * **Key Responsibilities:**
+ * - Represents reference types in Lynx programs.
+ * - Generates LLVM IR types and default reference values.
+ * - Supports instance creation, assignment, and value operations.
+ * - Emits DWARF-compliant debug information for references.
+ * - Supports cloning and type comparison operations.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+ */
+
+
 #ifndef LYNX_REFRENCE_TYPE_HPP
 #define LYNX_REFRENCE_TYPE_HPP
 

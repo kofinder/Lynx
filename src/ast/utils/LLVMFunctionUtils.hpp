@@ -1,3 +1,27 @@
+/**
+ * @file LLVMFunctionUtils.hpp
+ * @brief Utility functions to simplify LLVM function creation, parameter binding, and finalization.
+ *
+ * The LLVMFunction namespace provides helper functions to create LLVM function prototypes,
+ * entry blocks, bind parameters, generate statements, and finalize functions in LLVM IR.
+ *
+ * **Key Responsibilities:**
+ * - Create LLVM function prototypes and entry blocks.
+ * - Bind AST function parameters to LLVM arguments.
+ * - Generate LLVM code for function bodies.
+ * - Ensure functions are declared in LLVM modules.
+ *
+ * **Used By:**
+ * - FunctionNode code generation routines.
+ * - Class method generation in the compiler backend.
+ *
+ * @see AstContext, FunctionNode, GlobalSymbolContext, TypeConventionTemplate
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
 #ifndef LYNX_LLVM_FUNCTION_UTILS_HPP
 #define LYNX_LLVM_FUNCTION_UTILS_HPP
 

@@ -1,3 +1,15 @@
+/**
+ * @file IJIT.hpp
+ * @brief Interface for all JIT (Just-In-Time) execution engines.
+ *
+ * This header defines the IJIT abstract class which provides a
+ * unified interface for different JIT backends (e.g., MCJIT, ORC/LLJIT).
+ * It allows initialization and execution of LLVM IR modules in a standard way.
+ *
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_IJIT_HPP
 #define LYNX_IJIT_HPP
 

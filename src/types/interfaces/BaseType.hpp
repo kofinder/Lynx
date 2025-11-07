@@ -1,15 +1,27 @@
+/**
+ * @file BaseType.hpp
+ * @brief Declares the BaseType class, the abstract foundation for all type representations in the Lynx compiler.
+ * 
+ * The BaseType class defines the common interface and behavior shared by all data types in the Lynx language.
+ * It acts as the root of the type system hierarchy, supporting LLVM IR integration, type metadata generation,
+ * and advanced semantic checks such as const/static qualifiers, nullability, and assignment rules.
+ * 
+ * **Key Responsibilities:**
+ * - Defines a consistent interface for type computation, comparison, and LLVM IR code generation.
+ * - Supports qualifiers such as `const` and `static` for type specialization.
+ * - Provides virtual methods for creating, assigning, and inspecting types.
+ * - Integrates tightly with LLVM’s IRBuilder and DIBuilder for code generation and debugging metadata.
+ * 
+ * **Used By:**
+ * - Derived type classes such as primitive types, composite types, reference types, and user-defined types.
+ * - The semantic analysis and type resolution subsystems via `TypeVisitor` and `TypeMethodResolver`.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_BASE_TYPE_HPP
 #define LYNX_BASE_TYPE_HPP
-
-
-/**
- * @class BaseType
- * @brief Abstract base class for all language types in the compiler.
- *
- * Provides a unified interface for LLVM type resolution, type metadata,
- * method dispatching, and code generation hooks. All types (built-in or custom)
- * should inherit from this and implement the required virtual methods.
-*/
 
 #include <iostream>
 #include <string>

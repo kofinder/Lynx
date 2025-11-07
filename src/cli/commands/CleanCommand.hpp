@@ -1,6 +1,3 @@
-#ifndef LYNX_CLI_CLEAN_COMMAND_HPP
-#define LYNX_CLI_CLEAN_COMMAND_HPP
-
 /**
  * @file CleanCommand.hpp
  * @brief Command to clean up build artifacts and temporary files.
@@ -8,9 +5,12 @@
  * This command removes intermediate build files, generated modules,
  * and any cached outputs to reset the project to a clean state.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
 */
+
+#ifndef LYNX_CLI_CLEAN_COMMAND_HPP
+#define LYNX_CLI_CLEAN_COMMAND_HPP
 
 #include <iostream>
 #include "interfaces/Command.hpp"

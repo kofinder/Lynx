@@ -1,3 +1,23 @@
+/**
+ * @file ClassState.hpp
+ * @brief Declares the ClassState class for semantic analysis of class nodes.
+ * 
+ * ClassState validates class declarations, including fields, methods, inheritance,
+ * and access modifiers. It ensures semantic correctness within the class hierarchy.
+ * 
+ * **Key Responsibilities:**
+ * - Verify field and method accessibility based on scope and modifiers.
+ * - Validate class inheritance relationships.
+ * - Ensure proper integration of class members into the symbol table.
+ * 
+ * **Used By:**
+ * - SemanticAnalyzer during AST traversal for class nodes.
+ * - SemanticStateFactory for automatic state creation and registration.
+ * 
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_CLASS_STATE_HPP
 #define LYNX_CLASS_STATE_HPP
 

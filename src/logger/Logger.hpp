@@ -1,3 +1,28 @@
+/**
+ * @file Logger.hpp
+ * @brief Provides a centralized logging system using spdlog for the Lynx project.
+ *
+ * The `LynxLogger` namespace encapsulates logging functionality with a
+ * singleton `LogManager` that manages global and named loggers.
+ * It supports colored console output and file logging asynchronously.
+ *
+ * **Key Features:**
+ * - Singleton `LogManager` for consistent logger access.
+ * - Global logger and named loggers.
+ * - Convenient macros for debug, info, warning, and error messages.
+ * - Automatic source file, line number, and function tagging in logs.
+ * - Uses spdlog for efficient and thread-safe logging.
+ *
+ * **Logging Macros:**
+ * - `LOG_DEBUG(msg, ...)`
+ * - `LOG_INFO(msg, ...)`
+ * - `LOG_WARN(msg, ...)`
+ * - `LOG_ERROR(msg, ...)`
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_LOGGER_HPP
 #define LYNX_LOGGER_HPP
 
@@ -18,27 +43,21 @@ namespace LynxLogger {
 
         public:  
         
-            // Destructor  
             ~LogManager() noexcept;  
 
-            // Returns the singleton instance of LogManager  
             static LogManager& instance() noexcept;  
 
-            // Returns a logger instance  
             std::shared_ptr<spdlog::logger> getGlobalLogger() noexcept;  
 
-            // Returns a logger instance with a specific name  
             std::shared_ptr<spdlog::logger> getLogger(const std::string& name) noexcept;  
 
-        private:  
-            // Private constructor for singleton  
+        private: 
+
             LogManager() noexcept;  
 
-            // Singleton logger instance  
             std::shared_ptr<spdlog::logger> logger;  
     };  
 
-    // Inline functions  
     inline std::shared_ptr<spdlog::logger> Logger() noexcept {  
         return LogManager::instance().getGlobalLogger();  
     }  
@@ -52,7 +71,6 @@ namespace LynxLogger {
     #define LOG_INFO(msg, ...) LynxLogger::Logger()->info("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)
     #define LOG_WARN(msg, ...) LynxLogger::Logger()->warn("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)  
     #define LOG_ERROR(msg, ...) LynxLogger::Logger()->error("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)  
-
 }
 
 #endif

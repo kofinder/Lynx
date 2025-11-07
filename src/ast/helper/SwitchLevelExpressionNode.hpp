@@ -1,3 +1,30 @@
+/**
+ * @file SwitchLevelExpressionNode.hpp
+ * @brief Declares the SwitchLevelExpressionNode class representing arithmetic and bitwise 
+ *        operations within switch-case level expressions in the Lynx AST.
+ * 
+ * The SwitchLevelExpressionNode class implements arithmetic and bitwise expression handling
+ * within switch-case contexts. It performs LLVM IR code generation for binary operations such
+ * as addition, subtraction, multiplication, and bitwise manipulations.
+ * 
+ * **Key Responsibilities:**
+ * - Stores an operator type and its left/right operand nodes.
+ * - Generates LLVM IR for arithmetic and bitwise operations.
+ * - Provides internal helper methods for LLVM instruction emission.
+ * - Supports cloning for AST transformations and compiler optimization passes.
+ * 
+ * **Used By:**
+ * - Expression evaluation within switch-case constant computations.
+ * - Code generation stages that handle operator-based constant folding.
+ * 
+ * @see Node, AstContext, OperatorType
+ * 
+ * @note Logs each emitted LLVM instruction for debugging and code generation tracing.
+ * 
+ * @authoɾ: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_SWITCH_LEVEL_EXPRESSION_NODE_HPP
 #define LYNX_SWITCH_LEVEL_EXPRESSION_NODE_HPP
 
@@ -72,17 +99,12 @@ namespace LynxAst {
                 std::unique_ptr<Node> rightNode
             ) : operatorType(operType), leftOperand(std::move(leftNode)), rightOperand(std::move(rightNode)) {}
 
-            NodeType getNodeType() override { return NodeType::SWITCH_CASE_CONSTANT_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::SWITCH_CASE_CONSTANT_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override {
-                LOG_INFO("Procced ..............");
-
-                auto& builder = astContext->getBuilder();        
-                llvm::BasicBlock* currentBlock = builder.GetInsertBlock();
-
-                llvm::Value* lhsValue = leftOperand->generateCode(astContext->createContext());
-                llvm::Value* rhsValue = rightOperand ? rightOperand->generateCode(astContext->createContext()) : nullptr;
-
+                auto* currentBlock = astContext->getBuilder().GetInsertBlock();
+                auto* lhsValue = leftOperand->generateCode(astContext->createContext());
+                auto* rhsValue = rightOperand ? rightOperand->generateCode(astContext->createContext()) : nullptr;
                 switch (operatorType) {
                     case OperatorType::PLUS:        return emitPlus(lhsValue, rhsValue, currentBlock);
                     case OperatorType::MINUS:       return emitMinus(lhsValue, rhsValue, currentBlock);

@@ -1,3 +1,29 @@
+/**
+ * @file CallingConventionInferer.hpp
+ * @brief Defines the logic for inferring LLVM calling conventions using specifications.
+ * 
+ * The `CallingConventionInferer` class is responsible for determining the most appropriate
+ * LLVM calling convention (`CallingConventionType`) for a given `llvm::Function`.
+ * 
+ * It evaluates the function against a set of predefined `CallingConventionSpecification`
+ * objects, each representing a distinct calling convention rule or attribute-based heuristic.
+ * 
+ * This system is extensible: new specifications can be registered easily by
+ * adding them to the constructor.
+ * 
+ * @see CallingConventionSpecification
+ * @see AndSpecification
+ * @see HasAttributeSpec
+ * @see IsVarArgSpec
+ * 
+ * @namespace LynxCallConv
+ * Provides tools and specifications for analyzing and applying LLVM calling conventions.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
 #ifndef LYNX_CALLING_CONV_INFERER_HPP
 #define LYNX_CALLING_CONV_INFERER_HPP
 

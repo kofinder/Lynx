@@ -1,20 +1,44 @@
+/**
+ * @file SemanticException.hpp
+ * @brief Defines the SemanticException class, used for semantic analysis errors in Lynx.
+ * 
+ * SemanticException extends BaseException to include the line number where the error occurred.
+ * This allows precise error reporting during AST traversal and semantic analysis.
+ * 
+ * **Key Responsibilities:**
+ * - Store an error message describing the semantic issue.
+ * - Track the line number in the source code where the error occurred.
+ * - Provide a formatted error message including both description and line number.
+ * 
+ * **Used By:**
+ * - SemanticAnalyzer and its related states when reporting semantic errors.
+ * - Any component performing semantic checks on Lynx source code.
+ * 
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #include "BaseException.hpp"
 
 namespace LynxExceptions {
+
     class SemanticException : public BaseException {  
+
         protected:  
-            int lineNumber;  // The line number where the semantic error occurred  
+
+            int lineNumber; 
 
         public:  
-            // Constructor that initializes error message and line number  
-            SemanticException(const std::string& error, int lineNumber)  
-                : BaseException(error), lineNumber(lineNumber) {}  
 
-            // Override the getMessage method  
+            SemanticException(
+                const std::string& error, 
+                int lineNumber
+            )  : BaseException(error), lineNumber(lineNumber) {}  
+
             std::string getMessage() const override {  
-                std::ostringstream oss;  // Use ostringstream to construct the message  
+                std::ostringstream oss; 
                 oss << "Error: " << message << " at line " << lineNumber;  
-                return oss.str();  // Return the constructed message  
+                return oss.str();
             }  
     };  
 }

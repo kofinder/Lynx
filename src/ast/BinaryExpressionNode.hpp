@@ -1,21 +1,60 @@
+/**
+ * @file BinaryExpressionNode.hpp
+ * @brief Declares the BinaryExpressionNode class representing binary operations in the Lynx AST.
+ * 
+ * The BinaryExpressionNode class handles binary operations between expressions, supporting
+ * integer, double, boolean, char, and string types. It provides LLVM IR code generation
+ * specific to the operand types and supports cloning for AST transformations.
+ * 
+ * **Key Responsibilities:**
+ * - Stores left and right operands for binary operations.
+ * - Stores the operator type (e.g., +, -, *, /, etc.).
+ * - Generates LLVM IR code for type-specific operations.
+ * - Supports cloning for AST transformations.
+ * 
+ * **Used By:**
+ * - Expression evaluation nodes in the compiler.
+ * - Code generation routines for binary operations.
+ * 
+ * @see Node, OperatorType
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
+
 #ifndef LYNX_BINARY_OPERATION_NODE_HPP
 #define LYNX_BINARY_OPERATION_NODE_HPP
 
 #include "Node.hpp"
 #include <constants/OperatorType.hpp>
 
-using namespace LynxConstants;
 
 namespace LynxAst {
-    
-    class BinaryExpressionNode: public Node {
+
+    using namespace LynxConstants;
+
+    class BinaryExpressionNode : public Node {
 
         private:
+
             std::unique_ptr<Node> leftOperand;
 
             std::unique_ptr<Node> rightOperand;
             
             OperatorType operatorType;
+            
+        private:
+
+            llvm::Value* generateIntegerCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+
+            llvm::Value* generateDoubleCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+
+            llvm::Value* generateBooleanCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+
+            llvm::Value* generateCharCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+
+            llvm::Value* generateStringCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
 
         public:
 
@@ -32,19 +71,9 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::BINARY_OPERATION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::BINARY_OPERATION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
-
-            llvm::Value* generateIntegerCode(llvm::Value* lhsValue, llvm::Value* rhsValue, std::shared_ptr<AstContext> ast_context);
-
-            llvm::Value* generateDoubleCode(llvm::Value* lhsValue, llvm::Value* rhsValue, std::shared_ptr<AstContext> ast_context);
-
-            llvm::Value* generateBooleanCode(llvm::Value* lhsValue, llvm::Value* rhsValue, std::shared_ptr<AstContext> ast_context);
-
-            llvm::Value* generateCharCode(llvm::Value* lhsValue, llvm::Value* rhsValue, std::shared_ptr<AstContext> ast_context);
-
-            llvm::Value* generateStringCode(llvm::Value* lhsValue, llvm::Value* rhsValue, std::shared_ptr<AstContext> ast_context);
 
             ~BinaryExpressionNode() override = default;
     };

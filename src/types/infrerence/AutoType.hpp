@@ -1,3 +1,34 @@
+/**
+ * @file AutoType.hpp
+ * @brief Defines the AutoType class representing the type-inference placeholder in the Lynx type system.
+ *
+ * The `AutoType` represents a variable whose type is automatically inferred by the compiler.
+ * It serves as a placeholder during semantic analysis and is later replaced with the inferred concrete type.
+ *
+ * **Key Responsibilities:**
+ * - Represents variables declared with `auto` in the Lynx language.
+ * - Stores a pointer to the inferred type once determined by type inference.
+ * - Supports variable instantiation, assignment, and value creation for various forms (scalar, vector, pairs).
+ * - Integrates with `TypeVisitor` and `TypeMethodResolver` for semantic checks and method resolution.
+ * - Produces DWARF-compatible debug information for inferred types once resolved.
+ *
+ * **Integration Points:**
+ * - Used wherever `auto` declarations appear.
+ * - Works seamlessly with built-in and user-defined types once inference is complete.
+ * - Provides utilities to query whether a type has been inferred.
+ *
+ * **LLVM Details:**
+ * - Provides LLVM IR type based on the inferred concrete type.
+ * - Supports pointer types, default values, and assignment according to the inferred type.
+ *
+ * **Additional Features:**
+ * - Can store scalar, vector, or key-value pair values during code generation.
+ * - Supports type equality checks and type acceptance checks once inference is complete.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_AUTO_TYPE_HPP
 #define LYNX_AUTO_TYPE_HPP
 

@@ -1,3 +1,15 @@
+/**
+ * @file MCJITEngine.hpp
+ * @brief Implementation of IJIT using LLVM's MCJIT backend.
+ *
+ * This header defines the MCJITEngine class which wraps LLVM's MCJIT
+ * execution engine to provide a unified JIT execution interface.
+ *
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
+
 #ifndef LYNX_MCJIT_ENGINE_HPP
 #define LYNX_MCJIT_ENGINE_HPP
 

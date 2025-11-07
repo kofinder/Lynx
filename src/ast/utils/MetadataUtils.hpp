@@ -1,3 +1,14 @@
+/**
+ * @file MetadataUtils.hpp
+ * @brief Utilities for attaching and retrieving LLVM metadata on functions and global variables.
+ *
+ * Provides helper functions to attach string metadata, retrieve metadata values, and
+ * create composite metadata nodes for fields or other structured information.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_METADATA_UTILS
 #define LYNX_METADATA_UTILS
 

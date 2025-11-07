@@ -45,7 +45,7 @@ namespace LynxAst {
     }
     
     llvm::Value* MethodCallNode::dispatchUserDefinedMethod(
-        AstContext& astContext, 
+        const AstContext& astContext, 
         const BaseType& baseType, 
         llvm::Value* objectValue,
         std::string funcName,
@@ -105,7 +105,7 @@ namespace LynxAst {
 
 
     template <typename Adapter>
-    llvm::Value* MethodCallNode::dispatchMethod(const MethodCallInfo<Adapter>& methodInfo) {
+    llvm::Value* MethodCallNode::dispatchMethod(const MethodCallInfo<Adapter>& methodInfo) const {
         LOG_INFO("Executed...");
 
         const auto& [astContext, usrDefinedType, instance, fnName, mangled, callArgs, argTypes] = methodInfo;
@@ -140,7 +140,7 @@ namespace LynxAst {
     }
 
     template <typename Adapter>
-    llvm::Value* MethodCallNode::invokeMethod(const MethodCallInfo<Adapter>& methodInfo) {
+    llvm::Value* MethodCallNode::invokeMethod(const MethodCallInfo<Adapter>& methodInfo) const {
         LOG_INFO("Executed...");
         const auto& [astContext, usrDefinedType, instance, fnName, mangled, callArgs, argTypes] = methodInfo;
         auto mangledName = usrDefinedType.resolveMethodCall(MethodKind::METHOD, mangled, argTypes);
@@ -216,7 +216,7 @@ namespace LynxAst {
         return method->call(astContext, std::move(*argsPtr), objectValue);
     }
 
-    llvm::Value* MethodCallNode::createNullSafeCall(AstContext& astContext, llvm::Value* objectPtr, const std::function<llvm::Value*()>& generateCall) {
+    llvm::Value* MethodCallNode::createNullSafeCall(const AstContext& astContext, llvm::Value* objectPtr, const std::function<llvm::Value*()>& generateCall) {
 
         std::cout << objectPtr->getName().str() << std::endl;
 
@@ -273,7 +273,7 @@ namespace LynxAst {
         return phi;        
     }
 
-    std::tuple<llvm::Value*, BaseType*, bool> MethodCallNode::classifyMethodTarget(AstContext& astContext) {
+    std::tuple<llvm::Value*, BaseType*, bool> MethodCallNode::classifyMethodTarget(const AstContext& astContext) const {
         auto objectValue = objectTargetNode->generateCode(astContext.createContext());
         if (!objectValue) {
             LOG_ERROR("Object target code generation failed!.");
@@ -297,7 +297,7 @@ namespace LynxAst {
     }
 
 
-    std::tuple<std::string, std::vector<llvm::Type*>, std::vector<llvm::Value*>> MethodCallNode::extractMethodCall(const AstContext& astContext) {
+    std::tuple<std::string, std::vector<llvm::Type*>, std::vector<llvm::Value*>> MethodCallNode::extractMethodCall(const AstContext& astContext) const {
         auto fnName = functionCallNode->getFunctionName();
         const auto& arguments = functionCallNode->getArguments();
         std::vector<llvm::Value*> argValues;

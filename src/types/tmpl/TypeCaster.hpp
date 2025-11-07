@@ -1,3 +1,22 @@
+/**
+ * @file TypeCaster.hpp
+ * @brief Provides utility functions for safely casting and cloning `BaseType` objects.
+ *
+ * This header defines a set of templated functions to cast pointers or references
+ * of `BaseType` to derived types. It also provides specialized overloads for
+ * built-in, user-defined, sequential, associative, and wrapper types in the Lynx
+ * type system. Additionally, it supports cloning a `BaseType` and casting the clone
+ * to a specific derived type.
+ *
+ * These utilities facilitate type-safe operations and simplify type handling
+ * across the compiler's semantic analysis, code generation, and type inference
+ * components.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
+
 #ifndef LYNX_TYPE_CASTER_HPP
 #define LYNX_TYPE_CASTER_HPP
 

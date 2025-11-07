@@ -1,5 +1,3 @@
-#ifndef LYNX_CLI_HELP_COMMAND_HPP
-#define LYNX_CLI_HELP_COMMAND_HPP
 
 /**
  * @file HelpCommand.hpp
@@ -9,9 +7,13 @@
  * information. It can also show detailed help for specific commands
  * if arguments are provided.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
 */
+
+#ifndef LYNX_CLI_HELP_COMMAND_HPP
+#define LYNX_CLI_HELP_COMMAND_HPP
+
 
 #include <iostream>
 #include "CommandRegistry.hpp"

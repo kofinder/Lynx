@@ -1,3 +1,28 @@
+/**
+ * @file InterfaceDeclarationNode.hpp
+ * @brief Declares the InterfaceDeclarationNode class, representing interface declarations in the Lynx AST.
+ * 
+ * The InterfaceDeclarationNode class models user-defined interfaces, including their fields, methods,
+ * and inherited interfaces. It supports semantic analysis, LLVM IR generation, and virtual table management
+ * for interface method dispatch.
+ * 
+ * **Key Responsibilities:**
+ * - Stores the interface name, fields, methods, and parent interfaces.
+ * - Processes member nodes to separate methods and fields.
+ * - Generates LLVM struct and pointer types for the interface.
+ * - Emits LLVM IR for member functions and global vtables.
+ * - Supports deep cloning of the node and its members.
+ * 
+ * **Used By:**
+ * - AST construction and semantic analysis subsystems.
+ * - LLVM IR generation for interface types and virtual method calls.
+ * 
+ * @see FunctionNode, VariableDeclarationNode, InterfaceType, VirtualTable, Mangle
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_INTERFACE_DECLARATION_NODE_HPP
 #define LYNX_INTERFACE_DECLARATION_NODE_HPP
 
@@ -9,9 +34,10 @@
 #include <context/VirtualTable.hpp>
 #include <constants/AccessModifierType.hpp>
 
-using namespace LynxConstants;
 
 namespace LynxAst {
+
+    using namespace LynxConstants;
 
     class InterfaceDeclarationNode : public Node {
 
@@ -28,6 +54,8 @@ namespace LynxAst {
             std::unique_ptr<std::vector<std::unique_ptr<FunctionNode>>> methods;
 
             std::unique_ptr<std::vector<std::unique_ptr<VariableDeclarationNode>>> fields;
+
+        private:
 
             void processMembers(std::unique_ptr<std::vector<std::unique_ptr<Node>>> members);
 
@@ -64,17 +92,17 @@ namespace LynxAst {
 
             std::unique_ptr<Node> clone() const override;
 
-            NodeType getNodeType() override { return NodeType::INTERFACE_DECLARATION_NODE; }
+            inline constexpr NodeType getNodeType() override { return NodeType::INTERFACE_DECLARATION_NODE; }
 
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
-            inline bool hasParentInterfaces() const { return !inheritIfaces.empty(); }
+            [[nodiscard]] inline bool hasParentInterfaces() const noexcept { return !inheritIfaces.empty(); }
 
-            inline const std::string& getInterfaceName() const { return interfaceName; }
+            [[nodiscard]] inline const std::string& getInterfaceName() const noexcept { return interfaceName; }
 
-            inline const std::vector<std::string>& getParentInterfaceNames() const { return inheritIfaces; }
+            [[nodiscard]] inline const std::vector<std::string>& getParentInterfaceNames() const noexcept { return inheritIfaces; }
 
-            inline const std::string getQualifiedName() const { return Mangle::get(ManglerKind::CLASS, interfaceName); }
+            [[nodiscard]] inline const std::string getQualifiedName() const noexcept { return Mangle::get(ManglerKind::CLASS, interfaceName); }
 
             ~InterfaceDeclarationNode() override = default;
     };

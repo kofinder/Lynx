@@ -1,13 +1,28 @@
+/**
+ * @file IRGenerator.hpp
+ * @brief Declares the IRGenerator class for generating LLVM IR from Lynx ASTs.
+ * 
+ * The IRGenerator class is responsible for translating parsed Lynx AST nodes
+ * into LLVM Intermediate Representation (IR). It manages module-level LLVM
+ * contexts, target machine configuration, and IR serialization to disk.
+ * 
+ * **Key Responsibilities:**
+ * - Maintains LLVMContext for IR generation.
+ * - Converts AST modules into LLVM IR modules.
+ * - Configures target machine and data layout for each LLVM module.
+ * - Serializes LLVM IR to files in the specified build directory.
+ * - Provides access to LLVM modules for downstream linking or JIT execution.
+ * 
+ * **Used By:**
+ * - The Lynx compiler frontend for code generation.
+ * - Linker and JIT engines for executing generated code.
+ * 
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_IR_GENERATOR_HPP
 #define LYNX_IR_GENERATOR_HPP
-
-/**
- * @brief Responsible for generating LLVM IR from the AST.
- * 
- * The IRGenerator translates high-level AST representations of the Lynx language
- * into LLVM Intermediate Representation (IR) modules. It handles module ordering,
- * target machine setup, and writing IR to file.
-*/
 
 #include <string>
 #include <unordered_map>

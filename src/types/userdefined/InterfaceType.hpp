@@ -1,3 +1,39 @@
+/**
+ * @file InterfaceType.hpp
+ * @brief Defines the InterfaceType class representing user-defined interfaces in the Lynx type system.
+ *
+ * The `InterfaceType` encapsulates user-defined interfaces that declare methods and fields
+ * without providing concrete implementations. Interfaces support multiple inheritance and
+ * enable polymorphic behavior via virtual method tables (vtables) in the Lynx language.
+ *
+ * **Key Responsibilities:**
+ * - Represents user-defined interfaces that can be implemented by other types.
+ * - Tracks methods and fields declared in the interface.
+ * - Supports inheritance from multiple parent interfaces.
+ * - Generates LLVM IR struct and pointer types for interface instances.
+ * - Maintains vtables for virtual method resolution and polymorphic dispatch.
+ * - Integrates with `TypeVisitor` for semantic checks and `MethodType` resolution.
+ * - Produces DWARF-compatible debug information for interface types.
+ *
+ * **Integration Points:**
+ * - Used in polymorphism, virtual method dispatch, and interface type assignments.
+ * - Supports method resolution and super/interface calls.
+ * - Provides lookup tables for fields, methods, and vtables for efficient LLVM code generation.
+ *
+ * **LLVM Details:**
+ * - Maps to `llvm::StructType` with optional pointer types.
+ * - Provides cached LLVM type and pointer type for performance.
+ * - Maintains a single global LLVM vtable per interface containing all virtual methods.
+ * - Supports loading virtual method pointers and vtable entries at runtime.
+ *
+ * **Additional Features:**
+ * - Maintains method-to-index mapping for vtable layout.
+ * - Supports registration and retrieval of LLVM types to `InterfaceType` mapping.
+ * - Provides utility methods to check for fields, methods, and parent interfaces.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
 
 #ifndef LYNX_INTERFACE_TYPE_HPP
 #define LYNX_INTERFACE_TYPE_HPP

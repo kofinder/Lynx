@@ -1,3 +1,24 @@
+/**
+ * @file MixinState.hpp
+ * @brief Declares the MixinState class, a semantic state for handling mixin nodes in the AST.
+ * 
+ * MixinState is responsible for analyzing mixin declarations, inheritance, and flattening
+ * within the Lynx language. It works with SemanticAnalyzer to ensure correctness of mixin usage,
+ * detect inheritance cycles, and validate flattened mixin structures.
+ * 
+ * **Key Responsibilities:**
+ * - Detect cycles in mixin inheritance hierarchies.
+ * - Validate flattened mixin structures to ensure consistency.
+ * - Integrate mixin-related symbols into the semantic analysis workflow.
+ * 
+ * **Used By:**
+ * - SemanticAnalyzer for parallel AST semantic checks.
+ * - SemanticStateFactory for automatic state registration.
+ * 
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_MIXIN_STATE_HPP
 #define LYNX_MIXIN_STATE_HPP
 

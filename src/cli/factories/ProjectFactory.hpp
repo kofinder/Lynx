@@ -1,6 +1,3 @@
-#ifndef LYNX_CLI_PROJECT_FACTORY_HPP
-#define LYNX_CLI_PROJECT_FACTORY_HPP
-
 /**
  * @file ProjectFactory.hpp
  * @brief Factory for creating project builders based on project type.
@@ -9,11 +6,12 @@
  * ProjectBuilder instance based on the provided ProjectKind. It supports
  * all project types defined in ProjectKind.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
 */
 
-
+#ifndef LYNX_CLI_PROJECT_FACTORY_HPP
+#define LYNX_CLI_PROJECT_FACTORY_HPP
 
 #include <memory>
 #include "interfaces/Builder.hpp"

@@ -1,3 +1,36 @@
+/**
+ * @file CloneNodeTemplate.hpp
+ * @brief Declares utility templates and helper functions for deep cloning of 
+ *        AST nodes and related container types in the Lynx compiler.
+ * 
+ * The utilities defined in this file provide generic and type-safe mechanisms 
+ * for cloning AST node structures, vectors, and optionals containing unique 
+ * pointers to Node-derived objects. These functions enable consistent and 
+ * memory-safe duplication of AST subtrees throughout the compiler pipeline.
+ * 
+ * **Key Responsibilities:**
+ * - Provide type-generic deep cloning for `std::unique_ptr`-based AST nodes.
+ * - Support cloning of vectors and optionals containing Node-derived types.
+ * - Include specialized handling for string vectors and base `Node` types.
+ * - Ensure ownership safety and eliminate redundant memory allocations.
+ * 
+ * **Used By:**
+ * - AST transformations, optimization passes, and semantic analysis.
+ * - Any component requiring structural duplication of AST subtrees.
+ * 
+ * @see Node, AstContext
+ * 
+ * @note All functions in this namespace perform deep copies and maintain 
+ *       `unique_ptr` ownership semantics. Null and empty containers are 
+ *       safely propagated as null or empty clones.
+ * 
+ * @namespace LynxAst::Cloneable
+ * Provides deep-cloning helpers for AST node types and related data containers.
+ * 
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 4, 2025
+*/
+
 #ifndef LYNX_CLONE_NODE_TEMPLATE_HPP
 #define LYNX_CLONE_NODE_TEMPLATE_HPP
 

@@ -40,7 +40,7 @@ namespace LynxAst {
     }
     
     llvm::Value* ClazzDeclarationNode::generateCode(std::shared_ptr<AstContext> astContext) {
-        LOG_INFO("Invoked ... {}", className);
+        LOG_WARN("IR Code Generation ... {}", className);
         
         auto clazzType = std::make_unique<ClassType>(astContext.get(), className);
 
@@ -480,49 +480,3 @@ namespace LynxAst {
         return cloned;
     }
 } 
-
-
-
-
-
-// void ClazzDeclarationNode::detectCycleMixin() {
-//     if (!hasMixins()) return;
-
-    // // --- Step 1: Linearize mixins (DFS)
-    // std::vector<MixinType*> mixinLinearization;
-    // std::unordered_set<std::string> visited;
-
-    // std::function<void(MixinType*)> dfs;
-    // dfs = [&](MixinType* mixin) {
-    //     if (!visited.insert(mixin->originalName()).second) return;
-    //     for (auto* parent : mixin->getParents()) {
-    //         dfs(const_cast<MixinType*>(parent));  // safe if you know parent is mutable
-    //     }
-    //     mixinLinearization.push_back(mixin);
-    // };
-
-    // for (const auto& mixinName : inheritClass->mixins) {
-    //     auto mixinBase = astContext.findType(mixinName);
-    //     if (!mixinBase) continue;
-    //     dfs(TypeCasting::castType<MixinType>(mixinBase.get())); // safe extraction from unique_ptr
-    // }
-
-    // // --- Step 2: Flatten methods for override resolution
-    // std::unordered_map<std::string, const MixinType*> lastOwner;
-    // std::unordered_map<std::string, const MethodType*> lastMethod;
-
-    // for (auto* mixin : mixinLinearization) {
-    //     mixin->flattenMethodsAndFields(); // ensure flattenedMethods exist
-    //     for (const auto& methodName : mixin->getFlattenedMethodOrder()) {
-    //         const MethodType* method = mixin->getFlattenedMethod(methodName);
-    //         lastOwner[methodName] = mixin;
-    //         lastMethod[methodName] = method;
-    //     }
-    // }
-
-    // // --- Step 3: Generate wrapper functions in class
-    // for (const auto& [mangledName, mixinType] : lastOwner) {
-    //     const MethodType* method = lastMethod[mangledName];
-    //     emitMixinMethods(astContext, mangledName, *mixinType, method);
-    // }
-// }
