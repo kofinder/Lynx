@@ -44,7 +44,6 @@ add_subdirectory(libruntime)
 add_subdirectory(collections)
 add_subdirectory(errors)
 add_subdirectory(cli)
-add_subdirectory(gc)
 add_subdirectory(system)
 add_subdirectory(stdapi)
 
@@ -85,7 +84,6 @@ target_link_libraries(Lynx PUBLIC
     LynxResolver
     LynxProgramConfig
     LynxCLI
-    LynxGC
     LynxCodegen
     LynxLinker
     LynxFunctionAttr
@@ -109,9 +107,7 @@ target_link_libraries(Lynx PUBLIC
 
 
 # ===``````````````````````==== #
-
 # === LSP server executable === # 
-
 # ===``````````````````````==== #
 
 set(LSP_SOURCES

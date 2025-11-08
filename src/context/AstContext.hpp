@@ -25,13 +25,12 @@
 #include <constants/VariableType.hpp>
 #include <errors/includes/CompositeError.hpp>
 
-using namespace LynxTypes;
-using namespace LynxErrors;
-using namespace LynxConstants;
-
-
 namespace LynxContext {
 
+    using namespace LynxTypes;
+    using namespace LynxErrors;
+    using namespace LynxConstants;
+    
     class GlobalSymbolContext;
 
     class AstContext {  
@@ -162,6 +161,29 @@ namespace LynxContext {
              * @return Constant reference to the DataLayout object.
             */
             const llvm::DataLayout& getDataLayout() const { return dataLayout; }
+
+            /**
+             * @brief Emits an LLVM IR call to allocate a GC-managed object.
+             * 
+             * Generates a call to the appropriate GC allocation function for the given
+             * object type and returns a properly typed pointer in LLVM IR.
+             *
+             * @param objType The LLVM type of the object to allocate.
+             * @return llvm::Value* Pointer to the newly allocated object (typed).
+            */
+            llvm::Value* emitGCAllocCall(llvm::Type* objType, std::string objectName);
+
+            /**
+             * @brief Retrieves or inserts a GC allocation function into the current LLVM module.
+             * 
+             * If the function does not exist in the module, it is created with the given
+             * allocation size and name. Otherwise, the existing function is returned.
+             *
+             * @param allocSize Constant integer representing the size of the object in bytes.
+             * @param fnName Optional name for the allocation function (default: "LYNX_GC_ALLOC").
+             * @return llvm::Function* Pointer to the GC allocation function.
+            */
+            llvm::Function* getOrInsertGCAllocFunc(llvm::ConstantInt* allocSize, const std::string& fnName = "LYNX_GC_ALLOC");
 
             /**
              * @brief Reports an error into the context's error collection.

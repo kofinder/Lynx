@@ -60,7 +60,7 @@ namespace LynxAst {
 
             std::string getMangleName(const CallableInfo& callableInfo) const;
             
-            llvm::Value* generate(const AstContext& astContext, const CallableInfo& callableInfo);
+            llvm::Value* generateWithGC(const AstContext& astContext, const CallableInfo& callableInfo);
 
             void emitConstructorCall(const AstContext& astContext, llvm::Value* newInstance, const CallableInfo& callableInfo);
 

@@ -142,6 +142,12 @@ namespace LynxProgramConfig {
         }
     }
 
+    std::vector<std::string>& ProgramSourceProcessor::getUserDefinedClasses() {
+        static std::vector<std::string> userClasses = { "chatuser" };
+        return userClasses;    
+    }
+
+
     int ProgramSourceProcessor::getExitCode() const {
         return exitCode;
     }

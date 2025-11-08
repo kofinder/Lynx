@@ -1,3 +1,5 @@
+#include <tuple>
+
 #include "LiteralNode.hpp"
 #include <logger/Logger.hpp>
 #include "ObjectCreationNode.hpp"
@@ -9,9 +11,7 @@
 #include "tmpl/ImportSymbolTemplate.hpp"
 #include "tmpl/CloneNodeTemplate.hpp"
 #include "tmpl/TypeConventionTemplate.hpp"
-#include <context/HeapAllocator.hpp>
 #include <context/GlobalSymbolContext.hpp>
-#include <tuple>
 
 namespace LynxAst {
 
@@ -19,24 +19,26 @@ namespace LynxAst {
     using namespace LynxLogger;
     using namespace LynxContext;
 
-
     llvm::Value* ObjectCreationNode::generateCode(std::shared_ptr<AstContext> astContext)  {
         LOG_WARN("IR Code Generation ...", variableType->name);
 
         auto callableInfo = resolveCallableLLVMInfo(*astContext);
 
-        return generate(*astContext, callableInfo);
+        return generateWithGC(*astContext, callableInfo);
     }
 
-    llvm::Value* ObjectCreationNode::generate(const AstContext& astContext, const CallableInfo& callableInfo) {
+    llvm::Value* ObjectCreationNode::generateWithGC(const AstContext& astContext, const CallableInfo& callableInfo) {
 
         auto [argTypes, argValues, objectType, baseType] = callableInfo;
 
         auto variableName = StringUtils::transformLowerCase(variableType->name);
 
-        auto* newInstance = HeapAllocator::allocateTyped(astContext, objectType, variableName);
+        std::cout << "Variable Name ===>" << variableName << std::endl;
 
-        emitConstructorCall(astContext, newInstance, callableInfo);
+        auto& mutableContext = const_cast<AstContext&>(astContext);
+        auto* newInstance = mutableContext.emitGCAllocCall(objectType, variableName);
+        
+       emitConstructorCall(astContext, newInstance, callableInfo);
 
         return newInstance;
     }

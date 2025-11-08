@@ -26,7 +26,7 @@ namespace LynxJIT {
 
         public:
 
-            void initialize(std::unique_ptr<llvm::Module> module) override;
+            void initialize(std::unique_ptr<llvm::Module> module, const std::unordered_map<std::string, void*>& symbols = {}) override;
 
             int execute() override;
 

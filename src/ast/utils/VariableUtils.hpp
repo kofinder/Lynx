@@ -83,7 +83,7 @@ namespace LynxAst::VariableUtils {
         // If already a pointer to an object, no load
         if (llvmVarRef->getType()->isPointerTy() && llvmVarRef->getType()->getPointerElementType()->isStructTy()) {
             std::cerr << "already a pointer to an object, no need to load!\n";
-            return {};
+            return { llvmVarRef, llvmVarRef };
         }
 
         auto loaded = builder.CreateLoad(loadType, llvmVarRef, variableName + "_load");
@@ -136,7 +136,6 @@ namespace LynxAst::VariableUtils {
         }
         return nullptr;
     }
-
 
     static llvm::AllocaInst* createEntryBlockAlloca(
         llvm::IRBuilder<>& builder,

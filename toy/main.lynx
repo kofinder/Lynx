@@ -1,19 +1,8 @@
+import "src/user/chat_user";
 
 int main() {
 
-  system.io.out("Enter your name: ");
-  string name = system.io.in();
-
-  system.io.out("Enter your age: ");
-  int age = system.io.getInt();
-
-  system.io.out("Enter a height: ");
-  float height = system.io.getFloat();
-
-  system.io.out("Are you single? (0 = false, 1 = true): ");
-  bool flag = system.io.getBool();
-
-  system.io.printf("Name: {}, Age: {}, Height: {}, Status: {}", name, age, height, flag);
+  ChatUser user = new ChatUser("id123", "Ko Thein", 30, true);
 
   return 0;
 
@@ -31,6 +20,8 @@ int main() {
 
   /*
 
+  string id = user.getId();
+  system.io.printf("My ID is {}:", id);
 
 
   int main() {

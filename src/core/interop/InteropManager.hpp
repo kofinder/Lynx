@@ -15,7 +15,7 @@
  * - Runtime components requiring FFI.
  * - External library integrations for extending Lynx programs.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 
@@ -23,9 +23,11 @@
 #define LYNX_CORE_INTEROP_MANAGER_HPP
 
 #include <string>
+#include <mutex>
 #include <unordered_map>
 
 namespace LynxCore {
+    
     /**
      * @class InteropManager
      * @brief Manages foreign function interfaces (FFI) and data interoperability.
@@ -35,54 +37,37 @@ namespace LynxCore {
      * - Provide invocation utilities for external/native functions.
      * - Data marshalling and type conversion between Lynx runtime and native code.
     */
+
     class InteropManager {
 
         private:
 
-            InteropManager() = delete;
-            InteropManager(const InteropManager&) = delete;
-            InteropManager& operator=(const InteropManager&) = delete;
+            std::unordered_map<std::string, void*> funcMap;
 
-            /**
-             * Register a native function pointer with a name.
-             * @param name Identifier for the function.
-             * @param ptr Pointer to the native function.
-            */
-           static std::unordered_map<std::string, void*>& getFunctionMap();
+            std::mutex mtx;
 
-           static std::mutex& getMutex();
+        private:
 
-           /**
-             * Register a native function pointer with a name.
-             * @param name Identifier for the function.
-             * @param ptr Pointer to the native function.
-            */
-           static void registerFunction(const std::string& name, void* ptr);
+            std::unordered_map<std::string, void*>& getFunctionMap();
 
+            std::mutex& getMutex();
+        
         public:
 
-            /**
-             * Initialize interop layer (load libraries, setup env).
-            */
-            static void initialize();
+            InteropManager() = default;
+            ~InteropManager() { shutdown(); }
+        
+            void initialize();
 
-            /**
-             * Get registered native function pointer by name.
-             * Returns nullptr if not found.
-            */
-            static void* getFunction(const std::string& name);
+            void registerFunction(const std::string& name, void* ptr);
 
-            /**
-             * Returns a const ref to the whole map of all registered functions.
-            */
-            static const std::unordered_map<std::string, void*>& getAll();
+            void* getFunction(const std::string& name);
 
-            /**
-             * Shutdown interop layer (cleanup).
-             */
-            static void shutdown();
-            
-        };   
+            const std::unordered_map<std::string, void*>& getAll();
+
+            void shutdown();
+    };
+        
 }
 
 #endif

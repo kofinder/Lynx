@@ -8,7 +8,6 @@ set(LIB_CONTEXT_SOURCES
 set(LIB_CONTEXT_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/AstContext.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/VirtualTable.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/HeapAllocator.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/GlobalSymbolContext.hpp
 )
 

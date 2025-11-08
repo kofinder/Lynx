@@ -51,7 +51,7 @@ extension/build
 backup
 
 src/lang/*
-src/gc/*
+#src/gc/*
 
 
 toy/cpp

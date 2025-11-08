@@ -1,6 +1,4 @@
 #include "MCJITEngine.hpp"
-#include <core/interop/InteropManager.hpp>
-
 #include <llvm/IR/PassManager.h>
 #include <llvm/Passes/PassBuilder.h>
 #include <llvm/Transforms/Scalar.h>
@@ -12,11 +10,9 @@
 #include <llvm/ExecutionEngine/MCJIT.h>
 #include <llvm/ExecutionEngine/SectionMemoryManager.h>
 
-using namespace LynxCore;
-
 namespace LynxJIT {
 
-    void MCJITEngine::initialize(std::unique_ptr<llvm::Module> module) {
+    void MCJITEngine::initialize(std::unique_ptr<llvm::Module> module, const std::unordered_map<std::string, void*>& symbols) {
     
         std::string errStr;
         llvm::EngineBuilder builder(std::move(module));
@@ -32,7 +28,7 @@ namespace LynxJIT {
     
         // Register external runtime symbols so MCJIT can resolve them
         // You must register the runtime symbols manually for MCJIT
-        for (const auto& [name, ptr] : InteropManager::getAll()) {
+        for (const auto& [name, ptr] : symbols) {
             engine->addGlobalMapping(llvm::StringRef(name), reinterpret_cast<uint64_t>(ptr));
         }
 

@@ -4,6 +4,7 @@
 #include <lto/FullLTO.hpp>
 #include <core/interop/InteropManager.hpp>
 #include <core/memory/MemoryManager.hpp>
+#include <core/bindings/RuntimeBindingManager.hpp>
 
 using namespace LynxCore;
 
@@ -11,7 +12,6 @@ void Lynx::initializeLLVM() {
     llvm::InitializeNativeTarget();
     llvm::InitializeNativeTargetAsmPrinter();
     llvm::InitializeNativeTargetAsmParser();
-
     std::cout << "[Lynx] LLVM Initialized.\n";
 }
 
@@ -44,11 +44,8 @@ void Lynx::analyzeSource() {
     driver = std::move(processor->getDriver());
     auto& analyzerNodes = driver->getAllAnalyzerNodes();
     for (auto node : *analyzerNodes) {
-        std::cout << "[Node] Type: " << parseNodeTypeToString(node->getNodeType()) << std::endl;
         semanticAnalyzer->analyzeASTParallel(node);
     }
-    
-    std::cout << "[Lynx] Semantic analysis completed.\n";
 }
 
 void Lynx::generateIR() {
@@ -56,6 +53,18 @@ void Lynx::generateIR() {
         std::cerr << "[Lynx] Error: Processor not initialized before IR generation.\n";
         return;
     }
+
+    // -------------------------------
+    // Initialize CoreManager if not done
+    // -------------------------------
+    if (!coreManager) {
+        coreManager = std::make_unique<CoreManager>();
+        std::cout << "[CoreManager] Initializing core runtime modules (memory, GC, threads, etc.)...\n";
+        coreManager->initialize();
+    }
+
+    // Retrieve user-defined classes (for GC and runtime bindings)
+    auto& userClasses = processor->getUserDefinedClasses();
 
     const auto& moduleAstMap = processor->getModuleAstMap();
     irGenerator = std::make_unique<IRGenerator>(
@@ -68,6 +77,13 @@ void Lynx::generateIR() {
 
     irGenerator->execute();
 
+    // Apply runtime bindings and setup GC for user-defined classes
+    auto llvmModules = irGenerator->takeLinkerModules();
+    for (auto& [moduleName, modulePtr] : llvmModules) {
+        coreManager->getRuntimeBindingManager().declareAll(modulePtr.get());
+        coreManager->getRuntimeBindingManager().setupGCForClasses(modulePtr.get(), userClasses);
+    }
+    
     ltoFacade = std::make_unique<LTOFacade>(
         irGenerator->getContext(),
         std::make_unique<FullLTO>()
@@ -126,15 +142,23 @@ int Lynx::executeJIT() {
         std::cerr << "[Lynx] Error: Linker is not available for JIT .\n";
         return -1;
     }
-
-    InteropManager::initialize();
     
     auto finalModule = linker->takeLinkedModule();
+
+    // Create a JIT executor (MCJIT or ORC, depending on your configuration)
     excutor = JITFactory::create(JITType::MCJIT);
+
+    // Initialize the JIT with the optimized LLVM module
     excutor->initialize(std::move(finalModule));
+
+    // Execute the entry function (e.g., main) and capture the result
     int result = excutor->execute();
 
-    MemoryManager::reportLeaks();
+    // Report any memory leaks tracked by the memory manager
+    coreManager->getMemoryManager().reportLeaks();
+
+    // Shutdown all runtime systems (threads, GC, schedulers, etc.)
+    coreManager->shutdown();
 
     return result;
 }
