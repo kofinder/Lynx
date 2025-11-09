@@ -85,14 +85,12 @@ namespace LynxCore {
     }
 
     void ThreadManager::shutdown() {
-        std::cout << "[ThreadManager] Shutting down...\n";
         joinAll();
         {
             std::lock_guard<std::mutex> lock(queueMutex);
             std::queue<std::function<void()>> empty;
             std::swap(taskQueue, empty);
         }
-        std::cout << "[ThreadManager] Shutdown complete.\n";
     }
 
 }

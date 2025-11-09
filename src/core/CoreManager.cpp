@@ -26,6 +26,10 @@ namespace LynxCore {
         //    - optionally starts live GC dashboard
         memoryManager->initialize();
 
+        if (bindingManager) {
+            RuntimeBindingManager::setMemoryManager(memoryManager.get());
+        }        
+
         // 2. Initialize Thread Manager
         //    - creates thread pool
         //    - threads can now safely use GC for allocations
@@ -49,21 +53,14 @@ namespace LynxCore {
     void CoreManager::shutdown() {
         if (!initialized) return;
 
-        std::cout << "[CoreManager] Shutting down scheduler manager...\n";
         if (schedulerManager) schedulerManager->shutdown();
     
-        std::cout << "[CoreManager] Shutting down thread manager...\n";
         if (threadManager) threadManager->shutdown();
     
-        std::cout << "[CoreManager] Shutting down interop manager...\n";
         if (interopManager) interopManager->shutdown();
     
-        std::cout << "[CoreManager] Shutting down memory manager...\n";
         if (memoryManager) memoryManager->shutdown();
-    
-        initialized = false;
-        std::cout << "[CoreManager] Shutdown complete.\n";    
-
+        
         initialized = false;
 
     }

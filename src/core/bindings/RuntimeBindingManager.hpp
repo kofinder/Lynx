@@ -23,6 +23,7 @@
 #define LYNX_CORE_RUNTIME_BINDING_MANAGER_HPP
 
 #include <llvm/IR/Module.h>
+#include "core/memory/MemoryManager.hpp"
 
 namespace LynxCore {
 
@@ -51,6 +52,11 @@ namespace LynxCore {
             void registerGCAllocFunction(const std::string& typeName);
 
             void setupGCForClasses(llvm::Module* module, const std::vector<std::string>& classNames);
+
+            // Bind the MemoryManager pointer used by the generic allocator to register allocations
+            static void setMemoryManager(MemoryManager* mgr);
+            static MemoryManager* getBoundMemoryManager();
+
     };
            
 }

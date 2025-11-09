@@ -22,6 +22,16 @@ entry:
 
 declare i8* @LYNX_GC_ALLOC_chatuser(i64)
 
+declare i8* @GC_malloc(i64)
+
+declare i32 @pthread_create(i8**, i8**, i8* (i8*)*, i8*)
+
+declare i32 @pthread_join(i64, i8**)
+
+declare i64 @pthread_self()
+
+declare i32 @pthread_equal(i64, i64)
+
 ; Function Attrs: noinline nounwind uwtable
 define linkonce_odr dso_local void @_ZN8ChatUserC1ESsSsib(%0* noalias nonnull %this, i8* %id, i8* %name, i32 %age, i1 %isBot) #1 comdat {
 entry:

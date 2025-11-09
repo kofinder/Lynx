@@ -12,7 +12,19 @@
 #include <iostream>
 #include <unordered_map>
 
+extern "C" void* LYNX_GC_ALLOC_generic(uint64_t size);
+
 namespace LynxCore {
+
+    static MemoryManager* g_boundMemoryManager = nullptr;
+
+    void RuntimeBindingManager::setMemoryManager(MemoryManager* mgr) {
+        g_boundMemoryManager = mgr;
+    }
+
+    MemoryManager* RuntimeBindingManager::getBoundMemoryManager() {
+        return g_boundMemoryManager;
+    }
 
     void RuntimeBindingManager::declareAll(llvm::Module* module) {
         if (!module) {
@@ -83,6 +95,8 @@ namespace LynxCore {
 
     void RuntimeBindingManager::registerAll() {
         llvm::sys::DynamicLibrary::AddSymbol("GC_malloc", (void*)&GC_malloc);
+        llvm::sys::DynamicLibrary::AddSymbol("GC_realloc", (void*)&GC_realloc);
+        llvm::sys::DynamicLibrary::AddSymbol("GC_free", (void*)&GC_free);    
         llvm::sys::DynamicLibrary::AddSymbol("pthread_create", (void*)&pthread_create);
         llvm::sys::DynamicLibrary::AddSymbol("pthread_join", (void*)&pthread_join);
         llvm::sys::DynamicLibrary::AddSymbol("pthread_self", (void*)&pthread_self);
@@ -91,8 +105,8 @@ namespace LynxCore {
 
     void RuntimeBindingManager::registerGCAllocFunction(const std::string& typeName) {
         std::string fnName = "LYNX_GC_ALLOC_" + typeName;
-        std::cout << "fn Nmae ========>" << fnName << std::endl;
-        llvm::sys::DynamicLibrary::AddSymbol(fnName, (void*)&GC_malloc);
+        llvm::sys::DynamicLibrary::AddSymbol(fnName, (void*)&LYNX_GC_ALLOC_generic);
+        std::cout << "[RuntimeBindingManager] Registered GC alloc symbol: " << fnName << std::endl;
     }
     
     void RuntimeBindingManager::setupGCForClasses(llvm::Module* module, const std::vector<std::string>& classNames) {

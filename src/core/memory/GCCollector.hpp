@@ -146,17 +146,11 @@
             [[nodiscard]] int getTotalPromoted() const noexcept { return totalPromoted_.load(); }
             [[nodiscard]] int getTotalReclaimed() const noexcept { return totalReclaimed_.load(); }
             [[nodiscard]] int getGCEvents() const noexcept { return gcEvents_.load(); }
-    
-            /// Compute average age across all tracked objects (Eden + Old)
+            [[nodiscard]] size_t getEdenThreshold() const noexcept {  return edenThreshold_; }
+            
             [[nodiscard]] double getAverageAge() const noexcept;
-
-            /// Old utilization (Old / total tracked)
             [[nodiscard]] double getOldUtilization() const noexcept;
-
-            /// Young utilization (Eden / total tracked)
             [[nodiscard]] double getYoungUtilization() const noexcept;
-
-            // Return a snapshot of current Eden objects (type info for dashboard)
             [[nodiscard]] std::vector<std::string> getEdenTypes() const;
 
     };

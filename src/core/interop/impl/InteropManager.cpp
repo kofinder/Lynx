@@ -11,6 +11,8 @@ namespace LynxCore {
 
     void InteropManager::initialize() {
         registerFunction("GC_malloc", reinterpret_cast<void*>(&GC_malloc));
+        registerFunction("GC_realloc", reinterpret_cast<void*>(&GC_realloc));
+        registerFunction("GC_free", reinterpret_cast<void*>(&GC_free));    
         registerFunction("int_ctor", reinterpret_cast<void*>(&int_ctor));
         registerFunction("DateTime_ctor", reinterpret_cast<void*>(&datetime_ctor));
         registerFunction("File_ctor", reinterpret_cast<void*>(&file_ctor));

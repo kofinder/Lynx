@@ -74,8 +74,6 @@ namespace LynxCore {
         if (workerThread.joinable()) {
             workerThread.join();
         }
-
-        std::cout << "[SchedulerManager] Shutdown complete. All tasks processed.\n";
     }
 
 } // namespace LynxCore

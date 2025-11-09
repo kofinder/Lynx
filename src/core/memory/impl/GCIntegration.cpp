@@ -75,8 +75,6 @@
 
         g_collector.reset();
         g_initialized = false;
-
-        GCLogger::warn("[GCIntegration] GC subsystem shut down successfully.");
     }
 
     void GCIntegration::triggerMinorGC() {

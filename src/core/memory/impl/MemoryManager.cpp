@@ -37,6 +37,10 @@ namespace LynxCore {
             return;
         }
 
+        // // Trigger GC manually before snapshot
+        // GCIntegration::triggerMinorGC();
+        // GCIntegration::triggerMajorGC();
+
         // For now, delegate to dashboard snapshot for a quick overview
         if (dashboard) {
             GCLogger::info("[MemoryManager] Reporting memory usage via dashboard snapshot:");
@@ -49,7 +53,6 @@ namespace LynxCore {
     void MemoryManager::shutdown() {
         if (!initialized) return;
     
-        std::cout << "[MemoryManager] Shutting down GC subsystems...\n";
         if (dashboard) dashboard->stop();
     
         mutator.reset();

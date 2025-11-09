@@ -106,7 +106,7 @@
     
     bool GCCollector::isAlive(const GCObject &obj) const noexcept {
         if (!obj.ptr) return false;
-        return (reinterpret_cast<uintptr_t>(obj.ptr) % 4) != 0;
+        return GC_base(obj.ptr) != nullptr;
     }
     
     double GCCollector::getAverageAge() const noexcept {

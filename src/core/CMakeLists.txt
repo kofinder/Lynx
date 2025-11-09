@@ -1,14 +1,11 @@
-# find_package(Threads REQUIRED)
-# find_library(GC_LIB NAMES gc REQUIRED)
-
 find_package(Threads REQUIRED)
 find_library(GC_LIBRARY gc)
+
 if(NOT GC_LIBRARY)
-    message(FATAL_ERROR "Boehm GC library not found. Please install libgc.")
+    message(FATAL_ERROR "Boehm GC library not found. Please install libgc or rebuild with -fPIC.")
 endif()
 
-message(STATUS "Boehm GC OUTPUTS: ${GC_LIBRARY}")
-message(STATUS "GC_LIB: ${GC_LIB}")
+message(STATUS "Found Boehm GC library: ${GC_LIBRARY}")
 message(STATUS "LLVM_LIBS: ${LLVM_LIBS}")
 
 # Include directories
@@ -58,9 +55,7 @@ llvm_map_components_to_libnames(LLVM_LIBS core executionengine)
 
 target_link_libraries(LynxCore PRIVATE 
   ${LLVM_LIBS}
-  ${GC_LIB} 
-  LynxLogger 
-  Threads::Threads
+  ${GC_LIBRARY}
 )
 
 message(STATUS "Lynx Core module configured successfully")

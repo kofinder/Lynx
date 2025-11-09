@@ -78,7 +78,7 @@ void Lynx::generateIR() {
     irGenerator->execute();
 
     // Apply runtime bindings and setup GC for user-defined classes
-    auto llvmModules = irGenerator->takeLinkerModules();
+    auto& llvmModules = irGenerator->getLinkerModules();
     for (auto& [moduleName, modulePtr] : llvmModules) {
         coreManager->getRuntimeBindingManager().declareAll(modulePtr.get());
         coreManager->getRuntimeBindingManager().setupGCForClasses(modulePtr.get(), userClasses);

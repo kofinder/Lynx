@@ -126,6 +126,8 @@ namespace LynxCodegen {
              */
             std::unordered_map<std::string, std::unique_ptr<llvm::Module>> takeLinkerModules() { return std::move(llvmModules); }
 
+            std::unordered_map<std::string, std::unique_ptr<llvm::Module>>& getLinkerModules() { return llvmModules; }
+            
             /**
              * @brief Destructor for IRGenerator.
              */
