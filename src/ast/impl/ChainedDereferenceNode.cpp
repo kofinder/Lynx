@@ -62,22 +62,22 @@ namespace LynxAst {
     
             // Cast type and find the field index
             auto* structType = llvm::cast<llvm::StructType>(currentType);
-            std::cout << "struct Type name ===>: " << structType->getName().str() << std::endl;
-            // auto objCtxType = symbol->findObjectType(structType->getName().str());
-            // if(!objCtxType) {
-            //     LOG_ERROR("Struct '{}' not found in Object Context.", fieldName, structType->getName().str());
-            //     return nullptr;
-            // }
+            auto* clazzType = ClassType::fromLLVMType(structType);
 
-            // int fieldIndex = objCtxType->getFieldIndex(fieldName);
-            // if (fieldIndex < 0) {
-            //     LOG_ERROR("Field '{}' not found in struct '{}'.", fieldName, structType->getName().str());
-            //     return nullptr;
-            // }
+            if(!clazzType) {
+                LOG_ERROR("Struct '{}' not found in Object Context.", fieldName, structType->getName().str());
+                return nullptr;
+            }
+
+            int fieldIndex = clazzType->getFieldIndex(fieldName);
+            if (fieldIndex < 0) {
+                LOG_ERROR("Field '{}' not found in struct '{}'.", fieldName, structType->getName().str());
+                return nullptr;
+            }
     
-            // // Create GEP to get address of the field
-            // currentPtr = builder.CreateStructGEP(currentType, currentPtr, fieldIndex, fieldName + "_ptr");
-            // currentType = currentPtr->getType(); // Update current type to field pointer type
+            // Create GEP to get address of the field
+            currentPtr = builder.CreateStructGEP(currentType, currentPtr, fieldIndex, fieldName + "_ptr");
+            currentType = currentPtr->getType(); // Update current type to field pointer type
         }
       
         return currentPtr;

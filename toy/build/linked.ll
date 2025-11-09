@@ -12,7 +12,7 @@ $_ZN8ChatUserC1ESsSsib = comdat any
 @lynx.string.constant.1 = private constant [9 x i8] c"Ko Thein\00"
 
 ; Function Attrs: alwaysinline norecurse uwtable
-define dso_local signext i32 @main() #0 !lynx.signature !9 {
+define dso_local signext i32 @main() #0 !lynx.signature !16 {
 entry:
   %gc_alloc = call i8* @LYNX_GC_ALLOC_chatuser(i64 24)
   %gc_cast = bitcast i8* %gc_alloc to %0*
@@ -59,6 +59,13 @@ attributes #1 = { noinline nounwind uwtable }
 !4 = !{!"ChatUser", !"private", !"boolean", !"isBot"}
 !5 = !{!6}
 !6 = !{!"ChatUser", !"public", !"ctor"}
-!7 = !{!8}
+!7 = !{!8, !9, !10, !11, !12, !13, !14, !15}
 !8 = !{!"ChatUser", !"public", !"string", !"_ZN8ChatUser5getIdEV", !"getId(string)"}
-!9 = !{!"main(int)"}
+!9 = !{!"ChatUser", !"public", !"void", !"_ZN8ChatUser5setIdESs", !"setId(void, string)"}
+!10 = !{!"ChatUser", !"public", !"string", !"_ZN8ChatUser7getNameEV", !"getName(string)"}
+!11 = !{!"ChatUser", !"public", !"void", !"_ZN8ChatUser7setNameESs", !"setName(void, string)"}
+!12 = !{!"ChatUser", !"public", !"int", !"_ZN8ChatUser6getAgeEV", !"getAge(int)"}
+!13 = !{!"ChatUser", !"public", !"void", !"_ZN8ChatUser6setAgeEi", !"setAge(void, int)"}
+!14 = !{!"ChatUser", !"public", !"boolean", !"_ZN8ChatUser9getOnlineEV", !"getOnline(boolean)"}
+!15 = !{!"ChatUser", !"public", !"void", !"_ZN8ChatUser8setIsBotEb", !"setIsBot(void, boolean)"}
+!16 = !{!"main(int)"}
