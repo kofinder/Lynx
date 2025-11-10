@@ -22,7 +22,7 @@
 namespace LynxConstants {
 
     using LValueType = std::variant<
-        uint8_t, 
+        uint8_t, // this is byte type
         short, 
         int, 
         long, 

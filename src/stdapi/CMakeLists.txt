@@ -22,6 +22,10 @@ set(SRC_FILES
     src/file_runtime.c
     # src/collection_runtime.h
     # src/collection_runtime.cpp
+
+    src/io_runtime.h
+    src/io_runtime.cpp
+
     src/gc_runtime.h
     src/gc_runtime.cpp
 )

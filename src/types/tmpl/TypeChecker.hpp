@@ -99,16 +99,21 @@ namespace LynxTypes::TypeChecker {
 
     template <>
     inline bool is<CharType>(llvm::Type* type) {
+
+        if(auto pointerType = llvm::dyn_cast<llvm::PointerType>(type)) {
+            if (auto* structType = llvm::dyn_cast<llvm::StructType>(pointerType->getPointerElementType())) {
+                return structType->getName() == MetadataTypeConstants::structureCharType;
+            }    
+        }
+
         if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
             if (structType->getNumElements() == 1) {
                 if (structType->getElementType(0)->isIntegerTy(8)) {
-                    if (structType->getName() == MetadataTypeConstants::structureCharType) {
-                        std::cout << "YAY, Its works now" << std::endl;
-                        return true;
-                    }
+                    return structType->getName() == MetadataTypeConstants::structureCharType;
                 }
             }
         }
+
         return false;
     }
 

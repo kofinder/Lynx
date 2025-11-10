@@ -128,8 +128,10 @@ namespace LynxSystem::utils {
         auto* llvmType = expressionValue->getType();
         std::vector<llvm::Value*> printfArgs;
 
+        llvmType->print(llvm::outs());
+
         const auto formatSpecifier = getFormatSpecifier(llvmType);
-        auto* formatString = builder.CreateGlobalStringPtr(std::string(formatSpecifier), "formatString");
+        auto* formatString = builder.CreateGlobalStringPtr(std::string(formatSpecifier), "fmt");
         printfArgs.push_back(formatString);
 
         if(TypeChecker::is<BooleanType>(llvmType)) {
@@ -193,11 +195,24 @@ namespace LynxSystem::utils {
             printfArgs.push_back(stringValue);
 
         } else if(TypeChecker::is<CharType>(llvmType)) {
-            std::cout << "CHAR CHEK" << std::endl;
-            auto charValue = builder.CreateExtractValue(expressionValue, {0}, "char_extract_val");
-            printfArgs.push_back(charValue);
+            llvm::Value* charVal = nullptr;
+            if (auto* ptrType = llvm::dyn_cast<llvm::PointerType>(llvmType)) {
+                auto* structTy = llvm::dyn_cast<llvm::StructType>(ptrType->getPointerElementType());
+                if (!structTy) throw std::runtime_error("Expected Char struct type pointer");
+                auto* fieldPtr = builder.CreateStructGEP(structTy, expressionValue, 0, "char_field_ptr");
+                charVal = builder.CreateLoad(builder.getInt8Ty(), fieldPtr, "char_load_val");
+            } else if (auto* structTy = llvm::dyn_cast<llvm::StructType>(llvmType)) {
+                charVal = builder.CreateExtractValue(expressionValue, {0}, "char_extract_val");
+            } else if (llvmType->isIntegerTy(8)) {
+                charVal = expressionValue;
+            } else {
+                throw std::runtime_error("Unsupported CharType representation");
+            }
+        
+            // Promote to i32 for printf vararg
+            auto* charValInt = builder.CreateSExt(charVal, builder.getInt32Ty(), "char_promoted");
+            printfArgs.push_back(charValInt);
         } else {
-            std::cerr << "Default Printf Argument \n";
             printfArgs.push_back(expressionValue);
         }
 

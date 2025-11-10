@@ -34,7 +34,6 @@ namespace LynxTypes {
 
     llvm::Value* CharType::createInstance(std::string variableName) {
         LOG_INFO("Invoked...");
-
         auto& builder = astContext->getBuilder();
         llvm::Type* charType = computeLLVMType();
         llvm::Value* var = builder.CreateAlloca(charType, nullptr, variableName);
@@ -49,7 +48,6 @@ namespace LynxTypes {
     llvm::Value* CharType::createValue(LValueType value) const {
         LOG_INFO("Invoked...");
         auto& builder = astContext->getBuilder();
-
         if (std::holds_alternative<char>(value)) {
             char charValue = std::get<char>(value);
             llvm::Type* charType = computeLLVMType();
@@ -67,7 +65,6 @@ namespace LynxTypes {
             LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
             return nullptr;
         }
-
         auto& builder = astContext->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }

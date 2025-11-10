@@ -51,20 +51,20 @@ namespace LynxSystem {
              * @param valueType  LLVM type to read into.
              * @return LLVM Value representing the loaded input.
             */
-            [[nodiscard]] llvm::Value* emitScanfRead(llvm::IRBuilder<>& builder, llvm::Module* module, const std::string& fmt, llvm::Type* valueType, bool returnPointer = false) const noexcept {
+            [[nodiscard]] llvm::Value* emitScanfRead(llvm::IRBuilder<>& builder, llvm::Module* module, const std::string& fmt, llvm::Type* valueType) const noexcept {
     
                 auto* scanfFunc = getOrCreateScanf(builder.getContext(), module);
+
                 auto* formatStr = builder.CreateGlobalStringPtr(fmt, "scanf_fmt");
             
                 auto* tmpVar = builder.CreateAlloca(valueType, nullptr, "scanf_tmp");
             
                 builder.CreateCall(scanfFunc, {formatStr, tmpVar}, "scanf_call");
-            
-                if (returnPointer) return tmpVar;
-            
+                        
                 return builder.CreateLoad(valueType, tmpVar, "read_value");
             
             }
+
     };
         
 }
