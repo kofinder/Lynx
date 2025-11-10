@@ -30,7 +30,7 @@ namespace LynxSystem {
 
         public:
 
-            llvm::Value* execute(std::shared_ptr<AstContext> context, std::vector<llvm::Value*> calleeArgs) override {                
+            llvm::Value* execute(std::shared_ptr<AstContext> context, std::vector<llvm::Value*> /*calleeArgs*/) override {                
                 auto& builder = context->getBuilder();
                 auto* module = context->getModule();
     

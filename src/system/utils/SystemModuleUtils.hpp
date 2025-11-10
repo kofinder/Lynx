@@ -121,7 +121,7 @@ namespace LynxSystem::utils {
     */
     [[nodiscard]] inline std::vector<llvm::Value*> preparePrintfArguments(
         llvm::IRBuilder<>& builder, 
-        llvm::Module* module, 
+        llvm::Module* /*module*/, 
         llvm::Value* expressionValue
     ) noexcept(false) {
 
@@ -201,7 +201,7 @@ namespace LynxSystem::utils {
                 if (!structTy) throw std::runtime_error("Expected Char struct type pointer");
                 auto* fieldPtr = builder.CreateStructGEP(structTy, expressionValue, 0, "char_field_ptr");
                 charVal = builder.CreateLoad(builder.getInt8Ty(), fieldPtr, "char_load_val");
-            } else if (auto* structTy = llvm::dyn_cast<llvm::StructType>(llvmType)) {
+            } else if (llvm::dyn_cast<llvm::StructType>(llvmType)) {
                 charVal = builder.CreateExtractValue(expressionValue, {0}, "char_extract_val");
             } else if (llvmType->isIntegerTy(8)) {
                 charVal = expressionValue;

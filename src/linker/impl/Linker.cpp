@@ -86,7 +86,7 @@ namespace LynxLinker {
             return;
         }
 
-        mainModule->print(out, nullptr);
+      //  mainModule->print(out, nullptr);
     }
 
 }

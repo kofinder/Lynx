@@ -30,6 +30,8 @@ namespace LynxLinker {
 
             std::unordered_map<std::string, std::unique_ptr<llvm::Module>> linkerModules;
 
+        private:
+        
             /**
              * @brief Writes LLVM IR to the specified path using given file system flags.
              * @param path The output file path.

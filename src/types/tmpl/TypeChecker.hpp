@@ -119,7 +119,7 @@ namespace LynxTypes::TypeChecker {
 
     template <>
     inline bool is<BooleanType>(llvm::Type* type) {
-        return type && type->isIntegerTy(1);  // i1 → Boolean
+        return type && type->isIntegerTy(1);
     }
     
     template <>
@@ -223,11 +223,11 @@ namespace LynxTypes::TypeChecker {
 
     template <>
     inline bool is<ClassType>(llvm::Type* type) {
-        // if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
-        //     if (structType->getName() == MetadataTypeConstants::classType) {
-        //         return true;
-        //     }
-        // }
+        if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
+            if (structType->getName() == MetadataTypeConstants::classType) {
+                return true;
+            }
+        }
         return false;
     }
 

@@ -30,7 +30,7 @@
      
      class TargetRegistry {
          
-         static std::vector<const Bitcode *> *libs; ///< Global list of registered libraries
+         static std::vector<const Bitcode*> *libs; ///< Global list of registered libraries
  
          TargetRegistry(); ///< Private constructor for singleton pattern
  

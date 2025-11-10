@@ -46,6 +46,7 @@ namespace LynxCodegen {
     class IRGenerator {
 
         private:
+
             std::string rootPath;
             std::string buildDir;
             std::vector<std::string> sourceFolders;
@@ -56,6 +57,8 @@ namespace LynxCodegen {
             const std::unordered_map<std::string, std::unique_ptr<Node>>& moduleAstMap;
             std::unordered_map<std::string, std::unique_ptr<llvm::Module>> llvmModules;
 
+        private:
+        
             /**
              * @brief Configure target machine and data layout for the given module.
              * 
@@ -116,17 +119,35 @@ namespace LynxCodegen {
              */
             void execute();
 
-             /**
-             * @brief Get the map of module names to their corresponding LLVM modules.
+            /**
+             * @brief Transfer ownership of LLVM modules.
              *
-             * Provides read-only access to the LLVM IR modules generated for each parsed source file.
-             * Useful for inspection, analysis, or linking operations.
+             * This function moves the internal map of LLVM modules out of this object,
+             * effectively transferring ownership to the caller. After this call, the
+             * internal map will be empty.
              *
-             * @return A const map from module names to their LLVM module objects.
+             * Use this when you want to pass the modules to the linker or take full
+             * ownership for further processing.
+             *
+             * @return An unordered_map containing the LLVM modules mapped by their names.
              */
-            std::unordered_map<std::string, std::unique_ptr<llvm::Module>> takeLinkerModules() { return std::move(llvmModules); }
+            std::unordered_map<std::string, std::unique_ptr<llvm::Module>> takeLinkerModules() {
+                return std::move(llvmModules);
+            }
 
-            std::unordered_map<std::string, std::unique_ptr<llvm::Module>>& getLinkerModules() { return llvmModules; }
+            /**
+             * @brief Access the LLVM modules without transferring ownership.
+             *
+             * Provides read/write access to the internal map of LLVM modules. Modifying
+             * the returned map will affect the internal state of this object.
+             *
+             * Use this when you need to inspect or modify the modules in-place.
+             *
+             * @return A reference to the internal unordered_map of LLVM modules.
+             */
+            std::unordered_map<std::string, std::unique_ptr<llvm::Module>>& getLinkerModules() {
+                return llvmModules;
+            }
             
             /**
              * @brief Destructor for IRGenerator.

@@ -1,4 +1,6 @@
 #include <logger/Logger.hpp>
+#include "llvm/IR/Instructions.h"
+#include "llvm/IR/InstrTypes.h"
 #include "BinaryExpressionNode.hpp"
 #include "utils/NumericPromotion.hpp"
 
@@ -79,6 +81,93 @@ namespace LynxAst {
         );
     }
 
+    llvm::Value* BinaryExpressionNode::generateIntegerWithOverflow(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) {
+        auto& builder = astContext.getBuilder();
+        auto* module = builder.GetInsertBlock()->getModule();
+        llvm::Type* type = lhsValue->getType();
+    
+        llvm::Intrinsic::ID intrinsicID;
+        switch (operatorType) {
+            case PLUS: intrinsicID = llvm::Intrinsic::sadd_with_overflow; break;
+            case MINUS: intrinsicID = llvm::Intrinsic::ssub_with_overflow; break;
+            case MUL: intrinsicID = llvm::Intrinsic::smul_with_overflow; break;
+            default: return nullptr; // Overflow intrinsic not supported
+        }
+    
+        llvm::Function* intrinsic = llvm::Intrinsic::getDeclaration(module, intrinsicID, {type});
+        llvm::Value* resultStruct = builder.CreateCall(intrinsic, {lhsValue, rhsValue});
+    
+        // Extract the sum and overflow flag
+        llvm::Value* sum = builder.CreateExtractValue(resultStruct, 0, "sum");
+        llvm::Value* overflow = builder.CreateExtractValue(resultStruct, 1, "overflow");
+
+        return sum;
+    
+        // Optional: trap or branch on overflow
+        // // =============================================================
+        // // Optional: handle overflow (trap, log, or clamp)
+        // // =============================================================
+
+        // // Prepare basic blocks
+        // llvm::Function* parentFunc = builder.GetInsertBlock()->getParent();
+        // llvm::BasicBlock* currentBlock = builder.GetInsertBlock();
+        // llvm::BasicBlock* overflowBlock = llvm::BasicBlock::Create(module->getContext(), "overflow_block", parentFunc);
+        // llvm::BasicBlock* contBlock = llvm::BasicBlock::Create(module->getContext(), "no_overflow", parentFunc);
+
+        // builder.CreateCondBr(overflow, overflowBlock, contBlock);
+
+        // // -------------------------------
+        // // Overflow handling branch
+        // // -------------------------------
+        // builder.SetInsertPoint(overflowBlock);
+
+        // if (astContext.enableOverflowTrap()) {
+        //     // === Trap ===
+        //     llvm::Function* trapFn = llvm::Intrinsic::getDeclaration(module, llvm::Intrinsic::trap);
+        //     builder.CreateCall(trapFn);
+        //     builder.CreateUnreachable();
+        // } 
+        // else if (astContext.enableOverflowLog()) {
+        //     // === Log ===
+        //     llvm::Function* printfFn = astContext.getOrCreatePrintf(module);
+        //     llvm::Value* msg = builder.CreateGlobalStringPtr("⚠️ Integer overflow detected at runtime!\n");
+        //     builder.CreateCall(printfFn, {msg});
+
+        //     // Continue execution safely with clamped value or undefined
+        //     builder.CreateBr(contBlock);
+        // } 
+        // else if (astContext.enableOverflowClamp()) {
+        //     // === Clamp ===
+        //     unsigned bitWidth = type->getIntegerBitWidth();
+        //     llvm::Value* maxVal = llvm::ConstantInt::get(type, (1ULL << (bitWidth - 1)) - 1);
+        //     llvm::Value* minVal = llvm::ConstantInt::get(type, -(1LL << (bitWidth - 1)));
+
+        //     // Simple policy: clamp to max for + or *
+        //     llvm::Value* clamped = (operatorType == PLUS || operatorType == MUL)
+        //                             ? maxVal
+        //                             : minVal;
+
+        //     builder.CreateBr(contBlock);
+
+        //     // Record the clamped value in a PHI node later
+        //     llvm::BasicBlock* clampBlock = builder.GetInsertBlock();
+        //     builder.SetInsertPoint(contBlock);
+        //     llvm::PHINode* phi = builder.CreatePHI(type, 2, "clamped_result");
+        //     phi->addIncoming(clamped, clampBlock);
+        //     phi->addIncoming(sum, currentBlock);
+        //     return phi;
+        // } 
+        // else {
+        //     // Default: ignore overflow and continue
+        //     builder.CreateBr(contBlock);
+        // }
+
+        // // -------------------------------
+        // // Continue normal execution
+        // // -------------------------------
+        // builder.SetInsertPoint(contBlock);
+    }
+
 
     llvm::Value* BinaryExpressionNode::generateDoubleCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) {
         LOG_WARN("IR Code Generation ......");
@@ -98,13 +187,19 @@ namespace LynxAst {
         auto [instr, label] = *maybeInstr;
         auto* currentBlock = astContext.getBuilder().GetInsertBlock();
 
-        return llvm::BinaryOperator::Create(
+        auto* binOp =  llvm::BinaryOperator::Create(
             instr, 
             lhsValue, 
             rhsValue, 
             llvm::Twine(label), 
             currentBlock
         );
+
+        llvm::FastMathFlags FMF;
+        FMF.setFast();  // sets reassoc + contract + other safe optimizations
+        binOp->setFastMathFlags(FMF);
+        
+        return binOp;
     }
 
     llvm::Value* BinaryExpressionNode::generateBooleanCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) {

@@ -32,8 +32,6 @@ option(ENABLE_SANITIZER_ADDRESS "Enable Sanitizers Address" ON)
 option(ENABLE_SANITIZER_UNDEFINED "Enable Sanitizer Undefined" ON)
 option(ENABLE_UI "Enable UI DSL support" OFF)
 
-
-
 set(SPDLOG_BUILD_SHARED OFF)
 set(SPDLOG_BUILD_STATIC ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)

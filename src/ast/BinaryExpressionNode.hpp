@@ -56,6 +56,8 @@ namespace LynxAst {
 
             llvm::Value* generateStringCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
 
+            llvm::Value* generateIntegerWithOverflow(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext);
+
         public:
 
             explicit BinaryExpressionNode(

@@ -51,9 +51,6 @@ extension/build
 backup
 
 src/lang/*
-#src/gc/*
-
-
 toy/cpp
 toy/dart
 toy/java

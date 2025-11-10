@@ -30,18 +30,8 @@ namespace LynxSystem {
 
         public:
 
-            llvm::Value* execute(std::shared_ptr<AstContext> context, std::vector<llvm::Value*> calleeArgs) override {
-                auto& builder = context->getBuilder();
-                auto* module = context->getModule();
-        
-                // For simplicity, assume <string, int> map
-                llvm::Type* keyType = builder.getInt8PtrTy();
-                llvm::Type* valueType = builder.getInt32Ty();
-        
-                // TODO: integrate with LynxTypes::MapType and allocate memory dynamically
-                std::cout << "[IOReadMapCommand] Simulating map input read..." << std::endl;
-        
-                return nullptr; // Placeholder for LLVM struct/map object
+            llvm::Value* execute(std::shared_ptr<AstContext> /*context*/, std::vector<llvm::Value*> /*calleeArgs*/) override {
+                return nullptr;
             }
     };
         

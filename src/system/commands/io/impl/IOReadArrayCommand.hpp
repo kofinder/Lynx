@@ -33,47 +33,8 @@ namespace LynxSystem {
 
         public:
 
-            llvm::Value* execute(std::shared_ptr<AstContext> context, std::vector<llvm::Value*> calleeArgs) override {
-                if (calleeArgs.empty()) {
-                    throw std::runtime_error("system.io.getArray<T>(count) requires element count argument.");
-                }
-        
-                auto& builder = context->getBuilder();
-                auto* module = context->getModule();
-                llvm::Value* countVal = calleeArgs[0];
-        
-                // Determine element type (for simplicity assume int)
-                llvm::Type* elementType = builder.getInt32Ty();
-        
-                // Allocate array on the stack
-                llvm::Value* arrayPtr = builder.CreateAlloca(elementType, countVal, "input_array");
-        
-                auto* scanfFunc = getOrCreateScanf(builder.getContext(), module);
-                auto* fmt = builder.CreateGlobalStringPtr("%d", "fmt_int");
-        
-                llvm::BasicBlock* loopBody = llvm::BasicBlock::Create(builder.getContext(), "loop.body", builder.GetInsertBlock()->getParent());
-                llvm::BasicBlock* loopEnd  = llvm::BasicBlock::Create(builder.getContext(), "loop.end", builder.GetInsertBlock()->getParent());
-        
-                llvm::Value* i = builder.CreateAlloca(builder.getInt32Ty(), nullptr, "i");
-                builder.CreateStore(builder.getInt32(0), i);
-        
-                builder.CreateBr(loopBody);
-                builder.SetInsertPoint(loopBody);
-        
-                llvm::Value* idx = builder.CreateLoad(builder.getInt32Ty(), i);
-                llvm::Value* elemPtr = builder.CreateGEP(elementType, arrayPtr, idx);
-        
-                builder.CreateCall(scanfFunc, {fmt, elemPtr});
-        
-                llvm::Value* next = builder.CreateAdd(idx, builder.getInt32(1));
-                builder.CreateStore(next, i);
-        
-                llvm::Value* cond = builder.CreateICmpSLT(next, countVal);
-                builder.CreateCondBr(cond, loopBody, loopEnd);
-        
-                builder.SetInsertPoint(loopEnd);
-        
-                return arrayPtr; // pointer to array in memory
+            llvm::Value* execute(std::shared_ptr<AstContext> /*context*/, std::vector<llvm::Value*> /*calleeArgs*/) override {
+                return nullptr; // pointer to array in memory
             }
     };
         

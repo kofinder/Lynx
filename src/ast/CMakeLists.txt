@@ -33,11 +33,3 @@ target_link_libraries(LynxAst PRIVATE
 
 target_include_directories(LynxAst PUBLIC ${LIBRARY_INCLUDES})
 
-# Optional: enable warnings and C++ standard
-# target_compile_features(LynxAst PUBLIC cxx_std_20)
-# target_compile_options(LynxAst PRIVATE
-#     $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic>
-#     $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wpedantic>
-# )
-
-

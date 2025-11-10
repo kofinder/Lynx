@@ -56,7 +56,6 @@
 
 #include <types/wrapper/ReferenceType.hpp>
 #include <types/wrapper/PointerType.hpp>
-
 #include <types/infrerence/AutoType.hpp>
 
 
