@@ -28,6 +28,6 @@ llvm_map_components_to_libnames(LLVM_LIBS
   scalaropts
 )
 
-target_link_libraries(LynxJIT PRIVATE LynxLogger LynxCore ${LLVM_LIBS})
+target_link_libraries(LynxJIT PRIVATE LynxLogger ${LLVM_LIBS})
 
 target_include_directories(LynxJIT PUBLIC ${LIBRARY_INCLUDES})

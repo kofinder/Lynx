@@ -11,6 +11,8 @@ namespace LynxCore {
 
     void InteropManager::initialize() {
         registerFunction("GC_malloc", reinterpret_cast<void*>(&GC_malloc));
+        registerFunction("GC_realloc", reinterpret_cast<void*>(&GC_realloc));
+        registerFunction("GC_free", reinterpret_cast<void*>(&GC_free));    
         registerFunction("int_ctor", reinterpret_cast<void*>(&int_ctor));
         registerFunction("DateTime_ctor", reinterpret_cast<void*>(&datetime_ctor));
         registerFunction("File_ctor", reinterpret_cast<void*>(&file_ctor));
@@ -20,34 +22,33 @@ namespace LynxCore {
         registerFunction("pthread_equal", reinterpret_cast<void*>(&pthread_equal));
     }
 
-    std::unordered_map<std::string, void*>& InteropManager::getFunctionMap() {
-        static std::unordered_map<std::string, void*> functionMap;
-        return functionMap;
-    }
-
-    std::mutex& InteropManager::getMutex() {
-        static std::mutex mtx;
-        return mtx;
-    }
-
-    void InteropManager::registerFunction(const std::string& name, void* ptr) {
-        std::lock_guard<std::mutex> lock(getMutex());
-        getFunctionMap()[name] = ptr;
-    }
-
     void* InteropManager::getFunction(const std::string& name) {
-        std::lock_guard<std::mutex> lock(getMutex());
-        auto& map = getFunctionMap();
-        auto it = map.find(name);
-        return (it != map.end()) ? it->second : nullptr;
+        auto it = getFunctionMap().find(name);
+        return it != getFunctionMap().end() ? it->second : nullptr;
     }
 
     const std::unordered_map<std::string, void*>& InteropManager::getAll() {
         return getFunctionMap();
+    }
+    
+    std::unordered_map<std::string, void*>& InteropManager::getFunctionMap() {
+        static std::unordered_map<std::string, void*> functionMap;
+        return functionMap;
+    }
+    
+    std::mutex& InteropManager::getMutex() {
+        static std::mutex mtx;
+        return mtx;
+    }
+    
+    void InteropManager::registerFunction(const std::string& name, void* ptr) {
+        std::lock_guard lock(getMutex());
+        getFunctionMap()[name] = ptr;
     }
 
     void InteropManager::shutdown() {
         std::lock_guard<std::mutex> lock(interopMutex);
         getFunctionMap().clear();
     }
+
 }

@@ -83,6 +83,7 @@ namespace LynxAst {
     }
     
     llvm::Value* AssignmentExpressionNode::generateSimpleAssign(const AstContext& astContext) {
+        std::cout << "HELLO \n";
         auto& builder = astContext.getBuilder();
         auto* lhsPtr = assignableNode->generateCode(astContext.createContext());
         auto* rhsValue = expressionNode->generateCode(astContext.createContext());

@@ -1,7 +1,6 @@
 #include "ORCJITEngine.hpp"
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/Support/Error.h>
-#include <core/interop/InteropManager.hpp>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/ExecutionEngine/Orc/LLJIT.h>
 #include <llvm/ExecutionEngine/Orc/ThreadSafeModule.h>
@@ -9,17 +8,14 @@
 #include <llvm/ExecutionEngine/Orc/Shared/TargetProcessControlTypes.h>
 
 
-using namespace LynxCore;
-
 namespace LynxJIT {
 
-    void ORCJITEngine::initialize(std::unique_ptr<llvm::Module> module) {
+    void ORCJITEngine::initialize(std::unique_ptr<llvm::Module> module, const std::unordered_map<std::string, void*>& symbols) {
         if (!module) throw std::runtime_error("LLVM module is null.");
     
         auto expectedJIT = llvm::orc::LLJITBuilder().create();
         if (!expectedJIT) {
-            llvm::errs() << "LLJIT creation failed: " 
-                         << llvm::toString(expectedJIT.takeError()) << "\n";
+            llvm::errs() << "LLJIT creation failed: " << llvm::toString(expectedJIT.takeError()) << "\n";
             throw std::runtime_error("Failed to create LLJIT instance.");
         }
     
@@ -30,7 +26,7 @@ namespace LynxJIT {
     
         // ✅ Register all external symbols from InteropManager
         llvm::orc::SymbolMap interopSymbols;
-        for (const auto& [name, ptr] : InteropManager::getAll()) {
+        for (const auto& [name, ptr] : symbols) {
             interopSymbols[mangle(name)] = llvm::JITEvaluatedSymbol(
                 llvm::pointerToJITTargetAddress(ptr),
                 llvm::JITSymbolFlags::Exported
@@ -56,8 +52,7 @@ namespace LynxJIT {
     int ORCJITEngine::execute() {
         auto mainSym = orcJit->lookup("main");
         if (!mainSym) {
-            llvm::errs() << "Symbol 'main' not found: " 
-                         << llvm::toString(mainSym.takeError()) << "\n";
+            llvm::errs() << "Symbol 'main' not found: " << llvm::toString(mainSym.takeError()) << "\n";
             throw std::runtime_error("Symbol 'main' not found.");
         }
         

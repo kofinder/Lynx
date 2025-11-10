@@ -21,7 +21,6 @@
  * @date: November 4, 2025
 */
 
-
 #ifndef LYNX_LLVM_FUNCTION_UTILS_HPP
 #define LYNX_LLVM_FUNCTION_UTILS_HPP
 

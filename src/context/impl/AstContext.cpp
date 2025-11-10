@@ -1,6 +1,5 @@
 #include "AstContext.hpp"
 #include "GlobalSymbolContext.hpp"
-
 #include <llvm/IR/Verifier.h>
 #include <llvm/Support/Host.h>
 #include <llvm/IR/DerivedTypes.h>
@@ -37,13 +36,12 @@
 #include <logger/Logger.hpp>
 #include <errors/LoggingVisitor.hpp>
 
-
-using namespace LynxTypes;
-using namespace LynxLogger;
-using namespace LynxConstants;
-
-
 namespace LynxContext {
+
+    using namespace LynxTypes;
+    using namespace LynxLogger;
+    using namespace LynxConstants;
+
 
     AstContext::AstContext(
         const std::string& moduleName, 
@@ -201,6 +199,51 @@ namespace LynxContext {
         }
         types->emplace(name, type);
         return true;
+    }
+
+    llvm::Value* AstContext::emitGCAllocCall(llvm::Type* objType, std::string objectName) {
+
+        // Compute allocation size
+        uint64_t typeSize = getDataLayout().getTypeAllocSize(objType);
+        auto* allocSize = llvm::ConstantInt::get(llvm::Type::getInt64Ty(getLLVMContext()), typeSize);
+
+        // Get or insert the GC allocation function
+        auto* mallocFn = getOrInsertGCAllocFunc(allocSize, "LYNX_GC_ALLOC_" + objectName);
+
+        // Emit the call in IR
+        auto& builder = getBuilder();
+        auto* mallocCall = builder.CreateCall(mallocFn, { allocSize }, "gc_alloc");
+
+        // Cast to the correct object pointer type
+        auto objectInstance = builder.CreateBitCast(mallocCall, objType->getPointerTo(), "gc_cast");
+
+        auto baseType = findType(objectInstance);
+        if(auto clazzType = TypeCasting::castType<ClassType>(baseType.get())) {
+            LOG_INFO("Binding Vtable to the {}", clazzType->qualifiedName());
+            clazzType->bindVTable(objectInstance);
+        }
+
+        return objectInstance;
+    }
+
+    llvm::Function* AstContext::getOrInsertGCAllocFunc(llvm::ConstantInt* allocSize, const std::string& fnName) {
+    
+        auto* voidPtrType = llvm::Type::getInt8PtrTy(getLLVMContext());
+
+        // Define function type: i8* func(i64)
+        auto mallocType = llvm::FunctionType::get(voidPtrType, { allocSize->getType() }, false);
+
+        // Retrieve or create function in the module
+        auto mallocCallee = getModule()->getOrInsertFunction(fnName, mallocType);
+
+        llvm::Function* mallocFn = nullptr;
+        if (auto* func = llvm::dyn_cast<llvm::Function>(mallocCallee.getCallee())) {
+            mallocFn = func;
+        } else {
+            mallocFn = llvm::cast<llvm::Function>(mallocCallee.getCallee()->stripPointerCasts());
+        }
+
+        return mallocFn;
     }
 
     std::shared_ptr<GlobalSymbolContext> AstContext::getGlobalContext() const { return globalContext; }

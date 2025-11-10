@@ -16,7 +16,7 @@
  * - Core runtime components requiring dynamic memory allocation.
  * - Debugging and testing subsystems for memory tracking.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 
@@ -24,9 +24,15 @@
 #define LYNX_CORE_MEMORY_MANAGER_HPP
 
 #include <string>
+#include <mutex>
 #include <unordered_map>
+#include "GCMutator.hpp"
+#include "GCAllocator.hpp"
+#include "GCCollector.hpp"
+#include "GCDashboard.hpp"
 
 namespace LynxCore {
+
     /**
      * @class MemoryManager
      * @brief Provides memory allocation and tracking for the core runtime.
@@ -45,49 +51,37 @@ namespace LynxCore {
 
         private:
 
-            MemoryManager() = delete;
-            MemoryManager(const MemoryManager&) = delete;
-            MemoryManager& operator=(const MemoryManager&) = delete;
+            std::mutex mtx;
 
-            /** 
-             * Internal map storing allocated pointers and their labels.
-             * Used to track live allocations for diagnostics.
-            */
-            static std::unordered_map<void*, std::string>& getAllocMap();
+            bool initialized = false;
 
+            std::unique_ptr<GCCollector> collector;
+
+            std::unique_ptr<GCMutator> mutator;
+
+            std::unique_ptr<GCDashboard> dashboard;
+    
         public:
 
-            /**
-             * Allocates `size` bytes of heap memory labeled by `label` for diagnostics.
-             * @param size Number of bytes to allocate.
-             * @param label Optional string to identify the allocation in logs.
-             * @return Pointer to allocated memory (never nullptr if GC_malloc succeeds).
-            */
-            static void* allocate(std::size_t size, const std::string& label = "unnamed");
+            MemoryManager() = default; 
+            ~MemoryManager() { shutdown(); }
+        
+            /** Initialize all GC subsystems */
+            void initialize(bool enableDashboard = true);
 
-            /**
-             * Deallocates memory at `ptr` and removes tracking info.
-             * Should be called when memory is freed to avoid false leak reports.
-             * @param ptr Pointer to the allocated memory to deallocate.
-            */
-            static void deallocate(void* ptr);
-            
-            /**
-             * Tracks an allocation manually by associating `label` with `ptr`.
-             * Useful if allocation occurs outside `allocate()`.
-             * @param label Human-readable identifier for the allocation.
-             * @param ptr Pointer to the allocated memory.
-            */
-            static void track(const std::string& label, void* ptr);
+            /** Report leaks and usage statistics */
+            void reportLeaks();
 
-            /**
-             * Reports currently tracked allocations for potential leaks.
-             * Intended for debugging and testing.
-             * Outputs to standard error by default.
-            */
-            static void reportLeaks();
-            
-        };   
+            /** Shutdown GC subsystems safely */
+            void shutdown();
+
+            /** Access to underlying mutator (for IR bindings) */
+            GCMutator& getMutator() { return *mutator; }
+
+            /** Access to collector for dashboard or logging */
+            GCCollector& getCollector() { return *collector; }
+
+    };   
 }
 
 #endif

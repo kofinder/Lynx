@@ -103,6 +103,7 @@ namespace LynxProgramConfig {
 
 
         public:
+
             ProgramSourceProcessor() : exitCode(0) {
                 driver = std::make_unique<LynxDriver>();
             }
@@ -192,6 +193,16 @@ namespace LynxProgramConfig {
              * @return A unique pointer to the owned LynxDriver instance.
              */
             std::unique_ptr<LynxDriver> getDriver() { return std::move(driver); }
+
+            /**
+             * @brief Retrieves a reference to the list of user-defined classes.
+             * 
+             * Provides direct access to the vector storing class names defined
+             * by the user during compilation.
+             * 
+             * @return Reference to a vector of user-defined class names.
+            */
+            std::vector<std::string>& getUserDefinedClasses();
 
             ~ProgramSourceProcessor() = default;
 

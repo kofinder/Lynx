@@ -10,7 +10,7 @@ class ChatUser {
         this.age = age;
         this.isBot = isBot;
     }
-
+    
     public string getId() { return id; }
     public void setId(string id) { this.id = id; }
 
@@ -22,4 +22,6 @@ class ChatUser {
 
     public boolean getOnline() { return isBot; }
     public void setIsBot(boolean isBot) { this.isBot = isBot; }
+    
+
 }

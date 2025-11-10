@@ -15,7 +15,7 @@
  * - IR generation and JIT execution subsystems.
  * - Any LLVM modules requiring runtime function calls (e.g., GC_malloc, pthreads).
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 
@@ -23,8 +23,10 @@
 #define LYNX_CORE_RUNTIME_BINDING_MANAGER_HPP
 
 #include <llvm/IR/Module.h>
+#include "core/memory/MemoryManager.hpp"
 
 namespace LynxCore {
+
     /**
      * @class RuntimeBindingManager
      * @brief Manages declaration and registration of runtime external functions and bindings.
@@ -34,30 +36,29 @@ namespace LynxCore {
      * 
      * Ensures all required runtime symbols are available to LLVM code generation and execution.
     */
-    class RuntimeBindingManager {
-
-        private:
-        
-            RuntimeBindingManager() = delete;
-            RuntimeBindingManager(const RuntimeBindingManager&) = delete;
-            RuntimeBindingManager& operator=(const RuntimeBindingManager&) = delete;
-
+   class RuntimeBindingManager {
 
         public:
 
-            /**
-             * Declares all required runtime external functions in the provided LLVM module.
-             * @param module LLVM module where declarations will be added.
-            */
-            static void declareAll(llvm::Module* module);
-
-            /**
-             * Registers all declared runtime functions with the JIT or runtime.
-             * Typically used after declaration to bind symbols.
-            */
-            static void registerAll();
-    };
+            RuntimeBindingManager() = default;
+            ~RuntimeBindingManager() = default;
         
+            void registerAll();
+
+            void declareAll(llvm::Module* module);
+
+            void declareGCAllocFunction(llvm::Module* module, const std::string& typeName);
+            
+            void registerGCAllocFunction(const std::string& typeName);
+
+            void setupGCForClasses(llvm::Module* module, const std::vector<std::string>& classNames);
+
+            // Bind the MemoryManager pointer used by the generic allocator to register allocations
+            static void setMemoryManager(MemoryManager* mgr);
+            static MemoryManager* getBoundMemoryManager();
+
+    };
+           
 }
 
 #endif

@@ -107,9 +107,7 @@ target_link_libraries(Lynx PUBLIC
 
 
 # ===``````````````````````==== #
-
 # === LSP server executable === # 
-
 # ===``````````````````````==== #
 
 set(LSP_SOURCES

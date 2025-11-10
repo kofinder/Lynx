@@ -38,7 +38,7 @@ namespace LynxJIT {
              *
              * @param module A unique pointer to an LLVM IR Module.
             */
-            virtual void initialize(std::unique_ptr<llvm::Module> module) = 0;
+            virtual void initialize(std::unique_ptr<llvm::Module> module, const std::unordered_map<std::string, void*>& symbols = {}) = 0;
 
             /**
              * @brief Executes the compiled 'main' function in the module.

@@ -1,73 +1,36 @@
 
-int main() {
-
-  system.io.out("Enter your name: ");
-  string name = system.io.in();
-
-  system.io.out("Enter your age: ");
-  int age = system.io.getInt();
-
-  system.io.out("Enter a height: ");
-  float height = system.io.getFloat();
-
-  system.io.out("Are you single? (0 = false, 1 = true): ");
-  bool flag = system.io.getBool();
-
-  system.io.printf("Name: {}, Age: {}, Height: {}, Status: {}", name, age, height, flag);
-
-  return 0;
-
-}
-
-
-
-
-
-
-
-
-
-
-
-  /*
-
-
-
   int main() {
 
-  system.io.out("Enter a line of text: ");
-  string line = system.io.in();
+    system.io.out("Enter a line of text: ");
+    string line = system.io.in();
 
-  system.io.out("Enter a byte value: ");
-  byte b = system.io.getByte();
+    system.io.out("Enter a byte value: ");
+    byte b = system.io.getByte();
 
-  system.io.out("Enter a short value: ");
-  short s = system.io.getShort();
+    system.io.out("Enter a short value: ");
+    short s = system.io.getShort();
 
-  system.io.out("Enter an int value: ");
-  int i = system.io.getInt();
+    system.io.out("Enter an int value: ");
+    int i = system.io.getInt();
 
-  system.io.out("Enter a long value: ");
-  long l = system.io.getLong();
+    system.io.out("Enter a long value: ");
+    long l = system.io.getLong();
 
-  system.io.out("Enter a float value: ");
-  float f = system.io.getFloat();
+    system.io.out("Enter a float value: ");
+    float f = system.io.getFloat();
 
-  system.io.out("Enter a double value: ");
-  double d = system.io.getDouble();
+    system.io.out("Enter a double value: ");
+    double d = system.io.getDouble();
 
-  system.io.out("Enter a char value: ");
-  char c = system.io.getChar();
+    system.io.out("Enter a char value: ");
+    char c = system.io.getChar();
 
-  system.io.out("Enter a boolean value (0 = false, 1 = true): ");
-  bool flag = system.io.getBool();
+    system.io.out("Enter a boolean value (0 = false, 1 = true): ");
+    bool flag = system.io.getBool();
 
-  system.io.printf(
-      "You entered:\nLine: {}\nByte: {}\nShort: {}\nInt: {}\nLong: {}\nFloat: {}\nDouble: {}\nChar: {}\nBool: {}",
-      line, b, s, i, l, f, d, c, flag
-  );
-  return 0;
+    system.io.printf(
+        "You entered:\nLine: {}\nByte: {}\nShort: {}\nInt: {}\nLong: {}\nFloat: {}\nDouble: {}\nChar: {}\nBool: {}",
+        line, b, s, i, l, f, d, c, flag
+    );
+    return 0;
   }
-
-*/
-  

@@ -50,7 +50,9 @@ extension/build
 
 backup
 
-src/lang/
+src/lang/*
+#src/gc/*
+
 
 toy/cpp
 toy/dart
