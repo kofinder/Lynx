@@ -1,4 +1,4 @@
-#include "ByteMethodResolver.hpp"
+#include "methods/ByteMethodResolver.hpp"
 
 namespace LynxResolver {
 

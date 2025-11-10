@@ -1,8 +1,9 @@
 #include "builtins/ShortType.hpp"
 #include <context/AstContext.hpp>
 #include <resolver/TypeVisitor.hpp>
+
 #include <resolver/TypeMethodResolver.hpp>
-#include <resolver/ShortMethodResolver.hpp>
+#include <resolver/methods/ShortMethodResolver.hpp>
 
 using namespace LynxContext;
 

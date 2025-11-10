@@ -2,8 +2,9 @@
 #include <llvm/IR/DebugInfoMetadata.h>
 #include <context/AstContext.hpp>
 #include <resolver/TypeVisitor.hpp>
+
 #include <resolver/TypeMethodResolver.hpp>
-#include <resolver/IntMethodResolver.hpp>
+#include <resolver/methods/IntMethodResolver.hpp>
 
 namespace LynxTypes {
 

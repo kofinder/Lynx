@@ -3,7 +3,7 @@
 
     int x = int.max();
 
-    system.io.println("HELLO WORLD!");
+    system.io.println(x);
 
     return 0;
     

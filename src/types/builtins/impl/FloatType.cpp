@@ -1,8 +1,9 @@
 #include "builtins/FloatType.hpp"
 #include <context/AstContext.hpp>
 #include <resolver/TypeVisitor.hpp>
+
 #include <resolver/TypeMethodResolver.hpp>
-#include <resolver/FloatMethodResolver.hpp>
+#include <resolver/methods/FloatMethodResolver.hpp>
 
 using namespace LynxContext;
 

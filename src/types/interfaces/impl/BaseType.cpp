@@ -1,5 +1,6 @@
 #include "interfaces/BaseType.hpp"
 #include <resolver/TypeVisitor.hpp>
+
 #include <resolver/TypeMethodResolver.hpp>
 
 namespace LynxTypes {

@@ -1,4 +1,4 @@
-#include "StringMethodResolver.hpp"
+#include "methods/StringMethodResolver.hpp"
 
 namespace LynxResolver {
 

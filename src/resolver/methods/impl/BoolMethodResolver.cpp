@@ -1,4 +1,4 @@
-#include "BoolMethodResolver.hpp"
+#include "methods/BoolMethodResolver.hpp"
 
 namespace LynxResolver {
 

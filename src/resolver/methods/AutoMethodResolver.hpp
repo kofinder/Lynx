@@ -19,7 +19,7 @@
 #ifndef LYNX_AUTO_METHOD_RESOLVER_HPP
 #define LYNX_AUTO_METHOD_RESOLVER_HPP
 
-#include "TypeMethodResolver.hpp"
+#include "resolver/TypeMethodResolver.hpp"
 
 namespace LynxResolver {
 

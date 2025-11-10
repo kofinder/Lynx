@@ -3,8 +3,9 @@
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Constants.h>
 #include <resolver/TypeVisitor.hpp>
+
 #include <resolver/TypeMethodResolver.hpp>
-#include <resolver/ByteMethodResolver.hpp>
+#include <resolver/methods/ByteMethodResolver.hpp>
 
 namespace LynxTypes {
     

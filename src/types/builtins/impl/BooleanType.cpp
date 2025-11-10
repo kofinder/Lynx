@@ -1,8 +1,9 @@
 #include "builtins/BooleanType.hpp"
 #include <context/AstContext.hpp>
 #include <resolver/TypeVisitor.hpp>
+
 #include <resolver/TypeMethodResolver.hpp>
-#include <resolver/BoolMethodResolver.hpp>
+#include <resolver/methods/BoolMethodResolver.hpp>
 
 using namespace LynxContext;
 

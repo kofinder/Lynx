@@ -1,4 +1,4 @@
-#include "CharacterMethodResolver.hpp"
+#include "methods/CharacterMethodResolver.hpp"
 
 namespace LynxResolver {
 

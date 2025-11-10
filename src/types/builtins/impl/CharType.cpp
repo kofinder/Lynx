@@ -1,8 +1,9 @@
 #include "builtins/CharType.hpp"
 #include <context/AstContext.hpp>
 #include <resolver/TypeVisitor.hpp>
+
 #include <resolver/TypeMethodResolver.hpp>
-#include <resolver/CharacterMethodResolver.hpp>
+#include <resolver/methods/CharacterMethodResolver.hpp>
 
 using namespace LynxContext;
 

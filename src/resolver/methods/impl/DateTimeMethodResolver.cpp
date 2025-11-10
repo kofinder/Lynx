@@ -1,4 +1,4 @@
-#include "DateTimeMethodResolver.hpp"
+#include "methods/DateTimeMethodResolver.hpp"
 
 namespace LynxResolver {
 

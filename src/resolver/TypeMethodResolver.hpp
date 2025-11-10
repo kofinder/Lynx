@@ -28,14 +28,15 @@
 #include <unordered_map>
 #include <optional>
 #include <llvm/IR/Value.h>
-#include <context/AstContext.hpp>
 #include <logger/Logger.hpp>
+#include <context/AstContext.hpp>
 
-using namespace LynxLogger;
-using namespace LynxContext;
 
 namespace LynxResolver {
-
+    
+    using namespace LynxLogger;
+    using namespace LynxContext;
+    
     class TypeMethodResolver {
 
         public:

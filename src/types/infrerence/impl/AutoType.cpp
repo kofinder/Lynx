@@ -1,6 +1,6 @@
 #include "infrerence/AutoType.hpp"
 #include <resolver/TypeVisitor.hpp>
-#include <resolver/AutoMethodResolver.hpp>
+#include <resolver/methods/AutoMethodResolver.hpp>
 
 namespace LynxTypes {
 

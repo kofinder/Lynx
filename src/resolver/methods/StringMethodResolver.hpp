@@ -23,7 +23,7 @@
 #ifndef LYNX_STRING_METHOD_RESOLVER_HPP
 #define LYNX_STRING_METHOD_RESOLVER_HPP
 
-#include "TypeMethodResolver.hpp"
+#include "resolver/TypeMethodResolver.hpp"
 
 namespace LynxResolver {
 

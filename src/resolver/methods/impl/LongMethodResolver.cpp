@@ -1,4 +1,4 @@
-#include "LongMethodResolver.hpp"
+#include "methods/LongMethodResolver.hpp"
 
 namespace LynxResolver {
 

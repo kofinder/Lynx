@@ -22,7 +22,7 @@
 #ifndef LYNX_SHORT_METHOD_RESOLVER_HPP
 #define LYNX_SHORT_METHOD_RESOLVER_HPP
 
-#include "TypeMethodResolver.hpp"
+#include "resolver/TypeMethodResolver.hpp"
 
 namespace LynxResolver {
 

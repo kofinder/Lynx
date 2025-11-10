@@ -28,22 +28,20 @@
 #define LYNX_TYPE_RESOLVER_FACTORY_HPP
 
 #include <memory>
-#include "TypeMethodResolver.hpp"
-#include "IntMethodResolver.hpp"
-#include "DateTimeMethodResolver.hpp"
 #include <constants/DataType.hpp>
-
-#include "ByteMethodResolver.hpp"
-#include "ShortMethodResolver.hpp"
-#include "IntMethodResolver.hpp"
-#include "LongMethodResolver.hpp"
-#include "FloatMethodResolver.hpp"
-#include "DoubleMethodResolver.hpp"
-#include "CharacterMethodResolver.hpp"
-#include "BoolMethodResolver.hpp"
-#include "DateTimeMethodResolver.hpp"
-#include "StringMethodResolver.hpp"
-#include "AutoMethodResolver.hpp"
+#include "TypeMethodResolver.hpp"
+#include "methods/DateTimeMethodResolver.hpp"
+#include "methods/ByteMethodResolver.hpp"
+#include "methods/ShortMethodResolver.hpp"
+#include "methods/IntMethodResolver.hpp"
+#include "methods/LongMethodResolver.hpp"
+#include "methods/FloatMethodResolver.hpp"
+#include "methods/DoubleMethodResolver.hpp"
+#include "methods/CharacterMethodResolver.hpp"
+#include "methods/BoolMethodResolver.hpp"
+#include "methods/DateTimeMethodResolver.hpp"
+#include "methods/StringMethodResolver.hpp"
+#include "methods/AutoMethodResolver.hpp"
 
 
 namespace LynxResolver {

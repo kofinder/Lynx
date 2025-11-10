@@ -1,4 +1,4 @@
-#include "FloatMethodResolver.hpp"
+#include "methods/FloatMethodResolver.hpp"
 
 namespace LynxResolver {
 

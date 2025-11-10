@@ -5,9 +5,10 @@
 #include <llvm/IR/Constants.h>
 #include <llvm/Support/raw_ostream.h>
 #include <resolver/TypeVisitor.hpp>
+
 #include <resolver/TypeMethodResolver.hpp>
 #include <constants/LinkageType.hpp>
-#include <resolver/StringMethodResolver.hpp>
+#include <resolver/methods/StringMethodResolver.hpp>
 
 namespace LynxTypes {
 

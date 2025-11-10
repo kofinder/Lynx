@@ -1,4 +1,4 @@
-#include "ShortMethodResolver.hpp"
+#include "methods/ShortMethodResolver.hpp"
 
 namespace LynxResolver {
 

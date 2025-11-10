@@ -1,4 +1,4 @@
-#include "IntMethodResolver.hpp"
+#include "methods/IntMethodResolver.hpp"
 
 namespace LynxResolver {
 

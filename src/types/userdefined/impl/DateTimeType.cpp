@@ -2,8 +2,9 @@
 #include <context/AstContext.hpp>
 #include <logger/Logger.hpp>
 #include <resolver/TypeVisitor.hpp>
+
 #include <resolver/TypeMethodResolver.hpp>
-#include <resolver/DateTimeMethodResolver.hpp>
+#include <resolver/methods/DateTimeMethodResolver.hpp>
 
 using namespace LynxContext;
 using namespace LynxLogger;

@@ -1,4 +1,4 @@
-#include "DoubleMethodResolver.hpp"
+#include "methods/DoubleMethodResolver.hpp"
 
 namespace LynxResolver {
 

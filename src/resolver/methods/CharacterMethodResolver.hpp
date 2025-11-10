@@ -20,7 +20,7 @@
 #ifndef LYNX_CHARACTER_METHOD_RESOLVER_HPP
 #define LYNX_CHARACTER_METHOD_RESOLVER_HPP
 
-#include "TypeMethodResolver.hpp"
+#include "resolver/TypeMethodResolver.hpp"
 
 namespace LynxResolver {
 
