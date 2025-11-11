@@ -269,8 +269,8 @@ namespace LynxAst {
     std::unique_ptr<Node> BinaryExpressionNode::clone() const {
         return std::make_unique<BinaryExpressionNode>(
             operatorType,
-            this->leftOperand->clone(),
-            this->rightOperand->clone()
+            leftOperand->clone(),
+            rightOperand->clone()
         ); 
     }
 

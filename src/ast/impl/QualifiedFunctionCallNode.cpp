@@ -1,6 +1,7 @@
 #include "QualifiedFunctionCallNode.hpp"
 #include "PrimaryExpressionNode.hpp"
 #include <libruntime/RuntimeModuleLoader.hpp>
+#include "tmpl/CloneNodeTemplate.hpp"
 #include "ExpressionNode.hpp"
 #include "LiteralNode.hpp"
 #include "utils/FileUtils.hpp"
@@ -9,11 +10,11 @@
 #include <llvm/IR/Constants.h>
 #include <llvm/IR/Module.h>
 
-
-using namespace LynxContext;
-using namespace LynxLibRuntime;
-
 namespace LynxAst {
+
+    using namespace Cloneable;
+    using namespace LynxContext;
+    using namespace LynxLibRuntime;
 
     llvm::Value* QualifiedFunctionCallNode::generateCode(std::shared_ptr<AstContext> astContext) {
         LOG_ERROR("Namespace Name {} Function {}", qualifiedPrefixType->getRawPrefix(), funcName);
@@ -24,26 +25,11 @@ namespace LynxAst {
     }
 
     std::unique_ptr<Node> QualifiedFunctionCallNode::clone() const {
-        auto clonedArgs = std::make_unique<std::vector<std::unique_ptr<ExpressionNode>>>();
-        if(arguments) {
-             clonedArgs->reserve(arguments->size());
-            for (const auto& arg : *arguments) {
-                if (arg) {
-                    auto clonedArg = arg->clone();
-                    auto exprPtr = dynamic_cast<ExpressionNode*>(clonedArg.release());
-                    assert(exprPtr && "Cloned node is not an ExpressionNode");
-                    clonedArgs->push_back(std::unique_ptr<ExpressionNode>(exprPtr));
-                } else {
-                    clonedArgs->push_back(nullptr);
-                }
-            }
-        }
-
-        auto clonedNode = std::make_unique<QualifiedFunctionCallNode>(
+        auto clonedArgs = cloneNodeVector(arguments);
+        return std::make_unique<QualifiedFunctionCallNode>(
             funcName, 
             qualifiedPrefixType ? std::make_unique<QualifiedPrefixType>(*qualifiedPrefixType) : nullptr,
             std::move(clonedArgs)
         );
-        return clonedNode;
     }
 }

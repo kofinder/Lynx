@@ -1,44 +1,41 @@
 #include "ForLoopStatementNode.hpp"
+#include "tmpl/CloneNodeTemplate.hpp"
 #include <logger/Logger.hpp>
 
 
-
-using namespace LynxLogger;
-using namespace LynxContext;
-
 namespace LynxAst {
 
+    using namespace LynxLogger;
+    using namespace LynxContext;
+    using namespace Cloneable;
 
     llvm::Value* ForLoopStatementNode::generateCode(std::shared_ptr<AstContext> astContext) {
-        LOG_WARN("Generating LLVM code for IfStatementNode. generateCode");
+        LOG_WARN("IR Code Generation");
         auto& context = astContext->getLLVMContext();
         auto& builder = astContext->getBuilder();
 
-        if (this->preLoopNode != nullptr) {
-            this->preLoopNode->generateCode(astContext->createContext());
+        if (preLoopNode != nullptr) {
+            preLoopNode->generateCode(astContext->createContext());
         }
 
-        llvm::Function* insertFunction = builder.GetInsertBlock()->getParent();
-        llvm::BasicBlock* conditionBlock = llvm::BasicBlock::Create(context, "loopCondition", insertFunction);
-        llvm::BasicBlock* bodyBlock = llvm::BasicBlock::Create(context, "loopBody", insertFunction);
-        llvm::BasicBlock* mergeBlock = llvm::BasicBlock::Create(context, "loopMerge", insertFunction);
+        auto* insertFunction = builder.GetInsertBlock()->getParent();
+        auto* conditionBlock = llvm::BasicBlock::Create(context, "loopCondition", insertFunction);
+        auto* bodyBlock = llvm::BasicBlock::Create(context, "loopBody", insertFunction);
+        auto* mergeBlock = llvm::BasicBlock::Create(context, "loopMerge", insertFunction);
 
         builder.CreateBr(conditionBlock);
 
         builder.SetInsertPoint(conditionBlock);
-        builder.CreateCondBr(
-                this->conditionNode->generateCode(astContext->createContext()),
-                bodyBlock,
-                mergeBlock
-        );
+        auto* condValue = conditionNode->generateCode(astContext->createContext());
+        builder.CreateCondBr(condValue, bodyBlock, mergeBlock);
 
         builder.SetInsertPoint(bodyBlock);
-        if (this->beforeNode != nullptr) {
-            this->beforeNode->generateCode(astContext->createContext());
+        if (beforeNode != nullptr) {
+            beforeNode->generateCode(astContext->createContext());
         }
-        this->statementNode->generateCode(astContext->createContext());
-        if (this->afterNode != nullptr) {
-            this->afterNode->generateCode(astContext->createContext());
+        statementNode->generateCode(astContext->createContext());
+        if (afterNode != nullptr) {
+            afterNode->generateCode(astContext->createContext());
         }
         if (builder.GetInsertBlock()->getTerminator() == nullptr) {
             builder.CreateBr(conditionBlock);
@@ -50,16 +47,19 @@ namespace LynxAst {
     }
 
     std::unique_ptr<Node> ForLoopStatementNode::clone() const {
-        auto clonedCond = dynamic_cast<ExpressionNode*>(conditionNode->clone().release());
-        auto clonedStmts = dynamic_cast<StatementListNode*>(statementNode->clone().release());
-        if (!clonedCond || !clonedStmts)
-            throw std::runtime_error("Invalid node type in ForLoopStatementNode::clone");
-
-        return std::make_unique<ForLoopStatementNode>(
-            std::unique_ptr<ExpressionNode>(clonedCond),
-            std::unique_ptr<StatementListNode>(clonedStmts)
+        auto clonedCond = cloneNode(conditionNode);
+        auto clonedStmts = cloneNode(statementNode);
+        auto clonedLoop = std::make_unique<ForLoopStatementNode>(
+            std::move(clonedCond),
+            std::move(clonedStmts)
         );
 
+        clonedLoop->preLoopNode  = cloneNode(preLoopNode);
+        clonedLoop->postLoopNode = cloneNode(postLoopNode);
+        clonedLoop->beforeNode   = cloneNode(beforeNode);
+        clonedLoop->afterNode    = cloneNode(afterNode);
+
+        return clonedLoop;
     }
 
 }

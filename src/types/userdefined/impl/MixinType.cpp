@@ -6,11 +6,13 @@
 #include "userdefined/MixinType.hpp"
 #include <constants/LinkageType.hpp>
 #include <ast/tmpl/ManglerTemplate.hpp>
+#include <resolver/methods/MixinMethodResolver.hpp>
 
 namespace LynxTypes {
 
     using namespace DFSUtils;
     using namespace LynxAst;
+    using LynxResolver::MixinMethodResolver;
 
     llvm::Type* MixinType::computeLLVMType() const {
         using namespace TypeUtils;
@@ -135,6 +137,10 @@ namespace LynxTypes {
 
     bool MixinType::hasMethod(const std::string& mangleName) const {
         return methods.find(mangleName) != methods.end();
+    }
+
+    std::unique_ptr<TypeMethodResolver> MixinType::createMethodResolver() const {
+        return std::make_unique<MixinMethodResolver>();
     }
 
     void MixinType::addField(const std::string& name, std::unique_ptr<FieldType> field) {

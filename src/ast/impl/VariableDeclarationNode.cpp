@@ -17,7 +17,7 @@ namespace LynxAst {
     using namespace LynxContext;
     
     llvm::Value* VariableDeclarationNode::generateCode(std::shared_ptr<AstContext> astContext) {
-        LOG_INFO("Executed...... {}", variableName);
+        LOG_INFO("IR Code Generation...... {}", variableName);
 
         auto symbol = astContext->getGlobalContext();
         auto stmtNode = symbol->getStatementNode();

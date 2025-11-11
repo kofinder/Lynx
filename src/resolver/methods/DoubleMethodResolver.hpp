@@ -36,7 +36,7 @@ namespace LynxResolver {
                 llvm::Value* instance,
                 const std::vector<llvm::Value*>& args,
                 std::shared_ptr<AstContext> astContext
-            ) override;
+            ) noexcept override;
 
     };
 }

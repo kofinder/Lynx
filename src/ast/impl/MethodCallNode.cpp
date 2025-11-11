@@ -17,6 +17,7 @@ namespace LynxAst {
     using namespace LynxContext;
     using namespace LynxTypes;
     using namespace LynxLibRuntime;
+    using namespace Cloneable;
 
     template <typename T>
     inline constexpr bool always_false = false;
@@ -311,8 +312,8 @@ namespace LynxAst {
     }
 
     std::unique_ptr<Node> MethodCallNode::clone() const {
-        auto fnNode = Cloneable::cloneNode(functionCallNode);
-        auto objNode = Cloneable::cloneNode(objectTargetNode);
+        auto fnNode = cloneNode(functionCallNode);
+        auto objNode = cloneNode(objectTargetNode);
         auto cloneNode = std::make_unique<MethodCallNode>(std::move(fnNode), std::move(objNode));
         return cloneNode;
     }   

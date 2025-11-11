@@ -13,7 +13,8 @@
 
 
 namespace LynxAst {
-
+    
+    using namespace Cloneable;
     using namespace LynxLogger;
     using namespace LynxContext;
     using namespace LynxConstants;
@@ -184,8 +185,8 @@ namespace LynxAst {
     }
 
     std::unique_ptr<Node> InterfaceDeclarationNode::clone() const {
-        auto clonedMethods = Cloneable::cloneNodeVector(methods);
-        auto clonedFields = Cloneable::cloneNodeVector(fields);
+        auto clonedMethods = cloneNodeVector(methods);
+        auto clonedFields = cloneNodeVector(fields);
 
         auto cloned = std::make_unique<InterfaceDeclarationNode>(interfaceName);
         cloned->inheritIfaces = inheritIfaces;

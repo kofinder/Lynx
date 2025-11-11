@@ -18,6 +18,7 @@ namespace LynxAst {
     using namespace LynxTypes;
     using namespace LynxLogger;
     using namespace LynxContext;
+    using namespace Cloneable;
 
     llvm::Value* ObjectCreationNode::generateCode(std::shared_ptr<AstContext> astContext)  {
         LOG_WARN("IR Code Generation ...", variableType->name);
@@ -190,7 +191,7 @@ namespace LynxAst {
 
 
     std::unique_ptr<Node> ObjectCreationNode::clone() const {
-        auto clonedArgs = Cloneable::cloneNodeVector(arguments);
+        auto clonedArgs = cloneNodeVector(arguments);
         auto clonedNode = std::make_unique<ObjectCreationNode>(variableType, std::move(clonedArgs));
         return clonedNode;
     }

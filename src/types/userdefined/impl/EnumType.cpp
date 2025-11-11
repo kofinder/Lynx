@@ -1,11 +1,12 @@
 #include "userdefined/EnumType.hpp"
 #include <context/AstContext.hpp>
 #include "utils/TypeUtils.hpp"
-
+#include <resolver/methods/EnumMethodResolver.hpp>
 
 namespace LynxTypes {
     
     using namespace LynxContext;
+    using LynxResolver::EnumMethodResolver;
 
     llvm::Type* EnumType::computeLLVMType() const {
         LOG_INFO("Invoked...");
@@ -139,6 +140,10 @@ namespace LynxTypes {
         });
 
         return nullptr;
+    }
+
+    std::unique_ptr<TypeMethodResolver> EnumType::createMethodResolver() const {
+        return std::make_unique<EnumMethodResolver>();
     }
 
     const BaseType* EnumType::createWithStatic(bool newIsStatic) const {

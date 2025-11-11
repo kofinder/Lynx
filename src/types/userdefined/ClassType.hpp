@@ -158,6 +158,8 @@ namespace LynxTypes {
 
             llvm::Value* getDefaultValue() override;
 
+            std::unique_ptr<TypeMethodResolver> createMethodResolver() const override;
+
             bool equals(const BaseType* other) const override;
 
             std::string getDebugName() const override;

@@ -17,6 +17,7 @@ namespace LynxAst {
     using namespace LynxLogger;
     using namespace LynxContext;
     using namespace LynxConstants;
+    using namespace Cloneable;
     
     llvm::Value* SuperConstructorCallNode::generateCode(std::shared_ptr<AstContext> astContext) {
         LOG_INFO("It's called unexpectedly. This method should be handled by the parent node.");
@@ -101,7 +102,7 @@ namespace LynxAst {
     }
 
     std::unique_ptr<Node> SuperConstructorCallNode::clone() const {
-        auto clonedArgs = LynxAst::Cloneable::cloneNodeVector(arguments);
+        auto clonedArgs = cloneNodeVector(arguments);
         auto clonedNode = std::make_unique<SuperConstructorCallNode>(construcotrName, std::move(clonedArgs));
         return clonedNode;
     } 

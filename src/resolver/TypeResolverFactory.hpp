@@ -43,6 +43,10 @@
 #include "methods/StringMethodResolver.hpp"
 #include "methods/AutoMethodResolver.hpp"
 
+#include "methods/EnumMethodResolver.hpp"
+#include "methods/InterfaceMethodResolver.hpp"
+#include "methods/ClassMethodResolver.hpp"
+#include "methods/MixinMethodResolver.hpp"
 
 namespace LynxResolver {
 
@@ -71,6 +75,10 @@ namespace LynxResolver {
                     case DataType::STRING: return std::make_unique<StringMethodResolver>();
                     case DataType::DATETIME: return std::make_unique<DateTimeMethodResolver>();
                     case DataType::AUTO: return std::make_unique<AutoMethodResolver>();
+                    case DataType::ENUM: return std::make_unique<EnumMethodResolver>();
+                    case DataType::INTERFACE: return std::make_unique<InterfaceMethodResolver>();
+                    case DataType::CLAZZ: return std::make_unique<ClassMethodResolver>();
+                    case DataType::MIXIN: return std::make_unique<MixinMethodResolver>();
                     default: return nullptr;
                 }
             }

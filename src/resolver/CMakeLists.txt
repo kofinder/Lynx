@@ -4,9 +4,13 @@ file(GLOB_RECURSE RESOLVER_SOURCES
 
 file(GLOB_RECURSE RESOLVER_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/methods/*.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/strategies/*.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/TypeVisitor.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/TypeResolverFactory.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/TypeMethodResolver.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/TypeResolverFactory.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/CRTPNumericResolver.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/TypeResolverMixins.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/TypeResolverConstant.hpp"
 
 )
 

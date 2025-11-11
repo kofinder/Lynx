@@ -1,14 +1,17 @@
 #include <logger/Logger.hpp>
-
-#include <constants/metadata/LabelTypeConstants.hpp>
 #include "SwitchStatementNode.hpp"
+#include "tmpl/CloneNodeTemplate.hpp"
+#include <constants/metadata/LabelTypeConstants.hpp>
 
-using namespace LynxLogger;
-using namespace LynxContext;
-using namespace LynxLabelTypeConstants;
 
 namespace LynxAst {
-    
+
+    using namespace LynxLogger;
+    using namespace LynxContext;
+    using namespace Cloneable;
+    using namespace LynxLabelTypeConstants;
+
+
     llvm::Value* SwitchStatementNode::generateCode(std::shared_ptr<AstContext> astContext) {
         LOG_INFO("Procced ..............");
         
@@ -133,14 +136,10 @@ namespace LynxAst {
     }
 
     std::unique_ptr<Node> SwitchStatementNode::clone() const {
-        auto clonedSwitch = std::make_unique<SwitchStatementNode>(std::move(levelExpression ? levelExpression->clone() : nullptr));
-
-        if (basicBlocks) {
-            for (const auto& block : *basicBlocks) {
-                clonedSwitch->pushBasicBlock(block ? block->clone() : nullptr);
-            }
-        }
-
-        return clonedSwitch;
+        auto clonedLevelExpr = cloneNode(levelExpression);
+        auto clonedBlocks = cloneNodeVector(basicBlocks);
+        auto clonedNode = std::make_unique<SwitchStatementNode>(std::move(clonedLevelExpr));
+        clonedNode->basicBlocks = std::move(clonedBlocks);
+        return clonedNode;
     }
 }

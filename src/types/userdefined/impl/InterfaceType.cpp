@@ -4,8 +4,11 @@
 #include "userdefined/ClassType.hpp"
 #include "userdefined/InterfaceType.hpp"
 #include <constants/LinkageType.hpp>
+#include <resolver/methods/InterfaceMethodResolver.hpp>
 
 namespace LynxTypes {
+
+    using LynxResolver::InterfaceMethodResolver;
 
     llvm::Type* InterfaceType::computeLLVMType() const {
 
@@ -72,6 +75,10 @@ namespace LynxTypes {
             }
         }
         return false;    
+    }
+
+    std::unique_ptr<TypeMethodResolver> InterfaceType::createMethodResolver() const {
+        return std::make_unique<InterfaceMethodResolver>();
     }
 
     const std::string& InterfaceType::qualifiedName() const { 

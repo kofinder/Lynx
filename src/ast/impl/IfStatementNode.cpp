@@ -3,12 +3,13 @@
 #include <constants/metadata/LabelTypeConstants.hpp>
 #include "IfStatementNode.hpp"
 
-using namespace LynxLogger;
-using namespace LynxContext;
-using namespace LynxLabelTypeConstants;
 
 namespace LynxAst {
-
+    
+    using namespace LynxLogger;
+    using namespace LynxContext;
+    using namespace LynxLabelTypeConstants;
+    
     llvm::Value* IfStatementNode::generateCode(std::shared_ptr<AstContext> astContext) {
         return generateIfElseIf(*astContext);
     }
@@ -20,14 +21,14 @@ namespace LynxAst {
         auto* currenctFunc = builder.GetInsertBlock()->getParent();
         auto* mergeBlock = llvm::BasicBlock::Create(context, LynxLabelTypeConstants::lynxIfElseMerge);
 
-        for (unsigned long i = 0; i < this->conditions.size(); ++i) {
+        for (unsigned long i = 0; i < conditions.size(); ++i) {
             auto* elseIfBlock = llvm::BasicBlock::Create(context, LynxLabelTypeConstants::lynxElseIfCondition);
             auto* thenBlock = llvm::BasicBlock::Create(context, LynxLabelTypeConstants::lynxIfThenBranch);
 
             llvm::Value* condValue = nullptr;
 
-            if (this->conditions[i]) {
-                condValue = this->conditions[i]->generateCode(astContext.createContext());
+            if (conditions[i]) {
+                condValue = conditions[i]->generateCode(astContext.createContext());
             } else {
                 auto trueNode = std::make_unique<ValuePlaceholderNode>(llvm::ConstantInt::get(llvm::Type::getInt1Ty(context), 1, false));
                 condValue = trueNode->generateCode(astContext.createContext());
@@ -37,7 +38,7 @@ namespace LynxAst {
 
             currenctFunc->getBasicBlockList().push_back(thenBlock);
             builder.SetInsertPoint(thenBlock);
-            this->statements[i]->generateCode(astContext.createContext());
+            statements[i]->generateCode(astContext.createContext());
 
             if (builder.GetInsertBlock()->getTerminator() == nullptr) {
                 builder.CreateBr(mergeBlock);
@@ -46,7 +47,7 @@ namespace LynxAst {
             currenctFunc->getBasicBlockList().push_back(elseIfBlock);
             builder.SetInsertPoint(elseIfBlock);
 
-            if (i == this->conditions.size() - 1 && builder.GetInsertBlock()->getTerminator() == nullptr) {
+            if (i == conditions.size() - 1 && builder.GetInsertBlock()->getTerminator() == nullptr) {
                 builder.CreateBr(mergeBlock);
             }
         }
@@ -58,18 +59,18 @@ namespace LynxAst {
     }
 
     void IfStatementNode::addBranch(std::unique_ptr<Node> condNode, std::unique_ptr<Node> stmtNode) {
-        this->conditions.push_back(std::move(condNode));
-        this->statements.push_back(std::move(stmtNode));
+        conditions.push_back(std::move(condNode));
+        statements.push_back(std::move(stmtNode));
     }
 
     void IfStatementNode::addBranch(std::unique_ptr<IfStatementNode> ifNode) {
         
         for (auto& cond : ifNode->conditions) {
-            this->conditions.push_back(std::move(cond));
+            conditions.push_back(std::move(cond));
         }
 
         for (auto& stmt : ifNode->statements) {
-            this->statements.push_back(std::move(stmt));
+            statements.push_back(std::move(stmt));
         }
     
         ifNode->conditions.clear();
@@ -77,8 +78,8 @@ namespace LynxAst {
     }
 
     void IfStatementNode::addElseBranch(std::unique_ptr<Node> stmtNode) {
-        this->statements.push_back(std::move(stmtNode));
-        this->conditions.push_back(nullptr);
+        statements.push_back(std::move(stmtNode));
+        conditions.push_back(nullptr);
     }
 
     std::unique_ptr<Node> IfStatementNode::clone() const {

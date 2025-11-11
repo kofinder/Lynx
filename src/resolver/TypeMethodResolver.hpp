@@ -55,9 +55,9 @@ namespace LynxResolver {
                 llvm::Value* instance,
                 const std::vector<llvm::Value*>& args,
                 std::shared_ptr<AstContext> astContext
-            ) = 0;
+            ) noexcept = 0;
 
-            virtual ~TypeMethodResolver() = default;
+            virtual ~TypeMethodResolver() noexcept = default;
     };
 
 }

@@ -12,12 +12,14 @@
 #include <context/GlobalSymbolContext.hpp>
 #include <ast/tmpl/TypeConventionTemplate.hpp>
 #include <ast/tmpl/ManglerTemplate.hpp>
+#include <resolver/methods/ClassMethodResolver.hpp>
 
 namespace LynxTypes {
 
     using namespace LynxAst;
     using namespace TypeUtils;
     using namespace DFSUtils;
+    using LynxResolver::ClassMethodResolver;
 
     llvm::Type* ClassType::computeLLVMType() const {
 
@@ -140,6 +142,10 @@ namespace LynxTypes {
             cur = cur->parentClass;
         }
         return false;
+    }
+
+    std::unique_ptr<TypeMethodResolver> ClassType::createMethodResolver() const {
+        return std::make_unique<ClassMethodResolver>();
     }
 
 
