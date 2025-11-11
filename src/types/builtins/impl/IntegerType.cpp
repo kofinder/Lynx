@@ -73,7 +73,16 @@ namespace LynxTypes {
 
     std::unique_ptr<TypeMethodResolver> IntegerType::createMethodResolver() const { 
         LOG_INFO("Invoked...");
-        return IntMethodResolver::create();
+        auto resolver = IntMethodResolver::create();
+        resolver->registerMethodName("abs", 0);
+        resolver->registerMethodName("negate", 0);
+        resolver->registerMethodName("sign", 0);
+        resolver->registerMethodName("clamp", 2);
+        resolver->registerMethodName("isEven", 0);
+        resolver->registerMethodName("isOdd", 0);
+        resolver->registerMethodName("max", 0); // static method
+        resolver->registerMethodName("min", 0); // static method
+        return resolver;
     }
 
     const BaseType* IntegerType::createWithStatic(bool newIsStatic) const {

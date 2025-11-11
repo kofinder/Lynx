@@ -20,9 +20,6 @@ entry:
   %i = alloca i32, align 4, !lynx.type !1
   store i32 10, i32* %i, align 4
   %i_load = load i32, i32* %i, align 4
-  %load_lhs = load i32, i32* %i, align 4
-  %int_add = add i32 %load_lhs, 5
-  store i32 %int_add, i32* %i, align 4
   %x_load = load i32, i32* %x, align 4
   %io_printf_call = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @fmt, i32 0, i32 0), i8* getelementptr inbounds ([23 x i8], [23 x i8]* @lynx.string.constant, i32 0, i32 0), i32 %x_load)
   %i_load1 = load i32, i32* %i, align 4

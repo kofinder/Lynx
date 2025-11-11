@@ -39,6 +39,10 @@ namespace LynxResolver {
     
     class TypeMethodResolver {
 
+        protected:
+
+            std::unordered_map<std::string, size_t> methodSignatures;
+
         public:
         
             /**
@@ -57,6 +61,25 @@ namespace LynxResolver {
                 std::shared_ptr<AstContext> astContext
             ) noexcept = 0;
 
+            void registerMethodName(const std::string& name, size_t paramCount) {
+                methodSignatures[name] = paramCount;
+            }
+        
+            bool hasMethod(const std::string& name) const {
+                return methodSignatures.find(name) != methodSignatures.end();
+            }
+        
+            bool validateMethodCall(const std::string& name, size_t argCount) const {
+                auto it = methodSignatures.find(name);
+                if(it == methodSignatures.end()) return false;
+                return it->second == argCount;
+            }
+        
+            size_t getExpectedParamCount(const std::string& name) const {
+                auto it = methodSignatures.find(name);
+                return it == methodSignatures.end() ? 0 : it->second;
+            }
+        
             virtual ~TypeMethodResolver() noexcept = default;
     };
 

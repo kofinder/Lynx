@@ -9,14 +9,19 @@ namespace LynxAst {
 
     llvm::Value* StaticMethodCallNode::generateCode(std::shared_ptr<AstContext> astContext) {
         LOG_ERROR("IR Code Generation ...{} {}", typeName, methodName);
-        
-        auto dataType = parseDataType(typeName);
-        auto resolver = TypeResolverFactory::forType(dataType);
-        if (!resolver) {
-            LOG_ERROR("Unknown type resolver for type: {}", typeName);
-            return nullptr;
-        }
 
+        auto* baseType = astContext->findType(typeName).get();
+        if (!baseType) {
+            std::string msg = "Runtime Error: Variable '" + typeName + "' has no associated type in the type system.";
+            throw std::runtime_error(msg);
+        }
+    
+        auto resolver = baseType->createMethodResolver();
+        if (!resolver) {
+            std::string msg = "Runtime Error: Type '" + baseType->getDebugName() + "' does not provide a method resolver.";
+            throw std::runtime_error(msg);
+        }
+    
         std::vector<llvm::Value*> argValues;
         argValues.reserve(arguments->size());
         for (auto& arg : *arguments) {
@@ -24,13 +29,24 @@ namespace LynxAst {
             argValues.push_back(value);
         }
 
-        auto* result = resolver->resolveMethod(methodName, nullptr, argValues, std::move(astContext));
-
-        if (!result) {
-            LOG_ERROR("Failed to resolve static method '{}.{}'", typeName, methodName);
-            return nullptr;
+        if (!resolver->hasMethod(methodName)) {
+            std::string msg = "Runtime Error: Static method '" + methodName + "' does not exist on type '" + typeName + "'.";
+            throw std::runtime_error(msg);
         }
 
+        if (!resolver->validateMethodCall(methodName, arguments->size())) {
+            std::string msg = "Runtime Error: Static method '" + methodName + "' on type '" + typeName +
+                              "' expects " + std::to_string(resolver->getExpectedParamCount(methodName)) +
+                              " arguments, but " + std::to_string(arguments->size()) + " were provided.";
+            throw std::runtime_error(msg);
+        }
+    
+        auto* result = resolver->resolveMethod(methodName, nullptr, argValues, std::move(astContext));
+        if (!result) {
+            std::string msg = "Runtime Error: Failed to execute static method '" + typeName + "." + methodName + "'.";
+            throw std::runtime_error(msg);
+        }
+    
         return result;
     }
 

@@ -14,7 +14,7 @@ main:
 	callq	printf@PLT
 	movl	$.Lfmt.4, %edi
 	movl	$.Llynx.string.constant.3, %esi
-	movl	$15, %edx
+	movl	$10, %edx
 	xorl	%eax, %eax
 	callq	printf@PLT
 	xorl	%eax, %eax
