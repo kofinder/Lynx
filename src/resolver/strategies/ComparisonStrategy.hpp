@@ -9,6 +9,7 @@ namespace LynxResolver {
     using LynxContext::AstContext;
 
     struct ComparisonStrategy {
+
         /// Equal (==)
         [[nodiscard]] virtual llvm::Value* eq(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
 
@@ -26,6 +27,38 @@ namespace LynxResolver {
 
         /// Greater than or equal (>=)
         [[nodiscard]] virtual llvm::Value* ge(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
+
+        virtual ~ComparisonStrategy() noexcept = default;
+
+    };
+
+    struct IntComparisonStrategy : ComparisonStrategy {
+
+        [[nodiscard]] llvm::Value* eq(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* ne(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* lt(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* le(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* gt(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* ge(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        ~IntComparisonStrategy() noexcept override = default;
 
     };
 

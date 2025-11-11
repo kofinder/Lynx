@@ -66,7 +66,7 @@ namespace LynxResolver {
                 switch (type) {
                     case DataType::BYTE: return std::make_unique<ByteMethodResolver>();
                     case DataType::SHORT: return std::make_unique<ShortMethodResolver>();
-                    case DataType::INT: return std::make_unique<IntMethodResolver>();
+                    case DataType::INT: return IntMethodResolver::create();
                     case DataType::LONG: return std::make_unique<LongMethodResolver>();
                     case DataType::FLOAT: return std::make_unique<FloatMethodResolver>();
                     case DataType::DOUBLE: return std::make_unique<DoubleMethodResolver>();

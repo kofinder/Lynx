@@ -26,6 +26,29 @@ namespace LynxResolver {
 
     };
 
+
+    struct IntFixedPointStrategy : FixedPointStrategy {
+        
+        [[nodiscard]] llvm::Value* mul(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs, bool saturate = false) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* umul(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs, bool saturate = false) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* div(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs, bool saturate = false) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* udiv(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs, bool saturate = false) const noexcept override {
+            return nullptr;
+        }
+
+        ~IntFixedPointStrategy() noexcept override = default;
+
+    };
+
 }
 
 #endif 

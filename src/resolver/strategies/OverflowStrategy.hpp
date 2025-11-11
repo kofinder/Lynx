@@ -32,6 +32,36 @@ namespace LynxResolver {
 
     };
 
+    struct IntOverflowStrategy : OverflowStrategy {
+        
+        [[nodiscard]] virtual llvm::Value* saddWithOverflow(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* uaddWithOverflow(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* ssubWithOverflow(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* usubWithOverflow(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* smulWithOverflow(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* umulWithOverflow(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        ~IntOverflowStrategy() noexcept override = default;
+
+    };
+
 }
 
 #endif 

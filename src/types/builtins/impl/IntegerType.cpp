@@ -73,7 +73,7 @@ namespace LynxTypes {
 
     std::unique_ptr<TypeMethodResolver> IntegerType::createMethodResolver() const { 
         LOG_INFO("Invoked...");
-        return std::make_unique<IntMethodResolver>();
+        return IntMethodResolver::create();
     }
 
     const BaseType* IntegerType::createWithStatic(bool newIsStatic) const {

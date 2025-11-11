@@ -42,8 +42,26 @@ namespace LynxResolver {
         Clamp,
         ToHex,
         ToBinary,
-        ToString
+        ToString,
 
+        Negate,
+        Sign,
+        Sqrt,
+        Pow,
+        SAddSat,
+        UMulWithOverflow,
+        Memcpy
+
+    };
+
+    static inline std::unordered_map<std::string, MethodName> MethodNameMap = {
+        {"max", MethodName::Max},
+        {"min", MethodName::Min},
+        {"add", MethodName::Add},
+        {"sub", MethodName::Subtract},
+        {"mul", MethodName::Multiply},
+        {"div", MethodName::Divide},
+        {"mod", MethodName::Mod},
     };
     
 }

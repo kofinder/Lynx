@@ -27,6 +27,36 @@ namespace LynxResolver {
 
         virtual ~BitwiseStrategy() noexcept = default;
     };
+
+
+    struct IntBitwiseStrategy : BitwiseStrategy {
+
+        [[nodiscard]] llvm::Value* bitAnd(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* bitOr(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* bitXor(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* shl(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* shr(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* bitNot(const AstContext& ctx, llvm::Value* val) const noexcept override {
+            return nullptr;
+        }
+
+        ~IntBitwiseStrategy() noexcept override = default;
+    };
     
     
 }

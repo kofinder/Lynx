@@ -10,14 +10,23 @@ namespace LynxResolver {
 
     using LynxContext::AstContext;
 
-    // =======================
-    // ToString Mixin
-    // =======================
-    template<typename DerivedT>
-    concept ToStringCapable = requires(llvm::Value* val, std::shared_ptr<AstContext> ctx) {
-        { DerivedT::convertToString(val, ctx) } -> std::same_as<llvm::Value*>;
+    // Concept definitions
+    template<typename T>
+    concept ToStringCapable = requires(T t, llvm::Value* val, std::shared_ptr<AstContext> ctx) {
+        { T::convertToString(val, ctx) } -> std::same_as<llvm::Value*>;
     };
 
+    template<typename T>
+    concept CloneCapable = requires(T t, llvm::Value* val, std::shared_ptr<AstContext> ctx) {
+        { T::performClone(val, ctx) } -> std::same_as<llvm::Value*>;
+    };
+
+    template<typename T>
+    concept TypeCastCapable = requires(T t, llvm::Value* val, llvm::Type* type, std::shared_ptr<AstContext> ctx) {
+        { T::performTypeCast(val, type, ctx) } -> std::same_as<llvm::Value*>;
+    };
+
+    // Mixins using concepts
     template<ToStringCapable DerivedT>
     struct ToStringMixin {
         [[nodiscard]] llvm::Value* toString(llvm::Value* instance, std::shared_ptr<AstContext> ctx) const noexcept {
@@ -25,27 +34,11 @@ namespace LynxResolver {
         }
     };
 
-    // =======================
-    // Clone Mixin
-    // =======================
-    template<typename DerivedT>
-    concept CloneCapable = requires(llvm::Value* val, std::shared_ptr<AstContext> ctx) {
-        { DerivedT::performClone(val, ctx) } -> std::same_as<llvm::Value*>;
-    };
-
     template<CloneCapable DerivedT>
     struct CloneMixin {
         [[nodiscard]] llvm::Value* clone(llvm::Value* instance, std::shared_ptr<AstContext> ctx) const noexcept {
             return DerivedT::performClone(instance, ctx);
         }
-    };
-
-    // =======================
-    // TypeCast Mixin
-    // =======================
-    template<typename DerivedT>
-    concept TypeCastCapable = requires(llvm::Value* val, llvm::Type* type, std::shared_ptr<AstContext> ctx) {
-        { DerivedT::performTypeCast(val, type, ctx) } -> std::same_as<llvm::Value*>;
     };
 
     template<TypeCastCapable DerivedT>

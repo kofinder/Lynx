@@ -29,6 +29,35 @@ namespace LynxResolver {
 
         virtual ~SaturationStrategy() noexcept = default;
     };
+
+    struct IntSaturationStrategy : SaturationStrategy {
+
+        [[nodiscard]] llvm::Value* saddSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* uaddSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* ssubSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* usubSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* sshlSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* ushLSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        ~IntSaturationStrategy() noexcept override = default;
+    };
 }
 
 #endif 

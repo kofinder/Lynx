@@ -15,15 +15,68 @@ namespace LynxResolver {
 
         [[nodiscard]] virtual llvm::Value* add(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
 
-        [[nodiscard]] virtual llvm::Value* sub(const AstContext& ctx, llvm::IRBuilder<>& builder, llvm::Module* module, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* sub(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
 
-        [[nodiscard]] virtual llvm::Value* mul(const AstContext& ctx, llvm::IRBuilder<>& builder, llvm::Module* module, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* mul(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
 
-        [[nodiscard]] virtual llvm::Value* div(const AstContext& ctx, llvm::IRBuilder<>& builder, llvm::Module* module, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* div(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
 
-        [[nodiscard]] virtual llvm::Value* mod(const AstContext& ctx, llvm::IRBuilder<>& builder, llvm::Module* module, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* mod(const AstContext& ctx,  llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
         
         virtual ~ArithmeticStrategy() noexcept = default;
+
+    };
+
+
+    struct IntArithmeticStrategy : ArithmeticStrategy {
+
+        [[nodiscard]] llvm::Value* add(const AstContext& ctx, llvm::Value* lhsPtr, llvm::Value* rhs) const noexcept override {
+            LOG_ERROR("Emit method correctly");
+
+            if (!lhsPtr || !rhs) return nullptr;
+
+            auto& builder = ctx.getBuilder();
+        
+            // Load the current value
+            llvm::Value* lhsVal = builder.CreateLoad(lhsPtr->getType()->getPointerElementType(), lhsPtr, "load_lhs");
+        
+            // Perform addition
+            llvm::Value* result = builder.CreateAdd(lhsVal, rhs, "int_add");
+        
+            // Store the result back to the original variable
+            builder.CreateStore(result, lhsPtr);
+        
+            return result; // optionally return the new value
+        
+    
+            // auto& builder = ctx.getBuilder();
+        
+            // // Emit LLVM IR for integer addition
+            // llvm::Value* result = builder.CreateAdd(lhs, rhs, "int_add");
+    
+            // builder.CreateStore(result, lhs);
+
+            // LOG_INFO("Emitted integer addition for {} + {}", lhs->getName().str(), rhs->getName().str());
+            // return result;
+        }
+
+        [[nodiscard]] llvm::Value* sub(const AstContext& ctx,  llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* mul(const AstContext& ctx,  llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* div(const AstContext& ctx,  llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* mod(const AstContext& ctx,  llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
+            return nullptr;
+        }
+
+        ~IntArithmeticStrategy() noexcept override = default;
 
     };
 }

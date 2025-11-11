@@ -34,6 +34,35 @@ namespace LynxResolver {
         virtual ~AbsStrategy() noexcept = default;
 
     };
+
+    struct IntAbsStrategy : AbsStrategy {
+
+        [[nodiscard]] llvm::Value* abs(const AstContext& ctx, llvm::Value* val) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* negate(const AstContext& ctx, llvm::Value* val) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* sign(const AstContext& ctx, llvm::Value* val) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* clamp(const AstContext& ctx, llvm::Value* val, llvm::Value* minVal, llvm::Value* maxVal) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* isEven(const AstContext& ctx, llvm::Value* val) const noexcept override {
+            return nullptr;
+        }
+
+        [[nodiscard]] llvm::Value* isOdd(const AstContext& ctx, llvm::Value* val) const noexcept override {
+            return nullptr;
+        }
+
+        ~IntAbsStrategy() noexcept override = default;
+    }; 
 }
 
 #endif 
