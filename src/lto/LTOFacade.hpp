@@ -38,7 +38,7 @@
 #include "llvm/Target/TargetOptions.h"
 #include "llvm/MC/TargetRegistry.h"
 #include <llvm/IR/LegacyPassManager.h>
-#include "strategy/DefaultLTOOptimizationStrategy.hpp"
+#include "strategies/DefaultLTOOptimizationStrategy.hpp"
 
 namespace LynxLTO {
 

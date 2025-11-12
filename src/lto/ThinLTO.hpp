@@ -23,7 +23,7 @@
 #include "llvm/IR/Verifier.h"
 #include "llvm/IR/LegacyPassManager.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
-#include "strategy/DefaultLTOOptimizationStrategy.hpp"
+#include "strategies/DefaultLTOOptimizationStrategy.hpp"
 
 namespace LynxLTO {
 

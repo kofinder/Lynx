@@ -1,7 +1,6 @@
 #include <passes/DevirtualizeFunctionCallsPass.hpp>
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Instructions.h"
-#include "llvm/IR/CallSite.h"
 #include "llvm/Support/raw_ostream.h"
 
 namespace LynxLTO {

@@ -10,12 +10,12 @@ namespace LynxLTO {
     llvm::PreservedAnalyses GlobalDCEPPass::run(Module &M, ModuleAnalysisManager &MAM) {
         errs() << "Running Lynx Global Dead Code Elimination Pass on module\n";
 
-        bool Changed = llvm::GlobalDCE(M);
+        // bool Changed = llvm::GlobalDCE(M);
 
-        if (Changed) {
-            errs() << "Global Dead Code Elimination made changes to the module\n";
-            return PreservedAnalyses::none();
-        }
+        // if (Changed) {
+        //     errs() << "Global Dead Code Elimination made changes to the module\n";
+        //     return PreservedAnalyses::none();
+        // }
 
         return PreservedAnalyses::all();
     }

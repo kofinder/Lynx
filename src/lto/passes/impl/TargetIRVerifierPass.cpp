@@ -1,6 +1,5 @@
 #include <passes/TargetIRVerifierPass.hpp>
 #include "llvm/IR/Verifier.h"
-#include "llvm/IR/CallSite.h"
 #include "llvm/Support/raw_ostream.h"
 
 
@@ -44,21 +43,21 @@ namespace LynxLTO {
         // Example target-specific checks:
 
         // 1. Disallow calls to unsupported intrinsics (customize per target)
-        for (auto &BB : F) {
-            for (auto &I : BB) {
-                if (auto *callInst = dyn_cast<llvm::CallBase>(&I)) {
-                    llvm::Function *calledFunc = callInst->getCalledFunction();
-                    if (calledFunc && calledFunc->isIntrinsic()) {
-                        unsigned intrinsicID = calledFunc->getIntrinsicID();
-                        // Example: disallow some intrinsic (replace with your target logic)
-                        // if (intrinsicID == llvm::Intrinsic::x86_sse_add_ps) {
-                        //     llvm::errs() << "[TargetIRVerifierPass] Disallowed SSE intrinsic found\n";
-                        //     return false;
-                        // }
-                    }
-                }
-            }
-        }
+        // for (auto &BB : F) {
+        //     for (auto &I : BB) {
+        //         if (auto *callInst = dyn_cast<llvm::CallBase>(&I)) {
+        //             llvm::Function *calledFunc = callInst->getCalledFunction();
+        //             if (calledFunc && calledFunc->isIntrinsic()) {
+        //                 unsigned intrinsicID = calledFunc->getIntrinsicID();
+        //                 // Example: disallow some intrinsic (replace with your target logic)
+        //                 // if (intrinsicID == llvm::Intrinsic::x86_sse_add_ps) {
+        //                 //     llvm::errs() << "[TargetIRVerifierPass] Disallowed SSE intrinsic found\n";
+        //                 //     return false;
+        //                 // }
+        //             }
+        //         }
+        //     }
+        // }
 
         // 2. Enforce calling convention (example: only C calling convention allowed)
         if (F.getCallingConv() != llvm::CallingConv::C) {

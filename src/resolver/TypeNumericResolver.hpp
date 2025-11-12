@@ -58,7 +58,7 @@ namespace LynxResolver {
             const FixedPointStrategy* fixedPointStrat;
 
         public:
-            // Constructor
+            
             TypeNumericResolver(
                 const ArithmeticStrategy* arithmetic,
                 const BitwiseStrategy* bitwise,

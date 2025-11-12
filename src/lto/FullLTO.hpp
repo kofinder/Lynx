@@ -37,7 +37,7 @@
 #include "passes/VTableExtractorPass.hpp"
 #include "passes/AccessModifierPass.hpp"
 #include "passes/UndenfinedBehaviorPass.hpp"
-#include "strategy/DefaultLTOOptimizationStrategy.hpp"
+#include "strategies/DefaultLTOOptimizationStrategy.hpp"
 
 
 namespace LynxLTO {
