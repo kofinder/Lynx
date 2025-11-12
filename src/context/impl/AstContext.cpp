@@ -1,7 +1,6 @@
 #include "AstContext.hpp"
 #include "GlobalSymbolContext.hpp"
 #include <llvm/IR/Verifier.h>
-#include <llvm/Support/Host.h>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/Target/TargetMachine.h>
 #include <llvm/Support/TargetSelect.h>

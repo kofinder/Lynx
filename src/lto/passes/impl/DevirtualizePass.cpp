@@ -6,7 +6,7 @@
 namespace LynxLTO {
 
     llvm::PreservedAnalyses DevirtualizePass::run(llvm::Module &M, llvm::ModuleAnalysisManager &MAM) {
-        llvm::errs() << "Running DevirtualizePass on module: " << M.getName() << "\n";
+        llvm::errs() << "Running DevirtualizePass on module: " << "\n";
 
         // Your devirtualization logic here
 

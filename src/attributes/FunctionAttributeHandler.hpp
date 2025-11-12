@@ -33,6 +33,9 @@
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/InstrTypes.h"
 #include "FunctionAttributeBuilder.hpp"
+#include <logger/Logger.hpp>
+
+using namespace LynxLogger;
 
 namespace LynxFunctionAttr {
 

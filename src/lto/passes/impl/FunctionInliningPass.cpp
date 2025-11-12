@@ -2,7 +2,7 @@
 
 namespace LynxLTO {
     llvm::PreservedAnalyses FunctionInliningPass::run(llvm::Module &M, llvm::ModuleAnalysisManager &MAM) {
-        llvm::errs() << "Running FunctionInliningPass on module: " << M.getName() << "\n";
+        llvm::errs() << "Running FunctionInliningPass on module: " << "\n";
     
         // Iterate functions and dump documentation metadata or other info here
     

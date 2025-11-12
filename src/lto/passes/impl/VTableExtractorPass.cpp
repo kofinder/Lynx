@@ -10,7 +10,7 @@
 namespace LynxLTO {
 
     llvm::PreservedAnalyses VTableExtractorPass::run(llvm::Module &M, llvm::ModuleAnalysisManager &MAM) {
-        llvm::errs() << "Running LynxVTableExtractorPass on module: " << M.getName() << "\n";
+        llvm::errs() << "Running LynxVTableExtractorPass on module: "  << "\n";
     
         llvm::errs() << "Module named metadata nodes:\n";
         for (auto &NMD : M.named_metadata()) {

@@ -1,6 +1,10 @@
 #include "Triple.hpp"
-#include <llvm/ADT/Triple.h>
 #include <sstream>
+#include <set>
+#include <map>
+#include <vector>
+#include <string>
+#include <llvm/TargetParser/Triple.h>
 
 namespace LynxPlatform {
 

@@ -73,29 +73,6 @@ namespace LynxTypes {
             virtual std::unique_ptr<BaseType> clone() const override = 0;
 
             ~BuiltInType() override = default;
-
-        private:
-
-            uint64_t getLLVMSizeInBits() const {
-                llvm::Type* llvmType = getLLVMType();
-                if (!llvmType) {
-                    astContext->reportError(makeRuntimeError("LLVM Type is null in getLLVMSizeInBits()"));
-                    return 0;
-                }            
-                auto& dl = astContext->getDataLayout();
-                return dl.getTypeSizeInBits(llvmType);
-            }
-            
-            uint32_t getLLVMAlignInBytes() const {
-                llvm::Type* llvmType = getLLVMType();
-                if (!llvmType) {
-                    astContext->reportError(makeRuntimeError("LLVM Type is null in getLLVMAlignInBytes()"));
-                    return 0;
-                }            
-                auto& dl = astContext->getDataLayout();
-                return dl.getPrefTypeAlignment(llvmType);    
-            }
-        
     };
     
 }

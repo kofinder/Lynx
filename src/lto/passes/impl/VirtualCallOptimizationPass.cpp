@@ -4,7 +4,7 @@
 
 namespace LynxLTO {
     llvm::PreservedAnalyses VirtualCallOptimizationPass::run(llvm::Module &M, llvm::ModuleAnalysisManager &MAM) {
-        llvm::errs() << "Running VirtualCallOptimizationPass on module: " << M.getName() << "\n";
+        llvm::errs() << "Running VirtualCallOptimizationPass on module: " << "\n";
     
         // TODO: Implement virtual call devirtualization and optimization logic here
     

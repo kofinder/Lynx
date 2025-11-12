@@ -27,12 +27,12 @@ namespace LynxLTO {
     bool TargetIRVerifierPass::verifyModuleForTarget(llvm::Module &M) {
         bool allOk = true;
 
-        for (llvm::Function &F : M) {
-            if (!verifyFunctionForTarget(F)) {
-               llvm::errs() << "[TargetIRVerifierPass] Function '" << F.getName() << "' failed target verification\n";
-                allOk = false;
-            }
-        }
+        // for (llvm::Function &F : M) {
+        //     if (!verifyFunctionForTarget(F)) {
+        //        llvm::errs() << "[TargetIRVerifierPass] Function '" << F.getName() << "' failed target verification\n";
+        //         allOk = false;
+        //     }
+        // }
 
         // Add more module-level checks here if needed
 
@@ -60,23 +60,23 @@ namespace LynxLTO {
         // }
 
         // 2. Enforce calling convention (example: only C calling convention allowed)
-        if (F.getCallingConv() != llvm::CallingConv::C) {
-            llvm::errs() << "[TargetIRVerifierPass] Function '" << F.getName() << "' uses disallowed calling convention\n";
-            return false;
-        }
+        // if (F.getCallingConv() != llvm::CallingConv::C) {
+        //     llvm::errs() << "[TargetIRVerifierPass] Function '" << F.getName() << "' uses disallowed calling convention\n";
+        //     return false;
+        // }
 
-        // 3. Check for unsupported types (example: no floating point on embedded)
-        for (auto &BB : F) {
-            for (auto &I : BB) {
-                for (unsigned i = 0; i < I.getNumOperands(); ++i) {
-                    llvm::Type *operandType = I.getOperand(i)->getType();
-                    if (operandType->isFloatingPointTy()) {
-                        llvm::errs() << "[TargetIRVerifierPass] Floating point type detected in function '" << F.getName() << "'\n";
-                        return false;
-                    }
-                }
-            }
-        }
+        // // 3. Check for unsupported types (example: no floating point on embedded)
+        // for (auto &BB : F) {
+        //     for (auto &I : BB) {
+        //         for (unsigned i = 0; i < I.getNumOperands(); ++i) {
+        //             llvm::Type *operandType = I.getOperand(i)->getType();
+        //             if (operandType->isFloatingPointTy()) {
+        //                 llvm::errs() << "[TargetIRVerifierPass] Floating point type detected in function '" << F.getName() << "'\n";
+        //                 return false;
+        //             }
+        //         }
+        //     }
+        // }
 
         // Add more target-specific checks here...
 

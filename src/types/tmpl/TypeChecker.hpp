@@ -17,6 +17,8 @@
 #include <iostream>
 
 #include <llvm/IR/Value.h>
+#include <llvm/IR/Type.h>
+#include <llvm/IR/DerivedTypes.h>
 #include <llvm/Support/raw_ostream.h>
 
 
@@ -99,13 +101,11 @@ namespace LynxTypes::TypeChecker {
 
     template <>
     inline bool is<CharType>(llvm::Type* type) {
-
-        if(auto pointerType = llvm::dyn_cast<llvm::PointerType>(type)) {
-            if (auto* structType = llvm::dyn_cast<llvm::StructType>(pointerType->getPointerElementType())) {
+        if (auto* pointerType = llvm::dyn_cast<llvm::PointerType>(type)) {
+            if (auto* structType = llvm::dyn_cast<llvm::StructType>(pointerType->getElementType())) {
                 return structType->getName() == MetadataTypeConstants::structureCharType;
             }    
         }
-
         if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
             if (structType->getNumElements() == 1) {
                 if (structType->getElementType(0)->isIntegerTy(8)) {
@@ -113,9 +113,30 @@ namespace LynxTypes::TypeChecker {
                 }
             }
         }
-
         return false;
     }
+
+
+
+    // template <>
+    // inline bool is<CharType>(llvm::Type* type) {
+
+    //     if(auto pointerType = llvm::dyn_cast<llvm::PointerType>(type)) {
+    //         if (auto* structType = llvm::dyn_cast<llvm::StructType>(pointerType->getPointerElementType())) {
+    //             return structType->getName() == MetadataTypeConstants::structureCharType;
+    //         }    
+    //     }
+
+    //     if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
+    //         if (structType->getNumElements() == 1) {
+    //             if (structType->getElementType(0)->isIntegerTy(8)) {
+    //                 return structType->getName() == MetadataTypeConstants::structureCharType;
+    //             }
+    //         }
+    //     }
+
+    //     return false;
+    // }
 
     template <>
     inline bool is<BooleanType>(llvm::Type* type) {
@@ -208,7 +229,7 @@ namespace LynxTypes::TypeChecker {
                 auto* stringType = secondStruct->getElementType(2);
     
                 bool validSecondStruct =
-                    intType->isPointerTy() && intType->getPointerElementType()->isIntegerTy(8) &&
+                    intType->isPointerTy() && intType->getElementType()->isIntegerTy(8) &&
                     charType->isIntegerTy(8) &&
                     stringType->isIntegerTy(64);
     

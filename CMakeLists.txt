@@ -1,14 +1,17 @@
-cmake_minimum_required(VERSION 3.16.3)
+cmake_minimum_required(VERSION 3.26)
 
 project(Lynx VERSION 1.0.0 LANGUAGES C CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_C_COMPILER clang)
 
+set(CMAKE_C_COMPILER /usr/local/llvm-21/bin/clang)
+set(CMAKE_CXX_COMPILER /usr/local/llvm-21/bin/clang++)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 
 set(LIBRARY_NAME Library)
 set(LYNX_EXECUTABLE Lynx)

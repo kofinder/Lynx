@@ -4,7 +4,7 @@
 
 namespace LynxLTO {
     llvm::PreservedAnalyses FunctionDocDumperPass::run(llvm::Module &M, llvm::ModuleAnalysisManager &MAM) {
-        llvm::errs() << "Running FunctionDocDumperPass on module: " << M.getName() << "\n";
+        llvm::errs() << "Running FunctionDocDumperPass on module: " << "\n";
     
         // Iterate functions and dump documentation metadata or other info here
     

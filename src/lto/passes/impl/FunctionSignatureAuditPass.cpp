@@ -3,7 +3,7 @@
 namespace LynxLTO {
 
     llvm::PreservedAnalyses FunctionSignatureAuditPass::run(llvm::Module &M, llvm::ModuleAnalysisManager &MAM) {
-        llvm::errs() << "Running FunctionSignatureAudit on module: " << M.getName() << "\n";
+        llvm::errs() << "Running FunctionSignatureAudit on module: "  << "\n";
     
         // Iterate functions and dump documentation metadata or other info here
     

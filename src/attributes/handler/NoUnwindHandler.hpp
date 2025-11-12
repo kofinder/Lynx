@@ -18,7 +18,8 @@
 #define LYNX_FUNC_NO_UNWIND_HANDLER_HPP
 
 
-#include "interfaces/FunctionAttributeHandler.hpp"
+#include "FunctionAttributeHandler.hpp"
+
 
 namespace LynxFunctionAttr {
 

@@ -17,7 +17,8 @@
 #ifndef LYNX_FUNC_INTRISIC_HANDLER_HPP
 #define LYNX_FUNC_INTRISIC_HANDLER_HPP
 
-#include "interfaces/FunctionAttributeHandler.hpp"
+#include "FunctionAttributeHandler.hpp"
+
 #include <logger/Logger.hpp>
 
 namespace LynxFunctionAttr {

@@ -16,7 +16,8 @@
 #ifndef LYNX_FUNC_NO_RETURN_HANDLER_HPP
 #define LYNX_FUNC_NO_RETURN_HANDLER_HPP
 
-#include "interfaces/FunctionAttributeHandler.hpp"
+#include "FunctionAttributeHandler.hpp"
+
 #include <logger/Logger.hpp>
 
 namespace LynxFunctionAttr {
@@ -29,10 +30,10 @@ namespace LynxFunctionAttr {
         protected:
 
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked NoReturnHandler");
-                if (func->getName().startswith("abort") || func->getName().startswith("exit")) {
+                llvm::StringRef name = func->getName();
+                if ((name.size() >= 5 && name.substr(0, 5) == "abort") ||
+                    (name.size() >= 4 && name.substr(0, 4) == "exit")) {
                     builder.addAttribute(llvm::Attribute::NoReturn);
-
                     LOG_WARN("Applied abort, exit attribute");
                 }
             }

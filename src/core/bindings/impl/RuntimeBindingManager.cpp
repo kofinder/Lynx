@@ -35,23 +35,22 @@ namespace LynxCore {
         auto& ctx = module->getContext();
 
         // Declare: void* GC_malloc(size_t)
-        auto* mallocType = llvm::FunctionType::get(
-            llvm::Type::getInt8PtrTy(ctx),
-            { llvm::Type::getInt64Ty(ctx) },
-            false
-        );
+        llvm::Type* i8Ty = llvm::Type::getInt8Ty(ctx);               // i8
+        llvm::PointerType* i8PtrTy = llvm::PointerType::get(i8Ty, 0); // i8*
+
+        auto* mallocType = llvm::FunctionType::get(i8PtrTy, { llvm::Type::getInt64Ty(ctx) }, false);
         module->getOrInsertFunction("GC_malloc", mallocType);
 
         // Declare: int pthread_create(pthread_t*, const pthread_attr_t*, void*(*)(void*), void*)
         auto* pthreadCreateType = llvm::FunctionType::get(
             llvm::Type::getInt32Ty(ctx),
             {
-                llvm::PointerType::getUnqual(llvm::Type::getInt8PtrTy(ctx)), // opaque pthread_t*
-                llvm::PointerType::getUnqual(llvm::Type::getInt8PtrTy(ctx)), // pthread_attr_t*
+                llvm::PointerType::getUnqual(i8PtrTy), // opaque pthread_t*
+                llvm::PointerType::getUnqual(i8PtrTy), // pthread_attr_t*
                 llvm::PointerType::getUnqual(llvm::FunctionType::get(
-                    llvm::Type::getInt8PtrTy(ctx), { llvm::Type::getInt8PtrTy(ctx) }, false
+                    i8PtrTy, { i8PtrTy }, false
                 )),
-                llvm::Type::getInt8PtrTy(ctx)
+                i8PtrTy
             },
             false
         );
@@ -62,7 +61,7 @@ namespace LynxCore {
             llvm::Type::getInt32Ty(ctx),
             {
                 llvm::Type::getInt64Ty(ctx), // assuming pthread_t = uint64_t (adjust per target)
-                llvm::PointerType::getUnqual(llvm::Type::getInt8PtrTy(ctx))
+                llvm::PointerType::getUnqual(i8PtrTy)
             },
             false
         );
@@ -85,7 +84,10 @@ namespace LynxCore {
         auto& ctx = module->getContext();
     
         auto* int64Ty = llvm::Type::getInt64Ty(ctx);
-        auto* voidPtrTy = llvm::Type::getInt8PtrTy(ctx);
+        llvm::Type* i8Ty = llvm::Type::getInt8Ty(ctx);               // i8
+        llvm::PointerType* voidPtrTy = llvm::PointerType::get(i8Ty, 0); // i8*
+
+        // auto* voidPtrTy = llvm::Type::getInt8PtrTy(ctx);
     
         auto* allocFnType = llvm::FunctionType::get(voidPtrTy, { int64Ty }, false);
         std::string fnName = "LYNX_GC_ALLOC_" + typeName;

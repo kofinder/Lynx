@@ -5,7 +5,7 @@
 namespace LynxLTO {
 
     llvm::PreservedAnalyses RequireAnalysisPass::run(llvm::Module &M, llvm::ModuleAnalysisManager &MAM) {
-        llvm::errs() << "Running RequireAnalysisPass on module: " << M.getName() << "\n";
+        llvm::errs() << "Running RequireAnalysisPass on module: " << "\n";
 
         // Example analysis: print all function names
         for (auto &F : M) {

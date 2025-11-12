@@ -1,29 +1,43 @@
+# ==========================
+# === LLVM 21 Configuration
+# ==========================
+set(LLVM_DIR "/usr/local/llvm-21/lib/cmake/llvm" CACHE PATH "Path to LLVM 21Config.cmake")
 find_package(LLVM REQUIRED CONFIG)
-message(STATUS "LLVM_DIR ${LLVM_DIR}")
-message(STATUS "LLVM_FOUND ${LLVM_FOUND}")
-message(STATUS "CMAKE_ROOT ${CMAKE_ROOT}")
-message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
-message(STATUS "CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}")
+
+# # Fail if major version is not 20
+# string(REGEX MATCH "^21" LLVM_MAJOR "${LLVM_PACKAGE_VERSION}")
+# if(NOT LLVM_MAJOR)
+#     message(FATAL_ERROR "Found LLVM version ${LLVM_PACKAGE_VERSION}, but LLVM 21.x is required")
+# endif()
+
+message(STATUS "Using LLVM ${LLVM_PACKAGE_VERSION} in ${LLVM_DIR}")
 message(STATUS "LLVM_INCLUDE_DIRS: ${LLVM_INCLUDE_DIRS}")
 message(STATUS "LLVM_DEFINITIONS: ${LLVM_DEFINITIONS}")
-message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
-# Boost
-find_package(Boost REQUIRED COMPONENTS system filesystem program_options)
-
-# Include LLVM and Boost directories
+# Include LLVM directories and add definitions
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${LLVM_INCLUDE_DIRS}
-    ${Boost_INCLUDE_DIRS}
 )
-
 add_definitions(${LLVM_DEFINITIONS})
 
-# ==============================
-# === Add subdirectories =======
-# ==============================
+# ==========================
+# === Boost
+# ==========================
+find_package(Boost REQUIRED COMPONENTS system filesystem program_options)
+include_directories(${Boost_INCLUDE_DIRS})
+
+# ==========================
+# === Zstd via pkg-config
+# ==========================
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(ZSTD REQUIRED libzstd)
+include_directories(${ZSTD_INCLUDE_DIRS})
+
+# ==========================
+# === Lynx modules
+# ==========================
 set(LYNX_MODULES
     lang constants exceptions logger context types ast mangler
     resolver jit config codegen linker attributes callconv
@@ -36,7 +50,7 @@ foreach(module IN LISTS LYNX_MODULES)
 endforeach()
 
 # ==========================
-# === Main executable ======
+# === Main executable
 # ==========================
 set(MAIN_ENTRY_SOURCES
     main.cpp
@@ -46,14 +60,12 @@ set(MAIN_ENTRY_SOURCES
 
 add_executable(${LYNX_EXECUTABLE} ${MAIN_ENTRY_SOURCES})
 
-# Map LLVM components to libraries
+# Map LLVM components to libraries (LLVM 20)
 llvm_map_components_to_libnames(LLVM_LIBRARIES
     mcjit executionengine native support core passes irreader
-    codegen mc mcparser nativecodegen
-    x86codegen x86desc x86asmparser x86info option
+    codegen x86codegen x86asmparser x86desc x86info option
 )
 
-# Link libraries for main executable
 target_link_libraries(${LYNX_EXECUTABLE} PUBLIC
     LynxLogger LynxExceptions LynxConstants LynxContext LynxTypes
     LynxLang LynxAst LynxMangler LynxJIT LynxResolver LynxProgramConfig
@@ -63,10 +75,11 @@ target_link_libraries(${LYNX_EXECUTABLE} PUBLIC
     ${LLVM_LIBRARIES} ${OPENCL_CLANG_LINK_LIBS}
     Boost::system Boost::filesystem Boost::program_options
     yaml-cpp
+    ${ZSTD_LIBRARIES}
 )
 
 # ==========================
-# === LSP Server ===========
+# === LSP Server
 # ==========================
 set(LSP_SOURCES
     lsp/lsp_server.hpp
@@ -76,8 +89,7 @@ set(LSP_SOURCES
 )
 
 add_executable(LynxLSPServer ${LSP_SOURCES})
-
-target_include_directories(LynxLSPServer PRIVATE src/lang)
+target_include_directories(LynxLSPServer PRIVATE src/lang ${ZSTD_INCLUDE_DIRS})
 
 target_link_libraries(LynxLSPServer PRIVATE
     LynxLogger LynxExceptions LynxConstants LynxContext LynxTypes
@@ -87,17 +99,18 @@ target_link_libraries(LynxLSPServer PRIVATE
     LynxCollection LynxSystem
     nlohmann_json::nlohmann_json
     Boost::system Boost::filesystem Boost::program_options
+    ${ZSTD_LIBRARIES}
 )
 
-# ======================================
-# === Compiler settings (modern C++) ===
-# ======================================
-# Enable C++20 and warnings for main Lynx target
-target_compile_features(${LYNX_EXECUTABLE} PUBLIC cxx_std_20)
+# ==========================
+# === Compiler settings (C++20)
+# ==========================
+target_compile_features(${LYNX_EXECUTABLE} PUBLIC cxx_std_23)
+target_compile_features(LynxLSPServer PUBLIC cxx_std_23)
 
-# # Common warnings for GCC and Clang
-# set(COMMON_WARNINGS -Wall -Wextra -Wpedantic)
-# target_compile_options(${LYNX_EXECUTABLE} PRIVATE
-#     $<$<OR:$<CXX_COMPILER_ID:GNU>,
-#     $<CXX_COMPILER_ID:Clang>>:${COMMON_WARNINGS}>
-# )
+
+# ==========================
+# === Compiler paths
+# ==========================
+set(CMAKE_C_COMPILER "/usr/bin/clang-21")
+set(CMAKE_CXX_COMPILER "/usr/bin/clang++-21")
