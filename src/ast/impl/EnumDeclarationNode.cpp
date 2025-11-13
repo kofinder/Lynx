@@ -67,7 +67,7 @@ namespace LynxAst {
 
         llvm::Constant* intPayload = llvm::ConstantInt::get(llvm::Type::getInt64Ty(context), 0);
         llvm::Constant* charPayload = llvm::ConstantInt::get(llvm::Type::getInt8Ty(context), 0);
-        llvm::Constant* stringPayload = llvm::ConstantPointerNull::get(llvm::Type::getInt8PtrTy(context));
+        llvm::Constant* stringPayload = llvm::ConstantPointerNull::get(llvm::PointerType::get(context, 0));
 
         if(member.isCharValue()) {
             std::cerr << name << "::" << "is char value ::" << member.index << "\n";
@@ -77,7 +77,7 @@ namespace LynxAst {
 
             auto strValueConst = llvm::ConstantDataArray::getString(context, name, true);
             auto* strGlobal = new llvm::GlobalVariable(*module, strValueConst->getType(), true, privateType, strValueConst);
-            stringPayload = llvm::ConstantExpr::getPointerCast(strGlobal, llvm::Type::getInt8PtrTy(context));
+            stringPayload = llvm::ConstantExpr::getPointerCast(strGlobal, llvm::PointerType::get(context, 0));
         }
 
         if(member.isStringValue()) {
@@ -89,7 +89,7 @@ namespace LynxAst {
 
             auto strValueConst = llvm::ConstantDataArray::getString(context, std::get<std::string>(member.getValue()), true);
             auto* strGlobal = new llvm::GlobalVariable(*module, strValueConst->getType(), true, privateType, strValueConst);
-            stringPayload = llvm::ConstantExpr::getPointerCast(strGlobal, llvm::Type::getInt8PtrTy(context));
+            stringPayload = llvm::ConstantExpr::getPointerCast(strGlobal, llvm::PointerType::get(context, 0));
         }
 
         if(member.isIntValue()) {
@@ -101,7 +101,7 @@ namespace LynxAst {
 
             auto strValueConst = llvm::ConstantDataArray::getString(context, name, true);
             auto* strGlobal = new llvm::GlobalVariable(*module, strValueConst->getType(), true, privateType, strValueConst);
-            stringPayload = llvm::ConstantExpr::getPointerCast(strGlobal, llvm::Type::getInt8PtrTy(context));
+            stringPayload = llvm::ConstantExpr::getPointerCast(strGlobal, llvm::PointerType::get(context, 0));
         }
 
         return {intPayload, charPayload, stringPayload};

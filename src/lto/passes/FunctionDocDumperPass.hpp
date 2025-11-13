@@ -22,11 +22,8 @@
 
 namespace LynxLTO {
 
-    class FunctionDocDumperPass : public llvm::PassInfoMixin<FunctionDocDumperPass> {
-
-        public:
-
-            llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
+    struct FunctionDocDumperPass : public llvm::PassInfoMixin<FunctionDocDumperPass> {
+        llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
     };
 
 }

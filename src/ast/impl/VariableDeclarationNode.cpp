@@ -156,17 +156,17 @@ namespace LynxAst {
         auto* globalConstant = new llvm::GlobalVariable(*module, llvmType, true, privateType, constVal, "const_array");
         globalConstant->setAlignment(llvm::Align(4));
 
-        auto* destPtr = builder.CreateBitCast(llvmVariableRef, llvm::Type::getInt8PtrTy(context), llvm::Twine(variableName + "_" + "bitcast"));
-        auto* srcPtr = builder.CreateBitCast(globalConstant, llvm::Type::getInt8PtrTy(context));
+        auto* destPtr = builder.CreateBitCast(llvmVariableRef, llvm::PointerType::get(context, 0), llvm::Twine(variableName + "_" + "bitcast"));
+        auto* srcPtr = builder.CreateBitCast(globalConstant, llvm::PointerType::get(context, 0));
 
-        llvm::DataLayout dataLayout(module);
+        llvm::DataLayout dataLayout(module->getDataLayout()); // ✅ valid
         uint64_t allocSize = dataLayout.getTypeAllocSize(llvmType);
         llvm::Value* totalSize = llvm::ConstantInt::get(llvm::Type::getInt64Ty(context), allocSize);
         llvm::Value* isVolatile = llvm::ConstantInt::get(llvm::Type::getInt1Ty(context), false);
 
-        auto* memFunc = llvm::Intrinsic::getDeclaration(module, llvm::Intrinsic::memcpy, {
-            llvm::Type::getInt8PtrTy(context),  // Destination pointer (i8*)
-            llvm::Type::getInt8PtrTy(context),  // Source pointer (i8*)
+        auto* memFunc = llvm::Intrinsic::getOrInsertDeclaration(module, llvm::Intrinsic::memcpy, {
+            llvm::PointerType::get(context, 0),  // Destination pointer (i8*)
+            llvm::PointerType::get(context, 0),  // Source pointer (i8*)
             llvm::Type::getInt64Ty(context),    // Number of bytes to copy (i64)
         });
 

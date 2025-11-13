@@ -17,21 +17,19 @@
 #ifndef LYNX_FUNC_NO_INLINE_HIT_HANDLER_HPP
 #define LYNX_FUNC_NO_INLINE_HIT_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
-
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
-    using namespace LynxLogger;
-
     class NoInlineHintHandler : public FunctionAttributeHandler {
+
         protected:
+
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked NoInlineHintHandler");
+                if (!func) return;
                 if (func->hasFnAttribute("no-inline-hint")) {
-                    builder.addAttribute(llvm::Attribute::NoInline);
-                    LOG_WARN("Applied no-inline-hit attribute");
+                    builder.addAttribute(llvm::Attribute::get(func->getContext(), "no-inline-hint"));
+                    LOG_INFO("Applied 'no-inline-hint' attribute");
                 }
             }
     };

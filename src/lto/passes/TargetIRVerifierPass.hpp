@@ -16,13 +16,10 @@
  * @date: November 2, 2024
 */
 
-
-
 #ifndef LYNX_TARGET_IR_VERIFIER_PASS_HPP
 #define LYNX_TARGET_IR_VERIFIER_PASS_HPP
 
 #include "llvm/IR/PassManager.h"
-
 
 namespace LynxLTO {
 

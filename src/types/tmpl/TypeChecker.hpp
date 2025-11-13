@@ -101,11 +101,11 @@ namespace LynxTypes::TypeChecker {
 
     template <>
     inline bool is<CharType>(llvm::Type* type) {
-        if (auto* pointerType = llvm::dyn_cast<llvm::PointerType>(type)) {
-            if (auto* structType = llvm::dyn_cast<llvm::StructType>(pointerType->getElementType())) {
-                return structType->getName() == MetadataTypeConstants::structureCharType;
-            }    
-        }
+        // if (auto* pointerType = llvm::dyn_cast<llvm::PointerType>(type)) {
+        //     if (auto* structType = llvm::dyn_cast<llvm::StructType>(pointerType->getElementType())) {
+        //         return structType->getName() == MetadataTypeConstants::structureCharType;
+        //     }    
+        // }
         if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
             if (structType->getNumElements() == 1) {
                 if (structType->getElementType(0)->isIntegerTy(8)) {
@@ -116,28 +116,6 @@ namespace LynxTypes::TypeChecker {
         return false;
     }
 
-
-
-    // template <>
-    // inline bool is<CharType>(llvm::Type* type) {
-
-    //     if(auto pointerType = llvm::dyn_cast<llvm::PointerType>(type)) {
-    //         if (auto* structType = llvm::dyn_cast<llvm::StructType>(pointerType->getPointerElementType())) {
-    //             return structType->getName() == MetadataTypeConstants::structureCharType;
-    //         }    
-    //     }
-
-    //     if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
-    //         if (structType->getNumElements() == 1) {
-    //             if (structType->getElementType(0)->isIntegerTy(8)) {
-    //                 return structType->getName() == MetadataTypeConstants::structureCharType;
-    //             }
-    //         }
-    //     }
-
-    //     return false;
-    // }
-
     template <>
     inline bool is<BooleanType>(llvm::Type* type) {
         return type && type->isIntegerTy(1);
@@ -147,10 +125,10 @@ namespace LynxTypes::TypeChecker {
     inline bool is<StringType>(llvm::Type* type) {
         if (!type) return false;
 
-        if (type->isPointerTy()) {
-            auto* elementType = type->getPointerElementType();
-            return elementType && elementType->isIntegerTy(8);
-        }
+        // if (type->isPointerTy()) {
+        //     auto* elementType = type->getPointerElementType();
+        //     return elementType && elementType->isIntegerTy(8);
+        // }
     
         if (type->isArrayTy()) {
             return type->getArrayElementType()->isIntegerTy(8);
@@ -176,11 +154,11 @@ namespace LynxTypes::TypeChecker {
 
     template <>
     inline bool is<DateTimeType>(llvm::Type* type) {
-        if(auto pointerType = llvm::dyn_cast<llvm::PointerType>(type)) {
-            if (auto* structType = llvm::dyn_cast<llvm::StructType>(pointerType->getPointerElementType())) {
-                return structType->getName() == MetadataTypeConstants::structureDateTimeType;
-            }    
-        }
+        // if(auto pointerType = llvm::dyn_cast<llvm::PointerType>(type)) {
+        //     if (auto* structType = llvm::dyn_cast<llvm::StructType>(pointerType->getPointerElementType())) {
+        //         return structType->getName() == MetadataTypeConstants::structureDateTimeType;
+        //     }    
+        // }
 
         if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
             return structType->getName() == MetadataTypeConstants::dateTimeType;
@@ -221,18 +199,19 @@ namespace LynxTypes::TypeChecker {
         
             if (!first->isIntegerTy(64)) return false;
 
-            if (auto* secondStruct = dyn_cast<llvm::StructType>(second)) {
+            if (auto* secondStruct = llvm::dyn_cast<llvm::StructType>(second)) {
                 if (secondStruct->getNumElements() != 3) return false;
-    
+            
                 auto* intType = secondStruct->getElementType(0);
                 auto* charType = secondStruct->getElementType(1);
                 auto* stringType = secondStruct->getElementType(2);
-    
+            
+                // With opaque pointers, you cannot check the pointee type.
                 bool validSecondStruct =
-                    intType->isPointerTy() && intType->getElementType()->isIntegerTy(8) &&
+                    intType->isPointerTy() &&  // opaque pointer
                     charType->isIntegerTy(8) &&
                     stringType->isIntegerTy(64);
-    
+            
                 return validSecondStruct;
             }
             
@@ -269,13 +248,7 @@ namespace LynxTypes::TypeChecker {
 
     template <>
     inline bool is<ArrayType>(llvm::Type* type) {
-        // if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
-        //     const auto& name = structType->getName();
-        //     return name == MetadataTypeConstants::simpleArray ||
-        //            name == MetadataTypeConstants::outerArray;
-        // }
         return false;
-
     }
 
     template <>

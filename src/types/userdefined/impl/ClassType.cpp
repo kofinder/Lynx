@@ -41,7 +41,7 @@ namespace LynxTypes {
 
         // Step 3: vtable pointer if needed
         if (hasBaseClass() || !getAllVirtualParentMethods().empty()) {
-            auto llvmPtrType = llvm::PointerType::getUnqual(llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(context)));
+            auto llvmPtrType = llvm::PointerType::get(llvm::PointerType::get(llvm::Type::getInt8Ty(context)->getContext(), 0)->getContext(), 0);
             members.push_back(llvmPtrType); index++;
         }
 
@@ -92,7 +92,7 @@ namespace LynxTypes {
     }
     
     llvm::Type* ClassType::getLLVMPointerType() const {
-        return llvm::PointerType::getUnqual(getLLVMType());
+        return llvm::PointerType::get(getLLVMType()->getContext(), 0);
     }
 
     llvm::Value* ClassType::getDefaultValue() {
@@ -225,9 +225,9 @@ namespace LynxTypes {
 
     ClassType* ClassType::fromLLVMType(const llvm::Type* type) {
         if (!type) return nullptr;
-        if (auto ptrType = llvm::dyn_cast<llvm::PointerType>(type)) {
-            type = ptrType->getPointerElementType();
-        }
+        // if (auto ptrType = llvm::dyn_cast<llvm::PointerType>(type)) {
+        //     type = ptrType->getPointerElementType();
+        // }
 
         if (auto structType = llvm::dyn_cast<llvm::StructType>(type)) {
             auto it = llvmTypeToClass.find(structType);
@@ -588,8 +588,9 @@ namespace LynxTypes {
     
         auto& builder = astContext->getBuilder();
         auto* vtablePtrPtr = getVTablePtrPtr(objValue);
+        auto* vtablePtrType = llvm::PointerType::get(vtableType->getContext(), 0); 
 
-        auto* vtablePtr = builder.CreateLoad(vtableType->getPointerTo(), vtablePtrPtr, llvm::Twine(originalNameLower() + + "_vtable"));
+        auto* vtablePtr = builder.CreateLoad(vtablePtrType, vtablePtrPtr, llvm::Twine(originalNameLower() + + "_vtable"));
         vtableLoadCache[objValue] = vtablePtr;
 
         return vtablePtr;
@@ -600,7 +601,8 @@ namespace LynxTypes {
         auto& builder = astContext->getBuilder();
         unsigned methodIndex = getVirtualMethodIndex(fnName);
         auto* methodPtrPtr = builder.CreateStructGEP(vtableType, vtablePtr, methodIndex, llvm::Twine(fnName + "_ptr_ptr"));
-        return builder.CreateLoad(methodPtrPtr->getType()->getPointerElementType(), methodPtrPtr, llvm::Twine(fnName + "_ptr"));
+        auto* methodPrtTy = llvm::PointerType::get(methodPtrPtr->getContext(), 0);
+        return builder.CreateLoad(methodPrtTy, methodPtrPtr, llvm::Twine(fnName + "_ptr"));
     }
 
     llvm::GlobalVariable* ClassType::getOrCreateOrVTableGlobal() const {

@@ -42,23 +42,23 @@ namespace LynxResolver {
             return nullptr;
         }
 
-        [[nodiscard]] llvm::Value* countLeadingZeros(const AstContext& ctx, llvm::Value* val) const noexcept {
+        [[nodiscard]] llvm::Value* countLeadingZeros(const AstContext& ctx, llvm::Value* val) const noexcept override {
             return nullptr;
         }
 
-        [[nodiscard]] llvm::Value* countTrailingZeros(const AstContext& ctx, llvm::Value* val) const noexcept {
+        [[nodiscard]] llvm::Value* countTrailingZeros(const AstContext& ctx, llvm::Value* val) const noexcept override {
             return nullptr;
         }
 
-        [[nodiscard]] llvm::Value* bitReverse(const AstContext& ctx, llvm::Value* val) const noexcept {
+        [[nodiscard]] llvm::Value* bitReverse(const AstContext& ctx, llvm::Value* val) const noexcept override {
             return nullptr;
         }
 
-        [[nodiscard]] llvm::Value* rotateLeft(const AstContext& ctx, llvm::Value* val, llvm::Value* shift) const noexcept {
+        [[nodiscard]] llvm::Value* rotateLeft(const AstContext& ctx, llvm::Value* val, llvm::Value* shift) const noexcept override {
             return nullptr;
         }
 
-        [[nodiscard]] llvm::Value* rotateRight(const AstContext& ctx, llvm::Value* val, llvm::Value* shift) const noexcept {
+        [[nodiscard]] llvm::Value* rotateRight(const AstContext& ctx, llvm::Value* val, llvm::Value* shift) const noexcept override {
             return nullptr;
         }
 

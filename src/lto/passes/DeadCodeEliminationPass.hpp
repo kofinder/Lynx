@@ -24,11 +24,8 @@
 
 namespace LynxLTO {
 
-    class DeadCodeEliminationPass : public llvm::PassInfoMixin<DeadCodeEliminationPass> {
-
-        public:
-
-            llvm::PreservedAnalyses run(llvm::Function& F, llvm::FunctionAnalysisManager& FAM);
+    struct DeadCodeEliminationPass : public llvm::PassInfoMixin<DeadCodeEliminationPass> {
+        llvm::PreservedAnalyses run(llvm::Function& F, llvm::FunctionAnalysisManager& FAM);
     };
 
 }

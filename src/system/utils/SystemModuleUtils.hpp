@@ -107,6 +107,24 @@ namespace LynxSystem::utils {
         else return "%p\n";
     }
 
+    inline llvm::StructType* getStructTypeFromPointer(llvm::Type* type) {
+        if (!type) {
+            throw std::runtime_error("Null type provided to getStructTypeFromPointer");
+        }
+        if (type->isPointerTy()) {
+            llvm::PointerType* ptrType = llvm::cast<llvm::PointerType>(type);
+            throw std::runtime_error(
+                "Opaque pointer encountered. You must provide a mapping from pointer type to StructType."
+            );
+        }
+    
+        if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
+            return structType;
+        }
+        throw std::runtime_error("Type is neither a StructType nor a pointer to StructType");
+    }
+    
+
     /**
      * @brief Prepares argument list for a `printf` call based on the given value.
      *
@@ -131,14 +149,14 @@ namespace LynxSystem::utils {
         llvmType->print(llvm::outs());
 
         const auto formatSpecifier = getFormatSpecifier(llvmType);
-        auto* formatString = builder.CreateGlobalStringPtr(std::string(formatSpecifier), "fmt");
+        auto* formatString = builder.CreateGlobalString(std::string(formatSpecifier), "fmt");
         printfArgs.push_back(formatString);
 
         if(TypeChecker::is<BooleanType>(llvmType)) {
             auto* booleanAsString = builder.CreateSelect(
                 expressionValue, 
-                builder.CreateGlobalStringPtr("true"),
-                builder.CreateGlobalStringPtr("false")
+                builder.CreateGlobalString("true"),
+                builder.CreateGlobalString("false")
             );
             printfArgs.push_back(booleanAsString);
         } else if(TypeChecker::is<FloatType>(llvmType)) {
@@ -146,14 +164,7 @@ namespace LynxSystem::utils {
             printfArgs.push_back(floatPromotion);
         } else if(TypeChecker::is<DateTimeType>(llvmType)) {
 
-            llvm::StructType* structTy = nullptr;
-            if (auto* ptrType = llvm::dyn_cast<llvm::PointerType>(llvmType)) {
-                structTy = llvm::dyn_cast<llvm::StructType>(ptrType->getPointerElementType());
-            } else {
-                structTy = llvm::dyn_cast<llvm::StructType>(llvmType);
-            }
-
-            if (!structTy) throw std::runtime_error("Expected DateTime struct type");
+            auto* structTy = getStructTypeFromPointer(llvmType);
 
             // Extract fields in order
             llvm::Value* yearPtr = builder.CreateStructGEP(structTy, expressionValue, 0);
@@ -197,8 +208,7 @@ namespace LynxSystem::utils {
         } else if(TypeChecker::is<CharType>(llvmType)) {
             llvm::Value* charVal = nullptr;
             if (auto* ptrType = llvm::dyn_cast<llvm::PointerType>(llvmType)) {
-                auto* structTy = llvm::dyn_cast<llvm::StructType>(ptrType->getPointerElementType());
-                if (!structTy) throw std::runtime_error("Expected Char struct type pointer");
+                auto* structTy = getStructTypeFromPointer(llvmType);
                 auto* fieldPtr = builder.CreateStructGEP(structTy, expressionValue, 0, "char_field_ptr");
                 charVal = builder.CreateLoad(builder.getInt8Ty(), fieldPtr, "char_load_val");
             } else if (llvm::dyn_cast<llvm::StructType>(llvmType)) {
@@ -227,7 +237,7 @@ namespace LynxSystem::utils {
         constexpr bool isVarArg = true;
         auto* printfType = llvm::FunctionType::get(
             llvm::Type::getInt32Ty(context),
-            { llvm::Type::getInt8PtrTy(context) },
+            { llvm::PointerType::get(context, 0) },
             isVarArg
         );
         return llvm::cast<llvm::Function>(module->getOrInsertFunction("printf", printfType).getCallee());
@@ -240,7 +250,7 @@ namespace LynxSystem::utils {
         constexpr bool isVarArg = true;
         auto* scanfType = llvm::FunctionType::get(
             llvm::Type::getInt32Ty(context),
-            { llvm::Type::getInt8PtrTy(context) },
+            { llvm::PointerType::get(context, 0) },
             isVarArg
         );
         return llvm::cast<llvm::Function>(module->getOrInsertFunction("scanf", scanfType).getCallee());

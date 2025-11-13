@@ -17,27 +17,23 @@
 #ifndef LYNX_FUNC_RETURN_TWICE_HANDLER_HPP
 #define LYNX_FUNC_RETURN_TWICE_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
-
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
-    using namespace LynxLogger;
-
-
     class ReturnsTwiceHandler : public FunctionAttributeHandler {
+
         protected:
+
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked ReturnsTwiceHandler");
+                if (!func) return;
                 if (func->getName().contains("setjmp")) {
-                    LOG_WARN("Applied setjmp attributes");
-                    builder.addAttribute(llvm::Attribute::ReturnsTwice);
+                    builder.addAttribute(llvm::Attribute::get(func->getContext(), llvm::Attribute::ReturnsTwice));
+                    LOG_WARN("Applied 'returns_twice' attribute to function {}", func->getName().str());
                 }
             }
-        };
-              
-                
+    };
+                      
 }
 
 #endif

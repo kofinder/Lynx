@@ -11,14 +11,13 @@ namespace LynxTypes {
 
     llvm::Type* ShortType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt16Ty(context);
+        return llvm::Type::getInt16Ty(astContext->getLLVMContext());
     }
 
     llvm::Type* ShortType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt16PtrTy(context);
+        auto* shortTy = llvm::Type::getInt16Ty(astContext->getLLVMContext());
+        return llvm::PointerType::get(shortTy->getContext(), 0);
     }
 
     llvm::Value* ShortType::getDefaultValue() {

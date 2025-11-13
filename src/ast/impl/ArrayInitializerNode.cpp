@@ -67,7 +67,7 @@ namespace LynxAst {
             llvm::GlobalVariable* globalArray = new llvm::GlobalVariable(*module, arrayType, true, llvm::GlobalValue::PrivateLinkage, arrayConst, "booleanArray");
             globalArray->setAlignment(llvm::Align(1));
 
-            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::PointerType::get(context, 0));
             return globalArrayPtr;
         } else {
             const auto& boolMatrix = std::get<std::vector<std::vector<bool>>>(*multiDimArray);
@@ -89,7 +89,7 @@ namespace LynxAst {
 
             llvm::GlobalVariable* globalMatrix = new llvm::GlobalVariable(*module, matrixType, true, llvm::GlobalValue::PrivateLinkage, matrixConst, "booleanMatrixArray");
             globalMatrix->setAlignment(llvm::Align(1));
-            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::PointerType::get(context, 0));
             return globalMatrixPtr;
         }
     }
@@ -111,7 +111,7 @@ namespace LynxAst {
             llvm::GlobalVariable* globalArray = new llvm::GlobalVariable(*module, arrayType, true, llvm::GlobalValue::PrivateLinkage, arrayConst, "shortArray");
             globalArray->setAlignment(llvm::Align(2));
 
-            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::PointerType::get(context, 0));
             return globalArrayPtr;
         } else {
             const auto& shortMatrixPtr = std::get<std::vector<std::vector<short>>>(*multiDimArray);
@@ -132,7 +132,7 @@ namespace LynxAst {
             llvm::Constant* matrixConst = llvm::ConstantArray::get(matrixType, rowConstants);
             llvm::GlobalVariable* globalMatrix = new llvm::GlobalVariable(*module, matrixType, true, llvm::GlobalValue::PrivateLinkage, matrixConst, "shortMatrixArray");
             globalMatrix->setAlignment(llvm::Align(2));
-            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::PointerType::get(context, 0));
             return globalMatrixPtr;
         }
     }
@@ -150,7 +150,7 @@ namespace LynxAst {
             llvm::GlobalVariable* globalArray = new llvm::GlobalVariable(*module, arrayType, true, llvm::GlobalValue::PrivateLinkage, arrayConst, "intArray");
             globalArray->setAlignment(llvm::Align(16));
 
-            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::PointerType::get(context, 0));
             return globalArrayPtr;
         } else {
             const auto& intMatrixPtr = std::get<std::vector<std::vector<int>>>(*multiDimArray);
@@ -171,7 +171,7 @@ namespace LynxAst {
             llvm::Constant* matrixConst = llvm::ConstantArray::get(matrixType, flattenedMatrix);
             llvm::GlobalVariable* globalMatrix = new llvm::GlobalVariable(*module, matrixType, true, llvm::GlobalValue::PrivateLinkage, matrixConst, "intMatrixArray");
             globalMatrix->setAlignment(llvm::Align(16));
-            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::PointerType::get(context, 0));
             return globalMatrixPtr;
         }
     }
@@ -189,7 +189,7 @@ namespace LynxAst {
             llvm::GlobalVariable* globalArray = new llvm::GlobalVariable(*module, arrayType, true, llvm::GlobalValue::PrivateLinkage, arrayConst, "longArray");
             globalArray->setAlignment(llvm::Align(8));
 
-            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::PointerType::get(context, 0));
             return globalArrayPtr;
         } else {
             const auto& longMatrixPtr = std::get<std::vector<std::vector<long>>>(*multiDimArray);
@@ -210,7 +210,7 @@ namespace LynxAst {
             llvm::Constant* matrixConst = llvm::ConstantArray::get(matrixType, rowConstants);
             llvm::GlobalVariable* globalMatrix = new llvm::GlobalVariable(*module, matrixType, true, llvm::GlobalValue::PrivateLinkage, matrixConst, "longMatrixArray");
             globalMatrix->setAlignment(llvm::Align(8));
-            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::PointerType::get(context, 0));
             return globalMatrixPtr;
         }
     }
@@ -228,7 +228,7 @@ namespace LynxAst {
             llvm::GlobalVariable* globalArray = new llvm::GlobalVariable(*module, arrayType, true, llvm::GlobalValue::PrivateLinkage, arrayConst, "floatArray");
             globalArray->setAlignment(llvm::Align(16));
 
-            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::PointerType::get(context, 0));
             return globalArrayPtr;
         } else {
             const auto& floatMatrixPtr = std::get<std::vector<std::vector<float>>>(*multiDimArray);
@@ -249,7 +249,7 @@ namespace LynxAst {
             llvm::Constant* matrixConst = llvm::ConstantArray::get(matrixType, rowConstants);
             llvm::GlobalVariable* globalMatrix = new llvm::GlobalVariable(*module, matrixType, true, llvm::GlobalValue::PrivateLinkage, matrixConst, "floatMatrixArray");
             globalMatrix->setAlignment(llvm::Align(16));
-            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::PointerType::get(context, 0));
             return globalMatrixPtr;
         }
     }
@@ -267,7 +267,7 @@ namespace LynxAst {
             llvm::GlobalVariable* globalArray = new llvm::GlobalVariable(*module, arrayType, true, llvm::GlobalValue::PrivateLinkage, arrayConst, "doubleArray");
             globalArray->setAlignment(llvm::Align(16));
 
-            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::PointerType::get(context, 0));
             return globalArrayPtr;
         } else {
             const auto& doubleMatrixPtr = std::get<std::vector<std::vector<double>>>(*multiDimArray);
@@ -288,7 +288,7 @@ namespace LynxAst {
             llvm::Constant* matrixConst = llvm::ConstantArray::get(matrixType, rowConstants);
             llvm::GlobalVariable* globalMatrix = new llvm::GlobalVariable(*module, matrixType, true, llvm::GlobalValue::PrivateLinkage, matrixConst, "doubleMatrixArray");
             globalMatrix->setAlignment(llvm::Align(16));
-            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::PointerType::get(context, 0));
             return globalMatrixPtr;
         }
 
@@ -316,7 +316,7 @@ namespace LynxAst {
 
             globalArray->setAlignment(llvm::Align(1));
 
-            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::PointerType::get(context, 0));
             return globalArrayPtr;
         } else {
             const auto& stringMatrix = std::get<std::vector<std::vector<std::string>>>(*multiDimArray);
@@ -339,7 +339,7 @@ namespace LynxAst {
             llvm::Constant* matrixConst = llvm::ConstantArray::get(matrixType, llvmRows);
             llvm::GlobalVariable* globalMatrix = new llvm::GlobalVariable(*module, matrixType, true, llvm::GlobalValue::PrivateLinkage, matrixConst, "stringMatrixArray");
             globalMatrix->setAlignment(llvm::Align(1));
-            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::PointerType::get(context, 0));
             return globalMatrixPtr;
         }
     }
@@ -358,7 +358,7 @@ namespace LynxAst {
             llvm::GlobalVariable* globalArray = new llvm::GlobalVariable(*module, arrayType, true, llvm::GlobalValue::PrivateLinkage, arrayConst, "charArray");
             globalArray->setAlignment(llvm::Align(1));
 
-            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalArrayPtr = builder.CreateBitCast(globalArray, llvm::PointerType::get(context, 0));
             return globalArrayPtr;
         } else {
             const auto& intMatrixPtr = std::get<std::vector<std::vector<char>>>(*multiDimArray);
@@ -379,7 +379,7 @@ namespace LynxAst {
             llvm::Constant* matrixConst = llvm::ConstantArray::get(matrixType, flattenedMatrix);
             llvm::GlobalVariable* globalMatrix = new llvm::GlobalVariable(*module, matrixType, true, llvm::GlobalValue::PrivateLinkage, matrixConst, "charMatrixArray");
             globalMatrix->setAlignment(llvm::Align(1));
-            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::Type::getInt8PtrTy(context));
+            llvm::Value* globalMatrixPtr = builder.CreateBitCast(globalMatrix, llvm::PointerType::get(context, 0));
             return globalMatrixPtr;
         }
 

@@ -60,6 +60,8 @@ syntax:
 trace: build
 	@echo "🕵️ Running Valgrind..."
 	valgrind --leak-check=full --show-leak-kinds=all ./$(EXECUTABLE_NAME) run -c $(EXAMPLE_DIR)/app_config.yaml -e main.lynx
+	#valgrind --leak-check=full --show-leak-kinds=all --gen-suppressions=all ./$(EXECUTABLE_NAME) run -c ${EXAMPLE_DIR}/app_config.yaml -e main.lynx
+	#valgrind -s --leak-check=full --suppressions=llvm.supp --track-origins=yes --show-leak-kinds=all ./$(EXECUTABLE_NAME) run -c ${EXAMPLE_DIR}/app_config.yaml -e main.lynx
 
 debug: build
 	@echo "🐞 Starting GDB..."
@@ -67,7 +69,7 @@ debug: build
 
 clean:
 	@echo "🧹 Cleaning up..."
-	rm -rf $(BUILD_DIR)
+	@sh sh_clean.sh
 	cd ${BISON_DIR}/ && sh run.sh clean
 	# cd ${SKIA_DIR}/ && rm -rf out/Static
 

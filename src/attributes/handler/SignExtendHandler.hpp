@@ -15,12 +15,10 @@
  * @date: November 4, 2025
 */
 
-
 #ifndef LYNX_FUNC_SIGN_EXTEND_HANDLER_HPP
 #define LYNX_FUNC_SIGN_EXTEND_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
-
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
@@ -29,10 +27,13 @@ namespace LynxFunctionAttr {
         protected:
 
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                llvm::Type* retType = func->getReturnType();
+                if (!func) return;
+
+                auto* retType = func->getReturnType();
                 if (retType->isIntegerTy() && retType->getIntegerBitWidth() > 1) {
-                    builder.addAttributeAtRet(llvm::Attribute::SExt);
-                    LOG_ERROR("Applied SExt attributes");
+                    llvm::LLVMContext &ctx = func->getContext();
+                    builder.addAttributeAtRet(llvm::Attribute::get(ctx, llvm::Attribute::SExt));
+                    LOG_INFO("Applied 'SExt' attribute to return of function {}", func->getName().str());
                 }
             }
     };

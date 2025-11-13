@@ -20,14 +20,10 @@
 
 #include "llvm/IR/PassManager.h"
 
-
 namespace LynxLTO {
 
-    class FunctionSecurityPass : public llvm::PassInfoMixin<FunctionSecurityPass> {
-
-        public:
-
-            llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
+    struct FunctionSecurityPass : public llvm::PassInfoMixin<FunctionSecurityPass> {
+        llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
     };
 
 }

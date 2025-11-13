@@ -52,9 +52,9 @@ namespace LynxAst {
 
         private:
 
-            llvm::Value* generateFunctionCallIR(const AstContext& astContext, llvm::Function* calleeFunction, llvm::ArrayRef<llvm::Value*> args = llvm::None);
+            llvm::Value* generateFunctionCallIR(const AstContext& astContext, llvm::Function* calleeFunction, llvm::ArrayRef<llvm::Value*> args = llvm::ArrayRef<llvm::Value*>{});
 
-            llvm::Value* generateImportedFunctionCallIR(const AstContext& astContext, llvm::ArrayRef<llvm::Value*> args = llvm::None);
+            llvm::Value* generateImportedFunctionCallIR(const AstContext& astContext, llvm::ArrayRef<llvm::Value*> args = llvm::ArrayRef<llvm::Value*>{});
 
         public:
             

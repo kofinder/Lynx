@@ -113,4 +113,6 @@ target_compile_features(LynxLSPServer PUBLIC cxx_std_23)
 # === Compiler paths
 # ==========================
 set(CMAKE_C_COMPILER "/usr/bin/clang-21")
-set(CMAKE_CXX_COMPILER "/usr/bin/clang++-21")
+set(CMAKE_CXX_COMPILER "/usr/bin/clang-21")
+
+# set(CMAKE_CXX_COMPILER "/usr/bin/clang++-21")

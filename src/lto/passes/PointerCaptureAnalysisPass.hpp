@@ -22,15 +22,10 @@
 
 #include "llvm/IR/PassManager.h"
 
-
 namespace LynxLTO {
 
-    class PointerCaptureAnalysisPass : public llvm::PassInfoMixin<PointerCaptureAnalysisPass> {
-        
-        public:
-
-            llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
-
+    struct PointerCaptureAnalysisPass : public llvm::PassInfoMixin<PointerCaptureAnalysisPass> {
+        llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
     };
 
 }

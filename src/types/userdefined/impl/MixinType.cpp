@@ -66,7 +66,7 @@ namespace LynxTypes {
     }    
 
     llvm::Type* MixinType::getLLVMPointerType() const {
-        if (!cachedPointerType) cachedPointerType = llvm::PointerType::getUnqual(getLLVMType());
+        if (!cachedPointerType) cachedPointerType = llvm::PointerType::get(getLLVMType()->getContext(), 0);
         return cachedPointerType;
     }
 
@@ -209,9 +209,9 @@ namespace LynxTypes {
     MixinType* MixinType::fromLLVMType(const llvm::Type* type) {
         if (!type) return nullptr;
 
-        if (auto ptrType = llvm::dyn_cast<llvm::PointerType>(type)) {
-            type = ptrType->getPointerElementType();
-        }
+        // if (auto ptrType = llvm::dyn_cast<llvm::PointerType>(type)) {
+        //     type = ptrType->getPointerElementType();
+        // }
 
         if (auto structType = llvm::dyn_cast<llvm::StructType>(type)) {
             auto it = llvmTypeToClass.find(structType);

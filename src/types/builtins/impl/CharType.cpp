@@ -24,7 +24,7 @@ namespace LynxTypes {
 
     llvm::Type* CharType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        return llvm::PointerType::getUnqual(computeLLVMType());
+        return llvm::PointerType::get(computeLLVMType()->getContext(), 0);
     }
 
     llvm::Value* CharType::getDefaultValue() {

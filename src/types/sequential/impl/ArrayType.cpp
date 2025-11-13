@@ -137,7 +137,8 @@ namespace LynxTypes {
 
     llvm::Type* ArrayType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        return computeLLVMType()->getPointerTo();
+        auto* arrayType = computeLLVMType();
+        return llvm::PointerType::get(arrayType->getContext(), 0);
     }
 
     llvm::Value* ArrayType::getDefaultValue() {

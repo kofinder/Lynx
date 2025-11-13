@@ -18,22 +18,60 @@
 #ifndef LYNX_FUNC_SANITIZE_COVERAGE_HANDLER_HPP
 #define LYNX_FUNC_SANITIZE_COVERAGE_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
-
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
-    using namespace LynxLogger;
-
     class SanitizeCoverageHandler : public FunctionAttributeHandler {
+
         protected:
+
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked SanitizeCoverageHandler");
-            }
-        };
+                if (!func) return;
+
+                auto &ctx = func->getContext();
+                
+                bool requiresHWASan = false;
+                for (const auto &BB : *func) {
+                    for (const auto &I : BB) {
+                        // Detect memory stores
+                        if (llvm::isa<llvm::StoreInst>(&I)) {
+                            requiresHWASan = true;
+                            break;
+                        }
         
-         
+                        // Detect pointer arithmetic
+                        if (llvm::isa<llvm::GetElementPtrInst>(&I)) {
+                            requiresHWASan = true;
+                            break;
+                        }
+        
+                        // Detect stack memory allocations
+                        if (llvm::isa<llvm::AllocaInst>(&I)) {
+                            requiresHWASan = true;
+                            break;
+                        }
+        
+                        // Memory intrinsics: memcpy/memset/memmove
+                        if (const auto *call = llvm::dyn_cast<llvm::CallBase>(&I)) {
+                            if (call->getCalledFunction()) {
+                                llvm::StringRef name = call->getCalledFunction()->getName();
+                                if (name.contains("memcpy") || name.contains("memset") || name.contains("memmove")) {
+                                    requiresHWASan = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (requiresHWASan) break;
+                }
+        
+                if (requiresHWASan) {
+                    builder.addAttribute(llvm::Attribute::get(ctx, "sanitize_hwaddress"));
+                    LOG_INFO("Applied 'sanitize_hwaddress' attribute to function {}", func->getName().str());
+                }        
+            }
+    }; 
                 
 }
 

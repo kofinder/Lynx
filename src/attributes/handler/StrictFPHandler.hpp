@@ -15,12 +15,10 @@
  * @date: November 4, 2025
 */
 
-
 #ifndef LYNX_FUNC_STRICT_FP_HANDLER_HPP
 #define LYNX_FUNC_STRICT_FP_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
-
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
@@ -29,10 +27,12 @@ namespace LynxFunctionAttr {
         protected:
 
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
+                if (!func) return;
                 if (func->hasFnAttribute("strictfp")) {
-                    builder.addAttribute(llvm::Attribute::StrictFP);
-                    LOG_INFO("Applied strict-fp attributes");
-                }
+                    llvm::LLVMContext &ctx = func->getContext();
+                    builder.addAttribute(llvm::Attribute::get(ctx, llvm::Attribute::StrictFP));
+                    LOG_INFO("Applied 'StrictFP' attribute to function {}", func->getName().str());
+                }        
             }
     };     
                 

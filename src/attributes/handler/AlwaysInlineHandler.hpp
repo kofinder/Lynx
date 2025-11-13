@@ -17,7 +17,7 @@
 #ifndef LYNX_FUNC_ALWAYS_INLINE_HANDLER_HPP
 #define LYNX_FUNC_ALWAYS_INLINE_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
@@ -30,7 +30,7 @@ namespace LynxFunctionAttr {
                 if (func->size() <= 5) {
                     llvm::LLVMContext &ctx = func->getContext();
                     builder.addAttribute(llvm::Attribute::get(ctx, llvm::Attribute::AlwaysInline));
-                    LOG_ERROR("Applied alwaysinline attribute");
+                    LOG_INFO("Applied alwaysinline attribute");
                 }
             }
     };    

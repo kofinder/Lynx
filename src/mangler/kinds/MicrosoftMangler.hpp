@@ -37,19 +37,19 @@ namespace LynxMangler {
         public:
 
             std::string mangleFunction(const std::string& funcName, const ParameterTypes& paramTypes) override {
-                return nullptr;
+                return ""; 
             }
 
             std::string mangleMemberFunction(const std::string& className, const std::string& funcName, const ParameterTypes& paramTypes) override {
-                return nullptr;
+                return ""; 
             }
         
             std::string mangleConstructor(const std::string& className, const ParameterTypes& paramTypes) override {
-                return nullptr;
+                return ""; 
             }
         
             std::string mangleClass(const std::string& className) override {
-                return nullptr;
+                return ""; 
             }
     };
 }

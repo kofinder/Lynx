@@ -78,7 +78,7 @@ namespace LynxSystem {
 
                 // Prepare LLVM printf arguments
                 std::vector<llvm::Value*> printfArgs;
-                auto* fmtStr = builder.CreateGlobalStringPtr(finalFmt, "fmt");
+                auto* fmtStr = builder.CreateGlobalString(finalFmt, "fmt");
                 printfArgs.push_back(fmtStr);
 
                 // Append actual argument values

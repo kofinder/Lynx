@@ -62,7 +62,7 @@ namespace LynxAst::PAC {
                 if (!pacAvailable) return ptr; // fallback: no signing
 
                 auto* ptrType = ptr->getType();
-                auto* pacSign = llvm::Intrinsic::getDeclaration(M, llvm::Intrinsic::ptrauth_sign, {ptrType});
+                auto* pacSign = llvm::Intrinsic::getOrInsertDeclaration(M, llvm::Intrinsic::ptrauth_sign, {ptrType});
                 return B.CreateCall(pacSign, {ptr}, "signed_ptr");
             }
         
@@ -79,7 +79,7 @@ namespace LynxAst::PAC {
                 if (!pacAvailable) return ptr; // fallback: no signing
 
                 auto* ptrType = ptr->getType();
-                auto* pacAuth = llvm::Intrinsic::getDeclaration(M, llvm::Intrinsic::ptrauth_auth, {ptrType});
+                auto* pacAuth = llvm::Intrinsic::getOrInsertDeclaration(M, llvm::Intrinsic::ptrauth_auth, {ptrType});
                 auto* discVal = llvm::ConstantInt::get(B.getInt64Ty(), discriminator);
                 return B.CreateCall(pacAuth, {ptr, discVal}, "auth_ptr");
             }
@@ -113,28 +113,28 @@ namespace LynxAst::PAC {
             */
            llvm::Value* call(llvm::Value* funcPtr, llvm::ArrayRef<llvm::Value*> args = {}, uint64_t discriminator = 0) {
                 if (!pacAvailable) return funcPtr; // fallback: no signing
+                return funcPtr;
+                // // Sign and authenticate
+                // auto* authPtr = signAndAuth(funcPtr, discriminator);
 
-                // Sign and authenticate
-                auto* authPtr = signAndAuth(funcPtr, discriminator);
+                // auto* ptrType = funcPtr->getType();
+                // if (!ptrType->isPointerTy() || !ptrType->getPointerElementType()->isFunctionTy()) {
+                //     llvm::errs() << "CallerUtils::call: Value is not a function pointer\n";
+                //     return nullptr;
+                // }
 
-                auto* ptrType = funcPtr->getType();
-                if (!ptrType->isPointerTy() || !ptrType->getPointerElementType()->isFunctionTy()) {
-                    llvm::errs() << "CallerUtils::call: Value is not a function pointer\n";
-                    return nullptr;
-                }
+                // // Use dyn_cast for Type*
+                // auto* funcType = llvm::dyn_cast<llvm::FunctionType>(ptrType->getPointerElementType());
+                // if (!funcType) {
+                //     llvm::errs() << "CallerUtils::call: Pointer element is not a FunctionType\n";
+                //     return nullptr;
+                // }
 
-                // Use dyn_cast for Type*
-                auto* funcType = llvm::dyn_cast<llvm::FunctionType>(ptrType->getPointerElementType());
-                if (!funcType) {
-                    llvm::errs() << "CallerUtils::call: Pointer element is not a FunctionType\n";
-                    return nullptr;
-                }
-
-                // Cast back to original type
-                auto* castPtr = B.CreateBitCast(authPtr, ptrType);
+                // // Cast back to original type
+                // auto* castPtr = B.CreateBitCast(authPtr, ptrType);
         
-                // Call the function
-                return B.CreateCall(funcType, castPtr, args);
+                // // Call the function
+                // return B.CreateCall(funcType, castPtr, args);
             }
 
             bool supportsPAC(const llvm::Module* M) {

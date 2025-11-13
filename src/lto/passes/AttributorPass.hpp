@@ -23,11 +23,8 @@
 
 namespace LynxLTO {
 
-    class AttributorPass : public llvm::PassInfoMixin<AttributorPass> {
-
-        public:
-
-            llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
+    struct AttributorPass : public llvm::PassInfoMixin<AttributorPass> {
+        llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
     };
 
 }

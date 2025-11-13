@@ -11,14 +11,13 @@ namespace LynxTypes {
 
     llvm::Type* BooleanType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt1Ty(context);
+        return llvm::Type::getInt1Ty(astContext->getLLVMContext());
     }
 
     llvm::Type* BooleanType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt1PtrTy(context);
+        auto* boolTy = llvm::Type::getInt1Ty(astContext->getLLVMContext());
+        return llvm::PointerType::get(boolTy->getContext(), 0);
     }
 
     llvm::Value* BooleanType::getDefaultValue() {
@@ -46,8 +45,8 @@ namespace LynxTypes {
         // Directly use the boolean (i1) to select the string value.
         llvm::Value* booleanAsString = builder.CreateSelect(
             value,  // Boolean condition (i1)
-            builder.CreateGlobalStringPtr("true"),  // If true
-            builder.CreateGlobalStringPtr("false")  // If false
+            builder.CreateGlobalString("true"),  // If true
+            builder.CreateGlobalString("false")  // If false
         );
         
         return booleanAsString;

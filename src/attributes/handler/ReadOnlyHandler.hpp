@@ -18,27 +18,33 @@
 #ifndef LYNX_FUNC_READ_ONLY_HANDLER_HPP
 #define LYNX_FUNC_READ_ONLY_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
-
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
-
-    using namespace LynxLogger;
-
 
     class ReadOnlyHandler : public FunctionAttributeHandler {
 
         protected:
         
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked ReadOnlyHandler");
-                if (/* check if function only reads memory */ false) {
-                    builder.addAttribute(llvm::Attribute::ReadOnly);
-                    LOG_WARN("Applied readonly attributes");
+                if (!func) return;
+
+                bool readsMemoryOnly = true;
+                for (const auto &BB : *func) {
+                    for (const auto &I : BB) {
+                        if (I.mayWriteToMemory() || I.mayHaveSideEffects()) {
+                            readsMemoryOnly = false;
+                            break;
+                        }
+                    }
+                    if (!readsMemoryOnly) break;
                 }
+        
+                if (readsMemoryOnly && !func->onlyReadsMemory()) {
+                    builder.addAttribute(llvm::Attribute::get(func->getContext(), llvm::Attribute::ReadOnly));
+                    LOG_WARN("Applied 'readonly' attribute to function {}", func->getName().str());
+                }        
             }
-    
     };    
 
 }

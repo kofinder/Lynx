@@ -16,21 +16,20 @@
 #ifndef LYNX_FUNC_NO_SANITIZE_ADDRESS_HANDLER_HPP
 #define LYNX_FUNC_NO_SANITIZE_ADDRESS_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
-
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
-    using namespace LynxLogger;
-
-
     class NoSanitizeAddressHandler : public FunctionAttributeHandler {
+
         protected:
+
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked NoSanitizeAddressHandler");
+                if (!func) return;
+                builder.addAttribute(llvm::Attribute::get(func->getContext(), "no_sanitize_address"));
+                LOG_INFO("Applied 'no_sanitize_address' attribute to function {}", func->getName().str());
             }
-        };                
+    };                
 }
 
 #endif

@@ -8,13 +8,13 @@ namespace LynxAst {
     llvm::Value* LiteralNode::generateCode(std::shared_ptr<AstContext> astContext) {
         LOG_INFO("IR Code Generation ....");
 
-        if(isNull()) {
+        if (isNull()) {
             auto& context = astContext->getLLVMContext();
-            auto* int32PtrType = llvm::Type::getInt32PtrTy(context); // i32*
+            auto* int32PtrType = llvm::PointerType::get(context, 0);
             auto* nullPtr = llvm::ConstantPointerNull::get(int32PtrType);
             return nullPtr;
         }
-
+    
         auto variableType = astContext->findType(valueType);
 
         if (!variableType) {

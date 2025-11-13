@@ -14,14 +14,13 @@ namespace LynxTypes {
 
     llvm::Type* StringType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::PointerType::get(llvm::Type::getInt8Ty(context), 0); // i8* pointer type
+        return llvm::PointerType::get(llvm::Type::getInt8Ty(astContext->getLLVMContext())->getContext(), 0); // i8* pointer type
     }
 
     llvm::Type* StringType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::PointerType::get(llvm::Type::getInt8Ty(context), 0); // i8* pointer type
+
+        return llvm::PointerType::get(llvm::Type::getInt8Ty(astContext->getLLVMContext())->getContext(), 0); // i8* pointer type
     }
 
     llvm::Value* StringType::getDefaultValue() {

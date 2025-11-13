@@ -59,7 +59,6 @@
 #include "handler/ReturnsTwiceHandler.hpp"
 #include "handler/StrictFPHandler.hpp"
 #include "handler/SanitizeCoverageHandler.hpp"
-#include "handler/AssumeSameAlignedHandler.hpp"
 #include "handler/NoSanitizeMemoryHandler.hpp"
 #include "handler/NoSanitizeThreadHandler.hpp"
 #include "handler/NoSanitizeAddressHandler.hpp"
@@ -115,7 +114,6 @@ namespace LynxFunctionAttr {
             append(std::make_unique<ReturnsTwiceHandler>());
             append(std::make_unique<StrictFPHandler>());
             append(std::make_unique<SanitizeCoverageHandler>());
-            append(std::make_unique<AssumeSameAlignedHandler>());
             append(std::make_unique<NoSanitizeMemoryHandler>());
             append(std::make_unique<NoSanitizeThreadHandler>());
             append(std::make_unique<NoSanitizeAddressHandler>());

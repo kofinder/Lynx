@@ -1,11 +1,46 @@
 #include <passes/FunctionDocExtractorPass.hpp>
+#include "llvm/IR/Module.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/Type.h"
+#include "llvm/Support/raw_ostream.h"
 
 namespace LynxLTO {
+  
     llvm::PreservedAnalyses FunctionDocExtractorPass::run(llvm::Module &M, llvm::ModuleAnalysisManager &MAM) {
         llvm::errs() << "Running FunctionDocExtractorPass on module: " << "\n";
+        
+        funcInfo.clear();
+
+        for (auto &F : M) {
+            if (F.isDeclaration()) continue;
     
-        // Iterate functions and dump documentation metadata or other info here
+            FunctionInfo FI;
+            FI.Name = F.getName().str();
     
+            std::string RetTypeStr;
+            llvm::raw_string_ostream RetStream(RetTypeStr);
+            F.getReturnType()->print(RetStream);
+            FI.ReturnType = RetStream.str();
+    
+            for (auto &Arg : F.args()) {
+                std::string ArgTypeStr;
+                llvm::raw_string_ostream ArgStream(ArgTypeStr);
+                Arg.getType()->print(ArgStream);
+                FI.Args.emplace_back(Arg.getName().str(), ArgStream.str());
+            }
+    
+            if (F.hasFnAttribute(llvm::Attribute::ReadOnly)) {
+                FI.Attributes.push_back("readonly");
+            }
+                
+            if (F.hasFnAttribute(llvm::Attribute::NoInline)) {
+                FI.Attributes.push_back("noinline");
+            }
+                
+    
+            funcInfo.push_back(std::move(FI));
+        }
+
         return llvm::PreservedAnalyses::all();
     }
     

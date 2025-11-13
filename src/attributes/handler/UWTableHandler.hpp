@@ -18,8 +18,7 @@
 #ifndef LYNX_FUNC_UW_TABLE_HANDLER_HPP
 #define LYNX_FUNC_UW_TABLE_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
-
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
@@ -29,9 +28,9 @@ namespace LynxFunctionAttr {
 
             bool hasLandingPad(const llvm::Function* func) {
                 for (const auto& BB : *func) {
-                    if (llvm::isa<llvm::LandingPadInst>(BB.getFirstNonPHI())) {
-                        return true;
-                    }    
+                    if (auto* LPI = llvm::dyn_cast<llvm::LandingPadInst>(BB.getFirstNonPHIIt())) {
+                        if (LPI) return true;
+                    }
                 }
                 return false;
             }
@@ -39,9 +38,11 @@ namespace LynxFunctionAttr {
         protected:
         
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
+                if (!func) return;
                 if (!func->hasFnAttribute(llvm::Attribute::NoUnwind) || hasLandingPad(func)) {
-                    builder.addAttribute(llvm::Attribute::UWTable);
-                    LOG_ERROR("Applied UWTable attributes");
+                    llvm::LLVMContext &ctx = func->getContext();
+                    builder.addAttribute(llvm::Attribute::get(ctx, llvm::Attribute::UWTable));
+                    LOG_INFO("Applied 'UWTable' attribute to function {}", func->getName().str());
                 }
             }
     };              

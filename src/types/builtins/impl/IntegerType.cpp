@@ -12,14 +12,13 @@ namespace LynxTypes {
 
     llvm::Type* IntegerType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt32Ty(context);
+        return llvm::Type::getInt32Ty(astContext->getLLVMContext());
     }
 
     llvm::Type* IntegerType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt32PtrTy(context);
+        auto* intTy = llvm::Type::getInt32Ty(astContext->getLLVMContext());
+        return llvm::PointerType::get(intTy->getContext(), 0);
     }
 
     llvm::Value* IntegerType::getDefaultValue() {
@@ -41,13 +40,10 @@ namespace LynxTypes {
        
         return var;
     }
-    
 
     llvm::Value* IntegerType::createValue(LValueType value) const {
-        assert(astContext && "IntegerType must be constructed with a valid AstContext");      
         if(std::holds_alternative<int>(value)) {
             auto& context = astContext->getLLVMContext();
-            assert(&context && "LLVMContext is not initialized!");   
             int intValue = std::get<int>(value); 
             return llvm::ConstantInt::get(context, llvm::APInt(32, intValue));
         }

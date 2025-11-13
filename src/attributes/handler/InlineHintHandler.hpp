@@ -17,24 +17,22 @@
 #ifndef LYNX_FUNC_INLINE_HIT_HANDLER_HPP
 #define LYNX_FUNC_INLINE_HIT_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
-
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
-
 
     class InlineHintHandler : public FunctionAttributeHandler {
 
         protected:
 
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
+                if (!func) return;
                 llvm::StringRef name = func->getName();
                 if (name.size() >= 11 && name.substr(0, 11) == "hint_inline") {
-                    builder.addAttribute(llvm::Attribute::InlineHint);
-                    LOG_WARN("Applied hint_inline attributes");
+                    builder.addAttribute(llvm::Attribute::get(func->getContext(), "inlinehint"));
+                    LOG_INFO("Applied 'inlinehint' attribute to function {} ", name.str());
                 }
             }
-
     };
 }        
 

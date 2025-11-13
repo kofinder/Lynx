@@ -36,9 +36,13 @@ namespace LynxResolver {
             if (!lhsPtr || !rhs) return nullptr;
 
             auto& builder = ctx.getBuilder();
-        
+            auto& llvmCtx = ctx.getLLVMContext();
+
+
+            auto* i8PtrTy = llvm::PointerType::get(llvmCtx, 0);
+
             // Load the current value
-            llvm::Value* lhsVal = builder.CreateLoad(lhsPtr->getType()->getPointerElementType(), lhsPtr, "load_lhs");
+            llvm::Value* lhsVal = builder.CreateLoad(i8PtrTy, lhsPtr, "load_lhs");
         
             // Perform addition
             llvm::Value* result = builder.CreateAdd(lhsVal, rhs, "int_add");

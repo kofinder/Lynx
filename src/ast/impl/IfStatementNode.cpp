@@ -1,8 +1,7 @@
 #include <logger/Logger.hpp>
+#include "IfStatementNode.hpp"
 #include <helper/ValuePlaceholderNode.hpp>
 #include <constants/metadata/LabelTypeConstants.hpp>
-#include "IfStatementNode.hpp"
-
 
 namespace LynxAst {
     
@@ -13,51 +12,50 @@ namespace LynxAst {
     llvm::Value* IfStatementNode::generateCode(std::shared_ptr<AstContext> astContext) {
         return generateIfElseIf(*astContext);
     }
-    
+
     llvm::Value* IfStatementNode::generateIfElseIf(const AstContext& astContext) {
         auto& context = astContext.getLLVMContext();
         auto& builder = astContext.getBuilder();
-
-        auto* currenctFunc = builder.GetInsertBlock()->getParent();
-        auto* mergeBlock = llvm::BasicBlock::Create(context, LynxLabelTypeConstants::lynxIfElseMerge);
-
+    
+        auto* currentFunc = builder.GetInsertBlock()->getParent();
+        auto* mergeBlock = llvm::BasicBlock::Create(context, LynxLabelTypeConstants::lynxIfElseMerge, currentFunc);
+    
         for (unsigned long i = 0; i < conditions.size(); ++i) {
-            auto* elseIfBlock = llvm::BasicBlock::Create(context, LynxLabelTypeConstants::lynxElseIfCondition);
-            auto* thenBlock = llvm::BasicBlock::Create(context, LynxLabelTypeConstants::lynxIfThenBranch);
-
+            // Pass the parent function to automatically insert the blocks
+            auto* elseIfBlock = llvm::BasicBlock::Create(context, LynxLabelTypeConstants::lynxElseIfCondition, currentFunc);
+            auto* thenBlock = llvm::BasicBlock::Create(context, LynxLabelTypeConstants::lynxIfThenBranch, currentFunc);
+    
             llvm::Value* condValue = nullptr;
-
+    
             if (conditions[i]) {
                 condValue = conditions[i]->generateCode(astContext.createContext());
             } else {
-                auto trueNode = std::make_unique<ValuePlaceholderNode>(llvm::ConstantInt::get(llvm::Type::getInt1Ty(context), 1, false));
+                auto trueNode = std::make_unique<ValuePlaceholderNode>(
+                    llvm::ConstantInt::get(llvm::Type::getInt1Ty(context), 1, false)
+                );
                 condValue = trueNode->generateCode(astContext.createContext());
             }
     
             builder.CreateCondBr(condValue, thenBlock, elseIfBlock);
-
-            currenctFunc->getBasicBlockList().push_back(thenBlock);
+    
             builder.SetInsertPoint(thenBlock);
             statements[i]->generateCode(astContext.createContext());
-
+    
             if (builder.GetInsertBlock()->getTerminator() == nullptr) {
                 builder.CreateBr(mergeBlock);
             }
-
-            currenctFunc->getBasicBlockList().push_back(elseIfBlock);
+    
             builder.SetInsertPoint(elseIfBlock);
-
+    
             if (i == conditions.size() - 1 && builder.GetInsertBlock()->getTerminator() == nullptr) {
                 builder.CreateBr(mergeBlock);
             }
         }
-
-        currenctFunc->getBasicBlockList().push_back(mergeBlock);
+    
         builder.SetInsertPoint(mergeBlock);
-
         return nullptr;
     }
-
+    
     void IfStatementNode::addBranch(std::unique_ptr<Node> condNode, std::unique_ptr<Node> stmtNode) {
         conditions.push_back(std::move(condNode));
         statements.push_back(std::move(stmtNode));

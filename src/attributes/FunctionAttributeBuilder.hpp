@@ -49,30 +49,30 @@ namespace LynxFunctionAttr {
 
             explicit FunctionAttributeBuilder(llvm::Function* func)
             : function(func), 
-            fnAttrs(std::make_unique<llvm::AttrBuilder>()),
-            retAttrs(std::make_unique<llvm::AttrBuilder>()) {
+            fnAttrs(std::make_unique<llvm::AttrBuilder>(func->getContext())),
+            retAttrs(std::make_unique<llvm::AttrBuilder>(func->getContext())) {
                 if (func) {
                     paramAttrs.reserve(func->arg_size());
                     for (unsigned i = 0; i < func->arg_size(); ++i) {
-                        paramAttrs.push_back(std::make_unique<llvm::AttrBuilder>());
+                        paramAttrs.push_back(std::make_unique<llvm::AttrBuilder>(func->getContext()));
                     }
                 }
             }
 
             // Add enum-based function attribute
-            FunctionAttributeBuilder& addAttribute(const llvm::Attribute &attr) {
+            FunctionAttributeBuilder& addAttribute(const llvm::Attribute& attr) {
                 fnAttrs->addAttribute(attr);
                 return *this;        
             }
     
             // Add enum-based return attribute
-            FunctionAttributeBuilder& addAttributeAtRet(const llvm::Attribute &attr) {
+            FunctionAttributeBuilder& addAttributeAtRet(const llvm::Attribute& attr) {
                 retAttrs->addAttribute(attr);
                 return *this;        
             }
     
             // Add enum-based parameter attribute
-            FunctionAttributeBuilder& addAttributeAtParam(llvm::Attribute::AttrKind attr, unsigned paramIndex) {
+            FunctionAttributeBuilder& addAttributeAtParam(const llvm::Attribute& attr, unsigned paramIndex) {
                 if (paramIndex < paramAttrs.size()) {
                     paramAttrs[paramIndex]->addAttribute(attr);
                 }

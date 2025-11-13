@@ -11,7 +11,7 @@
 #include <context/GlobalSymbolContext.hpp>
 #include <constants/LinkageType.hpp>
 #include "utils/NumericPromotion.hpp"
-#include <attributes/interfaces/FunctionAttributeInferer.hpp>
+#include <attributes/FunctionAttributeInferer.hpp>
 
 namespace LynxAst {
 
@@ -110,9 +110,8 @@ namespace LynxAst {
                     returnValue->print(llvm::errs()); llvm::errs() << "\n";
                     throw std::runtime_error("returnValue must be a pointer to load from.");
                 }
-    
-                auto* elementTy = valueType->getPointerElementType();
-                llvm::Value* retLoad = builder.CreateLoad(elementTy, returnValue, LynxLabelTypeConstants::lynxTempReturnValue);
+
+                llvm::Value* retLoad = builder.CreateLoad(valueType, returnValue, LynxLabelTypeConstants::lynxTempReturnValue);
                 builder.CreateRet(retLoad);
             } else {
                 if (retType->isVoidTy()) {
@@ -135,8 +134,11 @@ namespace LynxAst {
         }
     
         llvm::Type* retType = llvmFunction->getReturnType();
+    
+        // Match numeric types or perform casting if needed
         if (isNumericType(value->getType()) && isNumericType(retType)) {
             value = matchConstantType(builder, value, retType);
+    
             if (value->getType() != retType) {
                 if (value->getType()->isIntegerTy() && retType->isIntegerTy()) {
                     value = builder.CreateIntCast(value, retType, true, ".ret_cast");
@@ -154,24 +156,83 @@ namespace LynxAst {
             }
         }
     
-        if (builder.GetInsertBlock() == entryBlock) return builder.CreateRet(value);
+        // Direct return if we're still at the entry block
+        if (builder.GetInsertBlock() == entryBlock) {
+            return builder.CreateRet(value);
+        }
     
+        // Allocate space for the return value if not already done
         if (!returnValue) {
             if (retType->isVoidTy()) {
                 throw std::runtime_error("Attempt to set return value for void function.");
             }
     
-            llvm::Instruction* insertBefore = entryBlock->getFirstNonPHI();
-            if (!insertBefore) insertBefore = &entryBlock->back();
-            returnValue = new llvm::AllocaInst(retType, 0, ".ret_value", insertBefore);
+            // Insert alloca at the start of the entry block (modern LLVM 21 way)
+            llvm::IRBuilder<> tmpBuilder(&entryBlock->front());
+            returnValue = tmpBuilder.CreateAlloca(retType, nullptr, ".ret_value");
         }
     
+        // Store the computed value
         builder.CreateStore(value, returnValue);
-
-        if (!exitBlock) exitBlock = llvm::BasicBlock::Create(context, "exit", llvmFunction);
-
-        return builder.CreateBr(exitBlock);
+    
+        // Create exit block if not yet created
+        if (!exitBlock) {
+            exitBlock = llvm::BasicBlock::Create(context, "exit", llvmFunction);
+        }
+    
+        // Branch to exit block
+        builder.CreateBr(exitBlock);
+    
+        return returnValue;
     }
+    
+
+    // llvm::Value* FunctionNode::setReturnValue(const AstContext& astContext, llvm::Value* value) {
+    //     auto& builder = astContext.getBuilder();
+    //     auto& context = astContext.getLLVMContext();
+    
+    //     if (!value) {
+    //         throw std::runtime_error("Attempt to set a null return value.");
+    //     }
+    
+    //     llvm::Type* retType = llvmFunction->getReturnType();
+    //     if (isNumericType(value->getType()) && isNumericType(retType)) {
+    //         value = matchConstantType(builder, value, retType);
+    //         if (value->getType() != retType) {
+    //             if (value->getType()->isIntegerTy() && retType->isIntegerTy()) {
+    //                 value = builder.CreateIntCast(value, retType, true, ".ret_cast");
+    //             } else if (value->getType()->isFloatingPointTy() && retType->isFloatingPointTy()) {
+    //                 if (value->getType()->getPrimitiveSizeInBits() < retType->getPrimitiveSizeInBits()) {
+    //                     value = builder.CreateFPExt(value, retType, ".ret_fpext");
+    //                 } else {
+    //                     value = builder.CreateFPTrunc(value, retType, ".ret_fptrunc");
+    //                 }
+    //             } else if (value->getType()->isIntegerTy() && retType->isFloatingPointTy()) {
+    //                 value = builder.CreateSIToFP(value, retType, ".ret_sitofp");
+    //             } else if (value->getType()->isFloatingPointTy() && retType->isIntegerTy()) {
+    //                 value = builder.CreateFPToSI(value, retType, ".ret_fptosi");
+    //             }
+    //         }
+    //     }
+    
+    //     if (builder.GetInsertBlock() == entryBlock) return builder.CreateRet(value);
+    
+    //     if (!returnValue) {
+    //         if (retType->isVoidTy()) {
+    //             throw std::runtime_error("Attempt to set return value for void function.");
+    //         }
+    
+    //         llvm::Instruction* insertBefore = entryBlock->getFirstNonPHIIt();
+    //         if (!insertBefore) insertBefore = &entryBlock->back();
+    //         returnValue = new llvm::AllocaInst(retType, 0, ".ret_value", insertBefore);
+    //     }
+    
+    //     builder.CreateStore(value, returnValue);
+
+    //     if (!exitBlock) exitBlock = llvm::BasicBlock::Create(context, "exit", llvmFunction);
+
+    //     return builder.CreateBr(exitBlock);
+    // }
 
     std::string FunctionNode::getCurrentClazzName() const {
         if(auto* clazz = dynamic_cast<ClazzDeclarationNode*>(clazzNode)) {
@@ -182,7 +243,7 @@ namespace LynxAst {
             return mixin->getOriginalName();
         }
 
-        return nullptr;
+        return "";
     }
 
     std::string FunctionNode::getSignatureString() const {

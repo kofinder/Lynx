@@ -20,14 +20,24 @@
 #define LYNX_FUNCTION_DOC_EXTRACTOR_PASS_HPP
 
 #include "llvm/IR/PassManager.h"
+#include <vector>
+#include <string>
 
 namespace LynxLTO {
 
-    class FunctionDocExtractorPass : public llvm::PassInfoMixin<FunctionDocExtractorPass> {
+    struct FunctionInfo {
+        std::string Name;
+        std::string ReturnType;
+        std::vector<std::pair<std::string, std::string>> Args; // Name, Type
+        std::vector<std::string> Attributes;
+    };    
 
-        public:
+    struct FunctionDocExtractorPass : public llvm::PassInfoMixin<FunctionDocExtractorPass> {
 
-            llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
+        std::vector<FunctionInfo> funcInfo;
+
+        llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
+
     };
 
 }

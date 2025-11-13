@@ -14,7 +14,13 @@
 
 #include "IJIT.hpp"
 #include <llvm/ExecutionEngine/Orc/LLJIT.h>
+#include <llvm/ExecutionEngine/Orc/ThreadSafeModule.h>
 #include <llvm/IR/Module.h>
+#include <llvm/Support/Error.h>
+#include <llvm/Support/raw_ostream.h>
+#include <unordered_map>
+#include <memory>
+#include <stdexcept>
 
 namespace LynxJIT {
 

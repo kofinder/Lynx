@@ -12,14 +12,14 @@ namespace LynxTypes {
 
     llvm::Type* FloatType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getFloatTy(context);
+        return llvm::Type::getFloatTy(astContext->getLLVMContext());
     }
 
     llvm::Type* FloatType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getFloatPtrTy(context);
+        auto* floatTy = llvm::Type::getFloatTy(astContext->getLLVMContext());
+        auto* floatPtr = llvm::PointerType::get(floatTy->getContext(), 0); 
+        return floatPtr;
     }
 
     llvm::Value* FloatType::getDefaultValue() {

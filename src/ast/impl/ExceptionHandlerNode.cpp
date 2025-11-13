@@ -34,15 +34,13 @@ namespace LynxAst {
         }
 
         // catch block
+        auto int8PtrTy = llvm::PointerType::get(context, 0);
         builder.SetInsertPoint(exceptionBlock);
-        std::vector<llvm::Type *> caughtResultFieldTypes = {
-            builder.getInt8PtrTy(),
-            builder.getInt32Ty()
-        };
+        std::vector<llvm::Type *> caughtResultFieldTypes = { int8PtrTy, builder.getInt32Ty()};
 
         auto* ourCaughtResultType = llvm::StructType::get(context, caughtResultFieldTypes);
         auto* caughtResult = builder.CreateLandingPad(ourCaughtResultType, 1, "landingPad");
-        auto ptr = builder.CreateBitCast(module->getGlobalVariable("_ZTIi"), builder.getInt8PtrTy());
+        auto ptr = builder.CreateBitCast(module->getGlobalVariable("_ZTIi"), int8PtrTy);
         caughtResult->addClause(static_cast<llvm::Constant *>(ptr));
 
         // TODO properly

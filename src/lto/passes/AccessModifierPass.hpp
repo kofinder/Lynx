@@ -23,15 +23,8 @@
 
 namespace LynxLTO {
 
-    class AccessModifierPass : public llvm::PassInfoMixin<AccessModifierPass> {
-
-        private:
-
-            static char ID;
-
-        public:
-
-            llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
+    struct AccessModifierPass : public llvm::PassInfoMixin<AccessModifierPass> {
+        llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
     };
 
 }

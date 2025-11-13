@@ -2,6 +2,7 @@
 #define LYNX_LIB_RUNTIME_FS_CLOSE_FUNCTIONS_HPP
 
 #include "RuntimeFunction.hpp"
+#include <llvm/IR/Module.h>
 #include "filesystem/file/FileFunctionTypes.hpp" 
 
 namespace LynxLibRuntime {
@@ -31,8 +32,8 @@ namespace LynxLibRuntime {
                 auto& llvmCtx = astContext->getLLVMContext();
 
                 // Validate struct pointer
-                if (file->getType() != llvm::Type::getInt8PtrTy(llvmCtx)) {
-                    file = builder.CreateBitCast(file, llvm::Type::getInt8PtrTy(llvmCtx), "file_cast");
+                if (file->getType() != llvm::PointerType::get(llvmCtx, 0)) {
+                    file = builder.CreateBitCast(file, llvm::PointerType::get(llvmCtx, 0), "file_cast");
                 }
 
                 llvm::Function* closeFunc = module->getFunction("file_close");

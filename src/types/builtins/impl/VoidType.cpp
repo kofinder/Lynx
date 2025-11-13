@@ -16,7 +16,7 @@ namespace LynxTypes {
     llvm::Type* VoidType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
         auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt8PtrTy(context);
+        return llvm::PointerType::get(context, 0);
     }
 
     llvm::Value* VoidType::getDefaultValue() {

@@ -62,7 +62,7 @@ namespace LynxSystem {
             */
             std::vector<llvm::Value*> buildPrintfArgs(llvm::IRBuilder<>& builder, llvm::Module* module, const std::string& fmt, const std::vector<llvm::Value*>& args) const noexcept {
                 std::vector<llvm::Value*> printfArgs;
-                printfArgs.push_back(builder.CreateGlobalStringPtr(fmt, "fmt"));
+                printfArgs.push_back(builder.CreateGlobalString(fmt, "fmt"));
                 for (auto* arg : args) {
                     if (!arg) continue;
                     auto prepared = preparePrintfArguments(builder, module, arg);

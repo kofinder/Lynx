@@ -18,8 +18,7 @@
 #ifndef LYNX_FUNC_STACK_PROTECTOR_HANDLER_HPP
 #define LYNX_FUNC_STACK_PROTECTOR_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
-
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
@@ -28,10 +27,13 @@ namespace LynxFunctionAttr {
         protected:
 
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
+                if (!func) return;
                 if (func->hasFnAttribute("stack-protector")) {
-                    builder.addAttribute(llvm::Attribute::StackProtect);
-                    LOG_INFO("Applied StackProtect attributes");
+                    llvm::LLVMContext &ctx = func->getContext();
+                    builder.addAttribute(llvm::Attribute::get(ctx, llvm::Attribute::StackProtect));
+                    LOG_INFO("Applied 'StackProtect' attribute to function {}", func->getName().str());
                 }
+        
             }
     };        
 

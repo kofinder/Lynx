@@ -17,9 +17,7 @@
 #ifndef LYNX_FUNC_NO_UNWIND_HANDLER_HPP
 #define LYNX_FUNC_NO_UNWIND_HANDLER_HPP
 
-
-#include "FunctionAttributeHandler.hpp"
-
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
@@ -46,12 +44,11 @@ namespace LynxFunctionAttr {
         protected:
         
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked NoUnwindHandler");
+                if (!func) return;
                 if (!mayThrow(func)) {
-                    LOG_ERROR("Applied NonUnwind attributes");
-                    builder.addAttribute(llvm::Attribute::NoUnwind);
-                }
-                
+                    builder.addAttribute(llvm::Attribute::get(func->getContext(), llvm::Attribute::NoUnwind));
+                    LOG_ERROR("Applied 'nounwind' attribute to function {}", func->getName().str());
+                }        
             }
     
     };    

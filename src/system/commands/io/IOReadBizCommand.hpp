@@ -55,7 +55,7 @@ namespace LynxSystem {
     
                 auto* scanfFunc = getOrCreateScanf(builder.getContext(), module);
 
-                auto* formatStr = builder.CreateGlobalStringPtr(fmt, "scanf_fmt");
+                auto* formatStr = builder.CreateGlobalString(fmt, "scanf_fmt");
             
                 auto* tmpVar = builder.CreateAlloca(valueType, nullptr, "scanf_tmp");
             

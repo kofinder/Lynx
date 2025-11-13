@@ -45,7 +45,7 @@ namespace LynxAst::CollectionUtils {
         llvm::Type* type = constSource->getType();
     
         // Get pointer types
-        llvm::Type* i8PtrTy = llvm::Type::getInt8PtrTy(context);
+        llvm::Type* i8PtrTy = llvm::PointerType::get(context, 0);
     
         // Bitcast both to i8*
         llvm::Value* destI8 = builder.CreateBitCast(destAlloca, i8PtrTy, "dest.cast");

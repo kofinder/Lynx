@@ -1,5 +1,5 @@
 /**
- * @file AttributorPass.hpp
+ * @file WholeProgramDevirtPass.hpp
  * @brief Defines a whole-program devirtualization pass using LLVM's new pass manager.
  *
  * The `WholeProgramDevirtPass` class provides a pass for devirtualizing virtual
@@ -16,18 +16,15 @@
  * @date: November 2, 2024
 */
 
-#ifndef LYNX_ATTRIBUTOR_PASS_HPP
-#define LYNX_ATTRIBUTOR_PASS_HPP
+#ifndef LYNX_WHOLE_PROGRAM_DEVIRT_PASS_HPP
+#define LYNX_WHOLE_PROGRAM_DEVIRT_PASS_HPP
 
 #include "llvm/IR/PassManager.h"
 
 namespace LynxLTO {
 
-    class WholeProgramDevirtPass : public llvm::PassInfoMixin<WholeProgramDevirtPass> {
-
-        public:
-
-            llvm::PreservedAnalyses run(llvm::Module &M, llvm::ModuleAnalysisManager& MAM);
+    struct WholeProgramDevirtPass : public llvm::PassInfoMixin<WholeProgramDevirtPass> {
+        llvm::PreservedAnalyses run(llvm::Module &M, llvm::ModuleAnalysisManager& MAM);
     };
 
 }

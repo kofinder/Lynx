@@ -6,7 +6,7 @@
 #include "llvm/Transforms/Utils/Cloning.h"
 #include <llvm/Target/TargetMachine.h>
 #include <llvm/Support/TargetSelect.h>
-#include <llvm/Support/Host.h>
+#include <llvm/TargetParser/Host.h>
 #include <llvm/MC/TargetRegistry.h>
 #include <llvm/Support/ErrorHandling.h>
 #include <logger/Logger.hpp>
@@ -98,7 +98,9 @@ namespace LynxCodegen {
 
     void IRGenerator::setupTargetMachine(llvm::Module* module) {
         // Set the target triple for the module
-        auto targetTriple = llvm::sys::getDefaultTargetTriple();
+        std::string hostTripleStr = llvm::sys::getProcessTriple();
+        llvm::Triple targetTriple(hostTripleStr);
+        // auto targetTriple = llvm::sys::getDefaultTargetTriple();
         module->setTargetTriple(targetTriple);
 
         // Initialize target registry and obtain target

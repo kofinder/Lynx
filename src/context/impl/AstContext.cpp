@@ -152,12 +152,12 @@ namespace LynxContext {
 
 
     std::shared_ptr<BaseType> AstContext::findType(llvm::Value* llvmValue) const {
-        if (!llvmValue) nullptr;
+        if (!llvmValue) return nullptr;
 
         llvm::Type* valType = llvmValue->getType();
-        if(valType->isPointerTy()) {
-            valType = valType->getPointerElementType();
-        }
+        // if(valType->isPointerTy()) {
+        //     valType = valType->getPointerElementType();
+        // }
 
         for (const auto& x : *types) {
 
@@ -165,12 +165,12 @@ namespace LynxContext {
 
             llvm::Type* llvmType = x.second->getLLVMType();
 
-            if (llvmType->isPointerTy()) {
-                llvmType = llvmType->getPointerElementType();
-            }
+            // if (llvmType->isPointerTy()) {
+            //     llvmType = llvmType->getPointerElementType();
+            // }
 
-            // llvmType->print(llvm::errs()); llvm::errs() << " vs ";
-            // valType->print(llvm::errs()); llvm::errs() << "\n";
+            llvmType->print(llvm::errs()); llvm::errs() << " vs ";
+            valType->print(llvm::errs()); llvm::errs() << "\n";
 
             if (llvmType == valType) return x.second;
                 
@@ -214,7 +214,8 @@ namespace LynxContext {
         auto* mallocCall = builder.CreateCall(mallocFn, { allocSize }, "gc_alloc");
 
         // Cast to the correct object pointer type
-        auto objectInstance = builder.CreateBitCast(mallocCall, objType->getPointerTo(), "gc_cast");
+        auto* objectPtrTy = llvm::PointerType::get(objType->getContext(), 0);
+        auto objectInstance = builder.CreateBitCast(mallocCall, objectPtrTy, "gc_cast");
 
         auto baseType = findType(objectInstance);
         if(auto clazzType = TypeCasting::castType<ClassType>(baseType.get())) {
@@ -227,7 +228,7 @@ namespace LynxContext {
 
     llvm::Function* AstContext::getOrInsertGCAllocFunc(llvm::ConstantInt* allocSize, const std::string& fnName) {
     
-        auto* voidPtrType = llvm::Type::getInt8PtrTy(getLLVMContext());
+        auto* voidPtrType = llvm::PointerType::get(getLLVMContext(), 0);
 
         // Define function type: i8* func(i64)
         auto mallocType = llvm::FunctionType::get(voidPtrType, { allocSize->getType() }, false);

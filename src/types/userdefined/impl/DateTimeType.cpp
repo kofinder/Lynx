@@ -37,7 +37,7 @@ namespace LynxTypes {
 
     llvm::Type* DateTimeType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        return computeLLVMType()->getPointerTo();
+        return llvm::PointerType::get(computeLLVMType()->getContext(), 0);
     }
 
     llvm::Value* DateTimeType::getDefaultValue() {
@@ -67,35 +67,6 @@ namespace LynxTypes {
         }
         return var;
     }
-
-    // llvm::Value* DateTimeType::createValue(LValueType value) const {
-    //     LOG_INFO("Invoked...");
-    //     if (!std::holds_alternative<DateTime>(value)) {
-    //         LOG_ERROR("Invalid LValueType for DateTimeType");
-    //         return nullptr;
-    //     }
-
-    //     LOG_ERROR("Unsupported value type");
-
-    //     auto& builder = astContext->getBuilder();
-    //     auto& context = astContext->getLLVMContext();
-    
-    //     const DateTime& date = std::get<DateTime>(value);
-    //     auto* structType = llvm::cast<llvm::StructType>(computeLLVMType());
-
-    //     llvm::Constant* constant = llvm::ConstantStruct::get(structType, {
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.year)),
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.month)),
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.day)),
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.hour)), // hour
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.minute)), // minute
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.second)), // second
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.millisecond)),  // millisecond
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.timeZoneOffsetMinutes))  // millisecond
-    //     });
-
-    //     return constant;
-    // }
 
     llvm::Value* DateTimeType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
         LOG_INFO("Invoked...");

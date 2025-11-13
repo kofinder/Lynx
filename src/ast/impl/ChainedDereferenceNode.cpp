@@ -40,26 +40,23 @@ namespace LynxAst {
             auto* fieldNode = derefChain[i].get();
             std::string fieldName = fieldNode->getIdentifierAccessNode()->getName();
     
-            // If pointer, get the pointed-to type
-            if (currentType->isPointerTy()) {
-                currentType = currentType->getPointerElementType();
+            // LLVM 21: If pointer, keep the PointerType, do not call getPointerElementType
+            if (auto* ptrType = llvm::dyn_cast<llvm::PointerType>(currentType)) {
+                currentType = ptrType; 
             }
-    
-            // Load value if current type is not a struct
-            if (!currentType->isStructTy()) {
+
+            // If current type is not a struct pointer, load the value
+            if (!currentType->isStructTy() && currentType->isPointerTy()) {
                 currentPtr = builder.CreateLoad(currentType, currentPtr, fieldName + "_load");
                 currentType = currentPtr->getType();
-                if (currentType->isPointerTy()) {
-                    currentType = currentType->getPointerElementType();
-                }
             }
-    
-            // Ensure it's a struct before field access
-            if (!currentType->isStructTy()) {
+
+            // Ensure it's a struct pointer before field access
+            if (!currentType->isPointerTy() && !currentType->isStructTy()) {
                 LOG_ERROR("Expected struct type before accessing field '{}'.", fieldName);
                 return nullptr;
             }
-    
+
             // Cast type and find the field index
             auto* structType = llvm::cast<llvm::StructType>(currentType);
             auto* clazzType = ClassType::fromLLVMType(structType);

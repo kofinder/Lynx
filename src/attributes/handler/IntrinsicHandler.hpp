@@ -17,34 +17,33 @@
 #ifndef LYNX_FUNC_INTRISIC_HANDLER_HPP
 #define LYNX_FUNC_INTRISIC_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
-
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
-
-    using namespace LynxLogger;
 
     class IntrinsicHandler : public FunctionAttributeHandler {
 
         protected:
 
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked IntrinsicHandler");
+                if (!func) return;
+
                 if (func->isIntrinsic()) {
-                    // Safe defaults for intrinsic functions
-                    builder.addAttribute(llvm::Attribute::NoUnwind);
-                    builder.addAttribute(llvm::Attribute::WillReturn);
+                    auto &ctx = func->getContext();
     
+                    // Safe defaults for intrinsic functions
+                    builder.addAttribute(llvm::Attribute::get(ctx, llvm::Attribute::NoUnwind));
+                    builder.addAttribute(llvm::Attribute::get(ctx, llvm::Attribute::WillReturn));
+        
                     // Conservative memory access assumptions
                     if (func->doesNotAccessMemory()) {
-                        builder.addAttribute(llvm::Attribute::ReadNone);
+                        builder.addAttribute(llvm::Attribute::get(ctx, llvm::Attribute::ReadNone));
                     } else if (func->onlyReadsMemory()) {
-                        builder.addAttribute(llvm::Attribute::ReadOnly);
+                        builder.addAttribute(llvm::Attribute::get(ctx, llvm::Attribute::ReadOnly));
                     }
-    
-                    LOG_WARN("Applied intrinsic-safe attributes");
-                }    
+        
+                    LOG_INFO("Applied intrinsic-safe attributes");
+                }  
             }
     };
 }

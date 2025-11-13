@@ -20,11 +20,12 @@
 #define LYNX_LTO_FACADE_HPP
 
 #include <iostream>
+#include <optional>
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Verifier.h"
-#include <llvm/Support/Host.h> 
+#include <llvm/TargetParser/Host.h>
 #include "llvm/IR/PassManager.h"
 #include "llvm/Support/raw_ostream.h"
 #include <llvm/Support/FileSystem.h>
@@ -68,7 +69,8 @@ namespace LynxLTO {
             }
 
             void emitAssembly(llvm::Module &M, const std::string &filename) {
-                auto targetTriple = llvm::sys::getDefaultTargetTriple();
+                std::string hostTripleStr = llvm::sys::getProcessTriple();
+                llvm::Triple targetTriple(hostTripleStr);
                 std::string error;
                 const llvm::Target *target = llvm::TargetRegistry::lookupTarget(targetTriple, error);
             
@@ -78,7 +80,7 @@ namespace LynxLTO {
                 }
             
                 llvm::TargetOptions opt;
-                auto RM = llvm::Optional<llvm::Reloc::Model>();
+                auto RM = std::optional<llvm::Reloc::Model>();
                 std::unique_ptr<llvm::TargetMachine> targetMachine(
                     target->createTargetMachine(targetTriple, "generic", "", opt, RM)
                 );
@@ -95,7 +97,7 @@ namespace LynxLTO {
                 }
             
                 llvm::legacy::PassManager pass;
-                if (targetMachine->addPassesToEmitFile(pass, dest, nullptr, llvm::CGFT_AssemblyFile)) {
+                if (targetMachine->addPassesToEmitFile(pass, dest, nullptr, llvm::CodeGenFileType::AssemblyFile)) {
                     llvm::errs() << "TargetMachine can't emit a file of this type\n";
                     return;
                 }

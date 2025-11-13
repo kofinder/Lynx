@@ -24,11 +24,8 @@
 
 namespace LynxLTO {
 
-    class RemoveUnusedParamsPass : public llvm::PassInfoMixin<RemoveUnusedParamsPass> {
-
-        public:
-
-            llvm::PreservedAnalyses run(llvm::Function& F, llvm::FunctionAnalysisManager& FAM);
+    struct RemoveUnusedParamsPass : public llvm::PassInfoMixin<RemoveUnusedParamsPass> {
+        llvm::PreservedAnalyses run(llvm::Function& F, llvm::FunctionAnalysisManager& FAM);
     };
 
 }

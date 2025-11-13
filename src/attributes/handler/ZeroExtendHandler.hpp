@@ -18,8 +18,7 @@
 #ifndef LYNX_FUNC_ZERO_EXTEND_HANDLER_HPP
 #define LYNX_FUNC_ZERO_EXTEND_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
-
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
@@ -28,10 +27,13 @@ namespace LynxFunctionAttr {
         protected:
         
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
+                if (!func) return;
+
                 llvm::Type* retType = func->getReturnType();
                 if (retType->isIntegerTy() && retType->getIntegerBitWidth() > 1) {
-                    LOG_ERROR("Applied zero-extend attributes");
-                    builder.addAttributeAtRet(llvm::Attribute::ZExt);
+                    llvm::LLVMContext &ctx = func->getContext();
+                    builder.addAttributeAtRet(llvm::Attribute::get(ctx, llvm::Attribute::ZExt));
+                    LOG_INFO("Applied 'ZExt' attribute to return of function {}", func->getName().str());
                 }
             }
     };

@@ -6,7 +6,6 @@
 #include <context/AstContext.hpp>
 #include <exceptions/BaseException.hpp>
 #include <llvm/IR/Verifier.h>
-#include <llvm/Support/Host.h>
 #include <llvm/MC/TargetRegistry.h>
 #include <llvm/Target/TargetMachine.h>
 #include <llvm/Support/TargetSelect.h>

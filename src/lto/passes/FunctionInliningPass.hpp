@@ -23,11 +23,8 @@
 
 namespace LynxLTO {
 
-    class FunctionInliningPass : public llvm::PassInfoMixin<FunctionInliningPass> {
-
-        public:
-
-            llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
+    struct FunctionInliningPass : public llvm::PassInfoMixin<FunctionInliningPass> {
+        llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
     };
 
 }

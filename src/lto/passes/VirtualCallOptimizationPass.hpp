@@ -24,11 +24,8 @@
 
 namespace LynxLTO {
 
-    class VirtualCallOptimizationPass : public llvm::PassInfoMixin<VirtualCallOptimizationPass> {
-
-        public:
-
-            llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
+    struct VirtualCallOptimizationPass : public llvm::PassInfoMixin<VirtualCallOptimizationPass> {
+        llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
     };
 
 }

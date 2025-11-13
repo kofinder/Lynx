@@ -11,14 +11,13 @@ namespace LynxTypes {
 
     llvm::Type* DoubleType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getDoubleTy(context);  // Correct type for 64-bit double
+        return llvm::Type::getDoubleTy(astContext->getLLVMContext());  // Correct type for 64-bit double
     }
 
     llvm::Type* DoubleType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getDoublePtrTy(context);  // Pointer to double type
+        auto* doubleTy = llvm::Type::getDoubleTy(astContext->getLLVMContext());
+        return llvm::PointerType::get(doubleTy->getContext(), 0);
     }
 
     llvm::Value* DoubleType::getDefaultValue() {

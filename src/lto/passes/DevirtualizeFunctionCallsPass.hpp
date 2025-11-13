@@ -23,10 +23,7 @@
 
 namespace LynxLTO {
 
-    class DevirtualizeFunctionCallsPass : public llvm::PassInfoMixin<DevirtualizeFunctionCallsPass> {
-
-        public:
-
+    struct DevirtualizeFunctionCallsPass : public llvm::PassInfoMixin<DevirtualizeFunctionCallsPass> {
             llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
     };
 

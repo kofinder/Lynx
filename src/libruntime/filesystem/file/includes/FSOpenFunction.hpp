@@ -2,6 +2,7 @@
 #define LYNX_LIB_RUNTIME_FS_OPEN_FUNCTION_HPP
 
 #include "RuntimeFunction.hpp"
+#include <llvm/IR/Module.h>
 #include "filesystem/file/FileFunctionTypes.hpp" 
 
 namespace LynxLibRuntime {
@@ -31,17 +32,13 @@ namespace LynxLibRuntime {
                 auto& builder = astContext->getBuilder();
                 auto* module = astContext->getModule();
                 auto& llvmCtx = astContext->getLLVMContext();
+    
 
-                // Get the struct type
-                auto* fileType = llvm::cast<llvm::PointerType>(optionalValue->getType())->getPointerElementType();
-                if (!fileType || !fileType->isStructTy()) {
-                    LOG_ERROR("Invalid file struct type");
-                    return nullptr;
-                }
+                auto* i8PtrTy = llvm::PointerType::get(llvmCtx, 0);
 
                 // Load the file path: struct field 0
-                llvm::Value* filePathPtr = builder.CreateStructGEP(fileType, optionalValue, 0, "filePathPtr");
-                llvm::Value* filePath = builder.CreateLoad(llvm::Type::getInt8PtrTy(llvmCtx), filePathPtr, "filePath");
+                llvm::Value* filePathPtr = builder.CreateStructGEP(i8PtrTy, optionalValue, 0, "filePathPtr");
+                llvm::Value* filePath = builder.CreateLoad(i8PtrTy, filePathPtr, "filePath");
 
                 llvm::FunctionType* funcType = FileOps::getOpenFuncType(llvmCtx);
                 llvm::FunctionCallee callee = module->getOrInsertFunction("file_open_default", funcType);
@@ -50,7 +47,7 @@ namespace LynxLibRuntime {
                 llvm::Value* fileHandle = builder.CreateCall(callee, { filePath }, "fileHandle");
 
                 // Store the result in field 1 (handle)
-                llvm::Value* fileHandlePtr = builder.CreateStructGEP(fileType, optionalValue, 1, "fileHandlePtr");
+                llvm::Value* fileHandlePtr = builder.CreateStructGEP(i8PtrTy, optionalValue, 1, "fileHandlePtr");
                 builder.CreateStore(fileHandle, fileHandlePtr);
 
                 return optionalValue; // Return updated struct

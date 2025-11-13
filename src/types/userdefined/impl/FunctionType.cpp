@@ -8,34 +8,22 @@ namespace LynxTypes {
 
     llvm::Type* FunctionType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt32Ty(context);
+        return nullptr;
     }
 
     llvm::Type* FunctionType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt32PtrTy(context);
+        return nullptr;
     }
 
     llvm::Value* FunctionType::getDefaultValue() {
         LOG_INFO("Invoked...");
-        LValueType LValueType = 0;
-        return this->createValue(LValueType);
+        return nullptr;
     }
 
     llvm::Value* FunctionType::createInstance(std::string variableName) {
         LOG_INFO("Invoked...");
-        auto& builder = astContext->getBuilder();
-        llvm::Type* intType = this->getLLVMType();
-        auto var = builder.CreateAlloca(intType, nullptr, variableName); 
-
-        if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
-            auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::intType));
-            var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
-        }       
-       
-        return var;
+        return nullptr;
     }
  
     llvm::Value* FunctionType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {

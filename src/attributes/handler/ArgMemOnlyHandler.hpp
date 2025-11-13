@@ -18,7 +18,7 @@
 #ifndef LYNX_FUNC_ARG_MEM_HANDLER_HPP
 #define LYNX_FUNC_ARG_MEM_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
@@ -27,11 +27,12 @@ namespace LynxFunctionAttr {
         protected:
 
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
+                if (!func) return;
                 for (auto& arg : func->args()) {
                     if (arg.getType()->isPointerTy()) {
                         builder.addStringAttributeAtParam("readonly", arg.getArgNo());
                         builder.addStringAttributeAtParam("nocapture", arg.getArgNo());
-                        LOG_WARN("Applied ReadOnly and NoCapture to pointer argument #" + std::to_string(arg.getArgNo()));
+                        LOG_INFO("Applied ReadOnly and NoCapture to pointer argument #{}", std::to_string(arg.getArgNo()));
                     }
                 }
             }

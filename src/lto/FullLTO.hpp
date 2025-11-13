@@ -24,25 +24,40 @@
 #include <memory>
 #include <string>
 
-#include <logger/Logger.hpp>
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Verifier.h"
-#include "llvm/Support/raw_ostream.h"
-#include "llvm/Linker/Linker.h"
-#include "llvm/Bitcode/BitcodeWriter.h"
 #include "llvm/Passes/PassBuilder.h"
-#include "llvm/Support/InitLLVM.h"
-#include "passes/VTableExtractorPass.hpp"
+#include "llvm/IR/PassManager.h"
+#include "llvm/Support/raw_ostream.h"
+
+
+// CUSTOM PASSESS
 #include "passes/AccessModifierPass.hpp"
+#include "passes/AttributorPass.hpp"
+#include "passes/DeadCodeEliminationPass.hpp"
+#include "passes/DevirtualizeFunctionCallsPass.hpp"
+#include "passes/DevirtualizePass.hpp"
+#include "passes/FunctionDocDumperPass.hpp"
+#include "passes/FunctionDocExtractorPass.hpp"
+#include "passes/FunctionInliningPass.hpp"
+#include "passes/FunctionMetadataPass.hpp"
+#include "passes/FunctionSecurityPass.hpp"
+#include "passes/FunctionSignatureAuditPass.hpp"
+#include "passes/GlobalDCEPPass.hpp"
+#include "passes/PointerCaptureAnalysisPass.hpp"
+#include "passes/RemoveUnusedParamsPass.hpp"
+#include "passes/RequireAnalysisPass.hpp"
+#include "passes/TargetIRVerifierPass.hpp"
 #include "passes/UndenfinedBehaviorPass.hpp"
+#include "passes/VirtualCallOptimizationPass.hpp"
+#include "passes/VTableExtractorPass.hpp"
+#include "passes/WholeProgramDevirtPass.hpp"
 #include "strategies/DefaultLTOOptimizationStrategy.hpp"
 
 
 namespace LynxLTO {
-
-    using namespace LynxLogger;
 
     class FullLTO : public DefaultLTOOptimizationStrategy {
 
@@ -53,12 +68,11 @@ namespace LynxLTO {
                 return;
             }
         
-            llvm::PassBuilder PB;
-
-            llvm::LoopAnalysisManager LAM;
-            llvm::FunctionAnalysisManager FAM;
-            llvm::CGSCCAnalysisManager CGAM;
-            llvm::ModuleAnalysisManager MAM;
+            llvm::LoopAnalysisManager       LAM;
+            llvm::FunctionAnalysisManager   FAM;
+            llvm::CGSCCAnalysisManager      CGAM;
+            llvm::ModuleAnalysisManager     MAM;
+            llvm::PassBuilder               PB;
         
             // Register analyses
             PB.registerModuleAnalyses(MAM);
@@ -66,27 +80,32 @@ namespace LynxLTO {
             PB.registerLoopAnalyses(LAM);
             PB.registerCGSCCAnalyses(CGAM);
         
-            // Cross-register proxies
             PB.crossRegisterProxies(LAM, FAM, CGAM, MAM);
         
-            // Build and run pipeline
-            auto defaultPipeline = PB.buildPerModuleDefaultPipeline(llvm::OptimizationLevel::O2);
-            //PassPipeline.run(M, MAM);  
-            
-            // Build module pass manager and add passes
-            llvm::ModulePassManager MPM;
-
-            // 🧩 Add default pipeline
-            MPM.addPass(std::move(defaultPipeline));
-
-            // 🧩 Inject your custom pass **after optimization**
-            MPM.addPass(VTableExtractorPass());
+            auto MPM = PB.buildModuleOptimizationPipeline(llvm::OptimizationLevel::O3, llvm::ThinOrFullLTOPhase::FullLTOPostLink);
+        
             MPM.addPass(AccessModifierPass());
+            MPM.addPass(AttributorPass());
+            MPM.addPass(DeadCodeEliminationPass());
+            MPM.addPass(DevirtualizeFunctionCallsPass());
+            MPM.addPass(DevirtualizePass());
+            MPM.addPass(FunctionDocDumperPass());
+            MPM.addPass(FunctionDocExtractorPass());
+            MPM.addPass(FunctionInliningPass());
+            MPM.addPass(FunctionMetadataPass());
+            MPM.addPass(FunctionSecurityPass());
+            MPM.addPass(FunctionSignatureAuditPass());
+            MPM.addPass(GlobalDCEPPass());
+            MPM.addPass(PointerCaptureAnalysisPass());
+            MPM.addPass(RemoveUnusedParamsPass());
+            MPM.addPass(RequireAnalysisPass());
+            MPM.addPass(TargetIRVerifierPass());
             MPM.addPass(UndenfinedBehaviorPass());
+            MPM.addPass(VirtualCallOptimizationPass());
+            MPM.addPass(VTableExtractorPass());
+            MPM.addPass(WholeProgramDevirtPass());
 
-            // 🛠 Run the combined pipeline
             MPM.run(M, MAM);
-
         }
         
     };

@@ -22,13 +22,6 @@
  * @date: November 2, 2024
 */
 
-
-
-
-
-
-
-
 #ifndef LYNX_ITANIUM_MANGLER_HPP
 #define LYNX_ITANIUM_MANGLER_HPP
 

@@ -30,7 +30,7 @@ namespace LynxTypes {
 
     llvm::Type* DateType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        return computeLLVMType()->getPointerTo();
+        return llvm::PointerType::get(computeLLVMType()->getContext(), 0);
     }
 
     llvm::Value* DateType::getDefaultValue() {

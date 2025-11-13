@@ -17,8 +17,7 @@
 #ifndef LYNX_FUNC_SANITIZE_THREAD_HANDLER_HPP
 #define LYNX_FUNC_SANITIZE_THREAD_HANDLER_HPP
 
-#include "FunctionAttributeHandler.hpp"
-
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
@@ -27,11 +26,38 @@ namespace LynxFunctionAttr {
         protected:
 
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
+
                 if (!func) return;
-                auto attr = llvm::Attribute::get(func->getContext(), "sanitize_thread");
-                func->addFnAttr(attr);
+        
+                // Basic heuristic: atomic instructions or thread-unsafe calls
+                bool requiresTSan = false;
+                for (const auto &BB : *func) {
+                    for (const auto &I : BB) {
+                        if (I.isAtomic()) {
+                            requiresTSan = true;
+                            break;
+                        }
+        
+                        if (const auto *call = llvm::dyn_cast<llvm::CallBase>(&I)) {
+                            if (call->getCalledFunction()) {
+                                llvm::StringRef name = call->getCalledFunction()->getName();
+                                if (name.contains("pthread") || name.contains("std::mutex")) {
+                                    requiresTSan = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (requiresTSan) break;
+                }
+        
+                if (requiresTSan) {
+                    builder.addStringAttribute("sanitize_thread");
+                    LOG_INFO("Applied 'sanitize_thread' attribute to function {}", func->getName().str());
+                }
             }
-        };        
+
+    };        
         
 }
 
