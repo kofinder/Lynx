@@ -28,13 +28,11 @@ int Lynx::loadSources() {
 }
 
 int Lynx::parseSource() {
-    initializeLLVM();
     return loadSources();
 }
 
-
 void Lynx::analyzeSource() {
-
+    
     if (!processor) {
         std::cerr << "[Lynx] Error: Processor not initialized before IR generation.\n";
         return;
@@ -57,14 +55,14 @@ void Lynx::generateIR() {
     // -------------------------------
     // Initialize CoreManager if not done
     // -------------------------------
-    // if (!coreManager) {
-    //     coreManager = std::make_unique<CoreManager>();
-    //     std::cout << "[CoreManager] Initializing core runtime modules (memory, GC, threads, etc.)...\n";
-    //     coreManager->initialize();
-    // }
+    if (!coreManager) {
+        coreManager = std::make_unique<CoreManager>();
+        std::cout << "[CoreManager] Initializing core runtime modules (memory, GC, threads, etc.)...\n";
+        coreManager->initialize();
+    }
 
     // Retrieve user-defined classes (for GC and runtime bindings)
-    // auto& userClasses = processor->getUserDefinedClasses();
+    auto& userClasses = processor->getUserDefinedClasses();
 
     const auto& moduleAstMap = processor->getModuleAstMap();
     irGenerator = std::make_unique<IRGenerator>(
@@ -78,11 +76,11 @@ void Lynx::generateIR() {
     irGenerator->execute();
 
     // Apply runtime bindings and setup GC for user-defined classes
-    // auto& llvmModules = irGenerator->getLinkerModules();
-    // for (auto& [moduleName, modulePtr] : llvmModules) {
-    //     coreManager->getRuntimeBindingManager().declareAll(modulePtr.get());
-    //     coreManager->getRuntimeBindingManager().setupGCForClasses(modulePtr.get(), userClasses);
-    // }
+    auto& llvmModules = irGenerator->getLinkerModules();
+    for (auto& [moduleName, modulePtr] : llvmModules) {
+        coreManager->getRuntimeBindingManager().declareAll(modulePtr.get());
+        coreManager->getRuntimeBindingManager().setupGCForClasses(modulePtr.get(), userClasses);
+    }
     
     ltoFacade = std::make_unique<LTOFacade>(
         irGenerator->getContext(),
@@ -155,10 +153,10 @@ int Lynx::executeJIT() {
     int result = excutor->execute();
 
     // Report any memory leaks tracked by the memory manager
-   // coreManager->getMemoryManager().reportLeaks();
+   coreManager->getMemoryManager().reportLeaks();
 
     // Shutdown all runtime systems (threads, GC, schedulers, etc.)
-   // coreManager->shutdown();
+   coreManager->shutdown();
 
     return result;
 }

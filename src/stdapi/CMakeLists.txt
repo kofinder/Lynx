@@ -40,11 +40,11 @@ target_include_directories(LynxRuntime PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(LynxRuntime PUBLIC gc pthread)
+target_link_libraries(LynxRuntime PUBLIC gc pthread LynxCore)
 
 
 # # Optional: set position independent code (ensures PIC for shared objects)
-# set_target_properties(LynxRuntime PROPERTIES POSITION_INDEPENDENT_CODE ON)
+set_target_properties(LynxRuntime PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # ------------------------------------------
 # Message

@@ -14,13 +14,13 @@ file(GLOB_RECURSE SYSTEM_HEADERS
 
 add_library(LynxSystem STATIC ${SYSTEM_SOURCES} ${SYSTEM_HEADERS})
 
-llvm_map_components_to_libnames(llvm_libs
-    Core
-    IRReader
-    Support
-    ExecutionEngine
-    Target
-)
+# llvm_map_components_to_libnames(llvm_libs
+#     Core
+#     IRReader
+#     Support
+#     ExecutionEngine
+#     Target
+# )
 
 target_include_directories(LynxSystem PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -35,7 +35,7 @@ target_link_libraries(LynxSystem PUBLIC
     LynxConstants
     LynxAst
     LynxTypes
-    ${llvm_libs}
+    # ${llvm_libs}
 )
 
 message(STATUS "✅ LynxSystem module configured with ${CMAKE_CURRENT_SOURCE_DIR}")

@@ -51,11 +51,6 @@ add_library(LynxCore STATIC ${CORE_SOURCES} ${CORE_HEADERS})
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${CORE_SOURCES} ${CORE_HEADERS})
 
-llvm_map_components_to_libnames(LLVM_LIBS core executionengine)
-
-target_link_libraries(LynxCore PRIVATE 
-  ${LLVM_LIBS}
-  ${GC_LIBRARY}
-)
+target_link_libraries(LynxCore PRIVATE ${GC_LIBRARY})
 
 message(STATUS "Lynx Core module configured successfully")

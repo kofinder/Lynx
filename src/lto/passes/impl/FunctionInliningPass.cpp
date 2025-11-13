@@ -8,9 +8,8 @@
 namespace LynxLTO {
 
     using namespace llvm;
-
+    
     llvm::PreservedAnalyses FunctionInliningPass::run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM) {
-        
         llvm::errs() << "Running FunctionInliningPass on module: " << "\n";
 
         bool Changed = false;

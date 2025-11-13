@@ -1,10 +1,10 @@
 #include <passes/DevirtualizeFunctionCallsPass.hpp>
-#include <llvm/IR/Module.h>
-#include <llvm/IR/Value.h>
+#include "llvm/IR/Verifier.h"
+#include <llvm/IR/Constants.h>
 #include <llvm/IR/IRBuilder.h>
-#include "llvm/IR/Function.h"
 #include <llvm/IR/Instructions.h>
 #include <llvm/Support/raw_ostream.h>
+
 
 namespace LynxLTO {
 
@@ -35,11 +35,11 @@ namespace LynxLTO {
                                 if (GV->hasInitializer()) {
                                     if (auto *Fn = llvm::dyn_cast<llvm::Function>(GV->getInitializer()->stripPointerCasts())) {
                                         // Replace the indirect call with a direct call
-                                        llvm::IRBuilder<> Builder(Call);
-                                        llvm::SmallVector<llvm::Value*, 4> Args(Call->args());
-                                        llvm::CallBase* newCall = Builder.CreateCall(Fn->getFunctionType(), Fn, Args);
-                                        newCall->setCallingConv(Call->getCallingConv());
-                                        Call->replaceAllUsesWith(newCall);
+                                       llvm::IRBuilder<> Builder(Call);
+                                       llvm::SmallVector<llvm::Value*, 4> Args(Call->args());
+                                       llvm::CallBase* newCall = Builder.CreateCall(Fn->getFunctionType(), Fn, Args);
+                                       newCall->setCallingConv(Call->getCallingConv());
+                                       Call->replaceAllUsesWith(newCall);
                                         Call->eraseFromParent();
                                         Changed = true;
                                     }

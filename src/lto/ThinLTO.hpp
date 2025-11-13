@@ -76,7 +76,7 @@ namespace LynxLTO {
 
             MPM.addPass(AccessModifierPass());
             MPM.addPass(AttributorPass());
-            MPM.addPass(DeadCodeEliminationPass());
+            MPM.addPass(llvm::createModuleToFunctionPassAdaptor(DeadCodeEliminationPass()));
             MPM.addPass(DevirtualizeFunctionCallsPass());
             MPM.addPass(DevirtualizePass());
             MPM.addPass(FunctionDocDumperPass());
@@ -87,7 +87,7 @@ namespace LynxLTO {
             MPM.addPass(FunctionSignatureAuditPass());
             MPM.addPass(GlobalDCEPPass());
             MPM.addPass(PointerCaptureAnalysisPass());
-            MPM.addPass(RemoveUnusedParamsPass());
+            MPM.addPass(llvm::createModuleToFunctionPassAdaptor(RemoveUnusedParamsPass()));
             MPM.addPass(RequireAnalysisPass());
             MPM.addPass(TargetIRVerifierPass());
             MPM.addPass(UndenfinedBehaviorPass());

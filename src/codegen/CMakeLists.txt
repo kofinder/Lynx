@@ -14,21 +14,6 @@ set(LIB_MODULE_CODE_GEN_HEADER
 
 add_library(LynxCodegen STATIC ${LIB_MODULE_CODE_GEN_SOURCES} ${LIB_MODULE_CODE_GEN_HEADER})
 
-llvm_map_components_to_libnames(LLVM_LIBS
-  core
-  mcjit
-  executionengine
-  native
-  nativecodegen
-  orcjit
-  interpreter
-  support
-  irreader
-  codegen
-  transformutils
-  scalaropts
-)
-
 target_link_libraries(LynxCodegen PRIVATE 
   LynxLogger 
   LynxAst 
@@ -38,7 +23,6 @@ target_link_libraries(LynxCodegen PRIVATE
   Boost::system 
   Boost::filesystem
   Boost::program_options
-  ${LLVM_LIBS}
 )
 
 target_include_directories(LynxCodegen PUBLIC ${LIBRARY_INCLUDES})

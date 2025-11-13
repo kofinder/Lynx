@@ -83,10 +83,10 @@ namespace LynxLTO {
             PB.crossRegisterProxies(LAM, FAM, CGAM, MAM);
         
             auto MPM = PB.buildModuleOptimizationPipeline(llvm::OptimizationLevel::O3, llvm::ThinOrFullLTOPhase::FullLTOPostLink);
-        
+            
             MPM.addPass(AccessModifierPass());
             MPM.addPass(AttributorPass());
-            MPM.addPass(DeadCodeEliminationPass());
+            MPM.addPass(llvm::createModuleToFunctionPassAdaptor(DeadCodeEliminationPass()));
             MPM.addPass(DevirtualizeFunctionCallsPass());
             MPM.addPass(DevirtualizePass());
             MPM.addPass(FunctionDocDumperPass());
@@ -97,13 +97,14 @@ namespace LynxLTO {
             MPM.addPass(FunctionSignatureAuditPass());
             MPM.addPass(GlobalDCEPPass());
             MPM.addPass(PointerCaptureAnalysisPass());
-            MPM.addPass(RemoveUnusedParamsPass());
+            MPM.addPass(llvm::createModuleToFunctionPassAdaptor(RemoveUnusedParamsPass()));
             MPM.addPass(RequireAnalysisPass());
             MPM.addPass(TargetIRVerifierPass());
             MPM.addPass(UndenfinedBehaviorPass());
             MPM.addPass(VirtualCallOptimizationPass());
             MPM.addPass(VTableExtractorPass());
             MPM.addPass(WholeProgramDevirtPass());
+
 
             MPM.run(M, MAM);
         }

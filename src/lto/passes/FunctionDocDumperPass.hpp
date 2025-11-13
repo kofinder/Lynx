@@ -18,7 +18,9 @@
 #ifndef LYNX_FUNCTION_DOC_DUMPER_PASS_HPP
 #define LYNX_FUNCTION_DOC_DUMPER_PASS_HPP
 
-#include "llvm/IR/PassManager.h"
+#include <llvm/IR/PassManager.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Function.h>
 
 namespace LynxLTO {
 

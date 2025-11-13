@@ -63,6 +63,7 @@ trace: build
 	#valgrind --leak-check=full --show-leak-kinds=all --gen-suppressions=all ./$(EXECUTABLE_NAME) run -c ${EXAMPLE_DIR}/app_config.yaml -e main.lynx
 	#valgrind -s --leak-check=full --suppressions=llvm.supp --track-origins=yes --show-leak-kinds=all ./$(EXECUTABLE_NAME) run -c ${EXAMPLE_DIR}/app_config.yaml -e main.lynx
 
+
 debug: build
 	@echo "🐞 Starting GDB..."
 	gdb -ex "set breakpoint pending on" -ex run --args ./$(EXECUTABLE_NAME) run -c $(EXAMPLE_DIR)/app_config.yaml -e main.lynx

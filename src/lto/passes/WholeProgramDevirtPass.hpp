@@ -19,7 +19,9 @@
 #ifndef LYNX_WHOLE_PROGRAM_DEVIRT_PASS_HPP
 #define LYNX_WHOLE_PROGRAM_DEVIRT_PASS_HPP
 
-#include "llvm/IR/PassManager.h"
+#include <llvm/IR/PassManager.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Function.h>
 
 namespace LynxLTO {
 

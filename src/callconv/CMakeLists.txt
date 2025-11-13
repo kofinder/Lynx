@@ -31,25 +31,9 @@ add_library(LynxCallConv STATIC
   ${LIB_MODULE_SPECIFIC_SOURCE}
 )
 
-llvm_map_components_to_libnames(LLVM_LIBS
-  core
-  mcjit
-  executionengine
-  native
-  nativecodegen
-  orcjit
-  interpreter
-  support
-  irreader
-  codegen
-  transformutils
-  scalaropts
-)
-
 target_link_libraries(LynxCallConv PRIVATE 
   LynxLogger 
   LynxConstants
-  ${LLVM_LIBS}
 )
 
 target_include_directories(LynxCallConv PUBLIC 

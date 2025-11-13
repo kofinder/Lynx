@@ -1,6 +1,8 @@
 #include <passes/RequireAnalysisPass.hpp>
-#include "llvm/IR/Module.h"
-#include "llvm/Support/raw_ostream.h"
+#include "llvm/IR/Verifier.h"
+#include <llvm/IR/Constants.h>
+#include <llvm/IR/Instructions.h>
+#include <llvm/Support/raw_ostream.h>
 
 namespace LynxLTO {
 

@@ -2,14 +2,14 @@
 # === LLVM 21 Configuration
 # ==========================
 set(LLVM_DIR "/usr/local/llvm-21/lib/cmake/llvm" CACHE PATH "Path to LLVM 21Config.cmake")
+set(LLVM_USE_SHARED_LIBS ON)
 find_package(LLVM REQUIRED CONFIG)
 
 # # Fail if major version is not 20
-# string(REGEX MATCH "^21" LLVM_MAJOR "${LLVM_PACKAGE_VERSION}")
-# if(NOT LLVM_MAJOR)
-#     message(FATAL_ERROR "Found LLVM version ${LLVM_PACKAGE_VERSION}, but LLVM 21.x is required")
-# endif()
-
+string(REGEX MATCH "^21" LLVM_MAJOR "${LLVM_PACKAGE_VERSION}")
+if(NOT LLVM_MAJOR)
+    message(FATAL_ERROR "Found LLVM version ${LLVM_PACKAGE_VERSION}, but LLVM 21.x is required")
+endif()
 message(STATUS "Using LLVM ${LLVM_PACKAGE_VERSION} in ${LLVM_DIR}")
 message(STATUS "LLVM_INCLUDE_DIRS: ${LLVM_INCLUDE_DIRS}")
 message(STATUS "LLVM_DEFINITIONS: ${LLVM_DEFINITIONS}")
@@ -61,18 +61,49 @@ set(MAIN_ENTRY_SOURCES
 add_executable(${LYNX_EXECUTABLE} ${MAIN_ENTRY_SOURCES})
 
 # Map LLVM components to libraries (LLVM 20)
-llvm_map_components_to_libnames(LLVM_LIBRARIES
-    mcjit executionengine native support core passes irreader
-    codegen x86codegen x86asmparser x86desc x86info option
+llvm_map_components_to_libnames(LLVM_LIBS
+    core
+    mcjit
+    executionengine
+    native
+    nativecodegen
+    orcjit
+    interpreter
+    support
+    irreader
+    codegen
+    transformutils
+    scalaropts
 )
 
 target_link_libraries(${LYNX_EXECUTABLE} PUBLIC
-    LynxLogger LynxExceptions LynxConstants LynxContext LynxTypes
-    LynxLang LynxAst LynxMangler LynxJIT LynxResolver LynxProgramConfig
-    LynxCLI LynxCodegen LynxLinker LynxFunctionAttr LynxCallConv
-    LynxAnalyzer LynxLTO LynxCore LynxLibRuntime LynxErrors
-    LynxRuntime LynxPlatform LynxCollection LynxUI
-    ${LLVM_LIBRARIES} ${OPENCL_CLANG_LINK_LIBS}
+    LynxLogger 
+    LynxExceptions 
+    LynxConstants 
+    LynxContext 
+    LynxTypes
+    LynxLang 
+    LynxAst 
+    LynxMangler 
+    LynxJIT 
+    LynxResolver 
+    LynxProgramConfig
+    LynxCLI 
+    LynxCodegen 
+    LynxLinker 
+    LynxFunctionAttr 
+    LynxCallConv
+    LynxAnalyzer 
+    LynxLTO 
+    LynxCore 
+    LynxLibRuntime 
+    LynxErrors
+    LynxRuntime 
+    LynxPlatform 
+    LynxCollection 
+    LynxUI
+    ${LLVM_LIBS} 
+    ${OPENCL_CLANG_LINK_LIBS}
     Boost::system Boost::filesystem Boost::program_options
     yaml-cpp
     ${ZSTD_LIBRARIES}
@@ -112,7 +143,5 @@ target_compile_features(LynxLSPServer PUBLIC cxx_std_23)
 # ==========================
 # === Compiler paths
 # ==========================
-set(CMAKE_C_COMPILER "/usr/bin/clang-21")
-set(CMAKE_CXX_COMPILER "/usr/bin/clang-21")
-
+# set(CMAKE_C_COMPILER "/usr/bin/clang-21")
 # set(CMAKE_CXX_COMPILER "/usr/bin/clang++-21")

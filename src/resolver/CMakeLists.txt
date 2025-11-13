@@ -29,11 +29,5 @@ target_link_libraries(LynxResolver PUBLIC
     LynxAst
 )
 
-# if(MSVC)
-#     target_compile_options(LynxResolver PRIVATE /W4 /permissive-)
-# else()
-#     target_compile_options(LynxResolver PRIVATE -Wall -Wextra -Wpedantic -Werror)
-# endif()
-
-target_compile_features(LynxResolver PUBLIC cxx_std_20)
+target_compile_features(LynxResolver PUBLIC cxx_std_23)
 

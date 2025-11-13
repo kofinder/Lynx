@@ -1,10 +1,11 @@
 #include <passes/FunctionMetadataPass.hpp>
-#include "llvm/IR/Module.h"
-#include "llvm/IR/Function.h"
-#include "llvm/IR/LLVMContext.h"
-#include "llvm/IR/Metadata.h"
-#include "llvm/IR/MDBuilder.h"
-#include "llvm/Support/raw_ostream.h"
+#include "llvm/IR/Verifier.h"
+#include <llvm/IR/Constants.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/Metadata.h>
+#include <llvm/IR/MDBuilder.h>
+#include <llvm/IR/Instructions.h>
+#include <llvm/Support/raw_ostream.h>
 
 namespace LynxLTO {
 
@@ -12,7 +13,7 @@ namespace LynxLTO {
         llvm::errs() << "Running FunctionMetadataPass on module: " << "\n";
         bool Changed = false;
 
-        llvm::LLVMContext &Ctx = M.getContext();
+        auto &Ctx = M.getContext();
         llvm::MDBuilder MDB(Ctx);
     
         for (auto &F : M) {

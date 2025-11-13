@@ -20,7 +20,9 @@
 #ifndef LYNX_VIRTUAL_CALL_OPTIMIZATION_PASS_HPP
 #define LYNX_VIRTUAL_CALL_OPTIMIZATION_PASS_HPP
 
-#include "llvm/IR/PassManager.h"
+#include <llvm/IR/PassManager.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Function.h>
 
 namespace LynxLTO {
 

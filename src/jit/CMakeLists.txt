@@ -13,21 +13,6 @@ set(JIT_LIB_IMMPL_SOURCES
 
 add_library(LynxJIT STATIC ${JIT_LIB_HEADER_SOURCES} ${JIT_LIB_IMMPL_SOURCES})
 
-llvm_map_components_to_libnames(LLVM_LIBS
-  core
-  mcjit
-  executionengine
-  native
-  nativecodegen
-  orcjit
-  interpreter
-  support
-  irreader
-  codegen
-  transformutils
-  scalaropts
-)
-
-target_link_libraries(LynxJIT PRIVATE LynxLogger ${LLVM_LIBS})
+target_link_libraries(LynxJIT PRIVATE LynxLogger)
 
 target_include_directories(LynxJIT PUBLIC ${LIBRARY_INCLUDES})

@@ -19,8 +19,9 @@
 #ifndef LYNX_DEADCODE_ELIMINATION_PASS_HPP
 #define LYNX_DEADCODE_ELIMINATION_PASS_HPP
 
-#include "llvm/IR/PassManager.h"
-
+#include <llvm/IR/PassManager.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Function.h>
 
 namespace LynxLTO {
 

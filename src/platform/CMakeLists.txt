@@ -12,9 +12,7 @@ set(LIB_MODULE_CPP_SOURCES
 
 add_library(LynxPlatform STATIC ${LIB_MODULE_HPP_SOURCES} ${LIB_MODULE_CPP_SOURCES})
 
-llvm_map_components_to_libnames(LLVM_LIBS core native support codegen)
-
-target_link_libraries(LynxPlatform PRIVATE LynxLogger LynxConstants ${LLVM_LIBS})
+target_link_libraries(LynxPlatform PRIVATE LynxLogger LynxConstants)
 
 target_include_directories(LynxPlatform PUBLIC ${LIBRARY_INCLUDES})
 
