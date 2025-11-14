@@ -26,8 +26,8 @@ namespace LynxTypes {
 
     llvm::Value* DictionaryType::createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> pairs) const {
         LOG_INFO("Invoked...");
-        std::cout << "Dictionary Key Type ===>" << toString(elementType->getTypeTag()) << std::endl;
-        std::cout << "Dictionary ValueType  ===>" << toString(elementValue->getTypeTag()) << std::endl;
+        std::cout << "Dictionary Key Type ===>" << dataTypeToString(elementType->getTypeTag()) << std::endl;
+        std::cout << "Dictionary ValueType  ===>" << dataTypeToString(elementValue->getTypeTag()) << std::endl;
         return nullptr;       
     }     
 

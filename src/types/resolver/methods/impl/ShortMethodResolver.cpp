@@ -2,7 +2,12 @@
 
 namespace LynxTypes {
 
-    llvm::Value* ShortMethodResolver::resolveMethod(const std::string& name,  llvm::Value* instance, const std::vector<llvm::Value*>& args, std::shared_ptr<AstContext> astContext) noexcept {
+    llvm::Value* ShortMethodResolver::resolveMethod(
+        AstContext& ctx,
+        llvm::Value* instance,
+        const std::string& method, 
+        const std::vector<llvm::Value*>& args
+    ) noexcept {
         LOG_ERROR("Invoked...................");
         return nullptr;
     }

@@ -137,7 +137,7 @@ namespace LynxTypes {
         return methods.find(mangleName) != methods.end();
     }
 
-    // std::unique_ptr<TypeMethodResolver> MixinType::createMethodResolver() const {
+    // std::unique_ptr<TypeMethodResolver> MixinType::getOrCreateResolver() const {
     //     return std::make_unique<MixinMethodResolver>();
     // }
 

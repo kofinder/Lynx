@@ -141,7 +141,7 @@ namespace LynxAst {
         auto baseType = astContext.findType(value);
         llvmVariableRef = baseType->createInstance(variableName);
        
-        std::cout << "yes" << toString(baseType->getTypeTag())<< std::endl;
+        std::cout << "yes" << dataTypeToString(baseType->getTypeTag())<< std::endl;
 
         llvm::Type* llvmType = baseType->getLLVMType();
         if (!llvmType->isSized()) {

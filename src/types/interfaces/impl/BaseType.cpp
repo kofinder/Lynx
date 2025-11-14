@@ -1,5 +1,6 @@
 #include "interfaces/BaseType.hpp"
 #include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
 
 namespace LynxTypes {
 
@@ -22,15 +23,21 @@ namespace LynxTypes {
         return cachedLLVMType;
     }
     
-    const std::unordered_map<std::string, int>& BaseType::getStaticMethodRegistry() const {
-        return {}; 
+    const std::unordered_map<std::string, int>& BaseType::getMethodRegistry() const {
+        static const std::unordered_map<std::string, int> emptyRegistry;
+        return emptyRegistry;
     }   
 
-    const std::unordered_map<std::string, int>& BaseType::getInstanceMethodRegistry() const {
-        return {}; 
-    }   
-
-    llvm::Value* BaseType::codegenStaticMethod(const std::string& methodName, const std::vector<llvm::Value*>& args) {
+    llvm::Value* BaseType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         return nullptr;
     }
+
+    TypeMethodResolver* BaseType::getOrCreateResolver() const {
+        return nullptr;
+    }
+
+    BaseType::~BaseType() {
+        if(resolver) delete resolver;
+        resolver = nullptr;        
+    };
 }

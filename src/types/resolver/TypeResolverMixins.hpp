@@ -10,41 +10,39 @@ namespace LynxTypes {
 
     using LynxContext::AstContext;
 
-    // Concept definitions
     template<typename T>
-    concept ToStringCapable = requires(T t, llvm::Value* val, std::shared_ptr<AstContext> ctx) {
-        { T::convertToString(val, ctx) } -> std::same_as<llvm::Value*>;
+    concept ToStringCapable = requires(T t, AstContext& ctx, llvm::Value* val) {
+        { T::convertToString(ctx, val) } -> std::same_as<llvm::Value*>;
     };
 
     template<typename T>
-    concept CloneCapable = requires(T t, llvm::Value* val, std::shared_ptr<AstContext> ctx) {
-        { T::performClone(val, ctx) } -> std::same_as<llvm::Value*>;
+    concept CloneCapable = requires(T t, AstContext& ctx, llvm::Value* val) {
+        { T::performClone(ctx, val) } -> std::same_as<llvm::Value*>;
     };
 
     template<typename T>
-    concept TypeCastCapable = requires(T t, llvm::Value* val, llvm::Type* type, std::shared_ptr<AstContext> ctx) {
-        { T::performTypeCast(val, type, ctx) } -> std::same_as<llvm::Value*>;
+    concept TypeCastCapable = requires(T t, AstContext& ctx, llvm::Value* val, llvm::Type* type) {
+        { T::performTypeCast(ctx, val, type) } -> std::same_as<llvm::Value*>;
     };
 
-    // Mixins using concepts
     template<ToStringCapable DerivedT>
     struct ToStringMixin {
-        [[nodiscard]] llvm::Value* toString(llvm::Value* instance, std::shared_ptr<AstContext> ctx) const noexcept {
-            return DerivedT::convertToString(instance, ctx);
+        [[nodiscard]] llvm::Value* toString(AstContext& ctx, llvm::Value* instance) const noexcept {
+            return DerivedT::convertToString(ctx, instance);
         }
     };
 
     template<CloneCapable DerivedT>
     struct CloneMixin {
-        [[nodiscard]] llvm::Value* clone(llvm::Value* instance, std::shared_ptr<AstContext> ctx) const noexcept {
-            return DerivedT::performClone(instance, ctx);
+        [[nodiscard]] llvm::Value* clone(AstContext& ctx, llvm::Value* instance) const noexcept {
+            return DerivedT::performClone(ctx, instance);
         }
     };
 
     template<TypeCastCapable DerivedT>
     struct TypeCastMixin {
-        [[nodiscard]] llvm::Value* typeCast(llvm::Value* instance, llvm::Type* targetType, std::shared_ptr<AstContext> ctx) const noexcept {
-            return DerivedT::performTypeCast(instance, targetType, ctx);
+        [[nodiscard]] llvm::Value* typeCast(AstContext& ctx, llvm::Value* instance, llvm::Type* targetType) const noexcept {
+            return DerivedT::performTypeCast(ctx, instance);
         }
     };
 

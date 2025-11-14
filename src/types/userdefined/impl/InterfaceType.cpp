@@ -77,7 +77,7 @@ namespace LynxTypes {
         return false;    
     }
 
-    // std::unique_ptr<TypeMethodResolver> InterfaceType::createMethodResolver() const {
+    // std::unique_ptr<TypeMethodResolver> InterfaceType::getOrCreateResolver() const {
     //     return std::make_unique<InterfaceMethodResolver>();
     // }
 

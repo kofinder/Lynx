@@ -48,7 +48,7 @@ namespace LynxTypes {
     //     visitor.visit(*this); 
     // }
 
-    // std::unique_ptr<TypeMethodResolver> DateTimeType::createMethodResolver() const {
+    // std::unique_ptr<TypeMethodResolver> DateTimeType::getOrCreateResolver() const {
     //     LOG_INFO("Invoked...");
     //     return std::make_unique<DateTimeMethodResolver>();
     // }

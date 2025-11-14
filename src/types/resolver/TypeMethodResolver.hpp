@@ -31,7 +31,6 @@
 #include <logger/Logger.hpp>
 #include <context/AstContext.hpp>
 
-
 namespace LynxTypes {
     
     using namespace LynxLogger;
@@ -55,10 +54,10 @@ namespace LynxTypes {
              * @return The resulting LLVM IR Value, or nullptr if the method is not found or not supported.
             */
             virtual llvm::Value* resolveMethod(
-                const std::string& name, 
+                AstContext& ctx,
                 llvm::Value* instance,
-                const std::vector<llvm::Value*>& args,
-                std::shared_ptr<AstContext> astContext
+                const std::string& method, 
+                const std::vector<llvm::Value*>& args
             ) noexcept = 0;
 
             void registerMethodName(const std::string& name, size_t paramCount) {

@@ -67,7 +67,7 @@ namespace LynxTypes {
         visitor.visit(*this); 
     }
 
-    const std::unordered_map<std::string, int>& ShortType::getStaticMethodRegistry() const {
+    const std::unordered_map<std::string, int>& ShortType::getMethodRegistry() const {
         const static std::unordered_map<std::string, int> methodTypes = {
             {"max", 0}, 
             {"min", 0}, 
@@ -75,21 +75,18 @@ namespace LynxTypes {
         };
         return methodTypes;
     }
-    
-    const std::unordered_map<std::string, int>& ShortType::getInstanceMethodRegistry() const {
-        const static std::unordered_map<std::string, int> methodTypes;
-        return methodTypes;
-    }
 
-    llvm::Value* ShortType::codegenStaticMethod(const std::string& methodName, const std::vector<llvm::Value*>& args) {
+    llvm::Value* ShortType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
         return nullptr;
     }
 
-    // std::unique_ptr<TypeMethodResolver> ShortType::createMethodResolver() const { 
-    //     LOG_INFO("Invoked...");
-    //     return std::make_unique<ShortMethodResolver>();
-    // }
+    TypeMethodResolver* ShortType::getOrCreateResolver() const { 
+        if (!resolver) {
+            resolver = new ShortMethodResolver();
+        }
+        return resolver;
+    }
 
     const BaseType* ShortType::createWithStatic(bool newIsStatic) const {
         LOG_INFO("Invoked...");

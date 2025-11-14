@@ -24,7 +24,6 @@ target_link_libraries(LynxAst PRIVATE
     LynxConstants
     LynxContext
     LynxCallConv
-    LynxResolver
     LynxMangler
     LynxLibRuntime
     Boost::system

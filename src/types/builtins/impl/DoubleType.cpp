@@ -65,7 +65,7 @@ namespace LynxTypes {
         visitor.visit(*this); 
     }
 
-    const std::unordered_map<std::string, int>& DoubleType::getStaticMethodRegistry() const {
+    const std::unordered_map<std::string, int>& DoubleType::getMethodRegistry() const {
         const static std::unordered_map<std::string, int> methodTypes = {
             {"max", 0}, 
             {"min", 0}, 
@@ -73,21 +73,18 @@ namespace LynxTypes {
         };
         return methodTypes;
     }
-    
-    const std::unordered_map<std::string, int>& DoubleType::getInstanceMethodRegistry() const {
-        const static std::unordered_map<std::string, int> methodTypes;
-        return methodTypes;
+
+    TypeMethodResolver* DoubleType::getOrCreateResolver() const {
+        if (!resolver) {
+            resolver = new DoubleMethodResolver();
+        }
+        return resolver;
     }
 
-    llvm::Value* DoubleType::codegenStaticMethod(const std::string& methodName, const std::vector<llvm::Value*>& args) {
+    llvm::Value* DoubleType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
         return nullptr;
     }
-
-    // std::unique_ptr<TypeMethodResolver> DoubleType::createMethodResolver() const {
-    //     LOG_INFO("Invoked...");
-    //     return std::make_unique<DoubleMethodResolver>();
-    // }
 
     const BaseType* DoubleType::createWithStatic(bool newIsStatic) const {
         LOG_INFO("Invoked...");

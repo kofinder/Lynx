@@ -83,7 +83,7 @@ namespace LynxConstants {
         return old;
     }
 
-    inline DataType parseDataType(const std::string &typeStr) {
+    inline DataType dataTypeFromString(const std::string &typeStr) {
         static const std::unordered_map<std::string, DataType> mapping = {
             { "void",     DataType::VOID },
             { "boolean",  DataType::BOOLEAN },
@@ -128,7 +128,7 @@ namespace LynxConstants {
         return DataType::OTHER;
     }
 
-    inline std::string toString(DataType type) {
+    inline std::string dataTypeToString(DataType type) {
         switch (type) {
             case DataType::VOID:       return "void";
             case DataType::BOOLEAN:    return "boolean";

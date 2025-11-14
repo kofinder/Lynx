@@ -190,6 +190,6 @@ namespace LynxTypes {
         return llvm::ConstantInt::getTrue(ctx);
     }
 
-} // namespace LynxResolver
+}
 
-#endif // LYNX_TYPE_CONSTANTS_HPP
+#endif

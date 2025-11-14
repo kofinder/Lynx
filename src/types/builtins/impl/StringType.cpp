@@ -66,7 +66,7 @@ namespace LynxTypes {
         visitor.visit(*this); 
     }
 
-    const std::unordered_map<std::string, int>& StringType::getStaticMethodRegistry() const {
+    const std::unordered_map<std::string, int>& StringType::getMethodRegistry() const {
         const static std::unordered_map<std::string, int> methodTypes = {
             {"max", 0}, 
             {"min", 0}, 
@@ -74,21 +74,18 @@ namespace LynxTypes {
         };
         return methodTypes;
     }
-    
-    const std::unordered_map<std::string, int>& StringType::getInstanceMethodRegistry() const {
-        const static std::unordered_map<std::string, int> methodTypes;
-        return methodTypes;
-    }
 
-    llvm::Value* StringType::codegenStaticMethod(const std::string& methodName, const std::vector<llvm::Value*>& args) {
+    llvm::Value* StringType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
         return nullptr;
     }
 
-    // std::unique_ptr<TypeMethodResolver> StringType::createMethodResolver() const { 
-    //     LOG_INFO("Invoked...");
-    //     return std::make_unique<StringMethodResolver>();
-    // }
+    TypeMethodResolver* StringType::getOrCreateResolver() const { 
+        if (!resolver) {
+            resolver = new StringMethodResolver();
+        }
+        return resolver;
+    }
 
     bool StringType::equals(const BaseType* other) const {
         LOG_INFO("Invoked...");

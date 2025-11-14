@@ -28,10 +28,10 @@ namespace LynxTypes {
         public:
 
             llvm::Value* resolveMethod(
-                const std::string& name, 
+                AstContext& ctx,
                 llvm::Value* instance,
-                const std::vector<llvm::Value*>& args,
-                std::shared_ptr<AstContext> astContext
+                const std::string& method, 
+                const std::vector<llvm::Value*>& args
             ) noexcept override;
 
     };

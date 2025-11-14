@@ -143,7 +143,7 @@ namespace LynxTypes {
         return false;
     }
 
-    // std::unique_ptr<TypeMethodResolver> ClassType::createMethodResolver() const {
+    // std::unique_ptr<TypeMethodResolver> ClassType::getOrCreateResolver() const {
     //     return std::make_unique<ClassMethodResolver>();
     // }
 

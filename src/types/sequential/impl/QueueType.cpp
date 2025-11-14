@@ -26,7 +26,7 @@ namespace LynxTypes {
 
     llvm::Value* QueueType::createValue(std::vector<llvm::Value*> values) const {
         LOG_INFO("Invoked...");
-        std::cout << "ELEMENT TYPE ===>" << toString(elementType->getTypeTag()) << std::endl;
+        std::cout << "ELEMENT TYPE ===>" << dataTypeToString(elementType->getTypeTag()) << std::endl;
         return nullptr;    
     }  
         

@@ -58,11 +58,9 @@ namespace LynxTypes {
 
             // void accept(TypeVisitor& visitor) override;
 
-            // const std::unordered_map<std::string, int>& getStaticMethodRegistry() const override;
+            // const std::unordered_map<std::string, int>& getMethodRegistry() const override;
 
-            // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
-
-            // llvm::Value* codegenStaticMethod(const std::string& methodName, const std::vector<llvm::Value*>& args) override;
+            // llvm::Value* emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
 
             std::unique_ptr<BaseType> clone() const override { return std::make_unique<VoidType>(*this); }
 

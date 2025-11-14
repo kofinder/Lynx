@@ -8,7 +8,6 @@
 #include <memory>
 #include <context/AstContext.hpp>
 #include "resolver/TypeMethodResolver.hpp"
-#include "resolver/TypeResolverConstant.hpp"
 #include "resolver/strategies/ArithmeticStrategy.hpp"
 #include "resolver/strategies/BitwiseStrategy.hpp"
 #include "resolver/strategies/AbsStrategy.hpp"
@@ -87,19 +86,15 @@ namespace LynxTypes {
 
             // Resolve method (CRTP + TypeMethodResolver)
             [[nodiscard]] llvm::Value* resolveMethod(
-                const std::string& name,
+                AstContext& ctx,
                 llvm::Value* instance,
-                const std::vector<llvm::Value*>& args,
-                std::shared_ptr<AstContext> ctx
+                const std::string& method,
+                const std::vector<llvm::Value*>& args
             ) noexcept override {
-                auto it = MethodNameMap.find(name);
-                if (it == MethodNameMap.end()) return nullptr;
 
-                MethodName method = it->second;
+                if (!instance) return DerivedT::resolveTypeMethod(ctx, method, args);
 
-                if (!instance) return DerivedT::resolveTypeMethod(method, args, ctx);
-
-                return DerivedT::resolveInstanceMethod(instance, args, method, ctx);
+                return DerivedT::resolveInstanceMethod(ctx, instance, method, args);
             }
 
             virtual ~TypeNumericResolver() noexcept = default;

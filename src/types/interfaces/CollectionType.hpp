@@ -25,7 +25,7 @@
 #define LYNX_COLLECTION_TYPE_HPP
 
 #include <optional>
-#include "BaseType.hpp"
+// #include "BaseType.hpp"
 #include <context/AstContext.hpp>
 
 namespace LynxTypes {

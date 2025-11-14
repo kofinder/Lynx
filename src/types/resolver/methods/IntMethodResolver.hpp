@@ -45,11 +45,11 @@ namespace LynxTypes {
 
         public:
 
-            static llvm::Value* convertToString(llvm::Value* instance, std::shared_ptr<AstContext> ctx) noexcept;
-            static llvm::Value* performClone(llvm::Value* instance, std::shared_ptr<AstContext> ctx) noexcept;
-            static llvm::Value* performTypeCast(llvm::Value* instance, llvm::Type* targetType, std::shared_ptr<AstContext> ctx) noexcept;
-            static llvm::Value* resolveTypeMethod(MethodName method, const std::vector<llvm::Value*>& args, std::shared_ptr<AstContext> ctx) noexcept;
-            static llvm::Value* resolveInstanceMethod(llvm::Value* instance, const std::vector<llvm::Value*>& args, MethodName method, std::shared_ptr<AstContext> ctx) noexcept;
+            static llvm::Value* convertToString(AstContext& ctx, llvm::Value* instance) noexcept;
+            static llvm::Value* performClone(AstContext& ctx, llvm::Value* instance) noexcept;
+            static llvm::Value* performTypeCast(AstContext& ctx, llvm::Value* instance, llvm::Type* targetType) noexcept;
+            static llvm::Value* resolveTypeMethod(AstContext& ctx, const std::string& method, const std::vector<llvm::Value*>& args) noexcept;
+            static llvm::Value* resolveInstanceMethod(AstContext& ctx, llvm::Value* instance, const std::string& method, const std::vector<llvm::Value*>& args) noexcept;
 
         public:
 

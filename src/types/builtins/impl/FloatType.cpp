@@ -66,7 +66,7 @@ namespace LynxTypes {
         visitor.visit(*this); 
     }
 
-    const std::unordered_map<std::string, int>& FloatType::getStaticMethodRegistry() const {
+    const std::unordered_map<std::string, int>& FloatType::getMethodRegistry() const {
         const static std::unordered_map<std::string, int> methodTypes = {
             {"max", 0}, 
             {"min", 0}, 
@@ -74,21 +74,18 @@ namespace LynxTypes {
         };
         return methodTypes;
     }
-    
-    const std::unordered_map<std::string, int>& FloatType::getInstanceMethodRegistry() const {
-        const static std::unordered_map<std::string, int> methodTypes;
-        return methodTypes;
+
+    TypeMethodResolver* FloatType::getOrCreateResolver() const { 
+        if (!resolver) {
+            resolver = new FloatMethodResolver();
+        }
+        return resolver;
     }
 
-    llvm::Value* FloatType::codegenStaticMethod(const std::string& methodName, const std::vector<llvm::Value*>& args) {
+    llvm::Value* FloatType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
         return nullptr;
     }
-
-    // std::unique_ptr<TypeMethodResolver> FloatType::createMethodResolver() const { 
-    //     LOG_INFO("Invoked...");
-    //     return std::make_unique<FloatMethodResolver>();
-    // }
 
     const BaseType* FloatType::createWithStatic(bool newIsStatic) const {
         LOG_INFO("Invoked...");

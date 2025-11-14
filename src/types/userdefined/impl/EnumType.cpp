@@ -141,7 +141,7 @@ namespace LynxTypes {
         return nullptr;
     }
 
-    // std::unique_ptr<TypeMethodResolver> EnumType::createMethodResolver() const {
+    // std::unique_ptr<TypeMethodResolver> EnumType::getOrCreateResolver() const {
     //     return std::make_unique<EnumMethodResolver>();
     // }
 

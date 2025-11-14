@@ -74,7 +74,7 @@ namespace LynxTypes {
         visitor.visit(*this); 
     }
 
-    const std::unordered_map<std::string, int>& ByteType::getStaticMethodRegistry() const {
+    const std::unordered_map<std::string, int>& ByteType::getMethodRegistry() const {
         const static std::unordered_map<std::string, int> methodTypes = {
             {"max", 0}, 
             {"min", 0}, 
@@ -82,21 +82,19 @@ namespace LynxTypes {
         };
         return methodTypes;
     }
-    
-    const std::unordered_map<std::string, int>& ByteType::getInstanceMethodRegistry() const {
-        const static std::unordered_map<std::string, int> methodTypes;
-        return methodTypes;
+
+    TypeMethodResolver* ByteType::getOrCreateResolver() const { 
+        if (!resolver) {
+            resolver = new ByteMethodResolver();
+        }
+        return resolver;
     }
 
-    llvm::Value* ByteType::codegenStaticMethod(const std::string& methodName, const std::vector<llvm::Value*>& args) {
-        LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-        return nullptr;
+    llvm::Value* ByteType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        LOG_ERROR("Emit Method Call Invocation.");
+        if (!resolver)  resolver = getOrCreateResolver();
+        return resolver->resolveMethod(*astContext, instance, methodName, args);
     }
-
-    // std::unique_ptr<TypeMethodResolver> ByteType::createMethodResolver() const { 
-    //     LOG_INFO("Invoked...");
-    //     return std::make_unique<ByteMethodResolver>();
-    // }
 
     const BaseType* ByteType::createWithStatic(bool newIsStatic) const {
         LOG_INFO("Invoked...");

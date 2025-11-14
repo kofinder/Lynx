@@ -28,8 +28,6 @@
 
 namespace LynxTypes {
 
-    using namespace LynxContext;
-
     class BuiltInType : public BaseType {
 
         public: 
