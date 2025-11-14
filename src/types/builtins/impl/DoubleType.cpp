@@ -60,6 +60,8 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
+    void DoubleType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
+
     TypeMethodResolver* DoubleType::getOrCreateResolver() const {
         if (!resolver) resolver = new DoubleMethodResolver();
         return resolver;

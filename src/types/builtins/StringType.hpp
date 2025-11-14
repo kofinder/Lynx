@@ -58,9 +58,9 @@ namespace LynxTypes {
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
             TypeMethodResolver* getOrCreateResolver() const  override;
-            
-            void accept(TypeVisitor& visitor) override { visitor.visit(*this); }
 
+            void accept(TypeVisitor& visitor) override;
+            
             const std::unordered_map<std::string, int>& getMethodRegistry() const override { return stringMethods; }
 
             llvm::Value* emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) override;

@@ -35,6 +35,9 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(ZSTD REQUIRED libzstd)
 include_directories(${ZSTD_INCLUDE_DIRS})
 
+# Ensure we get full RTTI + exceptions (important for your BaseType system)
+add_compile_options(-frtti -fexceptions)
+
 # ==========================
 # === Lynx modules
 # ==========================

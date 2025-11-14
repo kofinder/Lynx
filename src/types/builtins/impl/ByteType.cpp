@@ -69,6 +69,8 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
+    void ByteType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
+
     TypeMethodResolver* ByteType::getOrCreateResolver() const { 
         if (!resolver) resolver = new ByteMethodResolver();
         return resolver;

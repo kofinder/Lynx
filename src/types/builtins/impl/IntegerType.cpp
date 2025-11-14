@@ -2,7 +2,6 @@
 #include <llvm/IR/DebugInfoMetadata.h>
 #include <context/AstContext.hpp>
 #include "visitor/TypeVisitor.hpp"
-#include "utils/TypeResolverConstant.hpp"
 #include "resolver/TypeMethodResolver.hpp"
 #include "resolver/methods/IntMethodResolver.hpp"
 
@@ -61,6 +60,8 @@ namespace LynxTypes {
         auto& builder = astContext->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
+    
+    void IntegerType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
     TypeMethodResolver* IntegerType::getOrCreateResolver() const {
         return IntMethodResolver::create();

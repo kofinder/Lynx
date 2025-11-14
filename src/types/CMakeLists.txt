@@ -1,6 +1,3 @@
-# Ensure we get full RTTI + exceptions (important for your BaseType system)
-add_compile_options(-frtti -fexceptions)
-
 # ------------------------------------------------------------------------
 #  Collect Source Files Recursively
 # ------------------------------------------------------------------------

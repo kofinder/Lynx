@@ -69,6 +69,8 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
+    void BooleanType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
+
     TypeMethodResolver* BooleanType::getOrCreateResolver() const { 
         if (!resolver) resolver = new BoolMethodResolver();
         return resolver;

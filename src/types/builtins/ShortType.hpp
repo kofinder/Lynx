@@ -59,7 +59,7 @@ namespace LynxTypes {
 
             TypeMethodResolver* getOrCreateResolver() const  override;
             
-            void accept(TypeVisitor& visitor) override { visitor.visit(*this); }
+            void accept(TypeVisitor& visitor) override;
 
             const std::unordered_map<std::string, int>& getMethodRegistry() const override { return shortMethods; }
 

@@ -61,6 +61,8 @@ namespace LynxTypes {
         auto& builder = astContext->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
+    
+    void ShortType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
     llvm::Value* ShortType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         LOG_ERROR("Emit Method Call Invocation.");

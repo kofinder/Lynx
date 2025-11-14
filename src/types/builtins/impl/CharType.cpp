@@ -69,6 +69,8 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
+    void CharType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
+
     TypeMethodResolver* CharType::getOrCreateResolver() const { 
         if (!resolver) resolver = new CharacterMethodResolver();
         return resolver;

@@ -61,6 +61,8 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
+    void FloatType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
+
     TypeMethodResolver* FloatType::getOrCreateResolver() const { 
         if (!resolver) resolver = new FloatMethodResolver();
         return resolver;

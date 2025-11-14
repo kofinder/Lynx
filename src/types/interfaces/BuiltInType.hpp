@@ -25,7 +25,7 @@
 
 #include "BaseType.hpp"
 #include <context/AstContext.hpp>
-#include "utils/TypeResolverConstant.hpp"
+#include <types/utils/TypeResolverConstant.hpp>
 
 namespace LynxTypes {
 

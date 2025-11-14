@@ -61,6 +61,8 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
+    void StringType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
+
     llvm::Value* StringType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         LOG_ERROR("Emit Method Call Invocation.");
         if (!resolver) resolver = getOrCreateResolver();
