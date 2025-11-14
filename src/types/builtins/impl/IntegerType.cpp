@@ -1,10 +1,9 @@
 #include "builtins/IntegerType.hpp"
 #include <llvm/IR/DebugInfoMetadata.h>
 #include <context/AstContext.hpp>
-#include <resolver/TypeVisitor.hpp>
-
-#include <resolver/TypeMethodResolver.hpp>
-#include <resolver/methods/IntMethodResolver.hpp>
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/IntMethodResolver.hpp"
 
 namespace LynxTypes {
 
@@ -63,49 +62,66 @@ namespace LynxTypes {
     }
 
     void IntegerType::accept(TypeVisitor& visitor) { 
-        LOG_INFO("Invoked...");
         visitor.visit(*this); 
     }
-
-    std::unique_ptr<TypeMethodResolver> IntegerType::createMethodResolver() const { 
-        auto resolver = IntMethodResolver::create();
-        // ----------------------
-        // Instance-level methods
-        // ----------------------
-        resolver->registerMethodName("abs", 0);
-        resolver->registerMethodName("negate", 0);
-        resolver->registerMethodName("sign", 0);
-        resolver->registerMethodName("clamp", 2);
-        resolver->registerMethodName("isEven", 0);
-        resolver->registerMethodName("isOdd", 0);
-
-        // ----------------------
-        // Static/top-level constants & methods
-        // ----------------------
-        resolver->registerMethodName("has_infinity", 0);
-        resolver->registerMethodName("infinity", 0);
-        resolver->registerMethodName("epsilon", 0);
-        resolver->registerMethodName("size", 0);
-        resolver->registerMethodName("byte", 0);
-        resolver->registerMethodName("bit", 0);
-        resolver->registerMethodName("max", 0);
-        resolver->registerMethodName("min", 0);
-
-        // ----------------------
-        // Developer-friendly helpers
-        // ----------------------
-        resolver->registerMethodName("zero", 0);
-        resolver->registerMethodName("one", 0);
-        resolver->registerMethodName("isPositive", 0);
-        resolver->registerMethodName("isNegative", 0);
-        resolver->registerMethodName("bitCount", 0);
-        resolver->registerMethodName("leadingZeros", 0);
-        resolver->registerMethodName("trailingZeros", 0);
-
-        LOG_INFO("IntegerType method resolver created successfully.");
-
-        return resolver;
+    const std::unordered_map<std::string, int>& IntegerType::getStaticMethodRegistry() const {
+        const static std::unordered_map<std::string, int> methodTypes = {
+            {"max", 0}, 
+            {"min", 0}, 
+            {"fromString", 1} 
+        };
+        return methodTypes;
     }
+    
+    const std::unordered_map<std::string, int>& IntegerType::getInstanceMethodRegistry() const {
+        const static std::unordered_map<std::string, int> methodTypes;
+        return methodTypes;
+    }
+
+    llvm::Value* IntegerType::codegenStaticMethod(const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
+        return nullptr;
+    }
+
+    // std::unique_ptr<TypeMethodResolver> IntegerType::createMethodResolver() const { 
+    //     auto resolver = IntMethodResolver::create();
+    //     // ----------------------
+    //     // Instance-level methods
+    //     // ----------------------
+    //     resolver->registerMethodName("abs", 0);
+    //     resolver->registerMethodName("negate", 0);
+    //     resolver->registerMethodName("sign", 0);
+    //     resolver->registerMethodName("clamp", 2);
+    //     resolver->registerMethodName("isEven", 0);
+    //     resolver->registerMethodName("isOdd", 0);
+
+    //     // ----------------------
+    //     // Static/top-level constants & methods
+    //     // ----------------------
+    //     resolver->registerMethodName("has_infinity", 0);
+    //     resolver->registerMethodName("infinity", 0);
+    //     resolver->registerMethodName("epsilon", 0);
+    //     resolver->registerMethodName("size", 0);
+    //     resolver->registerMethodName("byte", 0);
+    //     resolver->registerMethodName("bit", 0);
+    //     resolver->registerMethodName("max", 0);
+    //     resolver->registerMethodName("min", 0);
+
+    //     // ----------------------
+    //     // Developer-friendly helpers
+    //     // ----------------------
+    //     resolver->registerMethodName("zero", 0);
+    //     resolver->registerMethodName("one", 0);
+    //     resolver->registerMethodName("isPositive", 0);
+    //     resolver->registerMethodName("isNegative", 0);
+    //     resolver->registerMethodName("bitCount", 0);
+    //     resolver->registerMethodName("leadingZeros", 0);
+    //     resolver->registerMethodName("trailingZeros", 0);
+
+    //     LOG_INFO("IntegerType method resolver created successfully.");
+
+    //     return resolver;
+    // }
 
     const BaseType* IntegerType::createWithStatic(bool newIsStatic) const {
         auto clone = std::make_shared<IntegerType>(astContext);
@@ -162,7 +178,6 @@ namespace LynxTypes {
         if (isStatic()) {
             flags |= llvm::DINode::FlagStaticMember;
         }
-    
         return flags;
     }
     

@@ -33,19 +33,19 @@ namespace LynxAst {
 
         private:
 
-            std::string typeName;
-
             std::string methodName;
+
+            std::shared_ptr<VariableType> varType;
 
             std::unique_ptr<std::vector<std::unique_ptr<ExpressionNode>>> arguments;
 
         public:
 
             explicit StaticMethodCallNode(
-                const std::string& type,
                 const std::string& method,
+                std::shared_ptr<VariableType> type,
                 std::unique_ptr<std::vector<std::unique_ptr<ExpressionNode>>> args
-            ): typeName(type), methodName(method), arguments(std::move(args)) {}
+            ):  methodName(method), varType(std::move(type)), arguments(std::move(args)) {}
 
             std::unique_ptr<Node> clone() const override;
 

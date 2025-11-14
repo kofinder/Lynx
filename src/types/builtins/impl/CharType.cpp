@@ -1,9 +1,8 @@
 #include "builtins/CharType.hpp"
 #include <context/AstContext.hpp>
-#include <resolver/TypeVisitor.hpp>
-
-#include <resolver/TypeMethodResolver.hpp>
-#include <resolver/methods/CharacterMethodResolver.hpp>
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/CharacterMethodResolver.hpp"
 
 using namespace LynxContext;
 
@@ -75,10 +74,29 @@ namespace LynxTypes {
         visitor.visit(*this); 
     }
 
-    std::unique_ptr<TypeMethodResolver> CharType::createMethodResolver() const { 
-        LOG_INFO("Invoked...");
-        return std::make_unique<CharacterMethodResolver>();
+    const std::unordered_map<std::string, int>& CharType::getStaticMethodRegistry() const {
+        const static std::unordered_map<std::string, int> methodTypes = {
+            {"max", 0}, 
+            {"min", 0}, 
+            {"fromString", 1} 
+        };
+        return methodTypes;
     }
+    
+    const std::unordered_map<std::string, int>& CharType::getInstanceMethodRegistry() const {
+        const static std::unordered_map<std::string, int> methodTypes;
+        return methodTypes;
+    }
+
+    llvm::Value* CharType::codegenStaticMethod(const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
+        return nullptr;
+    }
+
+    // std::unique_ptr<TypeMethodResolver> CharType::createMethodResolver() const { 
+    //     LOG_INFO("Invoked...");
+    //     return std::make_unique<CharacterMethodResolver>();
+    // }
 
     const BaseType* CharType::createWithStatic(bool newIsStatic) const {
         LOG_INFO("Invoked...");

@@ -31,7 +31,7 @@
 #include "FunctionNode.hpp"
 #include "StatementListNode.hpp"
 #include <constants/Parameter.hpp>
-#include <ExpressionNode.hpp>
+#include "ExpressionNode.hpp"
 #include "FunctionNode.hpp"
 
 namespace LynxAst {

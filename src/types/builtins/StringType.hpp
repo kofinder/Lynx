@@ -47,9 +47,9 @@ namespace LynxTypes {
 
             explicit StringType(AstContext* context) : BuiltInType(context) {}
 
-            void accept(TypeVisitor& visitor) override;
+            llvm::Type* getLLVMPointerType() const override;
 
-            inline DataType getTypeTag() const override { return DataType::STRING; }
+            llvm::Value* getDefaultValue() override;
 
             llvm::Value* createInstance(std::string variableName) override;
 
@@ -57,15 +57,21 @@ namespace LynxTypes {
             
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
             
-            std::unique_ptr<TypeMethodResolver> createMethodResolver() const override;
+            void accept(TypeVisitor& visitor) override;
+
+            // std::unique_ptr<TypeMethodResolver> createMethodResolver() const override;
+
+            const std::unordered_map<std::string, int>& getStaticMethodRegistry() const override;
+
+            const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
+
+            llvm::Value* codegenStaticMethod(const std::string& methodName, const std::vector<llvm::Value*>& args) override;
 
             std::unique_ptr<BaseType> clone() const override { return std::make_unique<StringType>(*this); }
 
-            llvm::Type* getLLVMPointerType() const override;
-
-            llvm::Value* getDefaultValue() override;
-
             bool equals(const BaseType* other) const override;
+
+            inline DataType getTypeTag() const override { return DataType::STRING; }
 
             std::string getDebugName() const override;
 

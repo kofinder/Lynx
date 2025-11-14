@@ -33,18 +33,18 @@ set(SRC_FILES
 # ------------------------------------------
 # Build shared library
 # ------------------------------------------
-add_library(LynxRuntime SHARED ${SRC_FILES})
+add_library(LynxBridge SHARED ${SRC_FILES})
 
 # Include directories
-target_include_directories(LynxRuntime PUBLIC
+target_include_directories(LynxBridge PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(LynxRuntime PUBLIC gc pthread LynxCore)
+target_link_libraries(LynxBridge PUBLIC gc pthread LynxCore)
 
 
 # # Optional: set position independent code (ensures PIC for shared objects)
-set_target_properties(LynxRuntime PROPERTIES POSITION_INDEPENDENT_CODE ON)
+set_target_properties(LynxBridge PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # ------------------------------------------
 # Message

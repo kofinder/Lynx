@@ -4,23 +4,19 @@
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Constants.h>
 #include <llvm/Support/raw_ostream.h>
-#include <resolver/TypeVisitor.hpp>
-
-#include <resolver/TypeMethodResolver.hpp>
 #include <constants/LinkageType.hpp>
-#include <resolver/methods/StringMethodResolver.hpp>
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/StringMethodResolver.hpp"
 
 namespace LynxTypes {
 
     llvm::Type* StringType::computeLLVMType() const {
-        LOG_INFO("Invoked...");
-        return llvm::PointerType::get(llvm::Type::getInt8Ty(astContext->getLLVMContext())->getContext(), 0); // i8* pointer type
+        return llvm::PointerType::get(llvm::Type::getInt8Ty(astContext->getLLVMContext())->getContext(), 0);
     }
 
     llvm::Type* StringType::getLLVMPointerType() const {
-        LOG_INFO("Invoked...");
-
-        return llvm::PointerType::get(llvm::Type::getInt8Ty(astContext->getLLVMContext())->getContext(), 0); // i8* pointer type
+        return llvm::PointerType::get(llvm::Type::getInt8Ty(astContext->getLLVMContext())->getContext(), 0);
     }
 
     llvm::Value* StringType::getDefaultValue() {
@@ -70,10 +66,29 @@ namespace LynxTypes {
         visitor.visit(*this); 
     }
 
-    std::unique_ptr<TypeMethodResolver> StringType::createMethodResolver() const { 
-        LOG_INFO("Invoked...");
-        return std::make_unique<StringMethodResolver>();
+    const std::unordered_map<std::string, int>& StringType::getStaticMethodRegistry() const {
+        const static std::unordered_map<std::string, int> methodTypes = {
+            {"max", 0}, 
+            {"min", 0}, 
+            {"fromString", 1} 
+        };
+        return methodTypes;
     }
+    
+    const std::unordered_map<std::string, int>& StringType::getInstanceMethodRegistry() const {
+        const static std::unordered_map<std::string, int> methodTypes;
+        return methodTypes;
+    }
+
+    llvm::Value* StringType::codegenStaticMethod(const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
+        return nullptr;
+    }
+
+    // std::unique_ptr<TypeMethodResolver> StringType::createMethodResolver() const { 
+    //     LOG_INFO("Invoked...");
+    //     return std::make_unique<StringMethodResolver>();
+    // }
 
     bool StringType::equals(const BaseType* other) const {
         LOG_INFO("Invoked...");

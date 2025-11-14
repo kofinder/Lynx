@@ -42,7 +42,6 @@ namespace LynxContext {
 }
 
 namespace LynxResolver {
-    class TypeVisitor;
     class TypeMethodResolver;    
 }
 
@@ -53,6 +52,8 @@ using namespace LynxResolver;
 using namespace MetadataTypeConstants;
 
 namespace LynxTypes {
+
+    class TypeVisitor;
 
     class BaseType {
 
@@ -117,6 +118,7 @@ namespace LynxTypes {
              * @brief Returns the LLVM type, computing it if not already cached.
             */
             llvm::Type* getLLVMType() const;
+            
 
             /**
              * @brief Accepts a visitor to perform operations on the type.
@@ -124,6 +126,58 @@ namespace LynxTypes {
             */
             virtual void accept(TypeVisitor& visitor) {}
 
+            /**
+             * @brief Creates a method resolver for this type (if it supports methods).
+             * @return A unique pointer to the method resolver, or nullptr if not applicable.
+            */
+            // virtual std::unique_ptr<TypeMethodResolver> createMethodResolver() const;
+
+            /**
+             * @brief Returns the registry of static methods supported by this type.
+             *
+             * This registry maps method names to their expected parameter counts and is used
+             * during semantic analysis to validate static method calls such as `Int.max()` 
+             * or `String.fromString("...")`. Each derived type should override this method
+             * to expose the static methods relevant to that type.
+             *
+             * The registry is typically implemented as a constant lookup table defined in
+             * the type’s corresponding constant file (e.g., StaticMethodConstants.hpp).
+             *
+             * @return A reference to an unordered map of method names to parameter counts.
+             */
+            virtual const std::unordered_map<std::string, int>& getStaticMethodRegistry() const;
+
+            /**
+             * @brief Returns the registry of instance methods supported by this type.
+             *
+             * This is the counterpart to the static method registry and defines methods
+             * callable on instances of the type (e.g., `"hello".length()`, `array.push(x)`).
+             *
+             * During semantic analysis, this registry is consulted to:
+             * - verify that a method exists on the instance type,
+             * - ensure the parameter count matches,
+             * - allow code generation to dispatch correctly to the method implementation.
+             *
+             * Types without instance methods should return an empty registry.
+             *
+             * @return A reference to an unordered map of method names to parameter counts.
+            */
+            virtual const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const;
+
+            /**
+             * @brief Generates LLVM IR for invoking a static method on this type.
+             *
+             * This function is called during code generation after the semantic phase has
+             * validated that the method exists using `getStaticMethodRegistry()`. The 
+             * implementation of this method is type-specific and should emit the 
+             * appropriate LLVM instructions to compute the result of the static call.
+             *
+             * @param methodName The name of the static method being invoked.
+             * @param args A list of LLVM IR values representing the method arguments.
+             * @return An LLVM Value representing the result of the static method call.
+            */
+            virtual llvm::Value* codegenStaticMethod(const std::string& methodName, const std::vector<llvm::Value*>& args);
+            
             /**
              * @brief Returns whether the type is const-qualified.
              * 
@@ -240,7 +294,6 @@ namespace LynxTypes {
             */
             virtual bool canAccept(const BaseType* other) const = 0;
         
-
             /**
              * @brief Creates an LLVM value of this type from an LValueType wrapper.
              * @param lvalueType Encapsulated data value to convert.
@@ -285,12 +338,6 @@ namespace LynxTypes {
              * @return Resulting LLVM instruction.
             */
             virtual llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) = 0;
-
-            /**
-             * @brief Creates a method resolver for this type (if it supports methods).
-             * @return A unique pointer to the method resolver, or nullptr if not applicable.
-            */
-            virtual std::unique_ptr<TypeMethodResolver> createMethodResolver() const;
 
             /**
              * @brief Returns the human-readable name of this type for debugging metadata.
@@ -352,7 +399,7 @@ namespace LynxTypes {
             virtual std::unique_ptr<BaseType> clone() const = 0;
 
             /// @brief Virtual destructor for proper cleanup of derived types.
-            virtual ~BaseType() {}
+            virtual ~BaseType() {};
     };
 }
 

@@ -1,10 +1,9 @@
 #include "userdefined/DateTimeType.hpp"
 #include <context/AstContext.hpp>
 #include <logger/Logger.hpp>
-#include <resolver/TypeVisitor.hpp>
-
-#include <resolver/TypeMethodResolver.hpp>
-#include <resolver/methods/DateTimeMethodResolver.hpp>
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/DateTimeMethodResolver.hpp"
 
 using namespace LynxContext;
 using namespace LynxLogger;
@@ -15,7 +14,6 @@ namespace LynxTypes {
 
     llvm::Type* DateTimeType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        
         if (!cachedType) {
             auto& context = astContext->getLLVMContext();
             cachedType = llvm::StructType::create(context, MetadataTypeConstants::structureDateTimeType);
@@ -45,15 +43,15 @@ namespace LynxTypes {
         return llvm::Constant::getNullValue(computeLLVMType());
     }
 
-    void DateTimeType::accept(TypeVisitor& visitor) { 
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
-    }
+    // void DateTimeType::accept(TypeVisitor& visitor) { 
+    //     LOG_INFO("Invoked...");
+    //     visitor.visit(*this); 
+    // }
 
-    std::unique_ptr<TypeMethodResolver> DateTimeType::createMethodResolver() const {
-        LOG_INFO("Invoked...");
-        return std::make_unique<DateTimeMethodResolver>();
-    }
+    // std::unique_ptr<TypeMethodResolver> DateTimeType::createMethodResolver() const {
+    //     LOG_INFO("Invoked...");
+    //     return std::make_unique<DateTimeMethodResolver>();
+    // }
 
 
     llvm::Value* DateTimeType::createInstance(std::string variableName) {
@@ -164,17 +162,14 @@ namespace LynxTypes {
     }
 
     uint64_t DateTimeType::getDebugSizeInBits() const {
-        LOG_INFO("Invoked...");
-        return 8 * 32; // 8 fields × 32 bits each
+        return 8 * 32;
     }
 
     uint32_t DateTimeType::getDebugAlignInBits() const {
-        LOG_INFO("Invoked...");
-        return 32; // i32 alignment
+        return 32;
     }
 
     llvm::DINode::DIFlags DateTimeType::getDIFlags() const {
-        LOG_INFO("Invoked...");
         return llvm::DINode::FlagZero;
     }
 

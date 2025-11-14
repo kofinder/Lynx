@@ -1,5 +1,5 @@
 #include "infrerence/AutoType.hpp"
-#include <resolver/TypeVisitor.hpp>
+#include "visitor/TypeVisitor.hpp"
 #include <resolver/methods/AutoMethodResolver.hpp>
 
 namespace LynxTypes {
@@ -25,11 +25,6 @@ namespace LynxTypes {
         return new AutoType(astContext);
     }
 
-    void AutoType::accept(TypeVisitor& visitor) {
-        LOG_INFO("Invoked...");
-       visitor.visit(*this);
-    }
-
     llvm::Value* AutoType::createInstance(std::string variableName) {
         LOG_INFO("Invoked...");
         if (!inferredType) throw std::logic_error("AutoType not yet inferred.");
@@ -40,11 +35,6 @@ namespace LynxTypes {
         LOG_INFO("Invoked...");
         if (!inferredType) throw std::logic_error("AutoType not yet inferred.");
         return inferredType->assignTo(lhs, rhs);
-    }
-
-    std::unique_ptr<TypeMethodResolver> AutoType::createMethodResolver() const {
-        LOG_INFO("Invoked...");
-        return std::make_unique<AutoMethodResolver>();
     }
 
     llvm::Value* AutoType::createValue(LValueType value) const {
@@ -92,7 +82,6 @@ namespace LynxTypes {
         return equals(other);
     }
 
-
     std::string AutoType::getDebugName() const {
         if (!inferredType) return "auto";
         return "auto(" + inferredType->getDebugName() + ")";
@@ -114,16 +103,6 @@ namespace LynxTypes {
     }
 
     llvm::DINode::DIFlags AutoType::getDIFlags() const {
-        llvm::DINode::DIFlags flags = llvm::DINode::FlagZero;
-
-        if (isConst()) {
-            flags |= llvm::DINode::FlagArtificial;
-        }
-
-        if (isStatic()) {
-            flags |= llvm::DINode::FlagStaticMember;
-        }
-
-        return flags;
+        return llvm::DINode::FlagZero;
     }
 }

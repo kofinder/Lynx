@@ -79,7 +79,6 @@ namespace LynxTypes {
                 return false;
             }
 
-
             /**
              * @brief Creates an LLVM value from a list of LLVM values.
              * 

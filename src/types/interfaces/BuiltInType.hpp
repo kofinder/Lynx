@@ -26,10 +26,9 @@
 #include "BaseType.hpp"
 #include <context/AstContext.hpp>
 
-
-using namespace LynxContext;
-
 namespace LynxTypes {
+
+    using namespace LynxContext;
 
     class BuiltInType : public BaseType {
 

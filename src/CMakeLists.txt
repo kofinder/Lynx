@@ -40,7 +40,7 @@ include_directories(${ZSTD_INCLUDE_DIRS})
 # ==========================
 set(LYNX_MODULES
     lang constants exceptions logger context types ast mangler
-    resolver jit config codegen linker attributes callconv
+    jit config codegen linker attributes callconv
     analyzer lto core ui platform libruntime collections
     errors cli system stdapi
 )
@@ -86,7 +86,6 @@ target_link_libraries(${LYNX_EXECUTABLE} PUBLIC
     LynxAst 
     LynxMangler 
     LynxJIT 
-    LynxResolver 
     LynxProgramConfig
     LynxCLI 
     LynxCodegen 
@@ -98,7 +97,7 @@ target_link_libraries(${LYNX_EXECUTABLE} PUBLIC
     LynxCore 
     LynxLibRuntime 
     LynxErrors
-    LynxRuntime 
+    LynxBridge 
     LynxPlatform 
     LynxCollection 
     LynxUI
@@ -124,9 +123,9 @@ target_include_directories(LynxLSPServer PRIVATE src/lang ${ZSTD_INCLUDE_DIRS})
 
 target_link_libraries(LynxLSPServer PRIVATE
     LynxLogger LynxExceptions LynxConstants LynxContext LynxTypes
-    LynxLang LynxAst LynxMangler LynxResolver LynxProgramConfig
+    LynxLang LynxAst LynxMangler LynxProgramConfig
     LynxCodegen LynxLinker LynxFunctionAttr LynxCallConv LynxAnalyzer
-    LynxLTO LynxCore LynxLibRuntime LynxErrors LynxRuntime
+    LynxLTO LynxCore LynxLibRuntime LynxErrors LynxBridge
     LynxCollection LynxSystem
     nlohmann_json::nlohmann_json
     Boost::system Boost::filesystem Boost::program_options
@@ -138,10 +137,3 @@ target_link_libraries(LynxLSPServer PRIVATE
 # ==========================
 target_compile_features(${LYNX_EXECUTABLE} PUBLIC cxx_std_23)
 target_compile_features(LynxLSPServer PUBLIC cxx_std_23)
-
-
-# ==========================
-# === Compiler paths
-# ==========================
-# set(CMAKE_C_COMPILER "/usr/bin/clang-21")
-# set(CMAKE_CXX_COMPILER "/usr/bin/clang++-21")

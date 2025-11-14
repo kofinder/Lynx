@@ -2,10 +2,9 @@
 #include <context/AstContext.hpp>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Constants.h>
-#include <resolver/TypeVisitor.hpp>
-
-#include <resolver/TypeMethodResolver.hpp>
-#include <resolver/methods/ByteMethodResolver.hpp>
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/ByteMethodResolver.hpp"
 
 namespace LynxTypes {
     
@@ -75,10 +74,29 @@ namespace LynxTypes {
         visitor.visit(*this); 
     }
 
-    std::unique_ptr<TypeMethodResolver> ByteType::createMethodResolver() const { 
-        LOG_INFO("Invoked...");
-        return std::make_unique<ByteMethodResolver>();
+    const std::unordered_map<std::string, int>& ByteType::getStaticMethodRegistry() const {
+        const static std::unordered_map<std::string, int> methodTypes = {
+            {"max", 0}, 
+            {"min", 0}, 
+            {"fromString", 1} 
+        };
+        return methodTypes;
     }
+    
+    const std::unordered_map<std::string, int>& ByteType::getInstanceMethodRegistry() const {
+        const static std::unordered_map<std::string, int> methodTypes;
+        return methodTypes;
+    }
+
+    llvm::Value* ByteType::codegenStaticMethod(const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
+        return nullptr;
+    }
+
+    // std::unique_ptr<TypeMethodResolver> ByteType::createMethodResolver() const { 
+    //     LOG_INFO("Invoked...");
+    //     return std::make_unique<ByteMethodResolver>();
+    // }
 
     const BaseType* ByteType::createWithStatic(bool newIsStatic) const {
         LOG_INFO("Invoked...");

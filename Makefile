@@ -21,7 +21,7 @@ all: create build
 # -------------------------------------------------------------------
 create:
 	@echo "✨ Checking and creating build directory..."
-	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR) ${BISON_DIR}
 	@echo "✅ Build directory ready at $(BUILD_DIR)"
 
 configure:
@@ -71,7 +71,7 @@ debug: build
 clean:
 	@echo "🧹 Cleaning up..."
 	@sh sh_clean.sh
-	cd ${BISON_DIR}/ && sh run.sh clean
+	# cd ${BISON_DIR}/ && sh run.sh clean
 	# cd ${SKIA_DIR}/ && rm -rf out/Static
 
 .PHONY: all create configure install build validate execute cli debug trace clean syntax

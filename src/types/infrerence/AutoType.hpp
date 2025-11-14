@@ -51,9 +51,22 @@ namespace LynxTypes {
             const BaseType* createWithConst(bool newIsConst) const override;
 
         public:
+
             explicit AutoType(AstContext* context) : BaseType(context) {};
 
-            void accept(TypeVisitor& visitor) override;
+            llvm::Type* getLLVMPointerType() const override;
+
+            llvm::Value* getDefaultValue() override;
+
+            llvm::Value* createInstance(std::string variableName) override;
+
+            llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
+
+            llvm::Value* createValue(LValueType value) const override;
+
+            llvm::Value* createValue(std::vector<llvm::Value*> values) const override;
+
+            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> pairs) const override;
 
             inline bool isBuiltInType() const noexcept override { return true; }
 
@@ -64,30 +77,14 @@ namespace LynxTypes {
             inline BaseType* getInferredType() const { return inferredType; }
             
             inline bool isInferred() const { return inferredType != nullptr; }
-
-            llvm::Value* createInstance(std::string variableName) override;
-
-            llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
-
-            std::unique_ptr<TypeMethodResolver> createMethodResolver() const override;
-
-            llvm::Value* createValue(LValueType value) const override;
-
-            llvm::Value* createValue(std::vector<llvm::Value*> values) const override;
-
-            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> pairs) const override;
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<AutoType>(*this); }
                         
-            llvm::Type* getLLVMPointerType() const override;
-
-            llvm::Value* getDefaultValue() override;
-
             bool equals(const BaseType* other) const override;
 
             bool canAccept(const BaseType* other) const override;
 
             std::string getDebugName() const override;
+
+            std::unique_ptr<BaseType> clone() const override { return std::make_unique<AutoType>(*this); }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 

@@ -19,26 +19,31 @@ namespace LynxTypes {
         
             explicit DoubleType(AstContext* context) : BuiltInType(context) {}
 
-            void accept(TypeVisitor& visitor) override;
-
-            inline DataType getTypeTag() const override { return DataType::DOUBLE; }
-
-            llvm::Value* createInstance(std::string variableName) override;
-
-            llvm::Value* createValue(LValueType value) const override;
-            
-            std::unique_ptr<TypeMethodResolver> createMethodResolver() const override;
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<DoubleType>(*this); }
-
-
-            llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
-
             llvm::Type* getLLVMPointerType() const override;
 
             llvm::Value* getDefaultValue() override;
 
+            llvm::Value* createInstance(std::string variableName) override;
+
+            llvm::Value* createValue(LValueType value) const override;
+
+            llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
+            
+            void accept(TypeVisitor& visitor) override;
+
+            // std::unique_ptr<TypeMethodResolver> createMethodResolver() const override;
+
+            const std::unordered_map<std::string, int>& getStaticMethodRegistry() const override;
+
+            const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
+
+            llvm::Value* codegenStaticMethod(const std::string& methodName, const std::vector<llvm::Value*>& args) override;
+
+            std::unique_ptr<BaseType> clone() const override { return std::make_unique<DoubleType>(*this); }
+
             bool equals(const BaseType* other) const override;
+
+            inline DataType getTypeTag() const override { return DataType::DOUBLE; }
             
             std::string getDebugName() const override;
 

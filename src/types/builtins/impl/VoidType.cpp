@@ -2,8 +2,7 @@
 #include <context/AstContext.hpp>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Constants.h>
-
-using namespace LynxContext;
+#include "visitor/TypeVisitor.hpp"
 
 namespace LynxTypes {
 
@@ -48,7 +47,7 @@ namespace LynxTypes {
         LOG_INFO("Invoked...");
         return nullptr;
     }
-    
+
     bool VoidType::equals(const BaseType* other) const {
         LOG_INFO("Invoked...");
         return dynamic_cast<const VoidType*>(other) != nullptr;
@@ -60,23 +59,19 @@ namespace LynxTypes {
     }
 
     llvm::DIType* VoidType::getDIType(llvm::DIScope* scope) const {
-        LOG_INFO("Invoked...");
         auto& builder = astContext->getDebugBuilder();
         return builder.createUnspecifiedType("void");
     }
 
     uint64_t VoidType::getDebugSizeInBits() const {
-        LOG_INFO("Invoked...");
-        return 0; // Void has no size
+        return 0;
     }
 
     uint32_t VoidType::getDebugAlignInBits() const {
-        LOG_INFO("Invoked...");
-        return 0; // Void has no alignment
+        return 0;
     }
 
     llvm::DINode::DIFlags VoidType::getDIFlags() const {
-        LOG_INFO("Invoked...");
         return llvm::DINode::FlagZero;
     }
 }

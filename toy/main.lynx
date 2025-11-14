@@ -3,12 +3,12 @@
 
     int x = int.max();
 
-    int i = 10;
-    i::add(5);
+   // int i = 10;
+   // i::add(5);
 
     system.io.println("Max Integer limit is: ", x);
 
-    system.io.println("instance method call check: ", i);
+    //system.io.println("instance method call check: ", i);
 
 
     return 0;

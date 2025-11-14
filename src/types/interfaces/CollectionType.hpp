@@ -29,6 +29,8 @@
 #include <context/AstContext.hpp>
 
 namespace LynxTypes {
+    
+    using namespace LynxContext;
 
     class CollectionType : public BaseType {
 
@@ -197,7 +199,8 @@ namespace LynxTypes {
             */
             virtual void forEachKeyValue(const KeyValueCallback& callback) {
                 astContext->reportError(makeRuntimeError("forEachKeyValue must be implemented by derived AssociativeType"));
-            }   
+            }  
+
     };
 }
 
