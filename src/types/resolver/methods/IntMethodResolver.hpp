@@ -85,8 +85,8 @@ namespace LynxTypes {
                 ) {}
             };
 
-            static std::unique_ptr<TypeMethodResolver> create() {
-                return std::make_unique<Impl>();
+            static TypeMethodResolver* create() {
+                return new Impl();
             }         
     };
 }

@@ -11,6 +11,6 @@
     //system.io.println("instance method call check: ", i);
 
 
-    return 0;
+    return 32;
     
   }

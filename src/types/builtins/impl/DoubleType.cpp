@@ -60,30 +60,15 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    void DoubleType::accept(TypeVisitor& visitor) { 
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
-    }
-
-    const std::unordered_map<std::string, int>& DoubleType::getMethodRegistry() const {
-        const static std::unordered_map<std::string, int> methodTypes = {
-            {"max", 0}, 
-            {"min", 0}, 
-            {"fromString", 1} 
-        };
-        return methodTypes;
-    }
-
     TypeMethodResolver* DoubleType::getOrCreateResolver() const {
-        if (!resolver) {
-            resolver = new DoubleMethodResolver();
-        }
+        if (!resolver) resolver = new DoubleMethodResolver();
         return resolver;
     }
 
     llvm::Value* DoubleType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
-        LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-        return nullptr;
+        LOG_ERROR("Emit Method Call Invocation.");
+        if (!resolver) resolver = getOrCreateResolver();
+        return resolver->resolveMethod(*astContext, instance, methodName, args);
     }
 
     const BaseType* DoubleType::createWithStatic(bool newIsStatic) const {

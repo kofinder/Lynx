@@ -23,7 +23,6 @@ namespace LynxTypes {
         return this->createValue(LValueType);
     }
 
-
     llvm::Value* BooleanType::createInstance(std::string variableName) {
         LOG_INFO("Invoked...");
         auto& builder = astContext->getBuilder();
@@ -70,29 +69,14 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    void BooleanType::accept(TypeVisitor& visitor) { 
-        visitor.visit(*this); 
-    }
-
-    const std::unordered_map<std::string, int>& BooleanType::getMethodRegistry() const {
-        const static std::unordered_map<std::string, int> methodTypes = {
-            {"max", 0}, 
-            {"min", 0}, 
-            {"fromString", 1} 
-        };
-        return methodTypes;
-    }
-
     TypeMethodResolver* BooleanType::getOrCreateResolver() const { 
-        if (!resolver) {
-            resolver = new BoolMethodResolver();
-        }
+        if (!resolver) resolver = new BoolMethodResolver();
         return resolver;
     }
 
     llvm::Value* BooleanType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         LOG_ERROR("Emit Method Call Invocation.");
-        if (!resolver)  resolver = getOrCreateResolver();
+        if (!resolver) resolver = getOrCreateResolver();
         return resolver->resolveMethod(*astContext, instance, methodName, args);
     }
 

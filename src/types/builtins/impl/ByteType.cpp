@@ -69,30 +69,14 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    void ByteType::accept(TypeVisitor& visitor) { 
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
-    }
-
-    const std::unordered_map<std::string, int>& ByteType::getMethodRegistry() const {
-        const static std::unordered_map<std::string, int> methodTypes = {
-            {"max", 0}, 
-            {"min", 0}, 
-            {"fromString", 1} 
-        };
-        return methodTypes;
-    }
-
     TypeMethodResolver* ByteType::getOrCreateResolver() const { 
-        if (!resolver) {
-            resolver = new ByteMethodResolver();
-        }
+        if (!resolver) resolver = new ByteMethodResolver();
         return resolver;
     }
 
     llvm::Value* ByteType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         LOG_ERROR("Emit Method Call Invocation.");
-        if (!resolver)  resolver = getOrCreateResolver();
+        if (!resolver) resolver = getOrCreateResolver();
         return resolver->resolveMethod(*astContext, instance, methodName, args);
     }
 

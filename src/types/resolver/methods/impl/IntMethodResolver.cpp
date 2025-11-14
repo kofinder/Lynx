@@ -1,4 +1,5 @@
 #include "methods/IntMethodResolver.hpp"
+#include "utils/TypeNumericUtils.hpp"
 
 namespace LynxTypes {
 
@@ -23,12 +24,10 @@ namespace LynxTypes {
         const std::vector<llvm::Value*>& args
     ) noexcept {
         LOG_ERROR("Invoked...................");
-        // auto& context = ctx->getLLVMContext();
-        // switch(method) {
-        //     case MethodName::Max: return intMax(context);
-        //     case MethodName::Min: return intMin(context);
-        //     default: return nullptr;
-        // }
+        auto& context = ctx.getLLVMContext();
+        if(method == "max") return intMax(context);
+        if(method == "min") return intMin(context);
+        return nullptr;
     }
 
     llvm::Value* IntMethodResolver::resolveInstanceMethod(

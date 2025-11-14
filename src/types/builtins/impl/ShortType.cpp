@@ -62,29 +62,14 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    void ShortType::accept(TypeVisitor& visitor) { 
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
-    }
-
-    const std::unordered_map<std::string, int>& ShortType::getMethodRegistry() const {
-        const static std::unordered_map<std::string, int> methodTypes = {
-            {"max", 0}, 
-            {"min", 0}, 
-            {"fromString", 1} 
-        };
-        return methodTypes;
-    }
-
     llvm::Value* ShortType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
-        LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-        return nullptr;
+        LOG_ERROR("Emit Method Call Invocation.");
+        if (!resolver) resolver = getOrCreateResolver();
+        return resolver->resolveMethod(*astContext, instance, methodName, args);
     }
 
     TypeMethodResolver* ShortType::getOrCreateResolver() const { 
-        if (!resolver) {
-            resolver = new ShortMethodResolver();
-        }
+        if (!resolver) resolver = new ShortMethodResolver();
         return resolver;
     }
 

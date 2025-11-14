@@ -69,30 +69,15 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    void CharType::accept(TypeVisitor& visitor) {
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
-    }
-
-    const std::unordered_map<std::string, int>& CharType::getMethodRegistry() const {
-        const static std::unordered_map<std::string, int> methodTypes = {
-            {"max", 0}, 
-            {"min", 0}, 
-            {"fromString", 1} 
-        };
-        return methodTypes;
-    }
-
     TypeMethodResolver* CharType::getOrCreateResolver() const { 
-        if (!resolver) {
-            resolver = new CharacterMethodResolver();
-        }
+        if (!resolver) resolver = new CharacterMethodResolver();
         return resolver;
     }
 
     llvm::Value* CharType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
-        LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-        return nullptr;
+        LOG_ERROR("Emit Method Call Invocation.");
+        if (!resolver)  resolver = getOrCreateResolver();
+        return resolver->resolveMethod(*astContext, instance, methodName, args);
     }
 
     const BaseType* CharType::createWithStatic(bool newIsStatic) const {

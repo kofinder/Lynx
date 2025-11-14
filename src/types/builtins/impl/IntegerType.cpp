@@ -2,6 +2,7 @@
 #include <llvm/IR/DebugInfoMetadata.h>
 #include <context/AstContext.hpp>
 #include "visitor/TypeVisitor.hpp"
+#include "utils/TypeResolverConstant.hpp"
 #include "resolver/TypeMethodResolver.hpp"
 #include "resolver/methods/IntMethodResolver.hpp"
 
@@ -61,29 +62,12 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    void IntegerType::accept(TypeVisitor& visitor) { 
-        visitor.visit(*this); 
-    }
-    
-    const std::unordered_map<std::string, int>& IntegerType::getMethodRegistry() const {
-        const static std::unordered_map<std::string, int> methodTypes = {
-            {"max", 0}, 
-            {"min", 0}, 
-            {"fromString", 1} 
-        };
-        return methodTypes;
-    }
-
     TypeMethodResolver* IntegerType::getOrCreateResolver() const {
-        // if (!resolver) {
-        //     resolver = IntMethodResolver::create();;
-        // }
-        // return resolver;
-        return nullptr;
+        return IntMethodResolver::create();
     }
 
     llvm::Value* IntegerType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
-        LOG_ERROR("Emit Method Call Invocation.");
+        if (!resolver) resolver = IntMethodResolver::create();
         return resolver->resolveMethod(*astContext, instance, methodName, args);
     }
 
@@ -147,43 +131,3 @@ namespace LynxTypes {
     
 }
 
-
-// std::unique_ptr<TypeMethodResolver> IntegerType::getOrCreateResolver() const { 
-//     auto resolver = IntMethodResolver::create();
-//     // ----------------------
-//     // Instance-level methods
-//     // ----------------------
-//     resolver->registerMethodName("abs", 0);
-//     resolver->registerMethodName("negate", 0);
-//     resolver->registerMethodName("sign", 0);
-//     resolver->registerMethodName("clamp", 2);
-//     resolver->registerMethodName("isEven", 0);
-//     resolver->registerMethodName("isOdd", 0);
-
-//     // ----------------------
-//     // Static/top-level constants & methods
-//     // ----------------------
-//     resolver->registerMethodName("has_infinity", 0);
-//     resolver->registerMethodName("infinity", 0);
-//     resolver->registerMethodName("epsilon", 0);
-//     resolver->registerMethodName("size", 0);
-//     resolver->registerMethodName("byte", 0);
-//     resolver->registerMethodName("bit", 0);
-//     resolver->registerMethodName("max", 0);
-//     resolver->registerMethodName("min", 0);
-
-//     // ----------------------
-//     // Developer-friendly helpers
-//     // ----------------------
-//     resolver->registerMethodName("zero", 0);
-//     resolver->registerMethodName("one", 0);
-//     resolver->registerMethodName("isPositive", 0);
-//     resolver->registerMethodName("isNegative", 0);
-//     resolver->registerMethodName("bitCount", 0);
-//     resolver->registerMethodName("leadingZeros", 0);
-//     resolver->registerMethodName("trailingZeros", 0);
-
-//     LOG_INFO("IntegerType method resolver created successfully.");
-
-//     return resolver;
-// }
