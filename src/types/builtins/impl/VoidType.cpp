@@ -7,24 +7,18 @@
 namespace LynxTypes {
 
     llvm::Type* VoidType::computeLLVMType() const {
-        LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getVoidTy(context);
+        return llvm::Type::getVoidTy(astContext->getLLVMContext());
     }
 
     llvm::Type* VoidType::getLLVMPointerType() const {
-        LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::PointerType::get(context, 0);
+        return llvm::PointerType::get(astContext->getLLVMContext(), 0);
     }
 
     llvm::Value* VoidType::getDefaultValue() {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
     llvm::Value* VoidType::createInstance(std::string variableName) {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
@@ -34,27 +28,22 @@ namespace LynxTypes {
     }        
 
     llvm::Value* VoidType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
     const BaseType* VoidType::createWithStatic(bool newIsStatic) const {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
     const BaseType* VoidType::createWithConst(bool newIsConst) const {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
     bool VoidType::equals(const BaseType* other) const {
-        LOG_INFO("Invoked...");
         return dynamic_cast<const VoidType*>(other) != nullptr;
     }
     
     std::string VoidType::getDebugName() const {
-        LOG_INFO("Invoked...");
         return "void";
     }
 

@@ -18,15 +18,15 @@ namespace LynxTypes {
 
         private:
 
-            std::unordered_map<std::string, std::unordered_map<std::string, MethodInfo>> registry;
+            std::unordered_map<std::string, std::unordered_map<std::string_view, MethodInfo>> registry;
 
         public:
 
-            void registerMethod(const std::string& typeName, const std::string& methodName, size_t paramCount = 0) {
+            void registerMethod(const std::string& typeName, const std::string_view& methodName, size_t paramCount = 0) {
                 registry[typeName][methodName] = MethodInfo{true, paramCount};
             }
 
-            void registerMethods(const std::string& typeName, const std::unordered_map<std::string, int>& methods) {
+            void registerMethods(const std::string& typeName, const std::unordered_map<std::string_view, int>& methods) {
                 for (const auto& [methodName, paramCount] : methods) {
                     registerMethod(typeName, methodName, static_cast<size_t>(paramCount));
                 }

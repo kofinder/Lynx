@@ -5,7 +5,7 @@
 
 namespace LynxTypes {
 
-    class DoubleType: public BuiltInType {
+    class DoubleType : public BuiltInType {
 
         protected:
         
@@ -33,7 +33,7 @@ namespace LynxTypes {
 
             TypeMethodResolver* getOrCreateResolver() const  override;
 
-            const std::unordered_map<std::string, int>& getMethodRegistry() const override { return doubleMethods; }
+            const std::unordered_map<std::string_view, int>& getMethodRegistry() const override { return doubleMethods; }
 
             llvm::Value* emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
 

@@ -1,10 +1,7 @@
 #include "builtins/CharType.hpp"
-#include <context/AstContext.hpp>
 #include "visitor/TypeVisitor.hpp"
 #include "resolver/TypeMethodResolver.hpp"
 #include "resolver/methods/CharacterMethodResolver.hpp"
-
-using namespace LynxContext;
 
 namespace LynxTypes {
 

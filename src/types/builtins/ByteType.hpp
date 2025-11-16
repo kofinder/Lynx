@@ -34,7 +34,7 @@
 
 namespace LynxTypes {
     
-    class ByteType: public BuiltInType {
+    class ByteType : public BuiltInType {
 
         private:
         
@@ -66,7 +66,7 @@ namespace LynxTypes {
 
             TypeMethodResolver* getOrCreateResolver() const  override;
 
-            const std::unordered_map<std::string, int>& getMethodRegistry() const override { return byteMethods; }
+            const std::unordered_map<std::string_view, int>& getMethodRegistry() const override { return byteMethods; }
 
             llvm::Value* emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
 

@@ -68,7 +68,7 @@ namespace LynxTypes {
 
             // TypeMethodResolver* getOrCreateResolver() const  override;
 
-            // const std::unordered_map<std::string, int>& getMethodRegistry() const override;
+            // const std::unordered_map<std::string_view, int>& getMethodRegistry() const override;
 
             // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
 

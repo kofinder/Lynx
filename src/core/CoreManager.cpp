@@ -24,7 +24,7 @@ namespace LynxCore {
         //    - sets up Boehm GC
         //    - initializes GCMutator and GCCollector
         //    - optionally starts live GC dashboard
-        memoryManager->initialize();
+        // memoryManager->initialize();
 
         if (bindingManager) {
             RuntimeBindingManager::setMemoryManager(memoryManager.get());

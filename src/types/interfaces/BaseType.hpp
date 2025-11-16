@@ -149,7 +149,7 @@ namespace LynxTypes {
              *
              * @return A reference to an unordered map of method names to parameter counts.
             */
-            virtual const std::unordered_map<std::string, int>& getMethodRegistry() const;
+            virtual const std::unordered_map<std::string_view, int>& getMethodRegistry() const;
 
             /**
              * @brief Generates LLVM IR for invoking a static method on this type.

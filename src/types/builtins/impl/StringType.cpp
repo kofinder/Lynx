@@ -1,6 +1,5 @@
 #include <string>
 #include "builtins/StringType.hpp"
-#include <context/AstContext.hpp>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Constants.h>
 #include <llvm/Support/raw_ostream.h>

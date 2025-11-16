@@ -1,10 +1,7 @@
 #include "builtins/LongType.hpp"
-#include <context/AstContext.hpp>
 #include "visitor/TypeVisitor.hpp"
 #include "resolver/TypeMethodResolver.hpp"
 #include "resolver/methods/LongMethodResolver.hpp"
-
-using namespace LynxContext;
 
 namespace LynxTypes {
 

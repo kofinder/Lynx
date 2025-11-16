@@ -15,20 +15,16 @@ namespace LynxSystem {
             LOG_WARN("SystemModuleLoader: Already initialized");
             return;
         }
-    
-        LOG_INFO("Registering core system modules...");
-    
+        
         SystemModuleRegistry::registerModule("io", []() {
             return std::make_unique<IOModule>();
         });
     
         initialized = true;
-        LOG_INFO("SystemModuleLoader: Initialization complete");
     }
     
     void SystemModuleLoader::loadCustomModule(const std::string& name, std::function<std::unique_ptr<ISystemModule>()> factory) {
         SystemModuleRegistry::registerModule(name, std::move(factory));
-        LOG_INFO("Custom module registered: {}", name);
     }
     
     void SystemModuleLoader::validateModules(const std::vector<std::string>& requiredModules) {
@@ -49,7 +45,6 @@ namespace LynxSystem {
         try {
             SystemModuleRegistry::clear();
             initialized = false;
-            LOG_INFO("SystemModuleLoader successfully shut down.");
         } catch (const std::exception& ex) {
             LOG_ERROR("Error during SystemModuleLoader shutdown: {}", ex.what());
         } catch (...) {

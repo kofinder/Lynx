@@ -58,7 +58,7 @@ namespace LynxTypes {
 
             // void accept(TypeVisitor& visitor) override;
 
-            // const std::unordered_map<std::string, int>& getMethodRegistry() const override;
+            // const std::unordered_map<std::string_view, int>& getMethodRegistry() const override;
 
             // llvm::Value* emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
 

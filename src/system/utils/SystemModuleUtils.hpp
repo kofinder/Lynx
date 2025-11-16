@@ -78,7 +78,7 @@ namespace LynxSystem::utils {
         if (TypeChecker::is<FileType>(valueType))        return "[file]\n";
 
         std::cerr << "[TypeChecker] Warning: Unrecognized type for format specifier\n";
-        return "%p\n";
+        return "%s\n";
     }
 
     /**
@@ -229,15 +229,22 @@ namespace LynxSystem::utils {
         return printfArgs;
     }
 
+    inline llvm::Value* getGlobalStringPtr(llvm::IRBuilder<>& builder, llvm::Module* module, const std::string& str, const std::string& name) noexcept {
+        auto* gv = builder.CreateGlobalString(str, name);
+        auto* arrayTy = llvm::cast<llvm::ArrayType>(gv->getValueType());
+        auto* zero = llvm::ConstantInt::get(builder.getInt32Ty(), 0);
+        return builder.CreateInBoundsGEP(arrayTy, gv, {zero, zero}, name + "_ptr");
+    }
 
     /**
      * @brief Retrieves (or inserts) the `printf` function declaration into the module.
     */
     [[nodiscard]] inline llvm::Function* getOrCreatePrintf(llvm::LLVMContext& context, llvm::Module* module) noexcept {
         constexpr bool isVarArg = true;
+        llvm::Type* i8ptrType = llvm::PointerType::get(llvm::IntegerType::get(context, 8)->getContext(), 0);
         auto* printfType = llvm::FunctionType::get(
             llvm::Type::getInt32Ty(context),
-            { llvm::PointerType::get(context, 0) },
+            { i8ptrType  },
             isVarArg
         );
         return llvm::cast<llvm::Function>(module->getOrInsertFunction("printf", printfType).getCallee());

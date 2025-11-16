@@ -2,62 +2,64 @@
 #define LYNX_RESOLVER_SATURATION_STRATEGY_HPP
 
 #include <llvm/IR/Value.h>
-#include <context/AstContext.hpp>
+#include "utils/TypeResolverConstant.hpp"
 
 namespace LynxTypes {
 
-    using LynxContext::AstContext;
-
+    // ============================================================================
+    // Base Interface
+    // ============================================================================
     struct SaturationStrategy {
-        /// Signed addition with saturation
-        [[nodiscard]] virtual llvm::Value* saddSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
-
-        /// Unsigned addition with saturation
-        [[nodiscard]] virtual llvm::Value* uaddSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
-
-        /// Signed subtraction with saturation
-        [[nodiscard]] virtual llvm::Value* ssubSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
-
-        /// Unsigned subtraction with saturation
-        [[nodiscard]] virtual llvm::Value* usubSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
-
-        /// Signed shift left with saturation
-        [[nodiscard]] virtual llvm::Value* sshlSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
-
-        /// Unsigned shift left with saturation
-        [[nodiscard]] virtual llvm::Value* ushLSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* saddSat(const StrategyContext&) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* uaddSat(const StrategyContext&) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* ssubSat(const StrategyContext&) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* usubSat(const StrategyContext&) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* sshlSat(const StrategyContext&) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* ushLSat(const StrategyContext&) const noexcept = 0;
 
         virtual ~SaturationStrategy() noexcept = default;
     };
 
-    struct IntSaturationStrategy : SaturationStrategy {
+    // ============================================================================
+    // Forward declaration for primary template
+    // ============================================================================
+    template<typename T>
+    struct SaturationStrategyImpl;
 
-        [[nodiscard]] llvm::Value* saddSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
-            return nullptr;
-        }
-
-        [[nodiscard]] llvm::Value* uaddSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
-            return nullptr;
-        }
-
-        [[nodiscard]] llvm::Value* ssubSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
-            return nullptr;
-        }
-
-        [[nodiscard]] llvm::Value* usubSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
-            return nullptr;
-        }
-
-        [[nodiscard]] llvm::Value* sshlSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
-            return nullptr;
-        }
-
-        [[nodiscard]] llvm::Value* ushLSat(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
-            return nullptr;
-        }
-
-        ~IntSaturationStrategy() noexcept override = default;
+    // ============================================================================
+    // Integer Specialization
+    // ============================================================================
+    template<IntStrategyType T>
+    struct SaturationStrategyImpl<T> : SaturationStrategy {
+        [[nodiscard]] llvm::Value* saddSat(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* uaddSat(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* ssubSat(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* usubSat(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* sshlSat(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* ushLSat(const StrategyContext&) const noexcept override { return nullptr; }
     };
+
+    // ============================================================================
+    // Floating-Point Specialization
+    // ============================================================================
+    template<FloatStrategyType T>
+    struct SaturationStrategyImpl<T> : SaturationStrategy {
+        [[nodiscard]] llvm::Value* saddSat(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* uaddSat(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* ssubSat(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* usubSat(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* sshlSat(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* ushLSat(const StrategyContext&) const noexcept override { return nullptr; }
+    };
+
+    // ============================================================================
+    // Type Aliases (matching your previous class names exactly)
+    // ============================================================================
+    using ShortSaturationStrategy  = SaturationStrategyImpl<short>;
+    using IntSaturationStrategy    = SaturationStrategyImpl<int>;
+    using LongSaturationStrategy   = SaturationStrategyImpl<long>;
+    using FloatSaturationStrategy  = SaturationStrategyImpl<float>;
+    using DoubleSaturationStrategy = SaturationStrategyImpl<double>;
 }
 
 #endif 

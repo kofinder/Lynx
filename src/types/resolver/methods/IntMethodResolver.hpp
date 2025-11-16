@@ -15,7 +15,7 @@
  * Methods supported include arithmetic operations, comparisons, and
  * type conversions specific to the Lynx `int` type.
  *
- * * @author Ko Thein (Nathan Mratt)
+ * @author Ko Thein (Nathan Mratt)
  * @date November 2, 2024
  */
 
@@ -40,15 +40,18 @@
 
 namespace LynxTypes {
 
-
     class IntMethodResolver {
 
         public:
 
             static llvm::Value* convertToString(AstContext& ctx, llvm::Value* instance) noexcept;
+
             static llvm::Value* performClone(AstContext& ctx, llvm::Value* instance) noexcept;
+
             static llvm::Value* performTypeCast(AstContext& ctx, llvm::Value* instance, llvm::Type* targetType) noexcept;
+
             static llvm::Value* resolveTypeMethod(AstContext& ctx, const std::string& method, const std::vector<llvm::Value*>& args) noexcept;
+            
             static llvm::Value* resolveInstanceMethod(AstContext& ctx, llvm::Value* instance, const std::string& method, const std::vector<llvm::Value*>& args) noexcept;
 
         public:

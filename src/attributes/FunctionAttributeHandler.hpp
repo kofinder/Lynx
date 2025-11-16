@@ -46,6 +46,8 @@ namespace LynxFunctionAttr {
             /// Pointer to the next handler in the chain
             std::unique_ptr<FunctionAttributeHandler> next = nullptr;
 
+        private:
+        
             /**
              * @brief Abstract method to apply specific logic for attribute modification.
              *
@@ -84,7 +86,7 @@ namespace LynxFunctionAttr {
              * @return Raw pointer to the next handler (if any).
              */
             FunctionAttributeHandler* getNext() const { return next.get(); }
-        };
+    };
 }
 
 #endif 

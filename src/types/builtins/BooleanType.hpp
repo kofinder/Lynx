@@ -62,7 +62,7 @@ namespace LynxTypes {
 
             TypeMethodResolver* getOrCreateResolver() const  override;
 
-            const std::unordered_map<std::string, int>& getMethodRegistry() const override { return boolMethods; }
+            const std::unordered_map<std::string_view, int>& getMethodRegistry() const override { return boolMethods; }
 
             llvm::Value* emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
 

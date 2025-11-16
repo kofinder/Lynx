@@ -1,10 +1,7 @@
 #include "builtins/DoubleType.hpp"
-#include <context/AstContext.hpp>
 #include "visitor/TypeVisitor.hpp"
 #include "resolver/TypeMethodResolver.hpp"
 #include "resolver/methods/DoubleMethodResolver.hpp"
-
-using namespace LynxContext;
 
 namespace LynxTypes {
 

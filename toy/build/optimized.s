@@ -1,23 +1,18 @@
-	.text
 	.file	"main"
+	.text
 	.globl	main
-	.p2align	4, 0x90
+	.p2align	4
 	.type	main,@function
 main:
 	.cfi_startproc
 	pushq	%rax
 	.cfi_def_cfa_offset 16
-	movl	$.Lfmt.4, %edi
+	movl	$.Lfmt, %edi
 	movl	$.Llynx.string.constant, %esi
-	movl	$2147483647, %edx
+	movl	$-2147483648, %edx
 	xorl	%eax, %eax
 	callq	printf@PLT
-	movl	$.Lfmt.4, %edi
-	movl	$.Llynx.string.constant.3, %esi
-	movl	$10, %edx
-	xorl	%eax, %eax
-	callq	printf@PLT
-	xorl	%eax, %eax
+	movl	$32, %eax
 	popq	%rcx
 	.cfi_def_cfa_offset 8
 	retq
@@ -27,21 +22,15 @@ main:
 
 	.type	.Llynx.string.constant,@object
 	.section	.rodata,"a",@progbits
-	.p2align	4
+	.p2align	4, 0x0
 .Llynx.string.constant:
 	.asciz	"Max Integer limit is: "
 	.size	.Llynx.string.constant, 23
 
-	.type	.Llynx.string.constant.3,@object
-	.p2align	4
-.Llynx.string.constant.3:
-	.asciz	"instance method call check: "
-	.size	.Llynx.string.constant.3, 29
-
-	.type	.Lfmt.4,@object
+	.type	.Lfmt,@object
 	.section	.rodata.str1.1,"aMS",@progbits,1
-.Lfmt.4:
+.Lfmt:
 	.asciz	"%s %d\n"
-	.size	.Lfmt.4, 7
+	.size	.Lfmt, 7
 
 	.section	".note.GNU-stack","",@progbits

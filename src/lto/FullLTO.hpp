@@ -32,8 +32,6 @@
 #include "llvm/IR/PassManager.h"
 #include "llvm/Support/raw_ostream.h"
 
-
-// CUSTOM PASSESS
 #include "passes/AccessModifierPass.hpp"
 #include "passes/AttributorPass.hpp"
 #include "passes/DeadCodeEliminationPass.hpp"
@@ -84,26 +82,26 @@ namespace LynxLTO {
         
             auto MPM = PB.buildModuleOptimizationPipeline(llvm::OptimizationLevel::O3, llvm::ThinOrFullLTOPhase::FullLTOPostLink);
             
-            MPM.addPass(AccessModifierPass());
-            MPM.addPass(AttributorPass());
-            MPM.addPass(llvm::createModuleToFunctionPassAdaptor(DeadCodeEliminationPass()));
-            MPM.addPass(DevirtualizeFunctionCallsPass());
-            MPM.addPass(DevirtualizePass());
-            MPM.addPass(FunctionDocDumperPass());
-            MPM.addPass(FunctionDocExtractorPass());
-            MPM.addPass(FunctionInliningPass());
-            MPM.addPass(FunctionMetadataPass());
-            MPM.addPass(FunctionSecurityPass());
-            MPM.addPass(FunctionSignatureAuditPass());
-            MPM.addPass(GlobalDCEPPass());
-            MPM.addPass(PointerCaptureAnalysisPass());
-            MPM.addPass(llvm::createModuleToFunctionPassAdaptor(RemoveUnusedParamsPass()));
-            MPM.addPass(RequireAnalysisPass());
-            MPM.addPass(TargetIRVerifierPass());
-            MPM.addPass(UndenfinedBehaviorPass());
-            MPM.addPass(VirtualCallOptimizationPass());
-            MPM.addPass(VTableExtractorPass());
-            MPM.addPass(WholeProgramDevirtPass());
+            // MPM.addPass(AccessModifierPass());
+            // MPM.addPass(AttributorPass());
+            // MPM.addPass(llvm::createModuleToFunctionPassAdaptor(DeadCodeEliminationPass()));
+            // MPM.addPass(DevirtualizeFunctionCallsPass());
+            // MPM.addPass(DevirtualizePass());
+            // MPM.addPass(FunctionDocDumperPass());
+            // MPM.addPass(FunctionDocExtractorPass());
+            // MPM.addPass(FunctionInliningPass());
+            // MPM.addPass(FunctionMetadataPass());
+            // MPM.addPass(FunctionSecurityPass());
+            // MPM.addPass(FunctionSignatureAuditPass());
+            // MPM.addPass(GlobalDCEPPass());
+            // MPM.addPass(PointerCaptureAnalysisPass());
+            // MPM.addPass(llvm::createModuleToFunctionPassAdaptor(RemoveUnusedParamsPass()));
+            // MPM.addPass(RequireAnalysisPass());
+            // MPM.addPass(TargetIRVerifierPass());
+            // MPM.addPass(UndenfinedBehaviorPass());
+            // MPM.addPass(VirtualCallOptimizationPass());
+            // MPM.addPass(VTableExtractorPass());
+            // MPM.addPass(WholeProgramDevirtPass());
 
 
             MPM.run(M, MAM);

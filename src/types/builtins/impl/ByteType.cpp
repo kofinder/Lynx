@@ -1,5 +1,4 @@
 #include "builtins/ByteType.hpp"
-#include <context/AstContext.hpp>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Constants.h>
 #include "visitor/TypeVisitor.hpp"

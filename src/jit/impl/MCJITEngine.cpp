@@ -13,7 +13,7 @@
 namespace LynxJIT {
 
     void MCJITEngine::initialize(std::unique_ptr<llvm::Module> module, const std::unordered_map<std::string, void*>& symbols) {
-    
+
         std::string errStr;
         llvm::EngineBuilder builder(std::move(module));
         builder.setErrorStr(&errStr);
@@ -52,7 +52,7 @@ namespace LynxJIT {
     
         // Prepare empty argument list (can be expanded to support args)
         execArgs.clear();
-        llvm::GenericValue result = engine->runFunction(execStartFunction, execArgs);
+        auto result = engine->runFunction(execStartFunction, execArgs);
         return static_cast<int>(result.IntVal.getZExtValue());
     }
 }

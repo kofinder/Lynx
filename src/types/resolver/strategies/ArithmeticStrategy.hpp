@@ -1,88 +1,92 @@
 #ifndef LYNX_RESOLVER_ARITHMETIC_STRATEGY_HPP
 #define LYNX_RESOLVER_ARITHMETIC_STRATEGY_HPP
 
+#include <type_traits>
+#include <vector>
 #include <llvm/IR/Value.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/LLVMContext.h>
-#include <context/AstContext.hpp>
+#include "utils/TypeResolverConstant.hpp"
 
 namespace LynxTypes {
 
-    using LynxContext::AstContext;
-
+    // ============================================================================
+    // Base Interface
+    // ============================================================================
     struct ArithmeticStrategy {
+        [[nodiscard]] virtual llvm::Value* add(const StrategyContext&) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* sub(const StrategyContext&) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* mul(const StrategyContext&) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* div(const StrategyContext&) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* mod(const StrategyContext&) const noexcept = 0;
 
-        [[nodiscard]] virtual llvm::Value* add(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
-
-        [[nodiscard]] virtual llvm::Value* sub(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
-
-        [[nodiscard]] virtual llvm::Value* mul(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
-
-        [[nodiscard]] virtual llvm::Value* div(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
-
-        [[nodiscard]] virtual llvm::Value* mod(const AstContext& ctx,  llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
-        
         virtual ~ArithmeticStrategy() noexcept = default;
-
     };
 
+    // ============================================================================
+    // Forward declaration for primary template
+    // ============================================================================
+    template<typename T>
+    struct ArithmeticStrategyImpl;
 
-    struct IntArithmeticStrategy : ArithmeticStrategy {
+    // ============================================================================
+    // Integer Specialization
+    // ============================================================================
+    template<IntStrategyType T>
+    struct ArithmeticStrategyImpl<T> : ArithmeticStrategy {
+        [[nodiscard]] llvm::Value* add(const StrategyContext& stgCtx) const noexcept override { 
+            std::cout << "WHAT THE FUCK ....." << std::endl;
 
-        [[nodiscard]] llvm::Value* add(const AstContext& ctx, llvm::Value* lhsPtr, llvm::Value* rhs) const noexcept override {
-            LOG_ERROR("Emit method correctly");
-
+            auto lhsPtr = stgCtx.instance;
+            auto rhs = stgCtx.args[0];
             if (!lhsPtr || !rhs) return nullptr;
 
-            auto& builder = ctx.getBuilder();
-            auto& llvmCtx = ctx.getLLVMContext();
+            auto& builder = stgCtx.ctx.getBuilder();
 
+            auto* i8PtrTy = llvm::PointerType::get(lhsPtr->getContext(), 0);
 
-            auto* i8PtrTy = llvm::PointerType::get(llvmCtx, 0);
-
-            // Load the current value
+            // Load the current value (type inferred from pointer)
             llvm::Value* lhsVal = builder.CreateLoad(i8PtrTy, lhsPtr, "load_lhs");
-        
-            // Perform addition
+
+            // Cast rhs if needed
+            if (lhsVal->getType() != rhs->getType()) {
+                rhs = builder.CreateIntCast(rhs, lhsVal->getType(), true, "rhs_cast");
+            }
+
             llvm::Value* result = builder.CreateAdd(lhsVal, rhs, "int_add");
-        
-            // Store the result back to the original variable
+
             builder.CreateStore(result, lhsPtr);
-        
-            return result; // optionally return the new value
-        
-    
-            // auto& builder = ctx.getBuilder();
-        
-            // // Emit LLVM IR for integer addition
-            // llvm::Value* result = builder.CreateAdd(lhs, rhs, "int_add");
-    
-            // builder.CreateStore(result, lhs);
 
-            // LOG_INFO("Emitted integer addition for {} + {}", lhs->getName().str(), rhs->getName().str());
-            // return result;
+            return result;
         }
 
-        [[nodiscard]] llvm::Value* sub(const AstContext& ctx,  llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
-            return nullptr;
-        }
-
-        [[nodiscard]] llvm::Value* mul(const AstContext& ctx,  llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
-            return nullptr;
-        }
-
-        [[nodiscard]] llvm::Value* div(const AstContext& ctx,  llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
-            return nullptr;
-        }
-
-        [[nodiscard]] llvm::Value* mod(const AstContext& ctx,  llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
-            return nullptr;
-        }
-
-        ~IntArithmeticStrategy() noexcept override = default;
-
+        [[nodiscard]] llvm::Value* sub(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* mul(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* div(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* mod(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
     };
+
+    // ============================================================================
+    // Floating-Point Specialization
+    // ============================================================================
+    template<FloatStrategyType T>
+    struct ArithmeticStrategyImpl<T> : ArithmeticStrategy {
+        [[nodiscard]] llvm::Value* add(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* sub(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* mul(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* div(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* mod(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
+    };
+
+    // ============================================================================
+    // Type Aliases (matching your previous class names exactly)
+    // ============================================================================
+    using ShortArithmeticStrategy  = ArithmeticStrategyImpl<short>;
+    using IntArithmeticStrategy    = ArithmeticStrategyImpl<int>;
+    using LongArithmeticStrategy   = ArithmeticStrategyImpl<long>;
+    using FloatArithmeticStrategy  = ArithmeticStrategyImpl<float>;
+    using DoubleArithmeticStrategy = ArithmeticStrategyImpl<double>;
 }
 
-#endif 
+#endif

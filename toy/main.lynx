@@ -1,15 +1,9 @@
 
   int main() {
 
-    int x = int.max();
-
-   // int i = 10;
-   // i::add(5);
-
+    int x = 20;
+    x::add(10);
     system.io.println("Max Integer limit is: ", x);
-
-    //system.io.println("instance method call check: ", i);
-
 
     return 32;
     

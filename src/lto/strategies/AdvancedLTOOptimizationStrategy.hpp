@@ -1,4 +1,3 @@
-
 /**
  * @file AdvancedLTOOptimizationStrategy.hpp
  * @brief Implements an advanced LTO optimization strategy using LLVM passes.
@@ -18,8 +17,6 @@
  * @date: November 2, 2024
  */
 
-
-
 #ifndef LYNX_ADVANCED_LTO_OPTIMIZATION_STRATEGY_HPP
 #define LYNX_ADVANCED_LTO_OPTIMIZATION_STRATEGY_HPP
 
@@ -29,14 +26,14 @@
 // Scalar optimizations
 #include "llvm/Transforms/Scalar/SROA.h"
 #include "llvm/Transforms/Scalar/EarlyCSE.h"
-#include "llvm/Transforms/Scalar/InstCombine.h"
+// #include "llvm/Transforms/Scalar/InstCombine.h"
 #include "llvm/Transforms/Scalar/Reassociate.h"
-#include "llvm/Transforms/Scalar/DSE.h"
+// #include "llvm/Transforms/Scalar/DSE.h"
 #include "llvm/Transforms/Scalar/ADCE.h"
 #include "llvm/Transforms/Scalar/LICM.h"
 #include "llvm/Transforms/Scalar/LoopUnrollPass.h"
 #include "llvm/Transforms/Scalar/JumpThreading.h"
-#include "llvm/Transforms/Scalar/TailCallElim.h"
+// #include "llvm/Transforms/Scalar/TailCallElim.h"
 #include "llvm/Transforms/Utils/Mem2Reg.h"
 
 #include "llvm/Transforms/IPO/Inliner.h"
@@ -45,7 +42,7 @@
 #include "llvm/Transforms/IPO/ConstantMerge.h"
 #include "llvm/Transforms/Utils/LoopSimplify.h"
 #include "llvm/Transforms/IPO/MergeFunctions.h"
-#include "llvm/Transforms/IPO/PostOrderFunctionAttrs.h"
+// #include "llvm/Transforms/IPO/PostOrderFunctionAttrs.h"
 
 #include "llvm/Transforms/Vectorize/LoopVectorize.h"
 #include "llvm/Transforms/Vectorize/SLPVectorizer.h"
@@ -81,22 +78,22 @@ namespace LynxLTO {
                 MPM.addPass(llvm::GlobalDCEPass());
                 MPM.addPass(llvm::ConstantMergePass());
                 MPM.addPass(llvm::MergeFunctionsPass());
-                MPM.addPass(llvm::IPSCCPPass());
+                // MPM.addPass(llvm::IPSCCPPass());
                 MPM.addPass(llvm::InlinerPass());
-                MPM.addPass(llvm::PostOrderFunctionAttrsPass());
+                // MPM.addPass(llvm::PostOrderFunctionAttrsPass());
 
                 // === Function-Level Pipeline ===
                 llvm::FunctionPassManager FPM;
 
                 // FPM.addPass(llvm::SROA());
                 FPM.addPass(llvm::EarlyCSEPass());
-                FPM.addPass(llvm::InstCombinePass());
+                // FPM.addPass(llvm::InstCombinePass());
                 FPM.addPass(llvm::ReassociatePass());
                 FPM.addPass(llvm::JumpThreadingPass());
-                FPM.addPass(llvm::DSEPass());
+                // FPM.addPass(llvm::DSEPass());
                 FPM.addPass(llvm::ADCEPass());
-                FPM.addPass(llvm::TailCallElimPass());
-                FPM.addPass(llvm::LICMPass());
+                // FPM.addPass(llvm::TailCallElimPass());
+                // FPM.addPass(llvm::LICMPass());
                 FPM.addPass(llvm::LoopSimplifyPass());
                 FPM.addPass(llvm::LoopUnrollPass());
                 FPM.addPass(llvm::LoopVectorizePass());
@@ -104,7 +101,7 @@ namespace LynxLTO {
 
                 // Wrap FPM in CGSCC, then wrap that in MPM
                 llvm::CGSCCPassManager CGPM;
-                CGPM.addPass(llvm::FunctionToLoopPassAdaptor(std::move(FPM)));
+                // CGPM.addPass(llvm::FunctionToLoopPassAdaptor(std::move(FPM)));
                 MPM.addPass(llvm::createModuleToPostOrderCGSCCPassAdaptor(std::move(CGPM)));
 
                 // Run on module

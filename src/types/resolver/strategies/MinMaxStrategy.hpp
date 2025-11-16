@@ -2,56 +2,58 @@
 #define LYNX_RESOLVER_MIN_MAX_STRATEGY_HPP
 
 #include <llvm/IR/Value.h>
-#include <context/AstContext.hpp>
-#include <logger/Logger.hpp>
+#include "utils/TypeResolverConstant.hpp"
 
 namespace LynxTypes {
 
-    using LynxContext::AstContext;
-    using namespace LynxLogger;
-
+    // ============================================================================
+    // Base Interface
+    // ============================================================================
     struct MinMaxStrategy {
-
-        /// Signed minimum
-        [[nodiscard]] virtual llvm::Value* smin(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
-
-        /// Signed maximum
-        [[nodiscard]] virtual llvm::Value* smax(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
-
-        /// Unsigned minimum
-        [[nodiscard]] virtual llvm::Value* umin(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
-
-        /// Unsigned maximum
-        [[nodiscard]] virtual llvm::Value* umax(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* smin(const StrategyContext&) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* smax(const StrategyContext&) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* umin(const StrategyContext&) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* umax(const StrategyContext&) const noexcept = 0;
 
         virtual ~MinMaxStrategy() noexcept = default;
     };
 
-    struct IntMinMaxStrategy : MinMaxStrategy {
-        
-        [[nodiscard]] llvm::Value* smin(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
-            LOG_ERROR("Dispatched ..");
-            return nullptr;
-        }
+    // ============================================================================
+    // Forward declaration for primary template
+    // ============================================================================
+    template<typename T>
+    struct MinMaxStrategyImpl;
 
-        [[nodiscard]] llvm::Value* smax(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
-            LOG_ERROR("Dispatched ..");
-            return nullptr;
-        }
-
-        [[nodiscard]] llvm::Value* umin(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
-            LOG_ERROR("Dispatched ..");
-            return nullptr;
-        }
-
-        [[nodiscard]] llvm::Value* umax(const AstContext& ctx, llvm::Value* lhs, llvm::Value* rhs) const noexcept override {
-            LOG_ERROR("Dispatched ..");
-            return nullptr;
-        }
-
-        ~IntMinMaxStrategy() noexcept override = default;
+    // ============================================================================
+    // Integer Specialization
+    // ============================================================================
+    template<IntStrategyType T>
+    struct MinMaxStrategyImpl<T> : MinMaxStrategy {
+        [[nodiscard]] llvm::Value* smin(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* smax(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* umin(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* umax(const StrategyContext&) const noexcept override { return nullptr; }
     };
 
+    // ============================================================================
+    // Floating-Point Specialization
+    // ============================================================================
+    template<FloatStrategyType T>
+    struct MinMaxStrategyImpl<T> : MinMaxStrategy {
+        [[nodiscard]] llvm::Value* smin(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* smax(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* umin(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* umax(const StrategyContext&) const noexcept override { return nullptr; }
+    };
+
+    // ============================================================================
+    // Type Aliases (matching your previous class names exactly)
+    // ============================================================================
+    using ShortMinMaxStrategy  = MinMaxStrategyImpl<short>;
+    using IntMinMaxStrategy    = MinMaxStrategyImpl<int>;
+    using LongMinMaxStrategy   = MinMaxStrategyImpl<long>;
+    using FloatMinMaxStrategy  = MinMaxStrategyImpl<float>;
+    using DoubleMinMaxStrategy = MinMaxStrategyImpl<double>;
 }
 
 #endif 

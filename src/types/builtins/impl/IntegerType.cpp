@@ -1,13 +1,10 @@
 #include "builtins/IntegerType.hpp"
 #include <llvm/IR/DebugInfoMetadata.h>
-#include <context/AstContext.hpp>
 #include "visitor/TypeVisitor.hpp"
 #include "resolver/TypeMethodResolver.hpp"
 #include "resolver/methods/IntMethodResolver.hpp"
 
 namespace LynxTypes {
-
-    using namespace LynxContext;
 
     llvm::Type* IntegerType::computeLLVMType() const {
         LOG_INFO("Invoked...");

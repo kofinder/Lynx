@@ -22,7 +22,6 @@
  * @date: November 4, 2025
 */
 
-
 #ifndef LYNX_FUNCTION_ATTRS_INFERER_HPP
 #define LYNX_FUNCTION_ATTRS_INFERER_HPP
 
@@ -68,77 +67,77 @@ namespace LynxFunctionAttr {
 
 
     class FunctionAttributeInferer {
+
+        private:
         
-        std::unique_ptr<FunctionAttributeHandler> head;
+            std::unique_ptr<FunctionAttributeHandler> head;
     
-    public:
-        
-        /**
-         * @brief Constructor that sets up the chain of attribute handlers.
-         *
-         * Typically, this initializes the `head` with a default or configured set of attribute logic
-         * (e.g., intrinsic checking, parameter attribute inference, etc.).
-         */
-        FunctionAttributeInferer() {
-            auto headHandler = std::make_unique<SafeDefaultsHandler>();
-            FunctionAttributeHandler* current = headHandler.get();
+        public:
+            
+            /**
+             * @brief Constructor that sets up the chain of attribute handlers.
+             *
+             * Typically, this initializes the `head` with a default or configured set of attribute logic
+             * (e.g., intrinsic checking, parameter attribute inference, etc.).
+             */
+            FunctionAttributeInferer() {
+                auto headHandler = std::make_unique<SafeDefaultsHandler>();
+                FunctionAttributeHandler* current = headHandler.get();
 
-            auto append = [&](std::unique_ptr<FunctionAttributeHandler> next) {
-                current->setNext(std::move(next));
-                current = current->getNext(); // assumes getNext() returns raw ptr for chaining
-            };
+                auto append = [&](std::unique_ptr<FunctionAttributeHandler> next) {
+                    current->setNext(std::move(next));
+                    current = current->getNext(); // assumes getNext() returns raw ptr for chaining
+                };
 
-            append(std::make_unique<AlwaysInlineHandler>());
-            append(std::make_unique<NoInlineHandler>());
-            append(std::make_unique<NoReturnHandler>());
-            append(std::make_unique<ReadOnlyHandler>());
-            append(std::make_unique<ReadNoneHandler>());
-            append(std::make_unique<NoCaptureHandler>());
-            append(std::make_unique<NoUnwindHandler>());
-            append(std::make_unique<SanitizeAddressHandler>());
-            append(std::make_unique<OptimizeForSizeHandler>());
-            append(std::make_unique<InlineHintHandler>());
-            append(std::make_unique<StackProtectorHandler>());
-            append(std::make_unique<NoInlineHintHandler>());
-            append(std::make_unique<NoDeadStripHandler>());
-            append(std::make_unique<IntrinsicHandler>());
-            append(std::make_unique<NoRecurseHandler>());
-            append(std::make_unique<SanitizeThreadHandler>());
-            append(std::make_unique<SanitizeMemoryHandler>());
-            append(std::make_unique<SanitizeHWAddressHandler>());
-            append(std::make_unique<NoInlineAsmHandler>());
-            append(std::make_unique<UWTableHandler>());
-            append(std::make_unique<ZeroExtendHandler>());
-            append(std::make_unique<SignExtendHandler>());
-            append(std::make_unique<ArgMemOnlyHandler>());
-            append(std::make_unique<ReturnsTwiceHandler>());
-            append(std::make_unique<StrictFPHandler>());
-            append(std::make_unique<SanitizeCoverageHandler>());
-            append(std::make_unique<NoSanitizeMemoryHandler>());
-            append(std::make_unique<NoSanitizeThreadHandler>());
-            append(std::make_unique<NoSanitizeAddressHandler>());
-            append(std::make_unique<DereferenceableParamHandler>());
+                append(std::make_unique<AlwaysInlineHandler>());
+                append(std::make_unique<NoInlineHandler>());
+                append(std::make_unique<NoReturnHandler>());
+                // append(std::make_unique<ReadOnlyHandler>());
+                // append(std::make_unique<ReadNoneHandler>());
+                // append(std::make_unique<NoCaptureHandler>());
+                // append(std::make_unique<NoUnwindHandler>());
+                // append(std::make_unique<SanitizeAddressHandler>());
+                // append(std::make_unique<OptimizeForSizeHandler>());
+                // append(std::make_unique<InlineHintHandler>());
+                // append(std::make_unique<StackProtectorHandler>());
+                // append(std::make_unique<NoInlineHintHandler>());
+                // append(std::make_unique<NoDeadStripHandler>());
+                // append(std::make_unique<IntrinsicHandler>());
+                // append(std::make_unique<NoRecurseHandler>());
+                // append(std::make_unique<SanitizeThreadHandler>());
+                // append(std::make_unique<SanitizeMemoryHandler>());
+                // append(std::make_unique<SanitizeHWAddressHandler>());
+                // append(std::make_unique<NoInlineAsmHandler>());
+                // append(std::make_unique<UWTableHandler>());
+                // append(std::make_unique<ZeroExtendHandler>());
+                // append(std::make_unique<SignExtendHandler>());
+                // append(std::make_unique<ArgMemOnlyHandler>());
+                append(std::make_unique<ReturnsTwiceHandler>());
+                // append(std::make_unique<StrictFPHandler>());
+                // append(std::make_unique<SanitizeCoverageHandler>());
+                // append(std::make_unique<NoSanitizeMemoryHandler>());
+                // append(std::make_unique<NoSanitizeThreadHandler>());
+                // append(std::make_unique<NoSanitizeAddressHandler>());
+                // append(std::make_unique<DereferenceableParamHandler>());
 
-            head = std::move(headHandler);
-        }
-
-        /**
-         * @brief Entry point to infer and apply attributes to the given LLVM function.
-         * 
-         * This will invoke the chain of handlers, each applying its own attribute logic
-         * to the provided function via a `FunctionAttributeBuilder`.
-         *
-         * @param func The LLVM function on which to infer and apply attributes.
-         */
-        void inferAndApply(llvm::Function* func) {
-            FunctionAttributeBuilder builder(func);
-            if (head) {
-                head->handle(func, builder);
+                head = std::move(headHandler);
             }
-            builder.apply();
-        }
-    
-        ~FunctionAttributeInferer() noexcept = default;
+
+            /**
+             * @brief Entry point to infer and apply attributes to the given LLVM function.
+             * 
+             * This will invoke the chain of handlers, each applying its own attribute logic
+             * to the provided function via a `FunctionAttributeBuilder`.
+             *
+             * @param func The LLVM function on which to infer and apply attributes.
+            */
+            void inferAndApply(llvm::Function* func) {
+                FunctionAttributeBuilder builder(func);
+                if (head) head->handle(func, builder);
+                builder.apply();
+            }
+        
+            ~FunctionAttributeInferer() noexcept = default;
     };
     
 }
