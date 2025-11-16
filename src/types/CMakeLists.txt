@@ -19,8 +19,7 @@ add_library(LynxTypes STATIC ${LYNX_TYPES_SOURCES})
 # ------------------------------------------------------------------------
 #  Include Directories
 # ------------------------------------------------------------------------
-target_include_directories(LynxTypes
-    PUBLIC
+target_include_directories(LynxTypes PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/interfaces
     ${CMAKE_CURRENT_SOURCE_DIR}/builtins
@@ -31,6 +30,7 @@ target_include_directories(LynxTypes
     ${CMAKE_CURRENT_SOURCE_DIR}/resolver/methods
     ${CMAKE_CURRENT_SOURCE_DIR}/resolver/strategies
     ${CMAKE_CURRENT_SOURCE_DIR}/infrerence
+    ${CMAKE_CURRENT_SOURCE_DIR}/constants
     ${CMAKE_CURRENT_SOURCE_DIR}/utils
     ${CMAKE_CURRENT_SOURCE_DIR}/visitor
     ${CMAKE_CURRENT_SOURCE_DIR}/tmpl

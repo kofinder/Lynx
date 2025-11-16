@@ -1,13 +1,29 @@
 /**
  * @file TypeVisitor.hpp
- * @brief Defines the visitor interface for traversing different type nodes in Lynx.
+ * @brief Defines the visitor interface for all built-in Lynx types.
  *
- * The `TypeVisitor` class provides a visitor interface for various built-in and user-defined
- * types in the Lynx type system. It follows the Visitor design pattern, allowing different
- * operations to be performed on type instances without modifying the type classes themselves.
+ * This header declares the `TypeVisitor` abstract base class, which provides
+ * a unified double-dispatch mechanism for operating on Lynx's built-in types
+ * without relying on RTTI or manual type checks.
  *
- * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * Each built-in type (Byte, Short, Integer, Long, Float, Double,
+ * Boolean, Char, String) implements an `accept(TypeVisitor&)` method
+ * that invokes the corresponding `visit()` overload defined here.
+ *
+ * Benefits of the visitor pattern within the Lynx type system:
+ *  - clean separation between type definitions and operations performed on them,
+ *  - simplified extensibility: new operations only require new visitors,
+ *  - consistent dispatch behavior across all built-in types,
+ *  - strong compile-time guarantees via method overloading.
+ *
+ * Notes:
+ *  - Adding a new built-in type requires adding a new visit() overload.
+ *  - The destructor is virtual to ensure correct cleanup of derived visitors.
+ *  - This interface is intentionally minimal and free of data members to
+ *    maximize flexibility and avoid coupling visitors to state.
+ *
+ * @author Ko Thein (Nathan Mratt)
+ * @date   November 2, 2024
 */
 
 #ifndef LYNX_TYPE_VISITOR_HPP

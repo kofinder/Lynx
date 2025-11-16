@@ -1,8 +1,35 @@
+/**
+ * @file MathStrategy.hpp
+ * @brief Declares the MathStrategy interface and template specializations for numeric types.
+ *
+ * This header provides an abstraction for common mathematical operations such as
+ * square root, exponentials, logarithms, trigonometric functions, and rounding functions.
+ * It is designed to support LLVM IR code generation for both integer and floating-point types
+ * within the Lynx type system.
+ *
+ * Key components:
+ *  - `MathStrategy`: abstract base class defining the interface for math operations.
+ *  - `MathStrategyImpl<T>`: template specializations for integer and floating-point types.
+ *  - Type aliases (`ShortMathStrategy`, `IntMathStrategy`, etc.) for convenience.
+ *
+ * Features:
+ *  - Placeholder implementations return `nullptr`.
+ *  - Supports extension for LLVM IR code generation for backend compiler logic.
+ *
+ * Benefits:
+ *  - Centralizes math operation logic across numeric types.
+ *  - Provides a uniform interface for compiler code generation.
+ *  - Improves maintainability and consistency in numeric computations.
+ *
+ * @author Ko Thein (Nathan Mratt)
+ * @date   November 2, 2024
+*/
+
 #ifndef LYNX_RESOLVER_MATH_STRATEGY_HPP
 #define LYNX_RESOLVER_MATH_STRATEGY_HPP
 
 #include <llvm/IR/Value.h>
-#include "utils/TypeResolverConstant.hpp"
+#include "resolver/TypeStrategyContext.hpp"
 
 namespace LynxTypes {
 

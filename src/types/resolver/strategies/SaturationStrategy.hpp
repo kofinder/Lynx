@@ -1,8 +1,35 @@
+/**
+ * @file SaturationStrategy.hpp
+ * @brief Defines the SaturationStrategy interface and template specializations for numeric types.
+ *
+ * This header provides an abstraction for performing arithmetic operations
+ * with saturation behavior, where results are clamped to the type's numeric
+ * limits instead of overflowing. It allows LLVM IR code generation for
+ * signed and unsigned arithmetic with saturation semantics.
+ *
+ * Key components:
+ *  - `SaturationStrategy`: abstract base class defining signed/unsigned arithmetic with saturation methods.
+ *  - `SaturationStrategyImpl<T>`: template specializations for integer and floating-point types.
+ *  - Type aliases (`ShortSaturationStrategy`, `IntSaturationStrategy`, etc.) for convenience.
+ *
+ * Features:
+ *  - Default implementations return `nullptr` as placeholders.
+ *  - Designed to integrate with LLVM IR backend for safe numeric operations.
+ *
+ * Benefits:
+ *  - Centralizes saturation-aware arithmetic logic for numeric types.
+ *  - Provides a uniform interface for compiler code generation.
+ *  - Improves safety and maintainability in numeric computations.
+ *
+ * @author Ko Thein (Nathan Mratt)
+ * @date   November 2, 2024
+*/
+
 #ifndef LYNX_RESOLVER_SATURATION_STRATEGY_HPP
 #define LYNX_RESOLVER_SATURATION_STRATEGY_HPP
 
 #include <llvm/IR/Value.h>
-#include "utils/TypeResolverConstant.hpp"
+#include "resolver/TypeStrategyContext.hpp"
 
 namespace LynxTypes {
 

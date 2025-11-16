@@ -19,7 +19,6 @@
  * @date: November 2, 2024
 */
 
-
 #ifndef LYNX_TYPE_METHOD_RESOLVER_HPP
 #define LYNX_TYPE_METHOD_RESOLVER_HPP
 
@@ -32,54 +31,20 @@
 #include <context/AstContext.hpp>
 
 namespace LynxTypes {
+
+    using LynxContext::AstContext;
     
-    using namespace LynxLogger;
-    using namespace LynxContext;
-    
-    class TypeMethodResolver {
+    struct TypeMethodResolver {
 
-        protected:
+        virtual llvm::Value* resolveMethod(
+            AstContext& ctx,
+            llvm::Value* instance,
+            const std::string& method, 
+            const std::vector<llvm::Value*>& args
+        ) noexcept = 0;
 
-            std::unordered_map<std::string, size_t> methodSignatures;
-
-        public:
+        virtual ~TypeMethodResolver() noexcept = default;
         
-            /**
-             * @brief Resolve a method for a specific type instance.
-             *
-             * @param name The name of the method being invoked.
-             * @param instance The LLVM IR value representing the instance on which the method is called.
-             * @param args A vector of LLVM IR values representing arguments passed to the method.
-             * @param astContext Shared pointer to the AST context for code generation utilities.
-             * @return The resulting LLVM IR Value, or nullptr if the method is not found or not supported.
-            */
-            virtual llvm::Value* resolveMethod(
-                AstContext& ctx,
-                llvm::Value* instance,
-                const std::string& method, 
-                const std::vector<llvm::Value*>& args
-            ) noexcept = 0;
-
-            void registerMethodName(const std::string& name, size_t paramCount) {
-                methodSignatures[name] = paramCount;
-            }
-        
-            bool hasMethod(const std::string& name) const {
-                return methodSignatures.find(name) != methodSignatures.end();
-            }
-        
-            bool validateMethodCall(const std::string& name, size_t argCount) const {
-                auto it = methodSignatures.find(name);
-                if(it == methodSignatures.end()) return false;
-                return it->second == argCount;
-            }
-        
-            size_t getExpectedParamCount(const std::string& name) const {
-                auto it = methodSignatures.find(name);
-                return it == methodSignatures.end() ? 0 : it->second;
-            }
-        
-            virtual ~TypeMethodResolver() noexcept = default;
     };
 
 }

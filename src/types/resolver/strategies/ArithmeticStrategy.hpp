@@ -1,3 +1,37 @@
+/**
+ * @file ArithmeticStrategy.hpp
+ * @brief Defines the abstraction and implementations for arithmetic operations.
+ *
+ * This header declares the `ArithmeticStrategy` interface, providing methods
+ * for basic arithmetic operations: addition, subtraction, multiplication,
+ * division, and modulo. These operations are intended to generate LLVM IR
+ * instructions corresponding to the operation on a given type.
+ *
+ * Key components:
+ *  - `ArithmeticStrategy`: abstract base class defining arithmetic operations.
+ *  - `ArithmeticStrategyImpl<T>`: template specialization for integer and
+ *    floating-point types, enabling type-specific LLVM IR generation.
+ *  - Type aliases (`ShortArithmeticStrategy`, `IntArithmeticStrategy`, etc.) 
+ *    for convenience and clarity.
+ *
+ * Features:
+ *  - Integer specialization demonstrates LLVM IR code generation for addition.
+ *  - Floating-point specialization currently uses placeholders (`nullptr`).
+ *  - Extensible design for implementing other arithmetic operations safely.
+ *
+ * Benefits:
+ *  - Centralizes arithmetic logic for numeric types.
+ *  - Provides a type-safe, uniform interface across different numeric types.
+ *  - Facilitates LLVM IR code generation for compiler backends.
+ *
+ * Notes:
+ *  - Only the integer `add` operation has a concrete implementation in this template.
+ *  - Other operations and floating-point specializations are intended for future expansion.
+ *
+ * @author Ko Thein (Nathan Mratt)
+ * @date   November 2, 2024
+*/
+
 #ifndef LYNX_RESOLVER_ARITHMETIC_STRATEGY_HPP
 #define LYNX_RESOLVER_ARITHMETIC_STRATEGY_HPP
 
@@ -7,7 +41,7 @@
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/LLVMContext.h>
-#include "utils/TypeResolverConstant.hpp"
+#include "resolver/TypeStrategyContext.hpp"
 
 namespace LynxTypes {
 

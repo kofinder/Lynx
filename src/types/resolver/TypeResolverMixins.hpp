@@ -1,3 +1,20 @@
+/**
+ * @file TypeResolverMixins.hpp
+ * @brief Provides mixin utilities enabling type-specific behaviors in the Lynx type system.
+ *
+ * This header defines CRTP-based mixins and concepts that extend type resolvers with additional
+ * capabilities—such as string conversion, cloning, and type casting. These mixins ensure that
+ * derived types implement the required static methods while providing a clean, uniform interface
+ * for behavior injection into Lynx type resolvers.
+ *
+ * The design promotes modularity and code reuse by allowing type-specific logic to be added
+ * selectively through capability-based mixins, without requiring large inheritance hierarchies
+ * or modifying the core resolver logic.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_TYPE_RESOLVER_MIXINS_HPP
 #define LYNX_TYPE_RESOLVER_MIXINS_HPP
 

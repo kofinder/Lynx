@@ -1,7 +1,5 @@
 #include "methods/IntMethodResolver.hpp"
-#include "utils/TypeNumericUtils.hpp"
-#include "utils/TypeResolverConstant.hpp"
-#include "utils/TypeResolverWrapper.hpp"
+#include "resolver/TypeStrategyContext.hpp"
 #include "resolver/TypeStrategyReflection.hpp"
 
 namespace LynxTypes {

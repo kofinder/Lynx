@@ -1,8 +1,35 @@
+/**
+ * @file MemoryStrategy.hpp
+ * @brief Defines the MemoryStrategy interface and template specializations for numeric types.
+ *
+ * This header provides an abstraction for memory-related operations such as
+ * `memcpy`, `memmove`, `memset`, and `memsetPattern`, enabling LLVM IR code
+ * generation for memory manipulation across different numeric types in the Lynx type system.
+ *
+ * Key components:
+ *  - `MemoryStrategy`: abstract base class defining memory operation methods.
+ *  - `MemoryStrategyImpl<T>`: template specializations for integer and floating-point types.
+ *  - Type aliases (`ShortMemoryStrategy`, `IntMemoryStrategy`, etc.) for convenience.
+ *
+ * Features:
+ *  - Default implementations return `nullptr` as placeholders.
+ *  - Designed to integrate with backend LLVM IR generation for compiler operations.
+ *
+ * Benefits:
+ *  - Centralizes memory operation logic for numeric types.
+ *  - Ensures a uniform interface for compiler code generation.
+ *  - Improves maintainability and consistency in low-level memory handling.
+ *
+ * @author Ko Thein (Nathan Mratt)
+ * @date   November 2, 2024
+*/
+
+
 #ifndef LYNX_RESOLVER_MEMORY_STRATEGY_HPP
 #define LYNX_RESOLVER_MEMORY_STRATEGY_HPP
 
 #include <llvm/IR/Value.h>
-#include "utils/TypeResolverConstant.hpp"
+#include "resolver/TypeStrategyContext.hpp"
 
 namespace LynxTypes {
 

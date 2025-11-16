@@ -1,3 +1,17 @@
+/**
+ * @file TypeNumericResolver.hpp
+ * @brief Provides numeric type resolution logic for Lynx using strategy-based operations.
+ *
+ * The `TypeNumericResolver` class template serves as a CRTP-based resolver for numeric types in
+ * the Lynx type system. It integrates multiple operation strategies—such as arithmetic, bitwise,
+ * comparison, overflow handling, and fixed-point logic—to support method resolution on both
+ * built-in and user-defined numeric types. This design allows extensible and modular behavior
+ * while keeping type-specific logic isolated.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
 #ifndef LYNX_TYPE_NUMERIC_RESOLVER_HPP
 #define LYNX_TYPE_NUMERIC_RESOLVER_HPP
 
@@ -21,20 +35,6 @@
 #include "resolver/strategies/FixedPointStrategy.hpp"
 
 namespace LynxTypes {
-
-    using namespace LynxContext;
-
-    // =========================
-    // Concepts for Numeric Types
-    // =========================
-    template<typename T>
-    concept Numeric = std::is_arithmetic_v<T>; // int, float, double, etc.
-
-    template<typename T>
-    concept Integer = std::is_integral_v<T>;
-
-    template<typename T>
-    concept Floating = std::is_floating_point_v<T>;
 
     // =========================
     // CRTP Base Resolver

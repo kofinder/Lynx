@@ -1,3 +1,30 @@
+/**
+ * @file AbsStrategy.hpp
+ * @brief Defines the abstraction and implementations for absolute value and sign operations.
+ *
+ * This header declares the `AbsStrategy` interface, which provides methods for
+ * computing absolute value, negation, sign, clamping, and parity checks (`isEven`,
+ * `isOdd`) for different numeric types in the Lynx type system.
+ *
+ * Key components:
+ *  - `AbsStrategy`: abstract base class defining the common operations.
+ *  - `AbsStrategyImpl<T>`: CRTP-style template for type-specific implementations.
+ *    Specializations exist for integer and floating-point types.
+ *  - Type aliases (`ShortAbsStrategy`, `IntAbsStrategy`, etc.) for convenience.
+ *
+ * Benefits:
+ *  - Provides a uniform interface for numeric operations across multiple types.
+ *  - Allows compile-time specialization via template concepts (`IntStrategyType`, `FloatStrategyType`).
+ *  - Supports extension for additional numeric types or strategies.
+ *
+ * Notes:
+ *  - Currently, the implementations return `nullptr` as placeholders.
+ *  - Concrete LLVM IR generation should be provided in the respective specializations.
+ *
+ * @author Ko Thein (Nathan Mratt)
+ * @date   November 2, 2024
+*/
+
 #ifndef LYNX_RESOLVER_ABS_STRATEGY_HPP
 #define LYNX_RESOLVER_ABS_STRATEGY_HPP
 
@@ -5,7 +32,7 @@
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/LLVMContext.h>
-#include "utils/TypeResolverConstant.hpp"
+#include "resolver/TypeStrategyContext.hpp"
 
 namespace LynxTypes {
     

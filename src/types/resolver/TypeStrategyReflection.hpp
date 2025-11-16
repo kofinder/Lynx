@@ -24,6 +24,7 @@
 #ifndef LYNX_TYPE_STRATEGY_REFLECTION_HPP
 #define LYNX_TYPE_STRATEGY_REFLECTION_HPP
 
+#include "TypeStrategyContext.hpp"
 #include "strategies/ArithmeticStrategy.hpp"
 #include "strategies/BitwiseStrategy.hpp"
 #include "strategies/AbsStrategy.hpp"
@@ -35,7 +36,7 @@
 #include "strategies/OverflowStrategy.hpp"
 #include "strategies/SaturationStrategy.hpp"
 #include "strategies/FixedPointStrategy.hpp"
-#include "utils/TypeResolverConstant.hpp"
+#include "constants/TypeMethodMapConstants.hpp"
 
 #include <array>
 #include <vector>
@@ -95,21 +96,6 @@ namespace LynxTypes {
             {modKey, &Strategy::mod}
         }};
     };
-
-
-    // template<typename T>
-    // requires std::is_arithmetic_v<T>
-    // struct StrategyReflection<ArithmeticStrategyImpl<T>> : StrategyReflectionBase<ArithmeticStrategyImpl<T>> {
-    //     using Strategy = ArithmeticStrategyImpl<T>;
-    //     using Entry = typename StrategyReflectionBase<Strategy>::Entry;
-    //     static constexpr std::array<Entry, 5> entries{{
-    //         {addKey, &Strategy::add},
-    //         {subKey, &Strategy::sub},
-    //         {mulKey, &Strategy::mul},
-    //         {divKey, &Strategy::div},
-    //         {modKey, &Strategy::mod}
-    //     }};
-    // };
 }
 
 #endif 

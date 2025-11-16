@@ -1,5 +1,23 @@
-#ifndef LYNX_TYPE_METHOD_KEYS_HPP
-#define LYNX_TYPE_METHOD_KEYS_HPP
+/**
+ * @file TypeMethodKeyConstants.hpp
+ * @brief Defines constant string keys representing all method names in the Lynx type system.
+ *
+ * This header consolidates every method identifier used across Lynx's numeric, string, character,
+ * boolean, and strategy-based operations. These keys are used throughout the resolver and
+ * strategy dispatch system to provide a consistent and centralized reference, minimizing 
+ * hard-coded strings scattered across the codebase.
+ *
+ * The constants defined here cover numeric operations, arithmetic and bitwise logic, mathematical
+ * functions, memory operations, fixed-point arithmetic, and high-level string and character
+ * handling. By keeping these keys unified in one place, the system becomes easier to maintain,
+ * extend, and validate.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: November 2, 2024
+*/
+
+#ifndef LYNX_TYPE_METHOD_KEY_CONSTANTS_HPP
+#define LYNX_TYPE_METHOD_KEY_CONSTANTS_HPP
 
 #include <string_view>
 
@@ -173,3 +191,67 @@ namespace LynxTypes {
 }
 
 #endif
+
+
+
+
+    
+// // -----------------------------
+// // Numeric method keys
+// // -----------------------------
+// inline constexpr std::string_view  absKey = "abs";
+// inline constexpr std::string_view negateKey = "negate";
+// inline constexpr std::string_view signKey = "sign";
+// inline constexpr std::string_view clampKey = "clamp";
+// inline constexpr std::string_view isEvenKey = "isEven";
+// inline constexpr std::string_view isOddKey = "isOdd";
+// inline constexpr std::string_view fromStringKey = "fromString";
+// inline constexpr std::string_view zeroKey = "zero";
+// inline constexpr std::string_view oneKey = "one";
+// inline constexpr std::string_view maxKey = "max";
+// inline constexpr std::string_view minKey = "min";
+// inline constexpr std::string_view isPositiveKey = "isPositive";
+// inline constexpr std::string_view isNegativeKey = "isNegative";
+// inline constexpr std::string_view bitCountKey = "bitCount";
+// inline constexpr std::string_view leadingZerosKey = "leadingZeros";
+// inline constexpr std::string_view trailingZerosKey = "trailingZeros";
+// inline constexpr std::string_view ceilKey = "ceil";
+// inline constexpr std::string_view floorKey = "floor";
+// inline constexpr std::string_view roundKey = "round";
+// inline constexpr std::string_view truncKey = "trunc";
+
+// // -----------------------------
+// // String method keys
+// // -----------------------------
+// inline constexpr std::string_view lengthKey = "length";
+// inline constexpr std::string_view isEmptyKey = "isEmpty";
+// inline constexpr std::string_view charAtKey = "charAt";
+// inline constexpr std::string_view substringKey = "substring";
+// inline constexpr std::string_view toUpperCaseKey = "toUpperCase";
+// inline constexpr std::string_view toLowerCaseKey = "toLowerCase";
+// inline constexpr std::string_view containsKey = "contains";
+// inline constexpr std::string_view startsWithKey = "startsWith";
+// inline constexpr std::string_view endsWithKey = "endsWith";
+// inline constexpr std::string_view replaceKey = "replace";
+// inline constexpr std::string_view splitKey = "split";
+// inline constexpr std::string_view trimKey = "trim";
+// inline constexpr std::string_view concatKey = "concat";
+// inline constexpr std::string_view fromCharKey = "fromChar";
+// inline constexpr std::string_view emptyKey = "empty";
+// inline constexpr std::string_view formatKey = "format";
+// inline constexpr std::string_view joinKey = "join";
+
+// // -----------------------------
+// // Char method keys
+// // -----------------------------
+// inline constexpr std::string_view isDigitKey = "isDigit";
+// inline constexpr std::string_view isLetterKey = "isLetter";
+// inline constexpr std::string_view isLetterOrDigitKey = "isLetterOrDigit";
+// inline constexpr std::string_view isWhitespaceKey = "isWhitespace";
+
+// // -----------------------------
+// // Boolean method keys
+// // -----------------------------
+// inline constexpr std::string_view toStringKey = "toString";
+// inline constexpr std::string_view TRUEKey = "TRUE";
+// inline constexpr std::string_view FALSEKey = "FALSE";

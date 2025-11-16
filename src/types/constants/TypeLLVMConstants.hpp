@@ -1,5 +1,27 @@
-#ifndef LYNX_TYPE_CONSTANTS_HPP
-#define LYNX_TYPE_CONSTANTS_HPP
+/**
+ * @file TypeLLVMConstants.hpp
+ * @brief Provides factory utilities for generating LLVM constant values used
+ *        throughout the Lynx type system.
+ *
+ * This header centralizes the creation of LLVM IR constants for integers,
+ * floating-point values, NaN/Infinity, dynamic type-dependent constants,
+ * and type-trait metadata such as bit-width and signedness flags.
+ *
+ * Consolidating these helpers ensures:
+ *  - consistency across the entire codebase,
+ *  - reduced duplication when generating LLVM constants,
+ *  - improved readability and maintainability,
+ *  - safer handling of floating-point special values.
+ *
+ * These functions are implemented as `constexpr inline` to allow
+ * constant-folding where possible and avoid ODR violations across translation units.
+ *
+ * @author Ko Thein (Nathan Mratt)
+ * @date   November 2, 2024
+*/
+
+#ifndef LYNX_TYPE_LLVM_CONSTANTS_HPP
+#define LYNX_TYPE_LLVM_CONSTANTS_HPP
 
 #include <llvm/IR/Constants.h>
 #include <llvm/IR/LLVMContext.h>

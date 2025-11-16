@@ -51,8 +51,7 @@ namespace LynxTypes {
         LOG_ERROR("Invoked...");
         if(std::holds_alternative<bool>(value)) {
             bool boolValue = std::get<bool>(value);
-            auto& context = astContext->getLLVMContext();
-            return llvm::ConstantInt::get(context, llvm::APInt(1, boolValue));
+            return llvm::ConstantInt::get(astContext->getLLVMContext(), llvm::APInt(1, boolValue));
         }
         LOG_ERROR("BooleanType: Unsupported value type!");
         return nullptr;

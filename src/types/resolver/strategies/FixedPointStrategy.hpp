@@ -1,8 +1,37 @@
+/**
+ * @file FixedPointStrategy.hpp
+ * @brief Defines the abstraction and template implementations for fixed-point arithmetic operations.
+ *
+ * This header declares the `FixedPointStrategy` interface, which provides
+ * methods for fixed-point multiplication and division, including unsigned variants.
+ * It is intended to support LLVM IR code generation for numeric types within the Lynx type system.
+ *
+ * Key components:
+ *  - `FixedPointStrategy`: abstract base class defining the interface for fixed-point operations.
+ *  - `FixedPointStrategyImpl<T>`: template specialization for integer and floating-point types.
+ *  - Type aliases (`ShortFixedPointStrategy`, `IntFixedPointStrategy`, etc.) for convenience.
+ *
+ * Features:
+ *  - Integer and floating-point specializations currently provide placeholders returning `nullptr`.
+ *  - Extensible design allows future implementations for LLVM IR code generation.
+ *
+ * Benefits:
+ *  - Centralizes fixed-point arithmetic logic.
+ *  - Provides a uniform interface for backend compiler generation.
+ *  - Promotes consistency and maintainability across numeric types.
+ *
+ * Notes:
+ *  - All method implementations are placeholders and intended for future expansion.
+ *
+ * @author Ko Thein (Nathan Mratt)
+ * @date   November 2, 2024
+*/
+
 #ifndef LYNX_RESOLVER_FIXED_POINT_STRATEGY_HPP
 #define LYNX_RESOLVER_FIXED_POINT_STRATEGY_HPP
 
 #include <llvm/IR/Value.h>
-#include "utils/TypeResolverConstant.hpp"
+#include "resolver/TypeStrategyContext.hpp"
 
 namespace LynxTypes {
 

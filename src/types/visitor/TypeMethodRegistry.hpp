@@ -1,5 +1,31 @@
-#ifndef LYNX_TYPE_STATIC_METHOD_REGISTRY_HPP
-#define LYNX_TYPE_STATIC_METHOD_REGISTRY_HPP
+/**
+ * @file TypeMethodRegistry.hpp
+ * @brief Provides a centralized registry for methods supported by Lynx types.
+ *
+ * This header defines the `TypeMethodRegistry` class, which maintains
+ * metadata about available methods for each type in the Lynx type system.
+ * It tracks method names, parameter counts, and whether methods are static.
+ *
+ * Key features:
+ *  - Register individual or multiple methods for a type.
+ *  - Check if a type supports a given method (`hasMethod`).
+ *  - Validate method calls by argument count (`validateMethodCall`).
+ *  - Retrieve expected parameter count for a method (`getExpectedParamCount`).
+ *
+ * Benefits:
+ *  - Ensures consistent method handling across all types.
+ *  - Simplifies backend code generation and compiler validation.
+ *  - Reduces runtime errors related to invalid or unsupported method calls.
+ *
+ * The design uses nested unordered_maps for fast lookup and is intended
+ * primarily for compiler internal use.
+ *
+ * @author Ko Thein (Nathan Mratt)
+ * @date   November 2, 2024
+*/
+
+#ifndef LYNX_TYPE_METHOD_REGISTRY_HPP
+#define LYNX_TYPE_METHOD_REGISTRY_HPP
 
 #include <functional>
 #include <unordered_map>

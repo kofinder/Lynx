@@ -1,5 +1,37 @@
-#ifndef LYNX_TYPE_METHOD_VISITOR_HPP
-#define LYNX_TYPE_METHOD_VISITOR_HPP
+/**
+ * @file TypeMethodCallVisitor.hpp
+ * @brief Implements a visitor for invoking methods on Lynx types via LLVM IR.
+ *
+ * This header defines `TypeMethodCallVisitor`, a concrete subclass of
+ * `TypeVisitor`, designed to perform method calls on built-in Lynx types.
+ * The visitor uses compile-time concepts (`MethodCapable`) to ensure that
+ * only types supporting method emission can be dispatched.
+ *
+ * Key features:
+ *  - Dispatches to `emitMethodCall` for types implementing `MethodCapable`.
+ *  - Supports both instance and static methods.
+ *  - Collects method results in the `result` member for further IR generation.
+ *  - Provides type-safe, centralized method invocation for compiler backends.
+ *
+ * Benefits:
+ *  - Reduces repetitive method call logic across different type implementations.
+ *  - Ensures consistent LLVM IR generation for method calls.
+ *  - Leverages compile-time checks to prevent invalid method dispatch.
+ *
+ * Usage:
+ *  - Instantiate the visitor with a method name and argument list.
+ *  - Pass the visitor to a type's `accept(TypeVisitor&)` method.
+ *  - Retrieve the generated LLVM IR value from the `result` member.
+ *
+ * This design follows the Visitor pattern, allowing new operations to be
+ * added without modifying the type classes themselves.
+ *
+ * @author Ko Thein (Nathan Mratt)
+ * @date   November 2, 2024
+*/
+
+#ifndef LYNX_TYPE_METHOD_CALL_VISITOR_HPP
+#define LYNX_TYPE_METHOD_CALL_VISITOR_HPP
 
 #include <logger/Logger.hpp>
 #include "TypeVisitor.hpp"
