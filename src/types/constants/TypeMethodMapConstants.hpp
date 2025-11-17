@@ -41,7 +41,8 @@ namespace LynxTypes {
     // Integer type methods
     // -----------------------------
     static inline const std::unordered_map<std::string_view, int> intMethods {
-        {addKey, 1}, {absKey, 0}, {negateKey, 0}, {signKey, 0}, {clampKey, 2},
+        {addKey, 1}, {subKey, 1}, {mulKey, 1}, {divKey, 1}, {modKey, 1},
+        {absKey, 0}, {negateKey, 0}, {signKey, 0}, {clampKey, 2},
         {isEvenKey, 0}, {isOddKey, 0}, {fromStringKey, 1},
         {zeroKey, 0}, {oneKey, 0}, {maxKey, 0}, {minKey, 0},
         {isPositiveKey, 0}, {isNegativeKey, 0}, {bitCountKey, 0},
@@ -57,6 +58,7 @@ namespace LynxTypes {
     // Float type methods
     // -----------------------------
     static inline const std::unordered_map<std::string_view, int> floatMethods {
+        {addKey, 1}, {subKey, 1}, {mulKey, 1}, {divKey, 1}, {modKey, 1},
         {absKey, 0}, {negateKey, 0}, {signKey, 0}, {clampKey, 2},
         {fromStringKey, 1}, {zeroKey, 0}, {oneKey, 0},
         {maxKey, 0}, {minKey, 0}, {isPositiveKey, 0}, {isNegativeKey, 0},

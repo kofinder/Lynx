@@ -44,15 +44,21 @@ namespace LynxTypes {
 
         public:
 
-            static llvm::Value* convertToString(AstContext& ctx, llvm::Value* instance) noexcept;
+            static llvm::Value* convertToString(const AstContext& ctx, llvm::Value* instance) noexcept;
 
-            static llvm::Value* performClone(AstContext& ctx, llvm::Value* instance) noexcept;
+            static llvm::Value* performClone(const AstContext& ctx, llvm::Value* instance) noexcept;
 
-            static llvm::Value* performTypeCast(AstContext& ctx, llvm::Value* instance, llvm::Type* targetType) noexcept;
+            static llvm::Value* performTypeCast(const AstContext& ctx, llvm::Value* instance, llvm::Type* targetType) noexcept;
 
-            static llvm::Value* resolveTypeMethod(AstContext& ctx, const std::string& method, const std::vector<llvm::Value*>& args) noexcept;
+            static llvm::Value* resolveTypeMethod(const AstContext& ctx, const std::string& method, const std::vector<llvm::Value*>& args) noexcept;
             
-            static llvm::Value* resolveInstanceMethod(AstContext& ctx, llvm::Value* instance, const std::string& method, const std::vector<llvm::Value*>& args) noexcept;
+            static llvm::Value* resolveInstanceMethod(
+                const AstContext& ctx,
+                llvm::Value* instance,
+                llvm::Value* instancePtr,
+                const std::string& method, 
+                const std::vector<llvm::Value*>& args
+            ) noexcept;
 
         public:
 
@@ -64,33 +70,19 @@ namespace LynxTypes {
             struct Impl : public Base, public ToStr, public Cln, public Cast {
                 IntArithmeticStrategy arithmetic;
                 IntBitwiseStrategy bitwise;
-                IntAbsStrategy absStrat;
-                IntMinMaxStrategy minMaxStrat;
-                IntComparisonStrategy cmpStrat;
-                IntMathStrategy mathStrat;
-                IntMemoryStrategy memStrat;
-                IntBitManipulationStrategy bitManipStrat;
-                IntOverflowStrategy overflowStrat;
-                IntSaturationStrategy saturationStrat;
-                IntFixedPointStrategy fixedPointStrat;
-                Impl() noexcept : Base(
-                    &arithmetic, 
-                    &bitwise, 
-                    &absStrat, 
-                    &minMaxStrat, 
-                    &cmpStrat, 
-                    &mathStrat, 
-                    &memStrat, 
-                    &bitManipStrat, 
-                    &overflowStrat, 
-                    &saturationStrat, 
-                    &fixedPointStrat
-                ) {}
+                IntAbsStrategy abs;
+                IntMinMaxStrategy minMax;
+                IntComparisonStrategy cmp;
+                IntMathStrategy math;
+                IntMemoryStrategy mem;
+                IntBitManipulationStrategy bitManip;
+                IntOverflowStrategy overflow;
+                IntSaturationStrategy saturation;
+                IntFixedPointStrategy fixedPoint;
+                Impl() noexcept : Base(&arithmetic, &bitwise, &abs, &minMax, &cmp, &math, &mem, &bitManip, &overflow, &saturation, &fixedPoint) {}
             };
 
-            static TypeMethodResolver* create() {
-                return new Impl();
-            }         
+            static TypeMethodResolver* create() { return new Impl(); }         
     };
 }
 

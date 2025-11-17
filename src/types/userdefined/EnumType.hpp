@@ -91,7 +91,7 @@ namespace LynxTypes {
 
             // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
 
-            // llvm::Value* emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
+            // llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
 
             bool equals(const BaseType* other) const override;
 

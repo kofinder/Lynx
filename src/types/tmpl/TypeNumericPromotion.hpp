@@ -10,18 +10,16 @@
 */
 
 
-#ifndef LYNX_NUMERIC_PROMOTION_UTILS_HPP
-#define LYNX_NUMERIC_PROMOTION_UTILS_HPP
+#ifndef LYNX_TYPE_NUMERIC_PROMOTION_HPP
+#define LYNX_TYPE_NUMERIC_PROMOTION_HPP
 
 #include <memory>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Constants.h>
 #include <llvm/IR/DerivedTypes.h>
-#include <types/tmpl/TypeChecker.hpp>
+#include "TypeChecker.hpp"
 
-namespace LynxAst::TypePromotion {
-
-    using namespace LynxTypes;
+namespace LynxTypes::TypePromotion {
 
     struct PromotedNumeric {
         llvm::Value* lhs{nullptr};

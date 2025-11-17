@@ -1,8 +1,9 @@
 
   int main() {
 
-    int x = 20;
-    x::add(10);
+    float x = 20;
+    x::sub(10);
+
     system.io.println("Max Integer limit is: ", x);
 
     return 32;

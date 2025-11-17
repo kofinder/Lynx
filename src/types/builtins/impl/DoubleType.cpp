@@ -64,10 +64,10 @@ namespace LynxTypes {
         return resolver;
     }
 
-    llvm::Value* DoubleType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+    llvm::Value* DoubleType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         LOG_ERROR("Emit Method Call Invocation.");
         if (!resolver) resolver = getOrCreateResolver();
-        return resolver->resolveMethod(*astContext, instance, methodName, args);
+        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
     }
 
     const BaseType* DoubleType::createWithStatic(bool newIsStatic) const {

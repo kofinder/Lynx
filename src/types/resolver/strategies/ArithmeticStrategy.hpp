@@ -41,9 +41,16 @@
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/LLVMContext.h>
+#include "tmpl/TypeNumericPromotion.hpp"
 #include "resolver/TypeStrategyContext.hpp"
+#include "utils/TypeOperandsValidationUtils.hpp"
+#include <constants/metadata/MetadataTypeConstants.hpp>
 
 namespace LynxTypes {
+    using namespace TypePromotion;
+    using namespace MetadataTypeConstants;
+
+    enum class ArithmeticOp { Add, Sub, Mul, Div, Mod };
 
     // ============================================================================
     // Base Interface
@@ -68,49 +75,98 @@ namespace LynxTypes {
     // Integer Specialization
     // ============================================================================
     template<IntStrategyType T>
-    struct ArithmeticStrategyImpl<T> : ArithmeticStrategy {
-        [[nodiscard]] llvm::Value* add(const StrategyContext& stgCtx) const noexcept override { 
-            std::cout << "WHAT THE FUCK ....." << std::endl;
+    class ArithmeticStrategyImpl<T> : public ArithmeticStrategy {
 
-            auto lhsPtr = stgCtx.instance;
-            auto rhs = stgCtx.args[0];
-            if (!lhsPtr || !rhs) return nullptr;
+        private:
+        
+            llvm::Value* generateBinaryOp(const StrategyContext& stgCtx, ArithmeticOp op) const noexcept {
+                auto* lhs = stgCtx.instance;
+                auto* lhsPtr = stgCtx.instancePtr;
+                auto* rhs = stgCtx.args[0];
+                auto& builder = stgCtx.ctx.getBuilder();
 
-            auto& builder = stgCtx.ctx.getBuilder();
+                if (!validateOperands(lhs, lhsPtr, rhs)) return nullptr;
 
-            auto* i8PtrTy = llvm::PointerType::get(lhsPtr->getContext(), 0);
+                auto promoted = promoteNumericOperands(lhs, rhs, builder);
+                promoted.lhs = matchConstantType(builder, promoted.lhs, promoted.commonType);
+                promoted.rhs = matchConstantType(builder, promoted.rhs, promoted.commonType);
 
-            // Load the current value (type inferred from pointer)
-            llvm::Value* lhsVal = builder.CreateLoad(i8PtrTy, lhsPtr, "load_lhs");
+                llvm::Value* result = nullptr;
+                if (promoted.isFloating) {
+                    switch (op) {
+                        case ArithmeticOp::Add: result = builder.CreateFAdd(promoted.lhs, promoted.rhs, OPR_ADD); break;
+                        case ArithmeticOp::Sub: result = builder.CreateFSub(promoted.lhs, promoted.rhs, OPR_SUB); break;
+                        case ArithmeticOp::Mul: result = builder.CreateFMul(promoted.lhs, promoted.rhs, OPR_MUL); break;
+                        case ArithmeticOp::Div: result = builder.CreateFDiv(promoted.lhs, promoted.rhs, OPR_DIV); break;
+                        case ArithmeticOp::Mod: result = builder.CreateFRem(promoted.lhs, promoted.rhs, OPR_MOD); break;
+                    }
+                } else {
+                    switch (op) {
+                        case ArithmeticOp::Add: result = builder.CreateAdd(promoted.lhs, promoted.rhs, OPR_ADD); break;
+                        case ArithmeticOp::Sub: result = builder.CreateSub(promoted.lhs, promoted.rhs, OPR_SUB); break;
+                        case ArithmeticOp::Mul: result = builder.CreateMul(promoted.lhs, promoted.rhs, OPR_MUL); break;
+                        case ArithmeticOp::Div: result = builder.CreateSDiv(promoted.lhs, promoted.rhs, OPR_DIV); break;
+                        case ArithmeticOp::Mod: result = builder.CreateSRem(promoted.lhs, promoted.rhs, OPR_MOD); break;
+                    }
+                }
 
-            // Cast rhs if needed
-            if (lhsVal->getType() != rhs->getType()) {
-                rhs = builder.CreateIntCast(rhs, lhsVal->getType(), true, "rhs_cast");
+                builder.CreateStore(result, lhsPtr);
+                return result;
             }
 
-            llvm::Value* result = builder.CreateAdd(lhsVal, rhs, "int_add");
+        public:
 
-            builder.CreateStore(result, lhsPtr);
+            [[nodiscard]] llvm::Value* add(const StrategyContext& stgCtx) const noexcept override { return generateBinaryOp(stgCtx, ArithmeticOp::Add);}
+            [[nodiscard]] llvm::Value* sub(const StrategyContext& stgCtx) const noexcept override { return generateBinaryOp(stgCtx, ArithmeticOp::Sub); }
+            [[nodiscard]] llvm::Value* mul(const StrategyContext& stgCtx) const noexcept override { return generateBinaryOp(stgCtx, ArithmeticOp::Mul); }
+            [[nodiscard]] llvm::Value* div(const StrategyContext& stgCtx) const noexcept override { return generateBinaryOp(stgCtx, ArithmeticOp::Div); }
+            [[nodiscard]] llvm::Value* mod(const StrategyContext& stgCtx) const noexcept override { return generateBinaryOp(stgCtx, ArithmeticOp::Mod); }
 
-            return result;
-        }
-
-        [[nodiscard]] llvm::Value* sub(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* mul(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* div(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* mod(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
     };
 
     // ============================================================================
     // Floating-Point Specialization
     // ============================================================================
     template<FloatStrategyType T>
-    struct ArithmeticStrategyImpl<T> : ArithmeticStrategy {
-        [[nodiscard]] llvm::Value* add(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* sub(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* mul(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* div(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* mod(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
+    class ArithmeticStrategyImpl<T> : public ArithmeticStrategy {
+
+        private:
+
+            llvm::Value* generateBinaryOp(const StrategyContext& stgCtx, ArithmeticOp op) const noexcept {
+                auto* lhs = stgCtx.instance;
+                auto* lhsPtr = stgCtx.instancePtr;
+                auto* rhs = stgCtx.args[0];
+                auto& builder = stgCtx.ctx.getBuilder();
+
+                if (!validateOperands(lhs, lhsPtr, rhs)) return nullptr;
+
+                auto promoted = promoteNumericOperands(lhs, rhs, builder);
+                promoted.lhs = matchConstantType(builder, promoted.lhs, promoted.commonType);
+                promoted.rhs = matchConstantType(builder, promoted.rhs, promoted.commonType);
+        
+                llvm::Value* result = nullptr;
+                switch (op) {
+                    case ArithmeticOp::Add: result = builder.CreateFAdd(promoted.lhs, promoted.rhs, OPR_ADD); break;
+                    case ArithmeticOp::Sub: result = builder.CreateFSub(promoted.lhs, promoted.rhs, OPR_SUB); break;
+                    case ArithmeticOp::Mul: result = builder.CreateFMul(promoted.lhs, promoted.rhs, OPR_MUL); break;
+                    case ArithmeticOp::Div: result = builder.CreateFDiv(promoted.lhs, promoted.rhs, OPR_DIV); break;
+                    case ArithmeticOp::Mod: result = builder.CreateFRem(promoted.lhs, promoted.rhs, OPR_MOD); break;
+                }
+
+                builder.CreateStore(result, lhsPtr);
+                return result;
+            }
+
+        public:
+
+            [[nodiscard]] llvm::Value* add(const StrategyContext& stgCtx) const noexcept override { 
+                std::cout << "WOrking With floatiing point" << std::endl;
+                return generateBinaryOp(stgCtx, ArithmeticOp::Add);
+            }
+            [[nodiscard]] llvm::Value* sub(const StrategyContext& stgCtx) const noexcept override { return generateBinaryOp(stgCtx, ArithmeticOp::Sub); }
+            [[nodiscard]] llvm::Value* mul(const StrategyContext& stgCtx) const noexcept override { return generateBinaryOp(stgCtx, ArithmeticOp::Mul); }
+            [[nodiscard]] llvm::Value* div(const StrategyContext& stgCtx) const noexcept override { return generateBinaryOp(stgCtx, ArithmeticOp::Div); }
+            [[nodiscard]] llvm::Value* mod(const StrategyContext& stgCtx) const noexcept override { return generateBinaryOp(stgCtx, ArithmeticOp::Mod); }
     };
 
     // ============================================================================

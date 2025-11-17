@@ -22,10 +22,8 @@
  * @date: November 2, 2024
 */
 
-
 #ifndef LYNX_ERROR_VISITOR_HPP
 #define LYNX_ERROR_VISITOR_HPP
-
 
 namespace LynxErrors {
 

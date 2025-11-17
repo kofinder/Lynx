@@ -28,7 +28,7 @@ namespace LynxTypes {
         return emptyRegistry;
     }   
 
-    llvm::Value* BaseType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+    llvm::Value* BaseType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         return nullptr;
     }
 

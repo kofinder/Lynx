@@ -5,16 +5,15 @@
 
 namespace LynxTypes {
 
-    class InterfaceMethodResolver : public TypeMethodResolver {
-
-        public:
-
-            llvm::Value* resolveMethod(
-                AstContext& ctx,
-                llvm::Value* instance,
-                const std::string& method, 
-                const std::vector<llvm::Value*>& args
-            ) noexcept override;
+    struct InterfaceMethodResolver : public TypeMethodResolver {
+        
+        llvm::Value* resolveMethod(
+            const AstContext& ctx,
+            llvm::Value* instance,
+            llvm::Value* instancePtr,
+            const std::string& method, 
+            const std::vector<llvm::Value*>& args
+        )  noexcept override;
 
     };
 }

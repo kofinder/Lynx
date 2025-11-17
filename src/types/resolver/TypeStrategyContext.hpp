@@ -35,6 +35,7 @@ namespace LynxTypes {
     struct StrategyContext {
         const AstContext& ctx;
         llvm::Value* instance;
+        llvm::Value* instancePtr;
         const std::vector<llvm::Value*>& args;
     };
 }

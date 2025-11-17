@@ -2,14 +2,14 @@
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/InstrTypes.h"
 #include "BinaryExpressionNode.hpp"
-#include "utils/NumericPromotion.hpp"
+#include <types/tmpl/TypeNumericPromotion.hpp>
 
 namespace LynxAst {
 
     using namespace LynxLogger;
     using namespace LynxContext;
     using namespace LynxTypes;
-    using namespace TypePromotion;
+    using namespace LynxTypes::TypePromotion;
     using namespace MetadataTypeConstants;
 
     llvm::Value* BinaryExpressionNode::generateCode(std::shared_ptr<AstContext> astContext) {

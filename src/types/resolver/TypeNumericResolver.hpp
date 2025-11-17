@@ -86,15 +86,16 @@ namespace LynxTypes {
 
             // Resolve method (CRTP + TypeMethodResolver)
             [[nodiscard]] llvm::Value* resolveMethod(
-                AstContext& ctx,
+                const AstContext& ctx,
                 llvm::Value* instance,
-                const std::string& method,
+                llvm::Value* instancePtr,
+                const std::string& method, 
                 const std::vector<llvm::Value*>& args
             ) noexcept override {
 
                 if (!instance) return DerivedT::resolveTypeMethod(ctx, method, args);
 
-                return DerivedT::resolveInstanceMethod(ctx, instance, method, args);
+                return DerivedT::resolveInstanceMethod(ctx, instance, instancePtr, method, args);
             }
 
             virtual ~TypeNumericResolver() noexcept = default;

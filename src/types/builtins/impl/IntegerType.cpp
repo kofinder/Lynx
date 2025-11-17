@@ -60,13 +60,11 @@ namespace LynxTypes {
     
     void IntegerType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
-    TypeMethodResolver* IntegerType::getOrCreateResolver() const {
-        return IntMethodResolver::create();
-    }
+    TypeMethodResolver* IntegerType::getOrCreateResolver() const { return IntMethodResolver::create(); }
 
-    llvm::Value* IntegerType::emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+    llvm::Value* IntegerType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         if (!resolver) resolver = IntMethodResolver::create();
-        return resolver->resolveMethod(*astContext, instance, methodName, args);
+        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
     }
 
     const BaseType* IntegerType::createWithStatic(bool newIsStatic) const {

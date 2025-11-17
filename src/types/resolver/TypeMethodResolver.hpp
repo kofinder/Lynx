@@ -37,8 +37,9 @@ namespace LynxTypes {
     struct TypeMethodResolver {
 
         virtual llvm::Value* resolveMethod(
-            AstContext& ctx,
+            const AstContext& ctx,
             llvm::Value* instance,
+            llvm::Value* instancePtr,
             const std::string& method, 
             const std::vector<llvm::Value*>& args
         ) noexcept = 0;

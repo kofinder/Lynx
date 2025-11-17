@@ -1,6 +1,6 @@
 #include <logger/Logger.hpp>
 #include <types/tmpl/TypeChecker.hpp>
-#include "utils/NumericPromotion.hpp"
+#include <types/tmpl/TypeNumericPromotion.hpp>
 #include "ComparisonExpressionNode.hpp"
 
 namespace LynxAst {
@@ -8,7 +8,7 @@ namespace LynxAst {
     using namespace LynxLogger;
     using namespace LynxContext;
     using namespace LynxTypes;
-    using namespace TypePromotion;
+    using namespace LynxTypes::TypePromotion;
     using namespace MetadataTypeConstants;
     
     llvm::Value* ComparisonExpressionNode::generateCode(std::shared_ptr<AstContext> astContext) {

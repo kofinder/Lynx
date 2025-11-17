@@ -27,7 +27,7 @@ namespace LynxAst {
     llvm::Value* QualifiedFunctionCallNode::dispatchInstanceExtensionMethod(std::shared_ptr<AstContext> astContext) {
         const std::string& varName = qualifiedPrefixType->getRawPrefix();
         auto resolvedVar = VariableUtils::resolveVariable(*astContext, varName);
-        if (!resolvedVar.value) {
+        if (!resolvedVar.value || !resolvedVar.reference) {
             std::string msg = "Runtime Error: Failed to resolve variable '" + varName + "' in the current scope.";
             throw std::runtime_error(msg);
         }
@@ -41,12 +41,12 @@ namespace LynxAst {
         const std::string typeName = dataTypeToString(baseType->getTypeTag());
         auto& registry = astContext->getMethodTypeRegistry();
         if (!registry.hasMethod(typeName, funcName)) {
-            std::string msg = "Runtime Error: Static method '" + funcName + "' does not exist on type '" + typeName + "'.";
+            std::string msg = "Runtime Error: Instance method '" + funcName + "' does not exist on type '" + typeName + "'.";
             throw std::runtime_error(msg);
         }
 
         if (!registry.validateMethodCall(typeName, funcName, arguments->size())) {
-            std::string msg = "Runtime Error: Static method '" + funcName + "' on type '" + typeName +
+            std::string msg = "Runtime Error: Instance method '" + funcName + "' on type '" + typeName +
                                 "' expects " + std::to_string(registry.getExpectedParamCount(typeName, funcName)) +
                                 " arguments, but " + std::to_string(arguments->size()) + " were provided.";
             throw std::runtime_error(msg);
@@ -58,7 +58,7 @@ namespace LynxAst {
             argValues.push_back(arg->generateCode(astContext->createContext()));
         }
     
-        TypeMethodCallVisitor visitor(funcName, resolvedVar.reference, argValues);
+        TypeMethodCallVisitor visitor(funcName, resolvedVar.value, resolvedVar.reference, argValues);
         baseType->accept(visitor);
 
         if (!visitor.result) {

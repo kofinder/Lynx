@@ -3,8 +3,9 @@
 namespace LynxTypes {
 
     llvm::Value* DateTimeMethodResolver::resolveMethod(
-        AstContext& ctx,
+        const AstContext& ctx,
         llvm::Value* instance,
+        llvm::Value* instancePtr,
         const std::string& method, 
         const std::vector<llvm::Value*>& args
     ) noexcept {

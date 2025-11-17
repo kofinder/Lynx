@@ -63,7 +63,7 @@ namespace LynxTypes {
             
             const std::unordered_map<std::string_view, int>& getMethodRegistry() const override { return floatMethods; }
 
-            llvm::Value* emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
+            llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
 
             std::unique_ptr<BaseType> clone() const override { return std::make_unique<FloatType>(*this); }
 

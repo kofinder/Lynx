@@ -10,7 +10,7 @@
 #include "utils/LLVMFunctionUtils.hpp"
 #include <context/GlobalSymbolContext.hpp>
 #include <constants/LinkageType.hpp>
-#include "utils/NumericPromotion.hpp"
+#include <types/tmpl/TypeNumericPromotion.hpp>
 #include <attributes/FunctionAttributeInferer.hpp>
 
 namespace LynxAst {
@@ -19,7 +19,7 @@ namespace LynxAst {
     using namespace LynxContext;
     using namespace LynxConstants;
     using namespace LynxFunctionAttr;
-    using namespace TypePromotion;
+    using namespace LynxTypes::TypePromotion;
 
     llvm::Value* FunctionNode::generateCode(std::shared_ptr<AstContext> astContext) {
 

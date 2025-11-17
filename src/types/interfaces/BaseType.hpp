@@ -163,7 +163,7 @@ namespace LynxTypes {
              * @param args A list of LLVM IR values representing the method arguments.
              * @return An LLVM Value representing the result of the static method call.
             */
-            virtual llvm::Value* emitMethodCall(llvm::Value* instance, const std::string& methodName, const std::vector<llvm::Value*>& args);
+            virtual llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args);
             
             /**
              * @brief Returns whether the type is const-qualified.

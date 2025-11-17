@@ -1,6 +1,5 @@
 #include <logger/Logger.hpp>
 #include "UnaryExpressionNode.hpp"
-#include "utils/NumericPromotion.hpp"
 #include "utils/VariableUtils.hpp"
 #include <context/GlobalSymbolContext.hpp>
 #include <constants/metadata/LabelTypeConstants.hpp>
