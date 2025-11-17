@@ -30,6 +30,7 @@
 
 #include <llvm/IR/Value.h>
 #include "resolver/TypeStrategyContext.hpp"
+#include "helpers/InstructionHelper.hpp"
 
 namespace LynxTypes {
 
@@ -43,7 +44,6 @@ namespace LynxTypes {
         [[nodiscard]] virtual llvm::Value* usubSat(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* sshlSat(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* ushLSat(const StrategyContext&) const noexcept = 0;
-
         virtual ~SaturationStrategy() noexcept = default;
     };
 
@@ -58,12 +58,114 @@ namespace LynxTypes {
     // ============================================================================
     template<IntStrategyType T>
     struct SaturationStrategyImpl<T> : SaturationStrategy {
-        [[nodiscard]] llvm::Value* saddSat(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* uaddSat(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* ssubSat(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* usubSat(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* sshlSat(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* ushLSat(const StrategyContext&) const noexcept override { return nullptr; }
+
+        // ---------------------------
+        // Signed Add Saturating
+        // ---------------------------
+        [[nodiscard]] llvm::Value* saddSat(const StrategyContext& stg) const noexcept override { 
+            if (stg.args.size() < 2) return nullptr;
+
+            llvm::Value* a = stg.args[0];
+            llvm::Value* b = stg.args[1];
+            llvm::Type* type = a->getType();
+
+            auto& builder = stg.ctx.getBuilder();
+            auto* module = stg.ctx.getModule();
+            llvm::Function* fn = helper::callOfIntrinsic(module, llvm::Intrinsic::sadd_sat, type);
+            llvm::Value* result = builder.CreateCall(fn, {a, b});
+            if (stg.instancePtr) builder.CreateStore(result, stg.instancePtr);
+            return result;    
+        }
+
+        // ---------------------------
+        // Unsigned Add Saturating
+        // ---------------------------
+        [[nodiscard]] llvm::Value* uaddSat(const StrategyContext& stg) const noexcept override { 
+            if (stg.args.size() < 2) return nullptr;
+
+            llvm::Value* a = stg.args[0];
+            llvm::Value* b = stg.args[1];
+            llvm::Type* type = a->getType();
+
+            auto& builder = stg.ctx.getBuilder();
+            auto* module = stg.ctx.getModule();
+            llvm::Function* fn = helper::callOfIntrinsic(module, llvm::Intrinsic::uadd_sat, type);
+            llvm::Value* result = builder.CreateCall(fn, {a, b});
+            if (stg.instancePtr) builder.CreateStore(result, stg.instancePtr);
+            return result;    
+        }
+
+        // ---------------------------
+        // Signed Sub Saturating
+        // ---------------------------
+        [[nodiscard]] llvm::Value* ssubSat(const StrategyContext& stg) const noexcept override {             
+            if (stg.args.size() < 2) return nullptr;
+
+            llvm::Value* a = stg.args[0];
+            llvm::Value* b = stg.args[1];
+            llvm::Type* type = a->getType();
+
+            auto& builder = stg.ctx.getBuilder();
+            auto* module = stg.ctx.getModule();
+            llvm::Function* fn = helper::callOfIntrinsic(module, llvm::Intrinsic::ssub_sat, type);
+            llvm::Value* result = builder.CreateCall(fn, {a, b});
+            if (stg.instancePtr) builder.CreateStore(result, stg.instancePtr);
+            return result;
+        }
+
+        // ---------------------------
+        // Unsigned Sub Saturating
+        // ---------------------------
+        [[nodiscard]] llvm::Value* usubSat(const StrategyContext& stg) const noexcept override {
+            if (stg.args.size() < 2) return nullptr;
+
+            llvm::Value* a = stg.args[0];
+            llvm::Value* b = stg.args[1];
+            llvm::Type* type = a->getType();
+
+            auto& builder = stg.ctx.getBuilder();
+            auto* module = stg.ctx.getModule();
+            llvm::Function* fn = helper::callOfIntrinsic(module, llvm::Intrinsic::usub_sat, type);
+            llvm::Value* result = builder.CreateCall(fn, {a, b});
+            if (stg.instancePtr) builder.CreateStore(result, stg.instancePtr);
+            return result;    
+        }
+
+        // ---------------------------
+        // Signed Shift-Left Saturating
+        // ---------------------------
+        [[nodiscard]] llvm::Value* sshlSat(const StrategyContext& stg) const noexcept override { 
+            if (stg.args.size() < 2) return nullptr;
+
+            llvm::Value* value = stg.args[0];
+            llvm::Value* shift = stg.args[1];
+            llvm::Type* type = value->getType();
+
+            auto& builder = stg.ctx.getBuilder();
+            auto* module = stg.ctx.getModule();
+            llvm::Function* fn = helper::callOfIntrinsic(module, llvm::Intrinsic::sshl_sat, type);
+            llvm::Value* result = builder.CreateCall(fn, {value, shift});
+            if (stg.instancePtr) builder.CreateStore(result, stg.instancePtr);
+            return result;
+        }
+
+        // ---------------------------
+        // Unsigned Shift-Left Saturating
+        // ---------------------------
+        [[nodiscard]] llvm::Value* ushLSat(const StrategyContext& stg) const noexcept override { 
+            if (stg.args.size() < 2) return nullptr;
+
+            llvm::Value* value = stg.args[0];
+            llvm::Value* shift = stg.args[1];
+            llvm::Type* type = value->getType();
+
+            auto& builder = stg.ctx.getBuilder();
+            auto* module = stg.ctx.getModule();
+            llvm::Function* fn = helper::callOfIntrinsic(module, llvm::Intrinsic::ushl_sat, type);
+            llvm::Value* result = builder.CreateCall(fn, {value, shift});
+            if (stg.instancePtr) builder.CreateStore(result, stg.instancePtr);
+            return result;
+        }
     };
 
     // ============================================================================

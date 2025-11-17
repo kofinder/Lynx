@@ -39,6 +39,8 @@
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Intrinsics.h>
+#include "helpers/BitManiStrategyHelper.hpp"
 #include "resolver/TypeStrategyContext.hpp"
 
 namespace LynxTypes {
@@ -53,7 +55,6 @@ namespace LynxTypes {
         [[nodiscard]] virtual llvm::Value* bitReverse(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* rotateLeft(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* rotateRight(const StrategyContext&) const noexcept = 0;
-
         virtual ~BitManipulationStrategy() noexcept = default;
     };
 
@@ -68,12 +69,44 @@ namespace LynxTypes {
     // ============================================================================
     template<IntStrategyType T>
     struct BitManipulationStrategyImpl<T> : BitManipulationStrategy {
-        [[nodiscard]] llvm::Value* popCount(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* countLeadingZeros(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* countTrailingZeros(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* bitReverse(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* rotateLeft(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* rotateRight(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
+
+        [[nodiscard]] llvm::Value* popCount(const StrategyContext& stgCtx) const noexcept override {
+            llvm::Value* result = helper::popCount(stgCtx.ctx.getBuilder(), stgCtx.instance);
+            stgCtx.ctx.getBuilder().CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
+    
+        [[nodiscard]] llvm::Value* countLeadingZeros(const StrategyContext& stgCtx) const noexcept override {
+            llvm::Value* result = helper::countLeadingZeros(stgCtx.ctx.getBuilder(), stgCtx.instance);
+            stgCtx.ctx.getBuilder().CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
+    
+        [[nodiscard]] llvm::Value* countTrailingZeros(const StrategyContext& stgCtx) const noexcept override {
+            llvm::Value* result = helper::countTrailingZeros(stgCtx.ctx.getBuilder(), stgCtx.instance);
+            stgCtx.ctx.getBuilder().CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
+    
+        [[nodiscard]] llvm::Value* bitReverse(const StrategyContext& stgCtx) const noexcept override {
+            llvm::Value* result = helper::bitReverse(stgCtx.ctx.getBuilder(), stgCtx.instance);
+            stgCtx.ctx.getBuilder().CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
+    
+        [[nodiscard]] llvm::Value* rotateLeft(const StrategyContext& stgCtx) const noexcept override {
+            if (stgCtx.args.empty()) return nullptr;
+            llvm::Value* result = helper::rotateLeft(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0]);
+            stgCtx.ctx.getBuilder().CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
+    
+        [[nodiscard]] llvm::Value* rotateRight(const StrategyContext& stgCtx) const noexcept override {
+            if (stgCtx.args.empty()) return nullptr;
+            llvm::Value* result = helper::rotateRight(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0]);
+            stgCtx.ctx.getBuilder().CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }    
     };
 
     // ============================================================================

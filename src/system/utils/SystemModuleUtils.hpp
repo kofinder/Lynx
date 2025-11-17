@@ -59,26 +59,26 @@ namespace LynxSystem::utils {
      * @param valueType LLVM type of the value being printed.
      * @return A string_view containing the format specifier.
     */
-    [[nodiscard]] inline constexpr std::string_view getFormatSpecifier(llvm::Type* const valueType) noexcept {
+    [[nodiscard]] inline constexpr std::string_view getFormatSpecifier(llvm::Type* const valueType, llvm::Value* value = nullptr) noexcept {
         if (!valueType) return "%p\n";
-        if (TypeChecker::is<StringType>(valueType))      return "%s\n";
-        if (TypeChecker::is<BooleanType>(valueType))     return "%s\n";
-        if (TypeChecker::is<CharType>(valueType))        return "%c\n";
-        if (TypeChecker::is<ByteType>(valueType))        return "%d\n";
-        if (TypeChecker::is<ShortType>(valueType))       return "%d\n";
-        if (TypeChecker::is<IntegerType>(valueType))     return "%d\n";
-        if (TypeChecker::is<LongType>(valueType))        return "%ld\n";
-        if (TypeChecker::is<FloatType>(valueType))       return "%f\n";
-        if (TypeChecker::is<DoubleType>(valueType))      return "%lf\n";
-        if (TypeChecker::is<EnumType>(valueType))        return "Enum: [index: %d, value: %c, name: %s]\n";
-        if (TypeChecker::is<DateType>(valueType))        return "%04d-%02d-%02d\n";
-        if (TypeChecker::is<DateTimeType>(valueType))    return "%04d-%02d-%02dT%02d:%02d:%02d.%03d\n";
-        if (TypeChecker::is<ClassType>(valueType))       return "%p\n";
-        if (TypeChecker::is<ArrayType>(valueType))       return "[array]\n";
-        if (TypeChecker::is<FileType>(valueType))        return "[file]\n";
+        if (TypeChecker::is<StringType>(valueType, value))      return "%s\n";
+        if (TypeChecker::is<BooleanType>(valueType, value))     return "%s\n";
+        if (TypeChecker::is<CharType>(valueType, value))        return "%c\n";
+        if (TypeChecker::is<ByteType>(valueType, value))        return "%d\n";
+        if (TypeChecker::is<ShortType>(valueType, value))       return "%d\n";
+        if (TypeChecker::is<IntegerType>(valueType, value))     return "%d\n";
+        if (TypeChecker::is<LongType>(valueType, value))        return "%ld\n";
+        if (TypeChecker::is<FloatType>(valueType, value))       return "%f\n";
+        if (TypeChecker::is<DoubleType>(valueType, value))      return "%lf\n";
+        if (TypeChecker::is<EnumType>(valueType, value))        return "Enum: [index: %d, value: %c, name: %s]\n";
+        if (TypeChecker::is<DateType>(valueType, value))        return "%04d-%02d-%02d\n";
+        if (TypeChecker::is<DateTimeType>(valueType, value))    return "%04d-%02d-%02dT%02d:%02d:%02d.%03d\n";
+        if (TypeChecker::is<ClassType>(valueType, value))       return "%p\n";
+        if (TypeChecker::is<ArrayType>(valueType, value))       return "[array]\n";
+        if (TypeChecker::is<FileType>(valueType, value))        return "[file]\n";
 
         std::cerr << "[TypeChecker] Warning: Unrecognized type for format specifier\n";
-        return "%s\n";
+        return "%p\n";
     }
 
     /**
@@ -146,9 +146,7 @@ namespace LynxSystem::utils {
         auto* llvmType = expressionValue->getType();
         std::vector<llvm::Value*> printfArgs;
 
-        llvmType->print(llvm::outs());
-
-        const auto formatSpecifier = getFormatSpecifier(llvmType);
+        const auto formatSpecifier = getFormatSpecifier(llvmType, expressionValue);
         auto* formatString = builder.CreateGlobalString(std::string(formatSpecifier), "fmt");
         printfArgs.push_back(formatString);
 

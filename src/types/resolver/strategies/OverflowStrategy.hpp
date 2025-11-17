@@ -28,9 +28,14 @@
 #define LYNX_RESOLVER_OVERFLOW_STRATEGY_HPP
 
 #include <llvm/IR/Value.h>
+#include "helpers/InstructionHelper.hpp"
 #include "resolver/TypeStrategyContext.hpp"
 
 namespace LynxTypes {
+
+    using helper::callOfUnaryIntrinsic;
+    using helper::callOfBinaryIntrinsic;
+
 
     // ============================================================================
     // Base Interface
@@ -57,12 +62,12 @@ namespace LynxTypes {
     // ============================================================================
     template<IntStrategyType T>
     struct OverflowStrategyImpl<T> : OverflowStrategy {
-        [[nodiscard]] llvm::Value* saddWithOverflow(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* uaddWithOverflow(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* ssubWithOverflow(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* usubWithOverflow(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* smulWithOverflow(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* umulWithOverflow(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* saddWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::sadd_with_overflow); }
+        [[nodiscard]] llvm::Value* uaddWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::uadd_with_overflow); }
+        [[nodiscard]] llvm::Value* ssubWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::ssub_with_overflow); }
+        [[nodiscard]] llvm::Value* usubWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::usub_with_overflow); }
+        [[nodiscard]] llvm::Value* smulWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::smul_with_overflow); }
+        [[nodiscard]] llvm::Value* umulWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::umul_with_overflow); }
     };
 
     // ============================================================================
@@ -70,12 +75,12 @@ namespace LynxTypes {
     // ============================================================================
     template<FloatStrategyType T>
     struct OverflowStrategyImpl<T> : OverflowStrategy {
-        [[nodiscard]] llvm::Value* saddWithOverflow(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* uaddWithOverflow(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* ssubWithOverflow(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* usubWithOverflow(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* smulWithOverflow(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* umulWithOverflow(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* saddWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::sadd_with_overflow); }
+        [[nodiscard]] llvm::Value* uaddWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::uadd_with_overflow); }
+        [[nodiscard]] llvm::Value* ssubWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::ssub_with_overflow); }
+        [[nodiscard]] llvm::Value* usubWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::usub_with_overflow); }
+        [[nodiscard]] llvm::Value* smulWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::smul_with_overflow); }
+        [[nodiscard]] llvm::Value* umulWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::umul_with_overflow); }
     };
 
     // ============================================================================

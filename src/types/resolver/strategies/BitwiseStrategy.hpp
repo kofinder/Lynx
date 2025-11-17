@@ -49,7 +49,6 @@ namespace LynxTypes {
         [[nodiscard]] virtual llvm::Value* shl(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* shr(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* bitNot(const StrategyContext&) const noexcept = 0;
-
         virtual ~BitwiseStrategy() noexcept = default;
     };
 
@@ -64,12 +63,53 @@ namespace LynxTypes {
     // ============================================================================
     template<IntStrategyType T>
     struct BitwiseStrategyImpl<T> : BitwiseStrategy {
-        [[nodiscard]] llvm::Value* bitAnd(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* bitOr(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* bitXor(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* shl(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* shr(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* bitNot(const StrategyContext&) const noexcept override { return nullptr; }
+
+        [[nodiscard]] llvm::Value* bitAnd(const StrategyContext& stgCtx) const noexcept override {
+            if (stgCtx.args.empty()) return nullptr;
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = builder.CreateAnd(stgCtx.instance, stgCtx.args[0]);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
+
+        [[nodiscard]] llvm::Value* bitOr(const StrategyContext& stgCtx) const noexcept override {
+            if (stgCtx.args.empty()) return nullptr;
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = builder.CreateOr(stgCtx.instance, stgCtx.args[0]);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
+
+        [[nodiscard]] llvm::Value* bitXor(const StrategyContext& stgCtx) const noexcept override {
+            if (stgCtx.args.empty()) return nullptr;
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = builder.CreateXor(stgCtx.instance, stgCtx.args[0]);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
+
+        [[nodiscard]] llvm::Value* shl(const StrategyContext& stgCtx) const noexcept override {
+            if (stgCtx.args.empty()) return nullptr;
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = builder.CreateShl(stgCtx.instance, stgCtx.args[0]);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
+
+        [[nodiscard]] llvm::Value* shr(const StrategyContext& stgCtx) const noexcept override {
+            if (stgCtx.args.empty()) return nullptr;
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = builder.CreateLShr(stgCtx.instance, stgCtx.args[0]);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
+
+        [[nodiscard]] llvm::Value* bitNot(const StrategyContext& stgCtx) const noexcept override {
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = builder.CreateNot(stgCtx.instance);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
     };
 
     // ============================================================================

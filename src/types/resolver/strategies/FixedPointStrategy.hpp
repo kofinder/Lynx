@@ -31,9 +31,12 @@
 #define LYNX_RESOLVER_FIXED_POINT_STRATEGY_HPP
 
 #include <llvm/IR/Value.h>
-#include "resolver/TypeStrategyContext.hpp"
+#include "helpers/FixedPointStrategyHelper.hpp"
 
 namespace LynxTypes {
+
+    using helper::callFixedIntrinsic;
+    using helper::callIntIntrinsicFromFP;
 
     // ============================================================================
     // Base Interface
@@ -43,7 +46,6 @@ namespace LynxTypes {
         [[nodiscard]] virtual llvm::Value* umul(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* div(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* udiv(const StrategyContext&) const noexcept = 0;
-
         virtual ~FixedPointStrategy() noexcept = default;
     };
 
@@ -54,15 +56,16 @@ namespace LynxTypes {
     template<typename T>
     struct FixedPointStrategyImpl;
 
+
     // ============================================================================
     // Integer Specialization
     // ============================================================================
     template<IntStrategyType T>
     struct FixedPointStrategyImpl<T> : FixedPointStrategy {
-        [[nodiscard]] llvm::Value* mul(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* umul(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* div(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* udiv(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* mul(const StrategyContext& ctx) const noexcept override { return callFixedIntrinsic(ctx, llvm::Intrinsic::smul_fix); }
+        [[nodiscard]] llvm::Value* umul(const StrategyContext& ctx) const noexcept override { return callFixedIntrinsic(ctx, llvm::Intrinsic::umul_fix); }
+        [[nodiscard]] llvm::Value* div(const StrategyContext& ctx) const noexcept override { return callFixedIntrinsic(ctx, llvm::Intrinsic::sdiv_fix); }
+        [[nodiscard]] llvm::Value* udiv(const StrategyContext& ctx) const noexcept override { return callFixedIntrinsic(ctx, llvm::Intrinsic::udiv_fix); }
     };
 
     // ============================================================================
@@ -70,10 +73,10 @@ namespace LynxTypes {
     // ============================================================================
     template<FloatStrategyType T>
     struct FixedPointStrategyImpl<T> : FixedPointStrategy {
-        [[nodiscard]] llvm::Value* mul(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* umul(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* div(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* udiv(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* mul(const StrategyContext& ctx) const noexcept override { return callIntIntrinsicFromFP(ctx, llvm::Intrinsic::smul_fix, false); }
+        [[nodiscard]] llvm::Value* umul(const StrategyContext& ctx) const noexcept override { return callIntIntrinsicFromFP(ctx, llvm::Intrinsic::umul_fix, true); }
+        [[nodiscard]] llvm::Value* div(const StrategyContext& ctx) const noexcept override { return callIntIntrinsicFromFP(ctx, llvm::Intrinsic::sdiv_fix, false); }
+        [[nodiscard]] llvm::Value* udiv(const StrategyContext& ctx) const noexcept override { return callIntIntrinsicFromFP(ctx, llvm::Intrinsic::udiv_fix, true); }
     };
 
     // ============================================================================
@@ -84,7 +87,6 @@ namespace LynxTypes {
     using LongFixedPointStrategy   = FixedPointStrategyImpl<long>;
     using FloatFixedPointStrategy  = FixedPointStrategyImpl<float>;
     using DoubleFixedPointStrategy = FixedPointStrategyImpl<double>;
-
 }
 
 #endif 

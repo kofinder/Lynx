@@ -9,7 +9,7 @@ main:
 	.cfi_def_cfa_offset 16
 	movl	$.Lfmt, %edi
 	movl	$.Llynx.string.constant, %esi
-	movl	$10, %edx
+	movl	$20, %edx
 	xorl	%eax, %eax
 	callq	printf@PLT
 	movl	$32, %eax

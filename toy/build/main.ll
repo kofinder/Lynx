@@ -14,8 +14,10 @@ entry:
   %x = alloca i32, align 4, !lynx.type !1
   store i32 20, ptr %x, align 4
   %x_load = load i32, ptr %x, align 4
-  %arith.sub = sub i32 %x_load, 10
-  store i32 %arith.sub, ptr %x, align 4
+  %0 = icmp slt i32 %x_load, 0
+  %1 = sub i32 0, %x_load
+  %2 = select i1 %0, i32 %1, i32 %x_load
+  store i32 %2, ptr %x, align 4
   %x_load1 = load i32, ptr %x, align 4
   %io_printf_call = call i32 (ptr, ...) @printf(ptr @fmt, ptr @lynx.string.constant, i32 %x_load1)
   ret i32 32

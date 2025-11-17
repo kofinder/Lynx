@@ -68,8 +68,10 @@ namespace LynxTypes {
     };
 
     // ============================================================================
-    // Generic helper function to invoke a strategy method by name
+    // Generic helper to invoke a strategy method by string key
     // ============================================================================
+    // Loops through the entries of the specialized StrategyReflection and
+    // calls the corresponding member function if a match is found.
     template<typename Strategy>
     llvm::Value* invokeByName(const Strategy& strategy, std::string_view method, const StrategyContext& ctx) noexcept {
         for (auto& entry : StrategyReflection<Strategy>::entries) {
@@ -81,7 +83,25 @@ namespace LynxTypes {
     }
 
     // ============================================================================
-    // Specialization for arithmetic strategies (int, float, etc.)
+    // ABS strategy specialization
+    // ============================================================================
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    struct StrategyReflection<AbsStrategyImpl<T>> : StrategyReflectionBase<AbsStrategyImpl<T>> {
+        using Strategy = AbsStrategyImpl<T>;
+        using Entry = typename StrategyReflectionBase<Strategy>::Entry;
+        static constexpr std::array<Entry, 6> entries{{
+            {absKey, &Strategy::abs},
+            {negateKey, &Strategy::negate},
+            {signKey, &Strategy::sign},
+            {clampKey, &Strategy::clamp},
+            {isEvenKey, &Strategy::isEven},
+            {isOddKey, &Strategy::isOdd}
+        }};
+    };
+
+    // ============================================================================
+    // Arithmetic strategy specialization
     // ============================================================================
     template<typename T>
     requires std::is_arithmetic_v<T>
@@ -96,6 +116,180 @@ namespace LynxTypes {
             {modKey, &Strategy::mod}
         }};
     };
+
+    // ============================================================================
+    // Bit manipulation strategy specialization
+    // ============================================================================
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    struct StrategyReflection<BitManipulationStrategyImpl<T>> : StrategyReflectionBase<BitManipulationStrategyImpl<T>> {
+        using Strategy = BitManipulationStrategyImpl<T>;
+        using Entry = typename StrategyReflectionBase<Strategy>::Entry;
+        static constexpr std::array<Entry, 6> entries{{
+            {popCountKey, &Strategy::popCount},
+            {countLeadingZerosKey, &Strategy::countLeadingZeros},
+            {countTrailingZerosKey, &Strategy::countTrailingZeros},
+            {bitReverseKey, &Strategy::bitReverse},
+            {rotateLeftKey, &Strategy::rotateLeft},
+            {rotateRightKey, &Strategy::rotateRight}
+        }};
+    };
+
+    // ============================================================================
+    // Bitwise logic strategy specialization
+    // ============================================================================
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    struct StrategyReflection<BitwiseStrategyImpl<T>> : StrategyReflectionBase<BitwiseStrategyImpl<T>> {
+        using Strategy = BitwiseStrategyImpl<T>;
+        using Entry = typename StrategyReflectionBase<Strategy>::Entry;    
+        static constexpr std::array<Entry, 6> entries{{
+            {bitAndKey, &Strategy::bitAnd},
+            {bitOrKey, &Strategy::bitOr},
+            {bitXorKey, &Strategy::bitXor},
+            {shlKey, &Strategy::shl},
+            {shrKey, &Strategy::shr},
+            {bitNotKey, &Strategy::bitNot}
+        }};
+    };
+
+    // ============================================================================
+    // Comparison strategy specialization
+    // ============================================================================
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    struct StrategyReflection<ComparisonStrategyImpl<T>> : StrategyReflectionBase<ComparisonStrategyImpl<T>> {
+        using Strategy = ComparisonStrategyImpl<T>;
+        using Entry = typename StrategyReflectionBase<Strategy>::Entry;    
+        static constexpr std::array<Entry, 6> entries{{
+            {eqKey, &Strategy::eq},
+            {neKey, &Strategy::ne},
+            {ltKey, &Strategy::lt},
+            {leKey, &Strategy::le},
+            {gtKey, &Strategy::gt},
+            {geKey, &Strategy::ge}
+        }};
+    };
+
+    // ============================================================================
+    // Fixed Point strategy specialization
+    // ============================================================================
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    struct StrategyReflection<FixedPointStrategyImpl<T>> : StrategyReflectionBase<FixedPointStrategyImpl<T>> {
+        using Strategy = FixedPointStrategyImpl<T>;
+        using Entry = typename StrategyReflectionBase<Strategy>::Entry;    
+        static constexpr std::array<Entry, 4> entries{{
+            {fpMulKey, &Strategy::mul},
+            {fpUMulKey, &Strategy::umul},
+            {fpDivKey, &Strategy::div},
+            {fpUDivKey, &Strategy::udiv}
+        }};
+    };
+
+    // ============================================================================
+    // Math strategy specialization
+    // ============================================================================
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    struct StrategyReflection<MathStrategyImpl<T>> : StrategyReflectionBase<MathStrategyImpl<T>> {
+        using Strategy = MathStrategyImpl<T>;
+        using Entry = typename StrategyReflectionBase<Strategy>::Entry;    
+        static constexpr std::array<Entry, 23> entries{{
+            {sqrtKey, &Strategy::sqrt},
+            {powKey, &Strategy::pow},
+            {expKey, &Strategy::exp},
+            {exp2Key, &Strategy::exp2},
+            {exp10Key, &Strategy::exp10},
+            {logKey, &Strategy::log},
+            {log2Key, &Strategy::log2},
+            {log10Key, &Strategy::log10},
+            {sinKey, &Strategy::sin},
+            {cosKey, &Strategy::cos},
+            {tanKey, &Strategy::tan},
+            {asinKey, &Strategy::asin},
+            {acosKey, &Strategy::acos},
+            {atanKey, &Strategy::atan},
+            {atan2Key, &Strategy::atan2},
+            {sinhKey, &Strategy::sinh},
+            {coshKey, &Strategy::cosh},
+            {tanhKey, &Strategy::tanh},
+            {floorKey, &Strategy::floor},
+            {ceilKey, &Strategy::ceil},
+            {truncKey, &Strategy::trunc},
+            {roundKey, &Strategy::round},
+            {fabsKey, &Strategy::fabs}
+        }};
+    };
+
+    // ============================================================================
+    // Memory strategy specialization
+    // ============================================================================
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    struct StrategyReflection<MemoryStrategyImpl<T>> : StrategyReflectionBase<MemoryStrategyImpl<T>> {
+        using Strategy = MemoryStrategyImpl<T>;
+        using Entry = typename StrategyReflectionBase<Strategy>::Entry;
+        static constexpr std::array<Entry, 4> entries{{
+            {memcpyKey, &Strategy::memcpy},
+            {memmoveKey, &Strategy::memmove},
+            {memsetKey, &Strategy::memset},
+            {memsetPatternKey, &Strategy::memsetPattern}
+        }};
+    };
+
+    // ============================================================================
+    // MinMax strategy specialization
+    // ============================================================================
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    struct StrategyReflection<MinMaxStrategyImpl<T>> : StrategyReflectionBase<MinMaxStrategyImpl<T>> {
+        using Strategy = MinMaxStrategyImpl<T>;
+        using Entry = typename StrategyReflectionBase<Strategy>::Entry;    
+        static constexpr std::array<Entry, 4> entries{{
+            {sminKey, &Strategy::smin},
+            {smaxKey, &Strategy::smax},
+            {uminKey, &Strategy::umin},
+            {umaxKey, &Strategy::umax}
+        }};
+    };
+
+    // ============================================================================
+    // Overflow strategy specialization
+    // ============================================================================
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    struct StrategyReflection<OverflowStrategyImpl<T>> : StrategyReflectionBase<OverflowStrategyImpl<T>> {
+        using Strategy = OverflowStrategyImpl<T>;
+        using Entry = typename StrategyReflectionBase<Strategy>::Entry;
+        static constexpr std::array<Entry, 6> entries{{
+            {saddOverflowKey, &Strategy::saddWithOverflow},
+            {uaddOverflowKey, &Strategy::uaddWithOverflow},
+            {ssubOverflowKey, &Strategy::ssubWithOverflow},
+            {usubOverflowKey, &Strategy::usubWithOverflow},
+            {smulOverflowKey, &Strategy::smulWithOverflow},
+            {umulOverflowKey, &Strategy::umulWithOverflow}
+        }};
+    };
+
+    // ============================================================================
+    // Saturation strategy specialization
+    // ============================================================================
+    template<typename T>
+    requires std::is_arithmetic_v<T>
+    struct StrategyReflection<SaturationStrategyImpl<T>> : StrategyReflectionBase<SaturationStrategyImpl<T>> {
+        using Strategy = SaturationStrategyImpl<T>;
+        using Entry = typename StrategyReflectionBase<Strategy>::Entry;
+        static constexpr std::array<Entry, 6> entries{{
+            {saddSatKey, &Strategy::saddSat},
+            {uaddSatKey, &Strategy::uaddSat},
+            {ssubSatKey, &Strategy::ssubSat},
+            {usubSatKey, &Strategy::usubSat},
+            {sshlSatKey, &Strategy::sshlSat},
+            {ushLSatKey, &Strategy::ushLSat}
+        }};
+    };
+
 }
 
 #endif 

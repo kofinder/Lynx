@@ -42,7 +42,7 @@ namespace LynxTypes::TypePromotion {
     // ==========================
     template<NumericType T>
     constexpr int typeRank() noexcept {
-        if constexpr (std::same_as<T, ByteType>)    return 1;
+        if constexpr (std::same_as<T, ByteType>)         return 1;
         else if constexpr (std::same_as<T, ShortType>)   return 2;
         else if constexpr (std::same_as<T, CharType>)    return 3;
         else if constexpr (std::same_as<T, IntegerType>) return 4;

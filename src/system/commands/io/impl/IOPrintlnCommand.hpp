@@ -37,10 +37,10 @@ namespace LynxSystem {
                 auto& builder = context->getBuilder();
                 auto* module = context->getModule();
     
-                // if (calleeArgs.empty()) {
-                //     auto* fmtStr = builder.CreateGlobalString("\n", "newline");
-                //     return emitPrintfCall(builder, module, { fmtStr });
-                // }
+                if (calleeArgs.empty()) {
+                    auto* fmtStr = builder.CreateGlobalString("\n", "newline");
+                    return emitPrintfCall(builder, module, { fmtStr });
+                }
     
                 auto fmt = buildFormatString(calleeArgs, true);
 

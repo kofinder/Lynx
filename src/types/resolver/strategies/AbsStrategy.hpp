@@ -32,7 +32,10 @@
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/LLVMContext.h>
+#include "llvm/Support/MathExtras.h"
+#include "tmpl/TypeNumericPromotion.hpp"
 #include "resolver/TypeStrategyContext.hpp"
+#include "helpers/AbsStrategyHelper.hpp"
 
 namespace LynxTypes {
     
@@ -61,12 +64,56 @@ namespace LynxTypes {
     // ============================================================================
     template<IntStrategyType T>
     struct AbsStrategyImpl<T> : AbsStrategy {
-        [[nodiscard]] llvm::Value* abs(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* negate(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* sign(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* clamp(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* isEven(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* isOdd(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
+
+        [[nodiscard]] llvm::Value* abs(const StrategyContext& stgCtx) const noexcept override { 
+            auto* lhs = stgCtx.instance;
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Type* type = lhs->getType();
+            llvm::Value* zero = llvm::ConstantInt::get(type, 0);
+            llvm::Value* isNeg = builder.CreateICmpSLT(lhs, zero);
+            llvm::Value* negVal = builder.CreateNeg(lhs);
+            auto* result = builder.CreateSelect(isNeg, negVal, lhs);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
+
+        [[nodiscard]] llvm::Value* negate(const StrategyContext& stgCtx) const noexcept override { 
+            auto* lhs = stgCtx.instance;
+            auto* lhsPtr = stgCtx.instancePtr;
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* negVal = builder.CreateNeg(lhs);
+            builder.CreateStore(negVal, lhsPtr);
+            return negVal;    
+        }
+
+        [[nodiscard]] llvm::Value* sign(const StrategyContext& stgCtx) const noexcept override { 
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = helper::selectSign(builder, stgCtx.instance, false);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
+
+        [[nodiscard]] llvm::Value* clamp(const StrategyContext& stgCtx) const noexcept override {
+            if (stgCtx.args.size() < 2) return nullptr;
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = helper::clampHelper(builder, stgCtx.instance, stgCtx.args[0], stgCtx.args[1], false);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
+
+        [[nodiscard]] llvm::Value* isEven(const StrategyContext& stgCtx) const noexcept override {     
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = helper::isEvenHelper(builder, stgCtx.instance, false);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
+
+        [[nodiscard]] llvm::Value* isOdd(const StrategyContext& stgCtx) const noexcept override { 
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = helper::isOddHelper(builder, stgCtx.instance, false);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;
+        }
     };
 
     // ============================================================================
@@ -74,12 +121,55 @@ namespace LynxTypes {
     // ============================================================================
     template<FloatStrategyType T>
     struct AbsStrategyImpl<T> : AbsStrategy {
-        [[nodiscard]] llvm::Value* abs(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* negate(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* sign(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* clamp(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* isEven(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* isOdd(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
+
+        [[nodiscard]] llvm::Value* abs(const StrategyContext& stgCtx) const noexcept override { 
+            return nullptr;
+            // auto* lhs = stgCtx.instance;
+            // auto* lhsPtr = stgCtx.instancePtr;
+            // auto& builder = stgCtx.ctx.getBuilder();
+            // llvm::Value* result = builder.CreateFAbs(lhs);
+            // builder.CreateStore(result, lhsPtr);
+            // return result;
+        }
+
+        [[nodiscard]] llvm::Value* negate(const StrategyContext& stgCtx) const noexcept override { 
+            auto* lhs = stgCtx.instance;
+            auto* lhsPtr = stgCtx.instancePtr;
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = builder.CreateFNeg(lhs);
+            builder.CreateStore(result, lhsPtr);
+            return result;    
+        }
+
+        [[nodiscard]] llvm::Value* sign(const StrategyContext& stgCtx) const noexcept override { 
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = helper::selectSign(builder, stgCtx.instance, true);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;  
+        }
+
+        [[nodiscard]] llvm::Value* clamp(const StrategyContext& stgCtx) const noexcept override { 
+            if (stgCtx.args.size() < 2) return nullptr;
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = helper::clampHelper(builder, stgCtx.instance, stgCtx.args[0], stgCtx.args[1], true);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;  
+        }
+
+        [[nodiscard]] llvm::Value* isEven(const StrategyContext& stgCtx) const noexcept override { 
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = helper::isEvenHelper(builder, stgCtx.instance, true);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;  
+        }
+
+        [[nodiscard]] llvm::Value* isOdd(const StrategyContext& stgCtx) const noexcept override { 
+            auto& builder = stgCtx.ctx.getBuilder();
+            llvm::Value* result = helper::isOddHelper(builder, stgCtx.instance, true);
+            builder.CreateStore(result, stgCtx.instancePtr);
+            return result;    
+        }
+
     };
 
     // ============================================================================

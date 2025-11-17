@@ -41,12 +41,68 @@ namespace LynxTypes {
     // Integer type methods
     // -----------------------------
     static inline const std::unordered_map<std::string_view, int> intMethods {
+        // ============================================================================
+        // ABS Methods Mapping
+        // ============================================================================
+        {absKey, 0}, {negateKey, 0}, {signKey, 0}, {clampKey, 2}, {isEvenKey, 0}, {isOddKey, 0}, 
+
+        // ============================================================================
+        // Arithmetic Methods Mapping
+        // ============================================================================
         {addKey, 1}, {subKey, 1}, {mulKey, 1}, {divKey, 1}, {modKey, 1},
-        {absKey, 0}, {negateKey, 0}, {signKey, 0}, {clampKey, 2},
-        {isEvenKey, 0}, {isOddKey, 0}, {fromStringKey, 1},
-        {zeroKey, 0}, {oneKey, 0}, {maxKey, 0}, {minKey, 0},
-        {isPositiveKey, 0}, {isNegativeKey, 0}, {bitCountKey, 0},
-        {leadingZerosKey, 0}, {trailingZerosKey, 0}
+
+        // ============================================================================
+        // Bit manipulation Methods Mapping
+        // ============================================================================
+        {popCountKey, 1}, {countLeadingZerosKey, 1}, {countTrailingZerosKey, 1}, {bitReverseKey, 1}, {rotateLeftKey, 1}, {rotateRightKey, 1},
+
+        // ============================================================================
+        // Bitwise logic Methods Mapping
+        // ============================================================================
+        {bitAndKey, 1}, {bitOrKey, 1}, {bitXorKey, 1}, {shlKey, 1}, {shrKey, 1}, {bitNotKey, 1},
+
+        // ============================================================================
+        // Comparison Methods Mapping
+        // ============================================================================
+        {eqKey, 1}, {neKey, 1}, {ltKey, 1}, {leKey, 1}, {gtKey, 1}, {geKey, 1},
+
+        // ============================================================================
+        // Fixed Point Methods Mapping
+        // ============================================================================
+        {fpMulKey, 1}, {fpUMulKey, 1}, {fpDivKey, 1}, {fpUDivKey, 1},
+
+        // ============================================================================
+        // Math Methods Mapping
+        // ============================================================================
+        {sqrtKey, 1}, {powKey, 1}, {expKey, 1}, {exp2Key, 1}, {exp10Key, 1}, {logKey, 1}, {log2Key, 1}, {log10Key, 1}, {sinKey, 1}, {cosKey, 1}, {tanKey, 1},
+        {asinKey, 1}, {acosKey, 1}, {atanKey, 1}, {atan2Key, 1}, {sinhKey, 1}, {coshKey, 1}, {tanhKey, 1}, {floorKey, 1}, {ceilKey, 1}, {truncKey, 1}, {roundKey, 1}, {fabsKey, 1},
+
+        // ============================================================================
+        // Memory Methods Mapping
+        // ============================================================================
+        {memcpyKey, 1}, {memmoveKey, 1}, {memsetKey, 1}, {memsetPatternKey, 1},
+
+        // ============================================================================
+        // MinMax Methods Mapping
+        // ============================================================================
+        {sminKey,1}, {smaxKey, 1}, {uminKey, 1}, {umaxKey, 1},
+
+        // ============================================================================
+        // Overflow Methods Mapping
+        // ============================================================================
+        {saddOverflowKey, 1}, {uaddOverflowKey, 1}, {ssubOverflowKey, 1}, {usubOverflowKey, 1}, {smulOverflowKey, 1}, {umulOverflowKey, 1},
+
+        // ============================================================================
+        // Saturation Methods Mapping
+        // ============================================================================
+        {saddSatKey, 1}, {uaddSatKey, 1}, {ssubSatKey, 1}, {usubSatKey, 1}, {sshlSatKey, 1}, {ushLSatKey, 1},
+
+        // ============================================================================
+        // Others specialization
+        // ============================================================================
+        {fromStringKey, 1}, {zeroKey, 0}, {oneKey, 0}, {maxKey, 0}, {minKey, 0},
+        {isPositiveKey, 0}, {isNegativeKey, 0}, {bitCountKey, 0}, {leadingZerosKey, 0}, 
+        {trailingZerosKey, 0}
     };
 
     // -----------------------------

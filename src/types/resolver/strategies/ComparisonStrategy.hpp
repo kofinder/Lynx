@@ -32,6 +32,7 @@
 #define LYNX_RESOLVER_COMPRASION_STRATEGY_HPP
 
 #include <llvm/IR/Value.h>
+#include "helpers/CompareStrategyHelper.hpp"
 #include "resolver/TypeStrategyContext.hpp"
 
 namespace LynxTypes {
@@ -46,7 +47,6 @@ namespace LynxTypes {
         [[nodiscard]] virtual llvm::Value* le(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* gt(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* ge(const StrategyContext&) const noexcept = 0;
-
         virtual ~ComparisonStrategy() noexcept = default;
     };
 
@@ -62,12 +62,24 @@ namespace LynxTypes {
     // ============================================================================
     template<IntStrategyType T>
     struct ComparisonStrategyImpl<T> : ComparisonStrategy {
-        [[nodiscard]] llvm::Value* eq(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* ne(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* lt(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* le(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* gt(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* ge(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* eq(const StrategyContext& stgCtx) const noexcept override {
+            return helper::compareEq(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0], false);
+        }
+        [[nodiscard]] llvm::Value* ne(const StrategyContext& stgCtx) const noexcept override {
+            return helper::compareNe(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0], false);
+        }
+        [[nodiscard]] llvm::Value* lt(const StrategyContext& stgCtx) const noexcept override {
+            return helper::compareLt(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0], false);
+        }
+        [[nodiscard]] llvm::Value* le(const StrategyContext& stgCtx) const noexcept override {
+            return helper::compareLe(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0], false);
+        }
+        [[nodiscard]] llvm::Value* gt(const StrategyContext& stgCtx) const noexcept override {
+            return helper::compareGt(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0], false);
+        }
+        [[nodiscard]] llvm::Value* ge(const StrategyContext& stgCtx) const noexcept override {
+            return helper::compareGe(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0], false);
+        }
     };
 
     // ============================================================================
@@ -75,12 +87,24 @@ namespace LynxTypes {
     // ============================================================================
     template<FloatStrategyType T>
     struct ComparisonStrategyImpl<T> : ComparisonStrategy {
-        [[nodiscard]] llvm::Value* eq(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* ne(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* lt(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* le(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* gt(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* ge(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* eq(const StrategyContext& stgCtx) const noexcept override {
+            return helper::compareEq(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0], true);
+        }
+        [[nodiscard]] llvm::Value* ne(const StrategyContext& stgCtx) const noexcept override {
+            return helper::compareNe(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0], true);
+        }
+        [[nodiscard]] llvm::Value* lt(const StrategyContext& stgCtx) const noexcept override {
+            return helper::compareLt(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0], true);
+        }
+        [[nodiscard]] llvm::Value* le(const StrategyContext& stgCtx) const noexcept override {
+            return helper::compareLe(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0], true);
+        }
+        [[nodiscard]] llvm::Value* gt(const StrategyContext& stgCtx) const noexcept override {
+            return helper::compareGt(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0], true);
+        }
+        [[nodiscard]] llvm::Value* ge(const StrategyContext& stgCtx) const noexcept override {
+            return helper::compareGe(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0], true);
+        }    
     };
 
     // ============================================================================

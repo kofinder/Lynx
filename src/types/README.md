@@ -100,15 +100,3 @@ Core base types and interfaces from which others derive.
 ```
 
 ### Module Dependency Graph
-
-```
-interfaces/*
-   |
-   |--> builtins/*
-   |--> userdefined/*
-   |--> sequential/*
-   |--> associative/*
-   |--> wrapper/*
-   |
-   +--> infrerence/*
-```
