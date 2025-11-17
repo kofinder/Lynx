@@ -79,6 +79,7 @@ namespace LynxTypes::helper {
         auto* intRes = builder.CreateCall(fn, { lhsInt, rhsInt, scaleConst });
         return fixedIntToFloat(stgCtx, intRes, fpTy, isUnsigned);
     }
+    
 }
 
 #endif

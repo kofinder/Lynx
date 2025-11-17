@@ -40,10 +40,12 @@
 #include <llvm/IR/Module.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Intrinsics.h>
-#include "helpers/BitManiStrategyHelper.hpp"
-#include "resolver/TypeStrategyContext.hpp"
+#include "helpers/InstructionHelper.hpp"
 
 namespace LynxTypes {
+
+    using helper::callOfUnaryIntrinsic;
+    using helper::callOfBinaryIntrinsic;
 
     // ============================================================================
     // Base Interface
@@ -69,44 +71,12 @@ namespace LynxTypes {
     // ============================================================================
     template<IntStrategyType T>
     struct BitManipulationStrategyImpl<T> : BitManipulationStrategy {
-
-        [[nodiscard]] llvm::Value* popCount(const StrategyContext& stgCtx) const noexcept override {
-            llvm::Value* result = helper::popCount(stgCtx.ctx.getBuilder(), stgCtx.instance);
-            stgCtx.ctx.getBuilder().CreateStore(result, stgCtx.instancePtr);
-            return result;
-        }
-    
-        [[nodiscard]] llvm::Value* countLeadingZeros(const StrategyContext& stgCtx) const noexcept override {
-            llvm::Value* result = helper::countLeadingZeros(stgCtx.ctx.getBuilder(), stgCtx.instance);
-            stgCtx.ctx.getBuilder().CreateStore(result, stgCtx.instancePtr);
-            return result;
-        }
-    
-        [[nodiscard]] llvm::Value* countTrailingZeros(const StrategyContext& stgCtx) const noexcept override {
-            llvm::Value* result = helper::countTrailingZeros(stgCtx.ctx.getBuilder(), stgCtx.instance);
-            stgCtx.ctx.getBuilder().CreateStore(result, stgCtx.instancePtr);
-            return result;
-        }
-    
-        [[nodiscard]] llvm::Value* bitReverse(const StrategyContext& stgCtx) const noexcept override {
-            llvm::Value* result = helper::bitReverse(stgCtx.ctx.getBuilder(), stgCtx.instance);
-            stgCtx.ctx.getBuilder().CreateStore(result, stgCtx.instancePtr);
-            return result;
-        }
-    
-        [[nodiscard]] llvm::Value* rotateLeft(const StrategyContext& stgCtx) const noexcept override {
-            if (stgCtx.args.empty()) return nullptr;
-            llvm::Value* result = helper::rotateLeft(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0]);
-            stgCtx.ctx.getBuilder().CreateStore(result, stgCtx.instancePtr);
-            return result;
-        }
-    
-        [[nodiscard]] llvm::Value* rotateRight(const StrategyContext& stgCtx) const noexcept override {
-            if (stgCtx.args.empty()) return nullptr;
-            llvm::Value* result = helper::rotateRight(stgCtx.ctx.getBuilder(), stgCtx.instance, stgCtx.args[0]);
-            stgCtx.ctx.getBuilder().CreateStore(result, stgCtx.instancePtr);
-            return result;
-        }    
+        [[nodiscard]] llvm::Value* popCount(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::ctpop); }
+        [[nodiscard]] llvm::Value* countLeadingZeros(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::ctlz); }
+        [[nodiscard]] llvm::Value* countTrailingZeros(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::cttz); }
+        [[nodiscard]] llvm::Value* bitReverse(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::bitreverse); }
+        [[nodiscard]] llvm::Value* rotateLeft(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::fshl); }
+        [[nodiscard]] llvm::Value* rotateRight(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::fshr); }
     };
 
     // ============================================================================
@@ -114,12 +84,12 @@ namespace LynxTypes {
     // ============================================================================
     template<FloatStrategyType T>
     struct BitManipulationStrategyImpl<T> : BitManipulationStrategy {
-        [[nodiscard]] llvm::Value* popCount(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* countLeadingZeros(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* countTrailingZeros(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* bitReverse(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* rotateLeft(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* rotateRight(const StrategyContext& stgCtx) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* popCount(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::ctpop); }
+        [[nodiscard]] llvm::Value* countLeadingZeros(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::ctlz); }
+        [[nodiscard]] llvm::Value* countTrailingZeros(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::cttz); }
+        [[nodiscard]] llvm::Value* bitReverse(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::bitreverse); }
+        [[nodiscard]] llvm::Value* rotateLeft(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::fshl); }
+        [[nodiscard]] llvm::Value* rotateRight(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::fshr); }
     };
 
     // ============================================================================

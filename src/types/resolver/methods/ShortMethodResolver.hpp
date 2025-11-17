@@ -23,19 +23,65 @@
 #define LYNX_SHORT_METHOD_RESOLVER_HPP
 
 #include "resolver/TypeMethodResolver.hpp"
+#include "resolver/TypeNumericResolver.hpp"
+#include "resolver/TypeResolverMixins.hpp"
+
+#include "strategies/BitwiseStrategy.hpp"
+#include "strategies/AbsStrategy.hpp"
+#include "strategies/MinMaxStrategy.hpp"
+#include "strategies/ComparisonStrategy.hpp"
+#include "strategies/MathStrategy.hpp"
+#include "strategies/MemoryStrategy.hpp"
+#include "strategies/BitManipulationStrategy.hpp"
+#include "strategies/OverflowStrategy.hpp"
+#include "strategies/SaturationStrategy.hpp"
+#include "strategies/FixedPointStrategy.hpp"
 
 namespace LynxTypes {
 
-    struct ShortMethodResolver : public TypeMethodResolver {
+    class ShortMethodResolver {
 
-        llvm::Value* resolveMethod(
-            const AstContext& ctx,
-            llvm::Value* instance,
-            llvm::Value* instancePtr,
-            const std::string& method, 
-            const std::vector<llvm::Value*>& args
-        )  noexcept override;
+        public:
 
+            static llvm::Value* convertToString(const AstContext& ctx, llvm::Value* instance) noexcept;
+
+            static llvm::Value* performClone(const AstContext& ctx, llvm::Value* instance) noexcept;
+
+            static llvm::Value* performTypeCast(const AstContext& ctx, llvm::Value* instance, llvm::Type* targetType) noexcept;
+
+            static llvm::Value* resolveTypeMethod(const AstContext& ctx, const std::string& method, const std::vector<llvm::Value*>& args) noexcept;
+            
+            static llvm::Value* resolveInstanceMethod(
+                const AstContext& ctx,
+                llvm::Value* instance,
+                llvm::Value* instancePtr,
+                const std::string& method, 
+                const std::vector<llvm::Value*>& args
+            ) noexcept;
+
+        public:
+
+            using Base = TypeNumericResolver<ShortMethodResolver, short>;
+            using ToStr = ToStringMixin<ShortMethodResolver>;
+            using Cln = CloneMixin<ShortMethodResolver>;
+            using Cast = TypeCastMixin<ShortMethodResolver>;
+
+            struct Impl : public Base, public ToStr, public Cln, public Cast {
+                ShortArithmeticStrategy arithmetic;
+                ShortBitwiseStrategy bitwise;
+                ShortAbsStrategy abs;
+                ShortMinMaxStrategy minMax;
+                ShortComparisonStrategy cmp;
+                ShortMathStrategy math;
+                ShortMemoryStrategy mem;
+                ShortBitManipulationStrategy bitManip;
+                ShortOverflowStrategy overflow;
+                ShortSaturationStrategy saturation;
+                ShortFixedPointStrategy fixedPoint;
+                Impl() noexcept : Base(&arithmetic, &bitwise, &abs, &minMax, &cmp, &math, &mem, &bitManip, &overflow, &saturation, &fixedPoint) {}
+            };
+
+            static TypeMethodResolver* create() { return new Impl(); }         
     };
 }
 

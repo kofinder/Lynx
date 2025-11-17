@@ -60,17 +60,12 @@ namespace LynxTypes {
     
     void LongType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
+    TypeMethodResolver* LongType::getOrCreateResolver() const { return LongMethodResolver::create(); }
+
     llvm::Value* LongType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         LOG_ERROR("Emit Method Call Invocation.");
         if (!resolver)  resolver = getOrCreateResolver();
         return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
-    }
-
-    TypeMethodResolver* LongType::getOrCreateResolver() const { 
-        if (!resolver) {
-            resolver = new LongMethodResolver();
-        }
-        return resolver;
     }
 
     const BaseType* LongType::createWithStatic(bool newIsStatic) const {

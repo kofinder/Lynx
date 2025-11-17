@@ -61,15 +61,12 @@ namespace LynxTypes {
     
     void ShortType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
+    TypeMethodResolver* ShortType::getOrCreateResolver() const { return ShortMethodResolver::create(); }
+
     llvm::Value* ShortType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         LOG_ERROR("Emit Method Call Invocation.");
         if (!resolver) resolver = getOrCreateResolver();
         return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
-    }
-
-    TypeMethodResolver* ShortType::getOrCreateResolver() const { 
-        if (!resolver) resolver = new ShortMethodResolver();
-        return resolver;
     }
 
     const BaseType* ShortType::createWithStatic(bool newIsStatic) const {

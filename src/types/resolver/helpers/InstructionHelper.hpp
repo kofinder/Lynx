@@ -51,6 +51,13 @@ namespace LynxTypes::helper {
         return floatToInt(stgCtx, result, isSigned);
     }
 
+    inline llvm::Value* callOfUnaryIntrinsic(const StrategyContext& stgCtx, llvm::Intrinsic::ID id) {
+        auto* mod = stgCtx.ctx.getModule();
+        auto* func = callOfIntrinsic(mod, id, stgCtx.instance->getType());
+        return stgCtx.ctx.getBuilder().CreateCall(func, { stgCtx.instance });
+    }
+
+
     inline llvm::Value* callOfBinaryIntrinsic(const StrategyContext& stgCtx, llvm::Intrinsic::ID id, bool isSigned) noexcept {
         auto& builder = stgCtx.ctx.getBuilder();
         auto* lhs = intToFloat(stgCtx, isSigned);
@@ -59,12 +66,6 @@ namespace LynxTypes::helper {
         auto* fun = helper::callOfIntrinsic(mod, id, lhs->getType());
         auto* result = builder.CreateCall(fun, {lhs, rhs});
         return floatToInt(stgCtx, result, isSigned);
-    }
-
-    inline llvm::Value* callOfUnaryIntrinsic(const StrategyContext& stgCtx, llvm::Intrinsic::ID id) {
-        auto* mod = stgCtx.ctx.getModule();
-        auto* func = callOfIntrinsic(mod, id, stgCtx.instance->getType());
-        return stgCtx.ctx.getBuilder().CreateCall(func, { stgCtx.instance });
     }
 
     inline llvm::Value* callOfBinaryIntrinsic(const StrategyContext& stgCtx, llvm::Intrinsic::ID id) {

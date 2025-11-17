@@ -59,10 +59,7 @@ namespace LynxTypes {
 
     void DoubleType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
-    TypeMethodResolver* DoubleType::getOrCreateResolver() const {
-        if (!resolver) resolver = new DoubleMethodResolver();
-        return resolver;
-    }
+    TypeMethodResolver* DoubleType::getOrCreateResolver() const { return DoubleMethodResolver::create(); }
 
     llvm::Value* DoubleType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         LOG_ERROR("Emit Method Call Invocation.");
