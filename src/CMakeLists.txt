@@ -43,8 +43,8 @@ add_compile_options(-frtti -fexceptions)
 # ==========================
 set(LYNX_MODULES
     lang constants exceptions logger context types ast mangler
-    jit config codegen linker attributes callconv
-    analyzer lto core ui platform libruntime collections
+    jit config codegen linker ui attributes callconv
+    analyzer lto core platform libruntime collections
     errors cli system stdapi
 )
 
@@ -91,6 +91,7 @@ target_link_libraries(${LYNX_EXECUTABLE} PUBLIC
     LynxJIT 
     LynxProgramConfig
     LynxCLI 
+    LynxUI
     LynxCodegen 
     LynxLinker 
     LynxFunctionAttr 
@@ -103,7 +104,6 @@ target_link_libraries(${LYNX_EXECUTABLE} PUBLIC
     LynxBridge 
     LynxPlatform 
     LynxCollection 
-    LynxUI
     ${LLVM_LIBS} 
     ${OPENCL_CLANG_LINK_LIBS}
     Boost::system Boost::filesystem Boost::program_options

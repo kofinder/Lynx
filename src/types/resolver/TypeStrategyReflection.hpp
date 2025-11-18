@@ -9,7 +9,7 @@
  * Key components:
  * - `StrategyReflectionBase<Strategy>`: Provides the common `FnType` and `Entry` definitions.
  * - `StrategyReflection<Strategy>`: Primary template; empty by default.
- * - Specializations (e.g., `StrategyReflection<ArithmeticStrategyImpl<T>>`) define
+ * - Specializations (e.g., `StrategyReflection<BinaryStrategyImpl<T>>`) define
  *   the mapping between method keys (from `TypeResolverConstant.hpp`) and
  *   strategy functions.
  * - `invokeByName()`: Generic helper to call a strategy method by string key.
@@ -25,9 +25,9 @@
 #define LYNX_TYPE_STRATEGY_REFLECTION_HPP
 
 #include "TypeStrategyContext.hpp"
-#include "strategies/ArithmeticStrategy.hpp"
+#include "strategies/BinaryStrategy.hpp"
 #include "strategies/BitwiseStrategy.hpp"
-#include "strategies/AbsStrategy.hpp"
+#include "strategies/ArithmeticStrategy.hpp"
 #include "strategies/MinMaxStrategy.hpp"
 #include "strategies/ComparisonStrategy.hpp"
 #include "strategies/MathStrategy.hpp"
@@ -87,8 +87,8 @@ namespace LynxTypes {
     // ============================================================================
     template<typename T>
     requires std::is_arithmetic_v<T>
-    struct StrategyReflection<AbsStrategyImpl<T>> : StrategyReflectionBase<AbsStrategyImpl<T>> {
-        using Strategy = AbsStrategyImpl<T>;
+    struct StrategyReflection<ArithmeticStrategyImpl<T>> : StrategyReflectionBase<ArithmeticStrategyImpl<T>> {
+        using Strategy = ArithmeticStrategyImpl<T>;
         using Entry = typename StrategyReflectionBase<Strategy>::Entry;
         static constexpr std::array<Entry, 6> entries{{
             {absKey, &Strategy::abs},
@@ -105,8 +105,8 @@ namespace LynxTypes {
     // ============================================================================
     template<typename T>
     requires std::is_arithmetic_v<T>
-    struct StrategyReflection<ArithmeticStrategyImpl<T>> : StrategyReflectionBase<ArithmeticStrategyImpl<T>> {
-        using Strategy = ArithmeticStrategyImpl<T>;
+    struct StrategyReflection<BinaryStrategyImpl<T>> : StrategyReflectionBase<BinaryStrategyImpl<T>> {
+        using Strategy = BinaryStrategyImpl<T>;
         using Entry = typename StrategyReflectionBase<Strategy>::Entry;
         static constexpr std::array<Entry, 5> entries{{
             {addKey, &Strategy::add},
@@ -180,9 +180,9 @@ namespace LynxTypes {
         using Strategy = FixedPointStrategyImpl<T>;
         using Entry = typename StrategyReflectionBase<Strategy>::Entry;    
         static constexpr std::array<Entry, 4> entries{{
-            {fpMulKey, &Strategy::mul},
+            {fpMulKey, &Strategy::smul},
             {fpUMulKey, &Strategy::umul},
-            {fpDivKey, &Strategy::div},
+            {fpDivKey, &Strategy::sdiv},
             {fpUDivKey, &Strategy::udiv}
         }};
     };

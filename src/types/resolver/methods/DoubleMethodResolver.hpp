@@ -27,7 +27,7 @@
 #include "resolver/TypeResolverMixins.hpp"
 
 #include "strategies/BitwiseStrategy.hpp"
-#include "strategies/AbsStrategy.hpp"
+#include "strategies/ArithmeticStrategy.hpp"
 #include "strategies/MinMaxStrategy.hpp"
 #include "strategies/ComparisonStrategy.hpp"
 #include "strategies/MathStrategy.hpp"
@@ -67,9 +67,9 @@ namespace LynxTypes {
             using Cast = TypeCastMixin<DoubleMethodResolver>;
 
             struct Impl : public Base, public ToStr, public Cln, public Cast {
-                DoubleArithmeticStrategy arithmetic;
+                DoubleBinaryStrategy arithmetic;
                 DoubleBitwiseStrategy bitwise;
-                DoubleAbsStrategy abs;
+                DoubleArithmeticStrategy abs;
                 DoubleMinMaxStrategy minMax;
                 DoubleComparisonStrategy cmp;
                 DoubleMathStrategy math;

@@ -31,20 +31,19 @@
 #define LYNX_RESOLVER_FIXED_POINT_STRATEGY_HPP
 
 #include <llvm/IR/Value.h>
-#include "helpers/FixedPointStrategyHelper.hpp"
+#include "helpers/InstructionHelper.hpp"
 
 namespace LynxTypes {
 
-    using helper::callFixedIntrinsic;
-    using helper::callIntIntrinsicFromFP;
+    using helper::callOfFixedPointIntrinsic;
 
     // ============================================================================
     // Base Interface
     // ============================================================================
     struct FixedPointStrategy {
-        [[nodiscard]] virtual llvm::Value* mul(const StrategyContext&) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* smul(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* umul(const StrategyContext&) const noexcept = 0;
-        [[nodiscard]] virtual llvm::Value* div(const StrategyContext&) const noexcept = 0;
+        [[nodiscard]] virtual llvm::Value* sdiv(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* udiv(const StrategyContext&) const noexcept = 0;
         virtual ~FixedPointStrategy() noexcept = default;
     };
@@ -62,10 +61,10 @@ namespace LynxTypes {
     // ============================================================================
     template<IntStrategyType T>
     struct FixedPointStrategyImpl<T> : FixedPointStrategy {
-        [[nodiscard]] llvm::Value* mul(const StrategyContext& ctx) const noexcept override { return callFixedIntrinsic(ctx, llvm::Intrinsic::smul_fix); }
-        [[nodiscard]] llvm::Value* umul(const StrategyContext& ctx) const noexcept override { return callFixedIntrinsic(ctx, llvm::Intrinsic::umul_fix); }
-        [[nodiscard]] llvm::Value* div(const StrategyContext& ctx) const noexcept override { return callFixedIntrinsic(ctx, llvm::Intrinsic::sdiv_fix); }
-        [[nodiscard]] llvm::Value* udiv(const StrategyContext& ctx) const noexcept override { return callFixedIntrinsic(ctx, llvm::Intrinsic::udiv_fix); }
+        [[nodiscard]] llvm::Value* smul(const StrategyContext& ctx) const noexcept override { std::cout << "FUCK>>>>" << std::endl; return callOfFixedPointIntrinsic(ctx, llvm::Intrinsic::smul_fix); }
+        [[nodiscard]] llvm::Value* umul(const StrategyContext& ctx) const noexcept override { return callOfFixedPointIntrinsic(ctx, llvm::Intrinsic::umul_fix); }
+        [[nodiscard]] llvm::Value* sdiv(const StrategyContext& ctx) const noexcept override { return callOfFixedPointIntrinsic(ctx, llvm::Intrinsic::sdiv_fix); }
+        [[nodiscard]] llvm::Value* udiv(const StrategyContext& ctx) const noexcept override { return callOfFixedPointIntrinsic(ctx, llvm::Intrinsic::udiv_fix); }
     };
 
     // ============================================================================
@@ -73,10 +72,10 @@ namespace LynxTypes {
     // ============================================================================
     template<FloatStrategyType T>
     struct FixedPointStrategyImpl<T> : FixedPointStrategy {
-        [[nodiscard]] llvm::Value* mul(const StrategyContext& ctx) const noexcept override { return callIntIntrinsicFromFP(ctx, llvm::Intrinsic::smul_fix, false); }
-        [[nodiscard]] llvm::Value* umul(const StrategyContext& ctx) const noexcept override { return callIntIntrinsicFromFP(ctx, llvm::Intrinsic::umul_fix, true); }
-        [[nodiscard]] llvm::Value* div(const StrategyContext& ctx) const noexcept override { return callIntIntrinsicFromFP(ctx, llvm::Intrinsic::sdiv_fix, false); }
-        [[nodiscard]] llvm::Value* udiv(const StrategyContext& ctx) const noexcept override { return callIntIntrinsicFromFP(ctx, llvm::Intrinsic::udiv_fix, true); }
+        [[nodiscard]] llvm::Value* smul(const StrategyContext& ctx) const noexcept override { return callOfFixedPointIntrinsic(ctx, llvm::Intrinsic::smul_fix); }
+        [[nodiscard]] llvm::Value* umul(const StrategyContext& ctx) const noexcept override { return callOfFixedPointIntrinsic(ctx, llvm::Intrinsic::umul_fix); }
+        [[nodiscard]] llvm::Value* sdiv(const StrategyContext& ctx) const noexcept override { return callOfFixedPointIntrinsic(ctx, llvm::Intrinsic::sdiv_fix); }
+        [[nodiscard]] llvm::Value* udiv(const StrategyContext& ctx) const noexcept override { return callOfFixedPointIntrinsic(ctx, llvm::Intrinsic::udiv_fix); }
     };
 
     // ============================================================================

@@ -1,0 +1,175 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "src/exceptions/libLynxExceptions.a"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"add_compile_options",
+			"include_directories",
+			"target_include_directories"
+		],
+		"files" : 
+		[
+			"src/exceptions/CMakeLists.txt",
+			"src/CMakeLists.txt",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 12,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 39,
+				"parent" : 2
+			},
+			{
+				"file" : 2
+			},
+			{
+				"command" : 2,
+				"file" : 2,
+				"line" : 43,
+				"parent" : 4
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 18,
+				"parent" : 2
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 14,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -std=c++2b -fPIC   -D_GNU_SOURCE -DEXPERIMENTAL_KEY_INSTRUCTIONS -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-frtti"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-fexceptions"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 5,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/build/src"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "/usr/local/llvm-21/include"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/exceptions/."
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/build/configured_files/include"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "23"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				1
+			]
+		}
+	],
+	"id" : "LynxExceptions::@861e727a7cd80ed3ec6e",
+	"name" : "LynxExceptions",
+	"nameOnDisk" : "libLynxExceptions.a",
+	"paths" : 
+	{
+		"build" : "src/exceptions",
+		"source" : "src/exceptions"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/exceptions/impl/SemanticException.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/exceptions/impl/UnimplementedException.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/exceptions/BaseException.hpp",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

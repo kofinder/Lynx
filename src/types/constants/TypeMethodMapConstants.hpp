@@ -54,12 +54,12 @@ namespace LynxTypes {
         // ============================================================================
         // Bit manipulation Methods Mapping
         // ============================================================================
-        {popCountKey, 1}, {countLeadingZerosKey, 1}, {countTrailingZerosKey, 1}, {bitReverseKey, 1}, {rotateLeftKey, 1}, {rotateRightKey, 1},
+        {popCountKey, 0}, {countLeadingZerosKey, 0}, {countTrailingZerosKey, 0}, {bitReverseKey, 0}, {rotateLeftKey, 1}, {rotateRightKey, 1},
 
         // ============================================================================
         // Bitwise logic Methods Mapping
         // ============================================================================
-        {bitAndKey, 1}, {bitOrKey, 1}, {bitXorKey, 1}, {shlKey, 1}, {shrKey, 1}, {bitNotKey, 1},
+        {bitAndKey, 1}, {bitOrKey, 1}, {bitXorKey, 1}, {shlKey, 1}, {shrKey, 1}, {bitNotKey, 0},
 
         // ============================================================================
         // Comparison Methods Mapping

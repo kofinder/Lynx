@@ -22,9 +22,9 @@
 #include <memory>
 #include <context/AstContext.hpp>
 #include "resolver/TypeMethodResolver.hpp"
-#include "resolver/strategies/ArithmeticStrategy.hpp"
+#include "resolver/strategies/BinaryStrategy.hpp"
 #include "resolver/strategies/BitwiseStrategy.hpp"
-#include "resolver/strategies/AbsStrategy.hpp"
+#include "resolver/strategies/ArithmeticStrategy.hpp"
 #include "resolver/strategies/MinMaxStrategy.hpp"
 #include "resolver/strategies/ComparisonStrategy.hpp"
 #include "resolver/strategies/MathStrategy.hpp"
@@ -44,9 +44,9 @@ namespace LynxTypes {
 
         protected:
 
-            const ArithmeticStrategy* arithmetic;
+            const BinaryStrategy* arithmetic;
             const BitwiseStrategy* bitwise;
-            const AbsStrategy* absStrat;
+            const ArithmeticStrategy* absStrat;
             const MinMaxStrategy* minMaxStrat;
             const ComparisonStrategy* cmpStrat;
             const MathStrategy* mathStrat;
@@ -59,9 +59,9 @@ namespace LynxTypes {
         public:
             
             TypeNumericResolver(
-                const ArithmeticStrategy* arithmetic,
+                const BinaryStrategy* arithmetic,
                 const BitwiseStrategy* bitwise,
-                const AbsStrategy* absStrat,
+                const ArithmeticStrategy* absStrat,
                 const MinMaxStrategy* minMaxStrat,
                 const ComparisonStrategy* cmpStrat,
                 const MathStrategy* mathStrat,

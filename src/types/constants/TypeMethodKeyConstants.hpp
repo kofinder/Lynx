@@ -148,10 +148,10 @@ namespace LynxTypes {
     // -----------------------------
     // FixedPoint Strategy
     // -----------------------------
-    inline constexpr std::string_view fpMulKey  = "fpMul";
-    inline constexpr std::string_view fpUMulKey = "fpUMul";
-    inline constexpr std::string_view fpDivKey  = "fpDiv";
-    inline constexpr std::string_view fpUDivKey = "fpUDiv";
+    inline constexpr std::string_view fpMulKey  = "smul";
+    inline constexpr std::string_view fpUMulKey = "umul";
+    inline constexpr std::string_view fpDivKey  = "sdiv";
+    inline constexpr std::string_view fpUDivKey = "udiv";
 
     // -----------------------------
     // String method keys

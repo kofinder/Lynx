@@ -1,0 +1,433 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "src/lang/libLynxLang.a"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"target_link_libraries",
+			"add_compile_options",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"src/lang/CMakeLists.txt",
+			"src/CMakeLists.txt",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 40,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 71,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 39,
+				"parent" : 3
+			},
+			{
+				"file" : 2
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 43,
+				"parent" : 5
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 18,
+				"parent" : 3
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 12,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 13,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -std=c++2b -fPIC   -D_GNU_SOURCE -DEXPERIMENTAL_KEY_INSTRUCTIONS -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-frtti"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-fexceptions"
+				},
+				{
+					"fragment" : "-Wno-unused-parameter"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "BOOST_ALL_NO_LIB"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "BOOST_FILESYSTEM_DYN_LINK"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "BOOST_PROGRAM_OPTIONS_DYN_LINK"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "BOOST_SYSTEM_DYN_LINK"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SPDLOG_COMPILED_LIB"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 6,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/build/src"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/usr/local/llvm-21/include"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/lang"
+				},
+				{
+					"backtrace" : 9,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/build/src/lang"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/logger/."
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/build/configured_files/include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/external/spdlog/include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/external/cxxopts/include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/constants"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/ast"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "23"
+			},
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -std=c++2b -fPIC   -D_GNU_SOURCE -DEXPERIMENTAL_KEY_INSTRUCTIONS -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-frtti"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "-fexceptions"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "BOOST_ALL_NO_LIB"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "BOOST_FILESYSTEM_DYN_LINK"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "BOOST_PROGRAM_OPTIONS_DYN_LINK"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "BOOST_SYSTEM_DYN_LINK"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SPDLOG_COMPILED_LIB"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 6,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/build/src"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/usr/local/llvm-21/include"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/lang"
+				},
+				{
+					"backtrace" : 9,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/build/src/lang"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/logger/."
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/build/configured_files/include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/external/spdlog/include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/external/cxxopts/include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/constants"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/ast"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "23"
+			},
+			"sourceIndexes" : 
+			[
+				1,
+				9
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 2,
+			"id" : "LynxExceptions::@861e727a7cd80ed3ec6e"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "LynxLogger::@d5374f2bfdcf69980c1c"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "LynxContext::@617640eda00f15a1a03e"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "LynxCallConv::@f2c4c645225d5d61f3bc"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "LynxErrors::@7758507bccd85434fc77"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "spdlog::@e2ce52242414c9d53ee8"
+		}
+	],
+	"id" : "LynxLang::@9e527a14cb585be0cbd9",
+	"name" : "LynxLang",
+	"nameOnDisk" : "libLynxLang.a",
+	"paths" : 
+	{
+		"build" : "src/lang",
+		"source" : "src/lang"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				9
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				10,
+				11
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/src/lang/scanner.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"isGenerated" : true,
+			"path" : "build/src/lang/parser.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "build/src/lang/parser.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/lang/LynxScanner.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/lang/LynxDriver.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/lang/LynxTokenizer.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/lang/LexerState.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/lang/TypeNestingLimiter.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/lang/LiteralNestingLimiter.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "src/lang/impl/LynxDriver.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/src/lang/parser.cpp.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/src/lang/scanner.cpp.rule",
+			"sourceGroupIndex" : 2
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

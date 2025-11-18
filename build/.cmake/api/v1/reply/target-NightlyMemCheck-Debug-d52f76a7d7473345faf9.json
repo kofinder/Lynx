@@ -1,0 +1,93 @@
+{
+	"backtrace" : 5,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"include"
+		],
+		"files" : 
+		[
+			"/home/jovian/Softwares/cmake-3.26.5-linux-x86_64/share/cmake-3.26/Modules/CTestTargets.cmake",
+			"/home/jovian/Softwares/cmake-3.26.5-linux-x86_64/share/cmake-3.26/Modules/CTest.cmake",
+			"external/yaml-cpp/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 2,
+				"line" : 22,
+				"parent" : 0
+			},
+			{
+				"file" : 1,
+				"parent" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 264,
+				"parent" : 2
+			},
+			{
+				"file" : 0,
+				"parent" : 3
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 75,
+				"parent" : 4
+			}
+		]
+	},
+	"folder" : 
+	{
+		"name" : "CTestDashboardTargets"
+	},
+	"id" : "NightlyMemCheck::@00a8d46123576ab9d953",
+	"name" : "NightlyMemCheck",
+	"paths" : 
+	{
+		"build" : "external/yaml-cpp",
+		"source" : "external/yaml-cpp"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 5,
+			"isGenerated" : true,
+			"path" : "build/external/yaml-cpp/CMakeFiles/NightlyMemCheck",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/external/yaml-cpp/CMakeFiles/NightlyMemCheck.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

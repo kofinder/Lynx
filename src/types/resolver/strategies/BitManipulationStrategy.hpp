@@ -44,8 +44,7 @@
 
 namespace LynxTypes {
 
-    using helper::callOfUnaryIntrinsic;
-    using helper::callOfBinaryIntrinsic;
+    using helper::callOfBitManiIntrinsic;
 
     // ============================================================================
     // Base Interface
@@ -71,12 +70,12 @@ namespace LynxTypes {
     // ============================================================================
     template<IntStrategyType T>
     struct BitManipulationStrategyImpl<T> : BitManipulationStrategy {
-        [[nodiscard]] llvm::Value* popCount(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::ctpop); }
-        [[nodiscard]] llvm::Value* countLeadingZeros(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::ctlz); }
-        [[nodiscard]] llvm::Value* countTrailingZeros(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::cttz); }
-        [[nodiscard]] llvm::Value* bitReverse(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::bitreverse); }
-        [[nodiscard]] llvm::Value* rotateLeft(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::fshl); }
-        [[nodiscard]] llvm::Value* rotateRight(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::fshr); }
+        [[nodiscard]] llvm::Value* popCount(const StrategyContext& ctx) const noexcept override { return callOfBitManiIntrinsic(ctx, llvm::Intrinsic::ctpop); }
+        [[nodiscard]] llvm::Value* countLeadingZeros(const StrategyContext& ctx) const noexcept override { return callOfBitManiIntrinsic(ctx, llvm::Intrinsic::ctlz); }
+        [[nodiscard]] llvm::Value* countTrailingZeros(const StrategyContext& ctx) const noexcept override { return callOfBitManiIntrinsic(ctx, llvm::Intrinsic::cttz); }
+        [[nodiscard]] llvm::Value* bitReverse(const StrategyContext& ctx) const noexcept override { return callOfBitManiIntrinsic(ctx, llvm::Intrinsic::bitreverse); }
+        [[nodiscard]] llvm::Value* rotateLeft(const StrategyContext& ctx) const noexcept override { return callOfBitManiIntrinsic(ctx, llvm::Intrinsic::fshl); }
+        [[nodiscard]] llvm::Value* rotateRight(const StrategyContext& ctx) const noexcept override { return callOfBitManiIntrinsic(ctx, llvm::Intrinsic::fshr); }
     };
 
     // ============================================================================
@@ -84,12 +83,12 @@ namespace LynxTypes {
     // ============================================================================
     template<FloatStrategyType T>
     struct BitManipulationStrategyImpl<T> : BitManipulationStrategy {
-        [[nodiscard]] llvm::Value* popCount(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::ctpop); }
-        [[nodiscard]] llvm::Value* countLeadingZeros(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::ctlz); }
-        [[nodiscard]] llvm::Value* countTrailingZeros(const StrategyContext& ctx) const noexcept override { return callOfBinaryIntrinsic(ctx, llvm::Intrinsic::cttz); }
-        [[nodiscard]] llvm::Value* bitReverse(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::bitreverse); }
-        [[nodiscard]] llvm::Value* rotateLeft(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::fshl); }
-        [[nodiscard]] llvm::Value* rotateRight(const StrategyContext& ctx) const noexcept override { return callOfUnaryIntrinsic(ctx, llvm::Intrinsic::fshr); }
+        [[nodiscard]] llvm::Value* popCount(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
+        [[nodiscard]] llvm::Value* countLeadingZeros(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
+        [[nodiscard]] llvm::Value* countTrailingZeros(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
+        [[nodiscard]] llvm::Value* bitReverse(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
+        [[nodiscard]] llvm::Value* rotateLeft(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
+        [[nodiscard]] llvm::Value* rotateRight(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic");}
     };
 
     // ============================================================================

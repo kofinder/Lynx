@@ -5,8 +5,8 @@ project(Lynx VERSION 1.0.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_C_COMPILER clang)
 
-set(CMAKE_C_COMPILER /usr/local/llvm-21/bin/clang)
-set(CMAKE_CXX_COMPILER /usr/local/llvm-21/bin/clang++)
+# set(CMAKE_C_COMPILER /usr/local/llvm-21/bin/clang)
+# set(CMAKE_CXX_COMPILER /usr/local/llvm-21/bin/clang++)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)

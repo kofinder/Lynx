@@ -28,9 +28,12 @@
 #define LYNX_RESOLVER_MIN_MAX_STRATEGY_HPP
 
 #include <llvm/IR/Value.h>
-#include "resolver/TypeStrategyContext.hpp"
+#include "helpers/InstructionHelper.hpp"
 
 namespace LynxTypes {
+
+    using helper::callOfMinxMaxInstrinsic;
+    using helper::callOfMinxMaxPredict;
 
     // ============================================================================
     // Base Interface
@@ -55,57 +58,10 @@ namespace LynxTypes {
     // ============================================================================
     template<IntStrategyType T>
     struct MinMaxStrategyImpl<T> : MinMaxStrategy {
-        [[nodiscard]] llvm::Value* smin(const StrategyContext& stgCtx) const noexcept override {
-            if (stgCtx.args.size() < 1) return nullptr;
-
-            llvm::IRBuilder<>& builder = stgCtx.ctx.getBuilder();
-            llvm::Value* lhs = stgCtx.instance;
-            llvm::Value* rhs = stgCtx.args[0];
-
-            llvm::Value* cmp = builder.CreateICmpSLT(lhs, rhs); // lhs < rhs (signed)
-            llvm::Value* result = builder.CreateSelect(cmp, lhs, rhs);
-            if (stgCtx.instancePtr) builder.CreateStore(result, stgCtx.instancePtr);
-            return result;    
-        }
-
-        [[nodiscard]] llvm::Value* smax(const StrategyContext& stgCtx) const noexcept override { 
-            if (stgCtx.args.size() < 1) return nullptr;
-
-            llvm::IRBuilder<>& builder = stgCtx.ctx.getBuilder();
-            llvm::Value* lhs = stgCtx.instance;
-            llvm::Value* rhs = stgCtx.args[0];
-
-            llvm::Value* cmp = builder.CreateICmpSGT(lhs, rhs); // lhs > rhs (signed)
-            llvm::Value* result = builder.CreateSelect(cmp, lhs, rhs);
-            if (stgCtx.instancePtr) builder.CreateStore(result, stgCtx.instancePtr);
-            return result;    
-        }
-
-        [[nodiscard]] llvm::Value* umin(const StrategyContext& stgCtx) const noexcept override { 
-            if (stgCtx.args.size() < 1) return nullptr;
-
-            llvm::IRBuilder<>& builder = stgCtx.ctx.getBuilder();
-            llvm::Value* lhs = stgCtx.instance;
-            llvm::Value* rhs = stgCtx.args[0];
-
-            llvm::Value* cmp = builder.CreateICmpULT(lhs, rhs); // lhs < rhs (unsigned)
-            llvm::Value* result = builder.CreateSelect(cmp, lhs, rhs);
-            if (stgCtx.instancePtr) builder.CreateStore(result, stgCtx.instancePtr);
-            return result;    
-        }
-
-        [[nodiscard]] llvm::Value* umax(const StrategyContext& stgCtx) const noexcept override { 
-            if (stgCtx.args.size() < 1) return nullptr;
-
-            llvm::IRBuilder<>& builder = stgCtx.ctx.getBuilder();
-            llvm::Value* lhs = stgCtx.instance;
-            llvm::Value* rhs = stgCtx.args[0];
-
-            llvm::Value* cmp = builder.CreateICmpUGT(lhs, rhs); // lhs > rhs (unsigned)
-            llvm::Value* result = builder.CreateSelect(cmp, lhs, rhs);
-            if (stgCtx.instancePtr) builder.CreateStore(result, stgCtx.instancePtr);
-            return result;    
-        }
+        [[nodiscard]] llvm::Value* smin(const StrategyContext& ctx) const noexcept override { return callOfMinxMaxPredict(ctx, llvm::ICmpInst::ICMP_SLT); }
+        [[nodiscard]] llvm::Value* smax(const StrategyContext& ctx) const noexcept override { return callOfMinxMaxPredict(ctx, llvm::ICmpInst::ICMP_SGT); }
+        [[nodiscard]] llvm::Value* umin(const StrategyContext& ctx) const noexcept override { return callOfMinxMaxPredict(ctx, llvm::ICmpInst::ICMP_ULT); }
+        [[nodiscard]] llvm::Value* umax(const StrategyContext& ctx) const noexcept override { return callOfMinxMaxPredict(ctx, llvm::ICmpInst::ICMP_UGT); }
     };
 
     // ============================================================================
@@ -113,45 +69,10 @@ namespace LynxTypes {
     // ============================================================================
     template<FloatStrategyType T>
     struct MinMaxStrategyImpl<T> : MinMaxStrategy {
-
-        private:
-
-            llvm::Function* getFMinNumIntrinsic(llvm::IRBuilder<>& builder, llvm::Type* fpTy) const noexcept {
-                llvm::Module* M = builder.GetInsertBlock()->getModule();
-                return llvm::Intrinsic::getOrInsertDeclaration(M, llvm::Intrinsic::minnum, {fpTy});
-            }
-            llvm::Function* getFMaxNumIntrinsic(llvm::IRBuilder<>& builder, llvm::Type* fpTy) const noexcept {
-                llvm::Module* M = builder.GetInsertBlock()->getModule();
-                return llvm::Intrinsic::getOrInsertDeclaration(M, llvm::Intrinsic::maxnum, {fpTy});
-            }
-            
-        public:
-
-            [[nodiscard]] llvm::Value* smin(const StrategyContext& stgCtx) const noexcept override {
-                if (stgCtx.args.size() < 1) return nullptr;
-
-                llvm::IRBuilder<>& builder = stgCtx.ctx.getBuilder();
-                llvm::Value* lhs = stgCtx.instance;
-                llvm::Value* rhs = stgCtx.args[0];
-                llvm::Function* fminnum = getFMinNumIntrinsic(builder, lhs->getType());
-                llvm::Value* result = builder.CreateCall(fminnum, {lhs, rhs});
-                if (stgCtx.instancePtr) builder.CreateStore(result, stgCtx.instancePtr);
-                return result;
-            }
-
-            [[nodiscard]] llvm::Value* smax(const StrategyContext& stgCtx) const noexcept override {
-                if (stgCtx.args.size() < 1) return nullptr;
-                llvm::IRBuilder<>& builder = stgCtx.ctx.getBuilder();
-                llvm::Value* lhs = stgCtx.instance;
-                llvm::Value* rhs = stgCtx.args[0];
-                llvm::Function* fmaxnum = getFMaxNumIntrinsic(builder, lhs->getType());
-                llvm::Value* result = builder.CreateCall(fmaxnum, {lhs, rhs});
-                if (stgCtx.instancePtr) builder.CreateStore(result, stgCtx.instancePtr);
-                return result;
-            }
-
-            [[nodiscard]] llvm::Value* umin(const StrategyContext& stgCtx) const noexcept override { return smin(stgCtx); }
-            [[nodiscard]] llvm::Value* umax(const StrategyContext& stgCtx) const noexcept override { return smax(stgCtx); }
+        [[nodiscard]] llvm::Value* smin(const StrategyContext& ctx) const noexcept override { return callOfMinxMaxInstrinsic(ctx, llvm::Intrinsic::minnum); }
+        [[nodiscard]] llvm::Value* smax(const StrategyContext& ctx) const noexcept override { return callOfMinxMaxInstrinsic(ctx, llvm::Intrinsic::maxnum); }
+        [[nodiscard]] llvm::Value* umin(const StrategyContext& ctx) const noexcept override { return callOfMinxMaxInstrinsic(ctx, llvm::Intrinsic::minnum); }
+        [[nodiscard]] llvm::Value* umax(const StrategyContext& ctx) const noexcept override { return callOfMinxMaxInstrinsic(ctx, llvm::Intrinsic::maxnum); }
     };
 
     // ============================================================================

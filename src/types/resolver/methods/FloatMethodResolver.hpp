@@ -29,7 +29,7 @@
 #include "resolver/TypeResolverMixins.hpp"
 
 #include "strategies/BitwiseStrategy.hpp"
-#include "strategies/AbsStrategy.hpp"
+#include "strategies/ArithmeticStrategy.hpp"
 #include "strategies/MinMaxStrategy.hpp"
 #include "strategies/ComparisonStrategy.hpp"
 #include "strategies/MathStrategy.hpp"
@@ -69,9 +69,9 @@ namespace LynxTypes {
             using Cast = TypeCastMixin<FloatMethodResolver>;
 
             struct Impl : public Base, public ToStr, public Cln, public Cast {
-                FloatArithmeticStrategy arithmetic;
+                FloatBinaryStrategy arithmetic;
                 FloatBitwiseStrategy bitwise;
-                FloatAbsStrategy abs;
+                FloatArithmeticStrategy abs;
                 FloatMinMaxStrategy minMax;
                 FloatComparisonStrategy cmp;
                 FloatMathStrategy math;

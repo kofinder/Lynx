@@ -1,0 +1,378 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "src/core/libLynxCore.a"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"add_compile_options",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"src/core/CMakeLists.txt",
+			"src/CMakeLists.txt",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 50,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 39,
+				"parent" : 2
+			},
+			{
+				"file" : 2
+			},
+			{
+				"command" : 2,
+				"file" : 2,
+				"line" : 43,
+				"parent" : 4
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 18,
+				"parent" : 2
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 12,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -std=c++2b -fPIC   -D_GNU_SOURCE -DEXPERIMENTAL_KEY_INSTRUCTIONS -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-frtti"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-fexceptions"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 5,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/build/src"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "/usr/local/llvm-21/include"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/core"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/core/bindings"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/core/interop"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/core/memory"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/core/scheduler"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/home/jovian/Workspaces/finderbar/Lynx/src/core/threads"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "23"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8
+			]
+		}
+	],
+	"id" : "LynxCore::@0618756b1ff51bca1a0e",
+	"name" : "LynxCore",
+	"nameOnDisk" : "libLynxCore.a",
+	"paths" : 
+	{
+		"build" : "src/core",
+		"source" : "src/core"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0,
+				9
+			]
+		},
+		{
+			"name" : "bindings\\impl",
+			"sourceIndexes" : 
+			[
+				1
+			]
+		},
+		{
+			"name" : "interop\\impl",
+			"sourceIndexes" : 
+			[
+				2
+			]
+		},
+		{
+			"name" : "memory\\impl",
+			"sourceIndexes" : 
+			[
+				3,
+				4,
+				5,
+				6
+			]
+		},
+		{
+			"name" : "scheduler\\impl",
+			"sourceIndexes" : 
+			[
+				7
+			]
+		},
+		{
+			"name" : "threads\\impl",
+			"sourceIndexes" : 
+			[
+				8
+			]
+		},
+		{
+			"name" : "bindings",
+			"sourceIndexes" : 
+			[
+				10
+			]
+		},
+		{
+			"name" : "interop",
+			"sourceIndexes" : 
+			[
+				11
+			]
+		},
+		{
+			"name" : "memory",
+			"sourceIndexes" : 
+			[
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20
+			]
+		},
+		{
+			"name" : "scheduler",
+			"sourceIndexes" : 
+			[
+				21
+			]
+		},
+		{
+			"name" : "threads",
+			"sourceIndexes" : 
+			[
+				22
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/core/CoreManager.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/core/bindings/impl/RuntimeBindingManager.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/core/interop/impl/InteropManager.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/core/memory/impl/GCCollector.cpp",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/core/memory/impl/GCDashboard.cpp",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/core/memory/impl/GCIntegration.cpp",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/core/memory/impl/MemoryManager.cpp",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/core/scheduler/impl/SchedulerManager.cpp",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/core/threads/impl/ThreadManager.cpp",
+			"sourceGroupIndex" : 5
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/core/CoreManager.hpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/core/bindings/RuntimeBindingManager.hpp",
+			"sourceGroupIndex" : 6
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/core/interop/InteropManager.hpp",
+			"sourceGroupIndex" : 7
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/core/memory/GCAllocator.hpp",
+			"sourceGroupIndex" : 8
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/core/memory/GCCollector.hpp",
+			"sourceGroupIndex" : 8
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/core/memory/GCDashboard.hpp",
+			"sourceGroupIndex" : 8
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/core/memory/GCFinalizer.hpp",
+			"sourceGroupIndex" : 8
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/core/memory/GCGeneration.hpp",
+			"sourceGroupIndex" : 8
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/core/memory/GCIntegration.hpp",
+			"sourceGroupIndex" : 8
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/core/memory/GCLogger.hpp",
+			"sourceGroupIndex" : 8
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/core/memory/GCMutator.hpp",
+			"sourceGroupIndex" : 8
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/core/memory/MemoryManager.hpp",
+			"sourceGroupIndex" : 8
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/core/scheduler/SchedulerManager.hpp",
+			"sourceGroupIndex" : 9
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/core/threads/ThreadManager.hpp",
+			"sourceGroupIndex" : 10
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

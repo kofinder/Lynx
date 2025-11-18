@@ -49,4 +49,4 @@ set_target_properties(LynxBridge PROPERTIES POSITION_INDEPENDENT_CODE ON)
 # ------------------------------------------
 # Message
 # ------------------------------------------
-message(STATUS "LynxRuntime module configured successfully")
+message(STATUS "LynxBridge module configured successfully")

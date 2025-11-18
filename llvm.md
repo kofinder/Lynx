@@ -6,4 +6,4 @@ Sometimes LLVM moves header files between versions, or you may need to locate th
 
 ```bash
 # Find a specific header file
-find /usr/local/llvm-21/include -name "MathExtras.h"
+find /usr/local/llvm-21/include -name "Intrinsics.h"
