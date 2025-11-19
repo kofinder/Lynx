@@ -1,8 +1,6 @@
 #include <logger/Logger.hpp>
 #include "ChainedDereferenceNode.hpp"
-#include "RuntimeClassRegistry.hpp"
 #include "utils/VariableUtils.hpp"
-#include "RuntimeFunctionRegistry.hpp"
 #include "tmpl/CloneNodeTemplate.hpp"
 #include <context/GlobalSymbolContext.hpp>
 
@@ -10,7 +8,6 @@ namespace LynxAst {
     
     using namespace LynxLogger;
     using namespace LynxContext;
-    using namespace LynxLibRuntime;
     
     llvm::Value* ChainedDereferenceNode::generateCode(std::shared_ptr<AstContext> astContext) {
         LOG_INFO("Executed ...");

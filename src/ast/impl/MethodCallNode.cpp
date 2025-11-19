@@ -9,14 +9,14 @@
 #include "utils/LLVMFunctionUtils.hpp"
 #include <types/userdefined/ClassType.hpp>
 #include <context/GlobalSymbolContext.hpp>
-#include <libruntime/RuntimeClassRegistry.hpp>
+#include <runtime/RuntimeClassRegistry.hpp>
 
 namespace LynxAst {
 
     using namespace LynxLogger;
     using namespace LynxContext;
     using namespace LynxTypes;
-    using namespace LynxLibRuntime;
+    using namespace LynxRuntime;
     using namespace Cloneable;
 
     template <typename T>

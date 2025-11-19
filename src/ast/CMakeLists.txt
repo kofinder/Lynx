@@ -25,7 +25,7 @@ target_link_libraries(LynxAst PRIVATE
     LynxContext
     LynxCallConv
     LynxMangler
-    LynxLibRuntime
+    LynxRuntime
     Boost::system
     Boost::filesystem
 )

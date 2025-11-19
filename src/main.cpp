@@ -1,6 +1,5 @@
 #include <chrono>
 #include <iostream>
-#include <fstream>
 #include "Lynx.hpp"
 #include <cli/CLI.hpp>  
 #include <llvm/Support/ManagedStatic.h>

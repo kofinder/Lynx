@@ -1,7 +1,7 @@
 #include "QualifiedFunctionCallNode.hpp"
 #include "tmpl/CloneNodeTemplate.hpp"
 #include "utils/VariableUtils.hpp"
-#include <libruntime/RuntimeModuleLoader.hpp>
+#include <runtime/RuntimeModuleLoader.hpp>
 #include <types/visitor/TypeMethodRegistry.hpp>
 #include <types/visitor/TypeMethodCallVisitor.hpp>
 
@@ -9,7 +9,7 @@ namespace LynxAst {
 
     using namespace Cloneable;
     using namespace LynxContext;
-    using namespace LynxLibRuntime;
+    using namespace LynxRuntime;
     using namespace VariableUtils;
 
     llvm::Value* QualifiedFunctionCallNode::generateCode(std::shared_ptr<AstContext> astContext) {

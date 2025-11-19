@@ -37,22 +37,11 @@ Lynx is still under active development, currently focusing on **object-oriented 
 
 ---
 
-## 🛠️ Build & Run
-
 ### Requirements
-- C++17 or newer  
-- CMake 3.10+  
+- C++23 or newer  
+- CMake 3.26+  
 - Boehm GC  
 - (Optional) LLVM or compatible JIT backend  
-
-### Build Instructions
-```bash
-git clone https://github.com/kofinder/Lynx.git
-cd Lynx
-mkdir build && cd build
-cmake ..
-make
-```
 
 ---
 
@@ -78,11 +67,8 @@ make
 - [Skia Graphics API](https://skia.org/docs/user/api/)
 - [Compiler Explorer](https://godbolt.org/)
 - [LSP Documentation](https://microsoft.github.io/language-server-protocol/)
-
-
-## Obfuscated C Code Contest
 - [IOCCC Source Code Repository](https://github.com/ioccc-src/winner)
 
 ## CLI COMMAND
-- create project: ``make cli ARGS="create --project livechat --type web"``
-- create module: ``make cli ARGS="generate --subcommand module --name chat --project ./livechat"``
+- create project: ``make cli ARGS="create --project toy --type window"``
+- create module: ``make cli ARGS="generate --subcommand module --name chat --project ./toy"``

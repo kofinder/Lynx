@@ -27,17 +27,18 @@ message(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 # Project Version
 # ===============================
 include(Version)
-get_lynx_version("${PROJECT_SOURCE_DIR}/include/version.hpp")
+get_lynx_version("${PROJECT_SOURCE_DIR}/configured/version.hpp")
 message(STATUS "📦 Lynx Version: ${PROJECT_VERSION}")
 message(STATUS "📚 Doc Tag: ${LYNX_DOC_REPO_TAG}")
 
 # ===============================
 # Options
 # ===============================
-option(ENABLE_TESTING "Enable Unit Testing" ON)
+option(ENABLE_TESTING "Enable Unit Testing" OFF)
+option(ENABLE_LTO "Enable LTO optimizations" OFF)
 option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis" OFF)
-option(ENABLE_WARNINGS "Enable warnings" ON)
-option(ENABLE_WARNINGS_AS_ERRORS "Treat warnings as errors" ON)
+option(ENABLE_WARNINGS "Enable warnings" OFF)
+option(ENABLE_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
 option(ENABLE_SANITIZER_ADDRESS "Enable Address Sanitizer" OFF)
 option(ENABLE_SANITIZER_UNDEFINED "Enable Undefined Behavior Sanitizer" OFF)
 option(ENABLE_UI "Enable UI DSL support" OFF)
@@ -67,7 +68,6 @@ add_git_submodule(external/skia)
 include(FindSkia)
 include(Docs)
 
-
 # ===============================
 # Clang-Tidy
 # ===============================
@@ -80,10 +80,10 @@ endif()
 # ===============================
 # Link Time Optimization (LTO)
 # ===============================
-
-if(CMAKE_BUILD_TYPE STREQUAL "Release") 
+if(ENABLE_LTO)
     include(LTO) 
-    target_enable_lto(${LYNX_EXECUTABLE} TRUE) 
+    set(CMAKE_LINKER /usr/local/llvm-21/bin/clang++)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld")
 endif()
 
 # ===============================
