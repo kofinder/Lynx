@@ -15,13 +15,13 @@
  * - SemanticAnalyzer to manage and apply multiple analysis states.
  * - SemanticStateFactory to instantiate predefined sets of semantic states.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 
 
-#ifndef LYNX_SEMANTIC_STATE_HPP
-#define LYNX_SEMANTIC_STATE_HPP
+#ifndef LYNX_ANALYZER_SEMANTIC_STATE_HPP
+#define LYNX_ANALYZER_SEMANTIC_STATE_HPP
 
 #include <string>
 #include <vector>

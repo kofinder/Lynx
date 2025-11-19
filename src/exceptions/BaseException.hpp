@@ -14,7 +14,7 @@
  * - Derived exception classes for runtime, semantic, and compilation errors.
  * - Any component requiring structured exception handling.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 
@@ -36,7 +36,7 @@ namespace LynxExceptions{
 
             explicit BaseException(const std::string& exceptionMessage) : message(exceptionMessage) {}  
 
-            virtual std::string getMessage() const { return message; }  
+            [[nodiscard]] virtual std::string getMessage() const { return message; }  
 
             virtual ~BaseException() = default;  
     };  

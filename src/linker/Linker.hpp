@@ -6,7 +6,7 @@
  * and managing the main module of the compilation unit. It encapsulates
  * the logic for merging modules, dumping IR, and finalizing linked output.
  *
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 

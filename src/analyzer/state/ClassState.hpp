@@ -14,12 +14,12 @@
  * - SemanticAnalyzer during AST traversal for class nodes.
  * - SemanticStateFactory for automatic state creation and registration.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 
-#ifndef LYNX_CLASS_STATE_HPP
-#define LYNX_CLASS_STATE_HPP
+#ifndef LYNX_ANALYZER_CLASS_STATE_HPP
+#define LYNX_ANALYZER_CLASS_STATE_HPP
 
 #include <unordered_map>
 #include "interfaces/SemanticState.hpp"

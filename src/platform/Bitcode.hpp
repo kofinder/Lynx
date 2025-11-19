@@ -6,7 +6,7 @@
  * target-specific, and Stdlib) and provides methods for querying their storage, location,
  * and target platform information.
  *
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
  */
 

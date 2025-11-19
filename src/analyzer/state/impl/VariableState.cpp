@@ -1,12 +1,12 @@
+#include <ast/Node.hpp>
 #include "state/VariableState.hpp"
-#include <logger/Logger.hpp>
-
-using namespace LynxLogger;
+#include "interfaces/SemanticAnalyzer.hpp"
 
 namespace LynxAnalyzer {
 
+    using namespace LynxAst;
+
     void VariableState::handleNode(SemanticAnalyzer& analyzer, Node* node) {
-        LOG_ERROR("Invoked");
     }
 
 }

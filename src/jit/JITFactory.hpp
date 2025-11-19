@@ -6,7 +6,7 @@
  * unified interface to construct different JIT backends such as
  * MCJITEngine or ORCJITEngine.
  *
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 

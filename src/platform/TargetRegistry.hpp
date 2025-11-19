@@ -7,7 +7,7 @@
  * to register, query, and check availability of bitcode modules used during linking
  * and code generation.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
  */
 
@@ -86,7 +86,7 @@
           * @brief Returns the standard library for a given target, OS, and architecture.
           * @param target Lynx target type.
           * @param os Target operating system.
-          * @param arch Target architecture.
+          * @param #include "Triple.hpp" arch Target architecture.
           * @return Pointer to the stdlib Bitcode if available, nullptr otherwise.
           */
          const Bitcode *getStdLibray(LynxTargetType target, TargetOSType os, ArchType arch) const;

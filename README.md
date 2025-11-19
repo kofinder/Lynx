@@ -37,57 +37,17 @@ Lynx is still under active development, currently focusing on **object-oriented 
 
 ---
 
-## 🛠️ Build & Run
-
 ### Requirements
-- C++17 or newer  
-- CMake 3.10+  
+- C++23 or newer  
+- CMake 3.26+  
 - Boehm GC  
 - (Optional) LLVM or compatible JIT backend  
 
-### Build Instructions
-```bash
-git clone https://github.com/kofinder/Lynx.git
-cd Lynx
-mkdir build && cd build
-cmake ..
-make
-```
-
 ---
-
-## 🤝 Contributing
-
-Lynx is an open, community-driven language project.  
-We’re looking for **enthusiastic C++ developers** who want to explore programming language design and compiler development.
-
-### How to Contribute
-1. Fork the repository  
-2. Create a new branch (`feature/your-feature`)  
-3. Commit and push your changes  
-4. Open a Pull Request
-
----
-
-## ⚖️ License
-
-This project is licensed under the **MIT License**.  
-You’re free to use, modify, and distribute it with proper attribution.
-
----
-
-## 🌟 Acknowledgements
-
-- **Boehm GC** for garbage collection  
-- **LLVM/JIT** for runtime performance  
-- The **open-source community** for continuous inspiration  
-
----
-
-> 🧠 *Lynx is an evolving programming language experiment — aiming to merge the power of OOP and FP into a clean, modern, and productive developer experience.*
 
 ## Credit
 - [Flex & Bison C++ Example](https://panthema.net/2007/flex-bison-cpp-example/)
+- [2019 LLVM Developers’ Meeting: S. Haastregt & A. Stulova An overview of Clang](https://www.youtube.com/watch?v=5kkMpJpIGYU)
 - [Jonathan Beard Tutorial on Flex & Bison](https://www.jonathanbeard.io/tutorials/FlexBisonC%2B%2B)
 - [LLVM Language Reference – Identifiers](https://llvm.org/docs/LangRef.html#identifiers)
 - [GNU Bison Manual – Location Type](https://www.gnu.org/software/bison/manual/html_node/Location-Type.html)
@@ -107,11 +67,8 @@ You’re free to use, modify, and distribute it with proper attribution.
 - [Skia Graphics API](https://skia.org/docs/user/api/)
 - [Compiler Explorer](https://godbolt.org/)
 - [LSP Documentation](https://microsoft.github.io/language-server-protocol/)
-
-
-## Obfuscated C Code Contest
 - [IOCCC Source Code Repository](https://github.com/ioccc-src/winner)
 
 ## CLI COMMAND
-- create project: ``make cli ARGS="create --project livechat --type web"``
-- create module: ``make cli ARGS="generate --subcommand module --name chat --project ./livechat"``
+- create project: ``make cli ARGS="create --project toy --type window"``
+- create module: ``make cli ARGS="generate --subcommand module --name chat --project ./toy"``

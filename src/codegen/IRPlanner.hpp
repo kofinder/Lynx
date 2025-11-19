@@ -16,7 +16,7 @@
  * - IRGenerator to orchestrate LLVM IR generation in correct dependency order.
  * - Build system and compiler backend for dependency management.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 

@@ -1,5 +1,5 @@
-#include "IRGenerator.hpp"
-#include "IRPlanner.hpp"
+#include "codegen/IRGenerator.hpp"
+#include "codegen/IRPlanner.hpp"
 #include <exceptions/BaseException.hpp>
 #include <context/GlobalSymbolContext.hpp>
 #include "llvm/IR/Verifier.h"

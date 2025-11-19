@@ -12,7 +12,7 @@
  * llvm::Value* result = resolver.resolveMethod("negate", boolInstance, {}, astContext);
  * @endcode
  *
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
  */
 

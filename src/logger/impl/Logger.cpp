@@ -2,7 +2,7 @@
 
 namespace LynxLogger {
 
-    static constexpr const char* const kMainLogger = "[LOG]";
+    static constexpr const char* const k_main_logger = "[LOG]";
 
     LogManager& LogManager::instance() noexcept {  
         static LogManager instance;
@@ -11,7 +11,7 @@ namespace LynxLogger {
 
     LogManager::LogManager() noexcept {  
         spdlog::init_thread_pool(8192, 1); // Example for async logging  
-       logger = spdlog::stdout_color_mt(kMainLogger); // Console logger  
+       logger = spdlog::stdout_color_mt(k_main_logger); // Console logger  
        logger->set_pattern("%^[%Y-%m-%d %H:%M:%S] %n: %v%$"); // Custom log format  
     }  
 
@@ -20,6 +20,6 @@ namespace LynxLogger {
     std::shared_ptr<spdlog::logger> LogManager::getGlobalLogger() noexcept { return logger; }  
 
     std::shared_ptr<spdlog::logger> LogManager::getLogger(const std::string& name) noexcept {  
-        return spdlog::get(name); // Fetch a logger by name  
+        return spdlog::get(name); 
     }  
 }

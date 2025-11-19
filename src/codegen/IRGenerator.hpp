@@ -17,7 +17,7 @@
  * - The Lynx compiler frontend for code generation.
  * - Linker and JIT engines for executing generated code.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 

@@ -1,10 +1,9 @@
-#include "TargetRegistry.hpp"
-#include <iostream>
+#include "platform/TargetRegistry.hpp"
 #include <sstream>
 #include <set>
 #include <map>
 #include <vector>
-#include <string>
+#include <iostream>
 
 namespace LynxPlatform {
 
@@ -116,7 +115,7 @@ namespace LynxPlatform {
     void TargetRegistry::printSupportMatrix() const {
         auto missing = checkBitcodeLibs();
         if (!missing.empty()) {
-            std::cout << "Warning: Missing bitcode libraries:\n";
+            std::cerr << "Warning: Missing bitcode libraries:\n";
             for (const auto& m : missing)
                 std::cout << " - " << m << "\n";
         }

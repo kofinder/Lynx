@@ -3,7 +3,7 @@
 #include "ImportStatementNode.hpp"
 #include "utils/StringUtils.hpp"
 #include <context/GlobalSymbolContext.hpp>
-#include <libruntime/RuntimeModuleLoader.hpp>
+#include <runtime/RuntimeModuleLoader.hpp>
 #include <types/userdefined/FileType.hpp>
 #include <constants/LinkageType.hpp>
 
@@ -11,7 +11,7 @@
 namespace LynxAst {
 
     using namespace LynxLogger;
-    using namespace LynxLibRuntime;
+    using namespace LynxRuntime;
     using namespace LynxTypes;
     using namespace LynxConstants;
 

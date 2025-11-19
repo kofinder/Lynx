@@ -15,7 +15,7 @@
  * Methods supported include arithmetic operations, comparisons, and
  * type conversions specific to the Lynx `double` type.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 

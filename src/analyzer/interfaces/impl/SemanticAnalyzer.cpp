@@ -1,7 +1,4 @@
 #include "interfaces/SemanticAnalyzer.hpp"
-#include <logger/Logger.hpp>
-
-using namespace LynxLogger;
 
 namespace LynxAnalyzer {
 
@@ -21,8 +18,6 @@ namespace LynxAnalyzer {
     }
 
     void SemanticAnalyzer::analyzeNodeParallel(Node* node, SemanticThreadPool& pool) {
-        LOG_ERROR("Invoked .....");
-
         if (!node) return;
 
         // Submit current node processing to the pool

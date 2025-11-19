@@ -19,7 +19,7 @@
  * - Build, run, and analysis subsystems to configure program behavior based on CLI options.
  * - Utility scripts and tools interacting with the Lynx compiler framework.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
  */
 

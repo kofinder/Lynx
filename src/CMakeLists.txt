@@ -44,7 +44,7 @@ add_compile_options(-frtti -fexceptions)
 set(LYNX_MODULES
     lang constants exceptions logger context types ast mangler
     jit config codegen linker ui attributes callconv
-    analyzer lto core platform libruntime collections
+    analyzer lto core platform runtime collections
     errors cli system stdapi
 )
 
@@ -99,7 +99,7 @@ target_link_libraries(${LYNX_EXECUTABLE} PUBLIC
     LynxAnalyzer 
     LynxLTO 
     LynxCore 
-    LynxLibRuntime 
+    LynxRuntime 
     LynxErrors
     LynxBridge 
     LynxPlatform 
@@ -128,7 +128,7 @@ target_link_libraries(LynxLSPServer PRIVATE
     LynxLogger LynxExceptions LynxConstants LynxContext LynxTypes
     LynxLang LynxAst LynxMangler LynxProgramConfig
     LynxCodegen LynxLinker LynxFunctionAttr LynxCallConv LynxAnalyzer
-    LynxLTO LynxCore LynxLibRuntime LynxErrors LynxBridge
+    LynxLTO LynxCore LynxRuntime LynxErrors LynxBridge
     LynxCollection LynxSystem
     nlohmann_json::nlohmann_json
     Boost::system Boost::filesystem Boost::program_options

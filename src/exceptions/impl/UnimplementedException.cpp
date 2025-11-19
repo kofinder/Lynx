@@ -14,21 +14,23 @@
  * - Compiler or interpreter components encountering incomplete or unimplemented functionality.
  * - Semantic checks that detect stubbed or placeholder code.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 
 
+#include <string>
+#include <sstream>
 #include "BaseException.hpp"
 
 namespace LynxExceptions {
 
-    class UnimplementedException : public BaseException {  
+    class UnimplementedException final : public BaseException {  
 
-        protected:  
+        private:
 
             int lineNumber;
-
+        
         public:  
 
             UnimplementedException(
@@ -36,10 +38,10 @@ namespace LynxExceptions {
                 int lineNumber
             ) : BaseException(error), lineNumber(lineNumber) {}  
 
-            std::string getMessage() const override {  
+            [[nodiscard]] auto getMessage() const -> std::string override {
                 std::ostringstream oss;
-                oss << "Error: " << message << " at line " << lineNumber;  
-                return oss.str();
+                oss << "Error: " << message << " at line " << lineNumber;
+                return oss.str();            
             }  
     };  
 }

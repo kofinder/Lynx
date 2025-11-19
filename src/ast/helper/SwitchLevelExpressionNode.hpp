@@ -43,49 +43,41 @@ namespace LynxAst {
             std::unique_ptr<Node> rightOperand;
 
             llvm::Value* emitPlus(llvm::Value* lhs, llvm::Value* rhs, llvm::BasicBlock* block) {
-                LOG_INFO("Emit plus operation");
                 return llvm::BinaryOperator::Create(llvm::Instruction::Add, lhs, rhs, "emit_plus", block);
             }
         
             llvm::Value* emitMinus(llvm::Value* lhs, llvm::Value* rhs, llvm::BasicBlock* block) {
-                LOG_INFO("Emit minus operation");
                 return llvm::BinaryOperator::Create(llvm::Instruction::Sub, lhs, rhs, "emit_minus", block);
             }
         
             llvm::Value* emitMultiply(llvm::Value* lhs, llvm::Value* rhs, llvm::BasicBlock* block) {
-                LOG_INFO("Emit multiply operation");
                 return llvm::BinaryOperator::Create(llvm::Instruction::Mul, lhs, rhs, "emit_multiply", block);
             }
         
             llvm::Value* emitBitwiseXor(llvm::Value* lhs, llvm::Value* rhs, llvm::BasicBlock* block) {
-                LOG_INFO("Emit bitwise XOR operation");
                 return llvm::BinaryOperator::Create(llvm::Instruction::Xor, lhs, rhs, "emit_xor", block);
             }
         
             llvm::Value* emitBitwiseAnd(llvm::Value* lhs, llvm::Value* rhs, llvm::BasicBlock* block) {
-                LOG_INFO("Emit bitwise AND operation");
                 return llvm::BinaryOperator::Create(llvm::Instruction::And, lhs, rhs, "emit_and", block);
             }
         
             llvm::Value* emitBitwiseOr(llvm::Value* lhs, llvm::Value* rhs, llvm::BasicBlock* block) {
-                LOG_INFO("Emit bitwise OR operation");
                 return llvm::BinaryOperator::Create(llvm::Instruction::Or, lhs, rhs, "emit_or", block);
             }
         
             llvm::Value* emitShiftLeft(llvm::Value* lhs, llvm::Value* rhs, llvm::BasicBlock* block) {
-                LOG_INFO("Emit left shift operation");
                 return llvm::BinaryOperator::Create(llvm::Instruction::Shl, lhs, rhs, "emit_lshift", block);
             }
         
             llvm::Value* emitShiftRight(llvm::Value* lhs, llvm::Value* rhs, llvm::BasicBlock* block) {
-                LOG_INFO("Emit right shift operation");
                 return llvm::BinaryOperator::Create(llvm::Instruction::LShr, lhs, rhs, "emit_rshift", block);
             }
         
             llvm::Value* emitDefaultConst(llvm::Value* lhsValue, llvm::BasicBlock* currentBlock) {
-                LOG_INFO("Emit Default Constant ..............");
                 if (!llvm::isa<llvm::Constant>(lhsValue)) {
                     LOG_ERROR("LHS is not a constant. Returning nullptr as fallback.");
+                    return nullptr;
                 }
                 
                 return lhsValue;

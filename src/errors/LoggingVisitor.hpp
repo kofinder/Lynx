@@ -16,7 +16,7 @@
  * - Compiler frontend for error reporting during parsing and semantic analysis.
  * - Runtime for logging runtime or linking errors.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 

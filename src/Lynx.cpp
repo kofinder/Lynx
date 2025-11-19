@@ -1,6 +1,6 @@
 #include "Lynx.hpp"
-#include "JITFactory.hpp"
-#include "JITConstants.hpp"
+#include <jit/JITFactory.hpp>
+#include <jit/JITConstants.hpp>
 #include <lto/FullLTO.hpp>
 #include <core/interop/InteropManager.hpp>
 #include <core/memory/MemoryManager.hpp>

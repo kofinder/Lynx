@@ -1,5 +1,5 @@
-#include "IRPlanner.hpp"
-#include "TopologicalSort.hpp"
+#include "codegen/IRPlanner.hpp"
+#include "codegen/TopologicalSort.hpp"
 #include <logger/Logger.hpp>
 #include <ast/ImportStatementNode.hpp>
 #include <ast/StatementListNode.hpp>
