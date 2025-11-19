@@ -4,7 +4,7 @@ github: [kofinder] # Replace with up to 4 GitHub Sponsors-enabled usernames e.g.
 patreon: KoThein
 open_collective: # Replace with a single Open Collective username
 ko_fi: KoThein
-tidelift: # Replace with a single Tidelift platform-name/package-name e.g., npm/babel
+tidelift: kofinder/Lynx
 community_bridge: # Replace with a single Community Bridge project-name e.g., cloud-foundry
 liberapay: # Replace with a single Liberapay username
 issuehunt: # Replace with a single IssueHunt username
@@ -12,4 +12,4 @@ lfx_crowdfunding: # Replace with a single LFX Crowdfunding project-name e.g., cl
 polar: KoThein
 buy_me_a_coffee: KoThein
 thanks_dev: KoThein
-custom: # Replace with up to 4 custom sponsorship URLs e.g., ['link1', 'link2']
+custom: [custom: ["https://www.paypal.me/kothein", kofinder.com]
