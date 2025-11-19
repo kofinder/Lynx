@@ -18,6 +18,16 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 message(STATUS "PROJECT_SOURCE_DIR: ${PROJECT_SOURCE_DIR}")
 message(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 
+find_program(CLANG_TIDY_EXE NAMES clang-tidy)
+
+if(CLANG_TIDY_EXE)
+  message(STATUS "Found clang-tidy: ${CLANG_TIDY_EXE}")
+  # Provide -p=<build-dir> automatically when CMake driver runs the checker
+  set(CMAKE_CXX_CLANG_TIDY
+      "${CLANG_TIDY_EXE};-p=${CMAKE_BINARY_DIR};--extra-arg=-std=c++23")
+endif()
+
+
 include(Version)
 get_lynx_version("${PROJECT_SOURCE_DIR}/include/version.hpp")
 message(STATUS "📦 Lynx Version: ${PROJECT_VERSION}")

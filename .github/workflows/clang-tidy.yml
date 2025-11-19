@@ -1,0 +1,23 @@
+name: clang-tidy
+
+on:
+  pull_request:
+    paths:
+      - '**.cpp'
+      - '**.hpp'
+      - 'src/**'
+      - 'include/**'
+
+jobs:
+  tidy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install LLVM/clang
+        run: |
+          sudo apt update
+          sudo apt install -y clang clang-tidy
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+      - name: Run clang-tidy
+        run: ./tools/run-clang-tidy.sh 4

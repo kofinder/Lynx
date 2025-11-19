@@ -69,13 +69,6 @@ We’re looking for **enthusiastic C++ developers** who want to explore programm
 
 ---
 
-## ⚖️ License
-
-This project is licensed under the **MIT License**.  
-You’re free to use, modify, and distribute it with proper attribution.
-
----
-
 ## 🌟 Acknowledgements
 
 - **Boehm GC** for garbage collection  
@@ -83,8 +76,6 @@ You’re free to use, modify, and distribute it with proper attribution.
 - The **open-source community** for continuous inspiration  
 
 ---
-
-> 🧠 *Lynx is an evolving programming language experiment — aiming to merge the power of OOP and FP into a clean, modern, and productive developer experience.*
 
 ## Credit
 - [Flex & Bison C++ Example](https://panthema.net/2007/flex-bison-cpp-example/)

@@ -1,0 +1,44 @@
+# .clang-tidy — modern C++ (C++23) recommended baseline
+# - Intention: strong safety checks + modernization + performance + readability
+# - Tweak the Checks list to enable/disable specific checks for your codebase.
+
+Checks:
+  - '-*'                               # disable all checks first
+  - 'clang-analyzer-*'                 # static analyzer checks
+  - 'clang-diagnostic-*'               # compiler diagnostics
+  - 'bugprone-*'                       # common bug patterns
+  - 'cppcoreguidelines-*'              # C++ Core Guidelines
+  - 'modernize-*'                      # modern C++ usage suggestions
+  - 'performance-*'                    # performance-related checks
+  - 'readability-*'                    # readability improvements
+  - 'hicpp-*'                          # High Integrity C++ guidelines
+  - 'portability-*'                    # portability issues
+  - 'misc-*'                           # miscellaneous checks
+  - 'readability-non-const-parameter' # catch non-const parameters
+  - 'misc-const-correctness'           # const-correctness issues
+  - 'misc-use-anonymous-namespace'    # prefer anonymous namespaces for internal linkage
+  - 'google-explicit-constructor'      # Google style: explicit constructors
+
+WarningsAsErrors: 'cppcoreguidelines-*' # treat all cppcoreguidelines warnings as errors
+
+HeaderFilterRegex: '^src/.*'          # only analyze headers under src/ or include/  
+
+# HeaderFilterRegex: '^(src/|include/)'   # only analyze headers under src/ or include/
+
+FormatStyle: file                       # use clang-format settings from file
+
+SystemHeaders: false                    # Exclude system headers from analysis; only process project source files
+
+ExtraArgs: ["-isystem", "/home/jovian/Workspaces/finderbar/Lynx/external"]
+
+CheckOptions:
+  - key: clang-analyzer-deadcode.DeadStores:SuppressWarningsInHeaders
+    value: 'external/.*'
+  - key: modernize-use-auto.MinTypeNameLength
+    value: '5'                          # use 'auto' for types with name length >= 5
+  - key: modernize-use-auto.IncludeStyle
+    value: 'llvm'                        # style of #include when adding auto
+  - key: cppcoreguidelines-pro-type-vararg.WarnOnVararg
+    value: '1'                          # warn on usage of varargs
+  - key: readability-identifier-naming.VariableCase
+    value: 'lower_case'                 # require lower_case variable names

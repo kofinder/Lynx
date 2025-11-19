@@ -14,19 +14,21 @@
  * - SemanticAnalyzer and its related states when reporting semantic errors.
  * - Any component performing semantic checks on Lynx source code.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 
+#include <string>
+#include <sstream>
 #include "BaseException.hpp"
 
 namespace LynxExceptions {
 
-    class SemanticException : public BaseException {  
+    class SemanticException final : public BaseException {  
 
-        protected:  
+        private:
 
-            int lineNumber; 
+            int lineNumber;
 
         public:  
 
@@ -35,10 +37,10 @@ namespace LynxExceptions {
                 int lineNumber
             )  : BaseException(error), lineNumber(lineNumber) {}  
 
-            std::string getMessage() const override {  
-                std::ostringstream oss; 
-                oss << "Error: " << message << " at line " << lineNumber;  
-                return oss.str();
+            [[nodiscard]] auto getMessage() const -> std::string override {
+                std::ostringstream oss;
+                oss << "Error: " << message << " at line " << lineNumber;
+                return oss.str();            
             }  
     };  
 }
