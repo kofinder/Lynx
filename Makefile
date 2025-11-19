@@ -12,13 +12,16 @@ BISON_DIR = bison
 SKIA_DIR = external/skia
 BISON_REPORT = $(BUILD_DIR)/bison_report.txt
 
+# -------------------
+# Clang tools integration
+# -------------------
+CLANG_FORMAT ?= clang-format
+CLANG_TIDY ?= clang-tidy
+SRC_FILES := $(shell find src include -name '*.cpp' -o -name '*.hpp')
+
+
 all: create build
 
-# -------------------------------------------------------------------
-# Create the build folder if it does not exist
-# This ensures the build system has a proper workspace.
-# Using `mkdir -p` guarantees no error if the folder already exists.
-# -------------------------------------------------------------------
 create:
 	@echo "✨ Checking and creating build directory..."
 	@mkdir -p $(BUILD_DIR) ${BISON_DIR}
@@ -63,10 +66,19 @@ trace: build
 	#valgrind --leak-check=full --show-leak-kinds=all --gen-suppressions=all ./$(EXECUTABLE_NAME) run -c ${EXAMPLE_DIR}/app_config.yaml -e main.lynx
 	#valgrind -s --leak-check=full --suppressions=llvm.supp --track-origins=yes --show-leak-kinds=all ./$(EXECUTABLE_NAME) run -c ${EXAMPLE_DIR}/app_config.yaml -e main.lynx
 
-
 debug: build
 	@echo "🐞 Starting GDB..."
 	gdb -ex "set breakpoint pending on" -ex run --args ./$(EXECUTABLE_NAME) run -c $(EXAMPLE_DIR)/app_config.yaml -e main.lynx
+
+format:
+	@echo "🎨 Running clang-format..."
+	@$(CLANG_FORMAT) -i $(SRC_FILES)
+	@echo "✅ Formatting done."
+
+tidy:
+	@echo "🧹 Running clang-tidy..."
+	@$(CLANG_TIDY) $(SRC_FILES) -p $(BUILD_DIR)
+	@echo "✅ Clang-tidy analysis done."
 
 clean:
 	@echo "🧹 Cleaning up..."
