@@ -40,7 +40,7 @@
 #include <llvm/IR/Module.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Intrinsics.h>
-#include "helpers/InstructionHelper.hpp"
+#include "resolver/TypeOfInstructionHelper.hpp"
 
 namespace LynxTypes {
 

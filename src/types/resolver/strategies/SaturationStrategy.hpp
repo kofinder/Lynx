@@ -30,7 +30,7 @@
 
 #include <llvm/IR/Value.h>
 #include "resolver/TypeStrategyContext.hpp"
-#include "helpers/InstructionHelper.hpp"
+#include "resolver/TypeOfInstructionHelper.hpp"
 
 namespace LynxTypes {
 

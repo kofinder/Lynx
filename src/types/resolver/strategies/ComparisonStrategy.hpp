@@ -32,7 +32,7 @@
 #define LYNX_RESOLVER_COMPRASION_STRATEGY_HPP
 
 #include <llvm/IR/Value.h>
-#include "helpers/InstructionHelper.hpp"
+#include "resolver/TypeOfInstructionHelper.hpp"
 #include "resolver/TypeStrategyContext.hpp"
 
 namespace LynxTypes {

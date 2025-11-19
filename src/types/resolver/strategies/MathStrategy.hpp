@@ -29,7 +29,7 @@
 #define LYNX_RESOLVER_MATH_STRATEGY_HPP
 
 #include <llvm/IR/Value.h>
-#include "helpers/InstructionHelper.hpp"
+#include "resolver/TypeOfInstructionHelper.hpp"
 
 namespace LynxTypes {
     
