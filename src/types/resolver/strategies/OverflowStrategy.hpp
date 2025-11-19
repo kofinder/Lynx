@@ -29,7 +29,6 @@
 
 #include <llvm/IR/Value.h>
 #include "helpers/InstructionHelper.hpp"
-#include "resolver/TypeStrategyContext.hpp"
 
 namespace LynxTypes {
 
@@ -73,12 +72,12 @@ namespace LynxTypes {
     // ============================================================================
     template<FloatStrategyType T>
     struct OverflowStrategyImpl<T> : OverflowStrategy {
-        [[nodiscard]] llvm::Value* saddWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfOverflowIntrinsic(ctx, llvm::Intrinsic::sadd_with_overflow); }
-        [[nodiscard]] llvm::Value* uaddWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfOverflowIntrinsic(ctx, llvm::Intrinsic::uadd_with_overflow); }
-        [[nodiscard]] llvm::Value* ssubWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfOverflowIntrinsic(ctx, llvm::Intrinsic::ssub_with_overflow); }
-        [[nodiscard]] llvm::Value* usubWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfOverflowIntrinsic(ctx, llvm::Intrinsic::usub_with_overflow); }
-        [[nodiscard]] llvm::Value* smulWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfOverflowIntrinsic(ctx, llvm::Intrinsic::smul_with_overflow); }
-        [[nodiscard]] llvm::Value* umulWithOverflow(const StrategyContext& ctx) const noexcept override { return callOfOverflowIntrinsic(ctx, llvm::Intrinsic::umul_with_overflow); }
+        [[nodiscard]] llvm::Value* saddWithOverflow(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported overflow intrinsic");}
+        [[nodiscard]] llvm::Value* uaddWithOverflow(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported overflow intrinsic"); }
+        [[nodiscard]] llvm::Value* ssubWithOverflow(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported overflow intrinsic"); }
+        [[nodiscard]] llvm::Value* usubWithOverflow(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported overflow intrinsic"); }
+        [[nodiscard]] llvm::Value* smulWithOverflow(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported overflow intrinsic"); }
+        [[nodiscard]] llvm::Value* umulWithOverflow(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported overflow intrinsic"); }
     };
 
     // ============================================================================

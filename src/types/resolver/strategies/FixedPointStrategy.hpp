@@ -61,7 +61,7 @@ namespace LynxTypes {
     // ============================================================================
     template<IntStrategyType T>
     struct FixedPointStrategyImpl<T> : FixedPointStrategy {
-        [[nodiscard]] llvm::Value* smul(const StrategyContext& ctx) const noexcept override { std::cout << "FUCK>>>>" << std::endl; return callOfFixedPointIntrinsic(ctx, llvm::Intrinsic::smul_fix); }
+        [[nodiscard]] llvm::Value* smul(const StrategyContext& ctx) const noexcept override { return callOfFixedPointIntrinsic(ctx, llvm::Intrinsic::smul_fix); }
         [[nodiscard]] llvm::Value* umul(const StrategyContext& ctx) const noexcept override { return callOfFixedPointIntrinsic(ctx, llvm::Intrinsic::umul_fix); }
         [[nodiscard]] llvm::Value* sdiv(const StrategyContext& ctx) const noexcept override { return callOfFixedPointIntrinsic(ctx, llvm::Intrinsic::sdiv_fix); }
         [[nodiscard]] llvm::Value* udiv(const StrategyContext& ctx) const noexcept override { return callOfFixedPointIntrinsic(ctx, llvm::Intrinsic::udiv_fix); }

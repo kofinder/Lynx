@@ -29,11 +29,14 @@
 #define LYNX_RESOLVER_MATH_STRATEGY_HPP
 
 #include <llvm/IR/Value.h>
-#include "resolver/TypeStrategyContext.hpp"
 #include "helpers/InstructionHelper.hpp"
 
 namespace LynxTypes {
+    
+    using helper::callOfMathUnaryIntrinsic;
+    using helper::callOfMathBinaryIntrinsic;
 
+    
     // ============================================================================
     // Base Interface
     // ============================================================================
@@ -75,31 +78,29 @@ namespace LynxTypes {
     // ============================================================================
     template<IntStrategyType T>
     struct MathStrategyImpl<T> : MathStrategy {
-        using RawT = T;
-        static constexpr bool isSigned = std::numeric_limits<RawT>::is_signed;
-        [[nodiscard]] llvm::Value* sqrt(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::sqrt, isSigned); }
-        [[nodiscard]] llvm::Value* pow(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::pow, isSigned);}
-        [[nodiscard]] llvm::Value* exp(const StrategyContext& ctx) const noexcept override {  return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::exp, isSigned);}
-        [[nodiscard]] llvm::Value* exp2(const StrategyContext& ctx) const noexcept override {  return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::exp2, isSigned);}
-        [[nodiscard]] llvm::Value* exp10(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::exp10, isSigned);}
-        [[nodiscard]] llvm::Value* log(const StrategyContext& ctx) const noexcept override {  return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::log, isSigned);}
-        [[nodiscard]] llvm::Value* log2(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::log2, isSigned);}
-        [[nodiscard]] llvm::Value* log10(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::log10, isSigned);}
-        [[nodiscard]] llvm::Value* sin(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::sin, isSigned);}
-        [[nodiscard]] llvm::Value* cos(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::cos, isSigned);}
-        [[nodiscard]] llvm::Value* tan(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::tan, isSigned);}
-        [[nodiscard]] llvm::Value* asin(const StrategyContext& ctx) const noexcept override {  return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::asin, isSigned);}
-        [[nodiscard]] llvm::Value* acos(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::acos, isSigned);}
-        [[nodiscard]] llvm::Value* atan(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::atan, isSigned);}
-        [[nodiscard]] llvm::Value* atan2(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::atan2, isSigned);}
-        [[nodiscard]] llvm::Value* sinh(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::sinh, isSigned);}
-        [[nodiscard]] llvm::Value* cosh(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::cosh, isSigned);}
-        [[nodiscard]] llvm::Value* tanh(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::tanh, isSigned);}
-        [[nodiscard]] llvm::Value* floor(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::floor, isSigned);}
-        [[nodiscard]] llvm::Value* ceil(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::ceil, isSigned);}
-        [[nodiscard]] llvm::Value* trunc(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::trunc, isSigned);}
-        [[nodiscard]] llvm::Value* round(const StrategyContext& ctx) const noexcept override { return helper::callOfBinaryIntrinsic(ctx, llvm::Intrinsic::round, isSigned);}
-        [[nodiscard]] llvm::Value* fabs(const StrategyContext& ctx) const noexcept override { return helper::callOfBinaryIntrinsic(ctx, llvm::Intrinsic::fabs, isSigned);}
+        [[nodiscard]] llvm::Value* sqrt(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::sqrt);}
+        [[nodiscard]] llvm::Value* pow(const StrategyContext& ctx) const noexcept override { return callOfMathBinaryIntrinsic(ctx, llvm::Intrinsic::pow); }
+        [[nodiscard]] llvm::Value* exp(const StrategyContext& ctx) const noexcept override {  return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::exp); }
+        [[nodiscard]] llvm::Value* exp2(const StrategyContext& ctx) const noexcept override {  return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::exp2); }
+        [[nodiscard]] llvm::Value* exp10(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::exp10); }
+        [[nodiscard]] llvm::Value* log(const StrategyContext& ctx) const noexcept override {  return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::log); }
+        [[nodiscard]] llvm::Value* log2(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::log2); }
+        [[nodiscard]] llvm::Value* log10(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::log10); }
+        [[nodiscard]] llvm::Value* sin(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::sin); }
+        [[nodiscard]] llvm::Value* cos(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::cos); }
+        [[nodiscard]] llvm::Value* tan(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::tan); }
+        [[nodiscard]] llvm::Value* asin(const StrategyContext& ctx) const noexcept override {  return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::asin); }
+        [[nodiscard]] llvm::Value* acos(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::acos); }
+        [[nodiscard]] llvm::Value* atan(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::atan); }
+        [[nodiscard]] llvm::Value* atan2(const StrategyContext& ctx) const noexcept override { return callOfMathBinaryIntrinsic(ctx, llvm::Intrinsic::atan2); }
+        [[nodiscard]] llvm::Value* sinh(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::sinh); }
+        [[nodiscard]] llvm::Value* cosh(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::cosh); }
+        [[nodiscard]] llvm::Value* tanh(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::tanh); }
+        [[nodiscard]] llvm::Value* floor(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::floor); }
+        [[nodiscard]] llvm::Value* ceil(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::ceil); }
+        [[nodiscard]] llvm::Value* trunc(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::trunc); }
+        [[nodiscard]] llvm::Value* round(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::round); }
+        [[nodiscard]] llvm::Value* fabs(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::fabs); }
     };
 
     // ============================================================================
@@ -107,29 +108,29 @@ namespace LynxTypes {
     // ============================================================================
     template<FloatStrategyType T>
     struct MathStrategyImpl<T> : MathStrategy {
-        [[nodiscard]] llvm::Value* sqrt(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::sqrt);}
-        [[nodiscard]] llvm::Value* pow(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::pow); }
-        [[nodiscard]] llvm::Value* exp(const StrategyContext& ctx) const noexcept override {  return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::exp); }
-        [[nodiscard]] llvm::Value* exp2(const StrategyContext& ctx) const noexcept override {  return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::exp2); }
-        [[nodiscard]] llvm::Value* exp10(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::exp10); }
-        [[nodiscard]] llvm::Value* log(const StrategyContext& ctx) const noexcept override {  return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::log); }
-        [[nodiscard]] llvm::Value* log2(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::log2); }
-        [[nodiscard]] llvm::Value* log10(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::log10); }
-        [[nodiscard]] llvm::Value* sin(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::sin); }
-        [[nodiscard]] llvm::Value* cos(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::cos); }
-        [[nodiscard]] llvm::Value* tan(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::tan); }
-        [[nodiscard]] llvm::Value* asin(const StrategyContext& ctx) const noexcept override {  return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::asin); }
-        [[nodiscard]] llvm::Value* acos(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::acos); }
-        [[nodiscard]] llvm::Value* atan(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::atan); }
-        [[nodiscard]] llvm::Value* atan2(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::atan2); }
-        [[nodiscard]] llvm::Value* sinh(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::sinh); }
-        [[nodiscard]] llvm::Value* cosh(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::cosh); }
-        [[nodiscard]] llvm::Value* tanh(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::tanh); }
-        [[nodiscard]] llvm::Value* floor(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::floor); }
-        [[nodiscard]] llvm::Value* ceil(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::ceil); }
-        [[nodiscard]] llvm::Value* trunc(const StrategyContext& ctx) const noexcept override { return helper::callOfUnaryIntrinsic(ctx, llvm::Intrinsic::trunc); }
-        [[nodiscard]] llvm::Value* round(const StrategyContext& ctx) const noexcept override { return helper::callOfBinaryIntrinsic(ctx, llvm::Intrinsic::round); }
-        [[nodiscard]] llvm::Value* fabs(const StrategyContext& ctx) const noexcept override { return helper::callOfBinaryIntrinsic(ctx, llvm::Intrinsic::fabs); }
+        [[nodiscard]] llvm::Value* sqrt(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::sqrt);}
+        [[nodiscard]] llvm::Value* pow(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::pow); }
+        [[nodiscard]] llvm::Value* exp(const StrategyContext& ctx) const noexcept override {  return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::exp); }
+        [[nodiscard]] llvm::Value* exp2(const StrategyContext& ctx) const noexcept override {  return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::exp2); }
+        [[nodiscard]] llvm::Value* exp10(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::exp10); }
+        [[nodiscard]] llvm::Value* log(const StrategyContext& ctx) const noexcept override {  return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::log); }
+        [[nodiscard]] llvm::Value* log2(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::log2); }
+        [[nodiscard]] llvm::Value* log10(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::log10); }
+        [[nodiscard]] llvm::Value* sin(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::sin); }
+        [[nodiscard]] llvm::Value* cos(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::cos); }
+        [[nodiscard]] llvm::Value* tan(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::tan); }
+        [[nodiscard]] llvm::Value* asin(const StrategyContext& ctx) const noexcept override {  return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::asin); }
+        [[nodiscard]] llvm::Value* acos(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::acos); }
+        [[nodiscard]] llvm::Value* atan(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::atan); }
+        [[nodiscard]] llvm::Value* atan2(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::atan2); }
+        [[nodiscard]] llvm::Value* sinh(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::sinh); }
+        [[nodiscard]] llvm::Value* cosh(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::cosh); }
+        [[nodiscard]] llvm::Value* tanh(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::tanh); }
+        [[nodiscard]] llvm::Value* floor(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::floor); }
+        [[nodiscard]] llvm::Value* ceil(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::ceil); }
+        [[nodiscard]] llvm::Value* trunc(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::trunc); }
+        [[nodiscard]] llvm::Value* round(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::round); }
+        [[nodiscard]] llvm::Value* fabs(const StrategyContext& ctx) const noexcept override { return callOfMathUnaryIntrinsic(ctx, llvm::Intrinsic::fabs); }
     };
 
     // ============================================================================

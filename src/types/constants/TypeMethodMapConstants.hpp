@@ -35,12 +35,7 @@ namespace LynxTypes {
     // -----------------------------
     // Short type methods
     // -----------------------------
-    static inline const std::unordered_map<std::string_view, int> shortMethods = byteMethods;
-
-    // -----------------------------
-    // Integer type methods
-    // -----------------------------
-    static inline const std::unordered_map<std::string_view, int> intMethods {
+    static inline const std::unordered_map<std::string_view, int> shortMethods  {
         // ============================================================================
         // ABS Methods Mapping
         // ============================================================================
@@ -74,8 +69,8 @@ namespace LynxTypes {
         // ============================================================================
         // Math Methods Mapping
         // ============================================================================
-        {sqrtKey, 1}, {powKey, 1}, {expKey, 1}, {exp2Key, 1}, {exp10Key, 1}, {logKey, 1}, {log2Key, 1}, {log10Key, 1}, {sinKey, 1}, {cosKey, 1}, {tanKey, 1},
-        {asinKey, 1}, {acosKey, 1}, {atanKey, 1}, {atan2Key, 1}, {sinhKey, 1}, {coshKey, 1}, {tanhKey, 1}, {floorKey, 1}, {ceilKey, 1}, {truncKey, 1}, {roundKey, 1}, {fabsKey, 1},
+        {sqrtKey, 0}, {powKey, 1}, {expKey, 0}, {exp2Key, 0}, {exp10Key, 0}, {logKey, 0}, {log2Key, 0}, {log10Key, 0}, {sinKey, 0}, {cosKey, 0}, {tanKey, 0},
+        {asinKey, 0}, {acosKey, 0}, {atanKey, 0}, {atan2Key, 1}, {sinhKey, 0}, {coshKey, 0}, {tanhKey, 0}, {floorKey, 0}, {ceilKey, 0}, {truncKey, 0}, {roundKey, 0}, {fabsKey, 0},
 
         // ============================================================================
         // Memory Methods Mapping
@@ -90,7 +85,7 @@ namespace LynxTypes {
         // ============================================================================
         // Overflow Methods Mapping
         // ============================================================================
-        {saddOverflowKey, 1}, {uaddOverflowKey, 1}, {ssubOverflowKey, 1}, {usubOverflowKey, 1}, {smulOverflowKey, 1}, {umulOverflowKey, 1},
+        {saddOverflowKey, 1}, {uaddOverflowKey, 2}, {ssubOverflowKey, 2}, {usubOverflowKey, 2}, {smulOverflowKey, 2}, {umulOverflowKey, 2},
 
         // ============================================================================
         // Saturation Methods Mapping
@@ -100,10 +95,22 @@ namespace LynxTypes {
         // ============================================================================
         // Others specialization
         // ============================================================================
-        {fromStringKey, 1}, {zeroKey, 0}, {oneKey, 0}, {maxKey, 0}, {minKey, 0},
-        {isPositiveKey, 0}, {isNegativeKey, 0}, {bitCountKey, 0}, {leadingZerosKey, 0}, 
+        {fromStringKey, 1}, 
+        {zeroKey, 0}, 
+        {oneKey, 0}, 
+        {maxKey, 0}, 
+        {minKey, 0},
+        {isPositiveKey, 0}, 
+        {isNegativeKey, 0}, 
+        {bitCountKey, 0}, 
+        {leadingZerosKey, 0}, 
         {trailingZerosKey, 0}
     };
+
+    // -----------------------------
+    // Integer type methods
+    // -----------------------------
+    static inline const std::unordered_map<std::string_view, int> intMethods = shortMethods;
 
     // -----------------------------
     // Long type methods

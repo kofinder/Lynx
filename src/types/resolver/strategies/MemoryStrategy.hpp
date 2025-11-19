@@ -41,7 +41,6 @@ namespace LynxTypes {
         [[nodiscard]] virtual llvm::Value* memmove(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* memset(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* memsetPattern(const StrategyContext&) const noexcept = 0;
-
         virtual ~MemoryStrategy() noexcept = default;
     };
 

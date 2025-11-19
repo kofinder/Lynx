@@ -1,13 +1,30 @@
 
   int main() {
 
-    int x = 1030;
+    int x = 300;
+
+    system.io.println("sqrt: ", x::sqrt());
+    system.io.println("pow: ", x::pow(5));
+    system.io.println("exp: ", x::exp());
+    system.io.println("exp2: ", x::exp2());
+    system.io.println("exp10: ", x::exp10());
+    system.io.println("log: ", x::log());
+    system.io.println("log2: ", x::log2());
+    system.io.println("log10: ", x::log10());
+    system.io.println("sin: ", x::sin());
+    system.io.println("cos: ", x::cos());
+    system.io.println("tan: ", x::tan());
+    system.io.println("acos: ", x::acos());
+    system.io.println("atan: ", x::atan());
+    system.io.println("atan2: ", x::atan2(5));
+    system.io.println("sinh: ", x::sinh());
+    system.io.println("cosh: ", x::cosh());
+    system.io.println("tanh: ", x::tanh());
+
+    system.io.println("floor: ", x::floor());
+    system.io.println("ceil: ", x::ceil());
+    system.io.println("trunc: ", x::trunc());
 
 
-    system.io.println("Add Overflow: ", x::smul(8));
-    system.io.println("Sub Overflow: ", x::umul(8));
-    system.io.println("Mul Overflow: ",  x::div(8));
-
-    
     return 32;
   }

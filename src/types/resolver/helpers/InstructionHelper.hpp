@@ -21,9 +21,29 @@ namespace LynxTypes::helper {
     enum class BitwiseOp { And, Or, Xor, Shl, Shr, Not };
     enum class CompareOp { Eq, Ne, Lt, Le, Gt, Ge };
 
-
     inline llvm::Function* callOfIntrinsic(llvm::Module* module, llvm::Intrinsic::ID id, llvm::Type* type) noexcept {
         return llvm::Intrinsic::getOrInsertDeclaration(module, id, { type });
+    }
+
+    inline llvm::Value* intToFloat(llvm::IRBuilder<>& builder, llvm::Value* value) noexcept {
+        llvm::Type* ty = value->getType();
+    
+        // Already floating-point? Return as is.
+        if (ty->isFloatingPointTy()) return value;
+    
+        // Determine target floating type based on integer bit width
+        llvm::Type* floatTy = nullptr;
+        if (ty->isIntegerTy(64)) {
+            floatTy = builder.getDoubleTy();  // long → double
+        } else if (ty->isIntegerTy(32) || ty->isIntegerTy(16)) {
+            floatTy = builder.getFloatTy();   // int/short → float
+        } else {
+            // fallback: for smaller/larger ints, use float
+            floatTy = builder.getFloatTy();
+        }
+    
+        // Check if signed or unsigned integer (here we assume signed, adjust if needed)
+        return builder.CreateSIToFP(value, floatTy);
     }
 
     inline llvm::Value* callOfArithmeticIntrisic(const StrategyContext& stg, ArithmeticOp op) noexcept {
@@ -148,7 +168,7 @@ namespace LynxTypes::helper {
         return result;
     }
 
-    inline llvm::Value* callOfMinxMaxInstrinsic(const StrategyContext& stg, llvm::Intrinsic::ID id)  noexcept{
+    inline llvm::Value* callOfMinxMaxInstrinsic(const StrategyContext& stg, llvm::Intrinsic::ID id)  noexcept {
         auto* lhs = stg.instance;
         auto* rhs = stg.args[0];
         auto* lhsPtr = stg.instancePtr;
@@ -162,14 +182,14 @@ namespace LynxTypes::helper {
         return result;
     }
 
-    inline llvm::Value* callOfBinaryIntrinsic(const StrategyContext& stgCtx, llvm::Intrinsic::ID id) {
+    inline llvm::Value* callOfBinaryIntrinsic(const StrategyContext& stgCtx, llvm::Intrinsic::ID id) noexcept {
         std::cerr << "callOfBinaryIntrinsic \n";
         auto* mod = stgCtx.ctx.getModule();
         auto* func = callOfIntrinsic(mod, id, stgCtx.instance->getType());
         return stgCtx.ctx.getBuilder().CreateCall(func, { stgCtx.instance, stgCtx.args[0] });
     }
 
-    inline llvm::Value* callOfBitManiIntrinsic(const StrategyContext& stg, llvm::Intrinsic::ID id) {
+    inline llvm::Value* callOfBitManiIntrinsic(const StrategyContext& stg, llvm::Intrinsic::ID id) noexcept {
         std::cerr << "callOfBinaryIntrinsic \n";
         auto* mod = stg.ctx.getModule();
         auto& builder = stg.ctx.getBuilder();
@@ -200,17 +220,13 @@ namespace LynxTypes::helper {
         const StrategyContext& stg,
         llvm::Intrinsic::ID id,
         unsigned defaultIntScaleBits = 8,
-        unsigned defaultFloatScaleBits = 16)
+        unsigned defaultFloatScaleBits = 16) noexcept
     {
         auto& builder = stg.ctx.getBuilder();
         auto* mod = stg.ctx.getModule();
         llvm::Value* lhs = stg.instance;
         llvm::Type* lhsTy = lhs->getType();
 
-        llvm::StringRef name = llvm::Intrinsic::getName(id);
-        llvm::errs() << "Intrinsic ID: " << id << "  (" << name << ")\n";
-    
-    
         // -------------------------------------------------------------------------
         // Integer fixed-point intrinsic path
         // -------------------------------------------------------------------------
@@ -233,50 +249,35 @@ namespace LynxTypes::helper {
         return builder.CreateCall(fn, { lhs, lhs, scaleConst });
     }
 
-    inline llvm::Value* callOfOverflowIntrinsic(const StrategyContext& stgCtx, llvm::Intrinsic::ID id) {
+    inline llvm::Value* callOfOverflowIntrinsic(const StrategyContext& stg, llvm::Intrinsic::ID id) {
         std::cerr << "callOfOverflowIntrinsic \n";
-        auto* mod = stgCtx.ctx.getModule();
-        auto* func = callOfIntrinsic(mod, id, stgCtx.instance->getType());
-        return stgCtx.ctx.getBuilder().CreateCall(func, { stgCtx.instance });
+        auto* mod = stg.ctx.getModule();
+        auto& builder = stg.ctx.getBuilder();
+
+        auto* lhs = stg.instance;
+        auto* rhs = stg.args[0];
+
+        auto* func = callOfIntrinsic(mod, id, lhs->getType());
+        auto* ov = builder.CreateCall(func, { lhs, rhs }, llvm::Twine("inst.overflow"));
+
+        auto* result = builder.CreateExtractValue(ov, 0, "result"); // integer
+        auto* status = builder.CreateExtractValue(ov, 1, "status"); // boolean
+
+        return result;
     }
     
         
+    inline llvm::Value* callOfSaturationIntrinsic(const StrategyContext& stg, llvm::Intrinsic::ID id) noexcept {
+        std::cerr << "callOfSaturationIntrinsic \n";
+        auto* mod = stg.ctx.getModule();
+        auto& builder = stg.ctx.getBuilder();
 
+        auto* lhs = stg.instance;
+        auto* rhs = stg.args[0];
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    inline llvm::Value* intToFloat(const StrategyContext& stgCtx, bool isSigned) noexcept {
-        auto& builder = stgCtx.ctx.getBuilder();
-        llvm::Type* floatTy = stgCtx.instance->getType()->isIntegerTy(64)
-                                ? builder.getDoubleTy()
-                                : builder.getFloatTy();
-
-        if (isSigned) return builder.CreateSIToFP(stgCtx.instance, floatTy);
-        return builder.CreateUIToFP(stgCtx.instance, floatTy);
+        auto* func = callOfIntrinsic(mod, id, lhs->getType());
+        auto* result = builder.CreateCall(func, { lhs, rhs }, llvm::Twine("inst.saturation"));
+        return result;
     }
 
     inline llvm::Value* intToFloat(const StrategyContext& stgCtx, llvm::Value* val, bool isSigned) noexcept {
@@ -297,34 +298,97 @@ namespace LynxTypes::helper {
         return builder.CreateFPToUI(val, intTy);
     }
 
-    inline llvm::Value* callOfUnaryIntrinsic(const StrategyContext& stgCtx, llvm::Intrinsic::ID id, bool isSigned) noexcept {
-        auto& builder = stgCtx.ctx.getBuilder();
-        auto* floatVal = intToFloat(stgCtx, isSigned);
-        auto* mod = stgCtx.ctx.getModule();
-        auto* fun = callOfIntrinsic(mod, id, floatVal->getType());
-        auto* result = builder.CreateCall(fun, {floatVal});
-        return floatToInt(stgCtx, result, isSigned);
-    }
-
-    inline llvm::Value* callOfBinaryIntrinsic(const StrategyContext& stgCtx, llvm::Intrinsic::ID id, bool isSigned) noexcept {
-        auto& builder = stgCtx.ctx.getBuilder();
-        auto* lhs = intToFloat(stgCtx, isSigned);
-        auto* rhs = intToFloat(stgCtx, stgCtx.args[0]);
-        auto* mod = stgCtx.ctx.getModule();
-        auto* fun = callOfIntrinsic(mod, id, lhs->getType());
-        auto* result = builder.CreateCall(fun, {lhs, rhs});
-        return floatToInt(stgCtx, result, isSigned);
-    }
-
-
-    inline llvm::Value* callOfUnaryIntrinsic(const StrategyContext& stgCtx, llvm::Intrinsic::ID id) {
-        std::cerr << "callOfUnaryIntrinsic \n";
-        auto* mod = stgCtx.ctx.getModule();
-        auto* func = callOfIntrinsic(mod, id, stgCtx.instance->getType());
-        return stgCtx.ctx.getBuilder().CreateCall(func, { stgCtx.instance });
-    }
-
+    inline llvm::Value* callOfMathUnaryIntrinsic(const StrategyContext& stg, llvm::Intrinsic::ID id) noexcept {
+        std::cerr << ":::::::::::::: callOfMathUnaryIntrinsic ::::::::::::::::::::\n";
+        auto* mod = stg.ctx.getModule();
+        auto& builder = stg.ctx.getBuilder();
+        auto* lhs = intToFloat(builder, stg.instance);
+        auto* func = callOfIntrinsic(mod, id, lhs->getType());
+        auto* result = builder.CreateCall(func, {lhs});
+        return result;
+    }   
     
+    inline llvm::Value* callOfMathBinaryIntrinsic(const StrategyContext& stg, llvm::Intrinsic::ID id) noexcept {
+        std::cerr << ":::::::::::::: callOfMathBinaryIntrinsic ::::::::::::::::::::\n";
+        auto* mod = stg.ctx.getModule();
+        auto& builder = stg.ctx.getBuilder();
+        auto* lhs = intToFloat(builder, stg.instance);
+        auto* rhs = intToFloat(builder, stg.args[0]);
+        auto* func = callOfIntrinsic(mod, id, lhs->getType());
+        auto* result = builder.CreateCall(func, {lhs, rhs});
+        return result;
+    }    
+
 }
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// inline llvm::Value* intToFloat(const StrategyContext& stgCtx, bool isSigned) noexcept {
+//     auto& builder = stgCtx.ctx.getBuilder();
+//     llvm::Type* floatTy = stgCtx.instance->getType()->isIntegerTy(64)
+//                             ? builder.getDoubleTy()
+//                             : builder.getFloatTy();
+
+//     if (isSigned) return builder.CreateSIToFP(stgCtx.instance, floatTy);
+//     return builder.CreateUIToFP(stgCtx.instance, floatTy);
+// }
+
+// inline llvm::Value* intToFloat(const StrategyContext& stgCtx, llvm::Value* val, bool isSigned) noexcept {
+//     auto& builder = stgCtx.ctx.getBuilder();
+//     llvm::Type* floatTy = val->getType()->isIntegerTy(64)
+//                             ? builder.getDoubleTy()
+//                             : builder.getFloatTy();
+
+//     if (isSigned) return builder.CreateSIToFP(val, floatTy);
+//     return builder.CreateUIToFP(val, floatTy);
+// }
+
+// inline llvm::Value* floatToInt(const StrategyContext& stgCtx, llvm::Value* val, bool isSigned) noexcept {
+//     auto& builder = stgCtx.ctx.getBuilder();
+//     llvm::Type* intTy = stgCtx.instance->getType();
+
+//     if (isSigned) return builder.CreateFPToSI(val, intTy);
+//     return builder.CreateFPToUI(val, intTy);
+// }
+
+// inline llvm::Value* callOfUnaryIntrinsic(const StrategyContext& stgCtx, llvm::Intrinsic::ID id, bool isSigned) noexcept {
+//     auto& builder = stgCtx.ctx.getBuilder();
+//     auto* floatVal = intToFloat(stgCtx, isSigned);
+//     auto* mod = stgCtx.ctx.getModule();
+//     auto* fun = callOfIntrinsic(mod, id, floatVal->getType());
+//     auto* result = builder.CreateCall(fun, {floatVal});
+//     return floatToInt(stgCtx, result, isSigned);
+// }
+
+// inline llvm::Value* callOfBinaryIntrinsic(const StrategyContext& stgCtx, llvm::Intrinsic::ID id, bool isSigned) noexcept {
+//     auto& builder = stgCtx.ctx.getBuilder();
+//     auto* lhs = intToFloat(stgCtx, isSigned);
+//     auto* rhs = intToFloat(stgCtx, stgCtx.args[0]);
+//     auto* mod = stgCtx.ctx.getModule();
+//     auto* fun = callOfIntrinsic(mod, id, lhs->getType());
+//     auto* result = builder.CreateCall(fun, {lhs, rhs});
+//     return floatToInt(stgCtx, result, isSigned);
+// }
