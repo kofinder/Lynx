@@ -6,14 +6,12 @@ namespace LynxTypes {
 
     llvm::Type* MapType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getFloatTy(context);
+        return nullptr;
     }
 
     llvm::Type* MapType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getFloatPtrTy(context);
+        return nullptr;
     }
 
     llvm::Value* MapType::getDefaultValue() {
@@ -23,21 +21,13 @@ namespace LynxTypes {
 
     llvm::Value* MapType::createInstance(std::string variableName) {
         LOG_INFO("Invoked...");
-        auto& builder = astContext->getBuilder();
-        llvm::Type* floatType = this->getLLVMType();
-        auto var = builder.CreateAlloca(floatType, nullptr, variableName);
-        if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
-            auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::floatType));
-            var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
-        }
-        
-        return var;
+        return nullptr;
     }
 
     llvm::Value* MapType::createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> pairs) const {
         LOG_INFO("Invoked...");
-        std::cout << "Map Key Type ===>" << toString(elementType->getTypeTag()) << std::endl;
-        std::cout << "Map ValueType  ===>" << toString(elementValue->getTypeTag()) << std::endl;
+        std::cout << "Map Key Type ===>" << dataTypeToString(elementType->getTypeTag()) << std::endl;
+        std::cout << "Map ValueType  ===>" << dataTypeToString(elementValue->getTypeTag()) << std::endl;
         return nullptr;    
     }     
 
@@ -63,7 +53,7 @@ namespace LynxTypes {
     }
 
     std::string MapType::getDebugName() const {
-        return "float";
+        return "MapType";
     }
 
     llvm::DIType* MapType::getDIType(llvm::DIScope* scope) const {

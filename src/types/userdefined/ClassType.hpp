@@ -142,33 +142,33 @@ namespace LynxTypes {
                 const std::string& name
             ) : UserDefinedType(context), className(name) {}
 
-            const std::string& qualifiedName() const;
-            const std::string& originalNameLower() const;
-            const std::string& originalName() const { return className; }
+            llvm::Type* getLLVMPointerType() const override;
 
-            inline DataType getTypeTag() const override { return DataType::CLAZZ; }
+            llvm::Value* getDefaultValue() override;
 
             llvm::Value* createInstance(std::string variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
+            // void accept(TypeVisitor& visitor) override;
+
+            // TypeMethodResolver* getOrCreateResolver() const  override;
+
+            // const std::unordered_map<std::string_view, int>& getMethodRegistry() const override;
+
+            // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
+
+            // llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
+
             std::unique_ptr<BaseType> clone() const override;
-
-            llvm::Type* getLLVMPointerType() const override;
-
-            llvm::Value* getDefaultValue() override;
 
             bool equals(const BaseType* other) const override;
 
-            std::string getDebugName() const override;
+            inline DataType getTypeTag() const override { return DataType::CLAZZ; }
 
-            llvm::DIType* getDIType(llvm::DIScope* scope) const override;
-
-            uint64_t getDebugSizeInBits() const override;
-
-            uint32_t getDebugAlignInBits() const override;
-
-            llvm::DINode::DIFlags getDIFlags() const override;
+            const std::string& qualifiedName() const;
+            const std::string& originalNameLower() const;
+            const std::string& originalName() const { return className; }
 
             void registerLLVMType(llvm::StructType* llvmStruct);
             static ClassType* fromLLVMType(const llvm::Type* type);
@@ -248,6 +248,19 @@ namespace LynxTypes {
 
             // HELPERS
             std::string resolveMethodCall(MethodKind kind, const std::string& mangledName, const std::vector<llvm::Type*>& argTypes) const;
+
+
+            // FOR DEBUGGING
+            std::string getDebugName() const override;
+
+            llvm::DIType* getDIType(llvm::DIScope* scope) const override;
+
+            uint64_t getDebugSizeInBits() const override;
+
+            uint32_t getDebugAlignInBits() const override;
+
+            llvm::DINode::DIFlags getDIFlags() const override;
+
 
             ~ClassType() override = default;
     };

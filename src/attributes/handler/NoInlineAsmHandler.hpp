@@ -17,24 +17,22 @@
 #ifndef LYNX_FUNC_NO_INLINE_ASM_HANDLER_HPP
 #define LYNX_FUNC_NO_INLINE_ASM_HANDLER_HPP
 
-#include "interfaces/FunctionAttributeHandler.hpp"
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
-
-    using namespace LynxLogger;
 
     class NoInlineAsmHandler : public FunctionAttributeHandler {
 
         protected:
 
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoke NoInlineAsmHandler");
+                if (!func) return;
                 if (func->hasFnAttribute("no-inline-asm")) {
-                    //builder.addAttribute(llvm::Attribute::NoInlineAsm);
-                }
+                    builder.addAttribute(llvm::Attribute::get(func->getContext(), "no-inline-asm"));
+                    LOG_INFO("Applied 'no-inline-asm' attribute");
+                }        
             }
-        };          
+    };          
 
 }
 

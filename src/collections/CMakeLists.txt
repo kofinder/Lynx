@@ -46,18 +46,7 @@ add_library(LynxCollection STATIC
   ${LIB_MODULE_STRATEGY_SOURCES}
 )
 
-llvm_map_components_to_libnames(LLVM_LIBS
-  core
-  irreader
-  scalaropts
-  ipo
-  vectorize
-  transformutils
-  analysis
-  passes
-)
-
-target_link_libraries(LynxCollection PRIVATE LynxLogger ${LLVM_LIBS})
+target_link_libraries(LynxCollection PRIVATE LynxLogger)
 
 target_include_directories(LynxCollection PUBLIC ${LIBRARY_INCLUDES} )
 

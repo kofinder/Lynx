@@ -15,8 +15,8 @@ namespace LynxTypes {
             cachedType = llvm::StructType::create(context, MetadataTypeConstants::fileType);
             
             std::vector<llvm::Type*> members = {
-                llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(context)), // file path (char*)
-                llvm::PointerType::getUnqual(llvm::Type::getInt8Ty(context))  // file handle (void*)
+                llvm::PointerType::get(llvm::Type::getInt8Ty(context)->getContext(), 0), // file path (char*)
+                llvm::PointerType::get(llvm::Type::getInt8Ty(context)->getContext(), 0)  // file handle (void*)
             };
             cachedType->setBody(members, false);
         }
@@ -26,12 +26,12 @@ namespace LynxTypes {
 
     llvm::Type* FileType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        return llvm::PointerType::getUnqual(this->computeLLVMType());
+        return llvm::PointerType::get(computeLLVMType()->getContext(), 0);
     }
 
     llvm::Value* FileType::getDefaultValue() {
         LOG_INFO("Invoked...");
-        return llvm::ConstantPointerNull::get(llvm::PointerType::getUnqual(computeLLVMType()));
+        return llvm::ConstantPointerNull::get(llvm::PointerType::get(computeLLVMType()->getContext(), 0));
     }
 
     llvm::Value* FileType::createInstance(std::string variableName) {
@@ -46,33 +46,6 @@ namespace LynxTypes {
         
         return var;
     }
-
-    // llvm::Value* FileType::createValue(LValueType value) const {
-    //     LOG_INFO("Invoked...");
-    //     if (!std::holds_alternative<File>(value)) {
-    //         LOG_ERROR("Expected File in LValueType, but got something else.");
-    //         return nullptr;
-    //     }
-    
-    //     const File& file = std::get<File>(value);
-    //     auto& builder = astContext->getBuilder();
-    //     auto& context = astContext->getLLVMContext();
-    //     auto* type = computeLLVMType();
-    
-    //     llvm::Value* fileAlloc = builder.CreateAlloca(type, nullptr, "file_value");
-    
-    //     llvm::Value* filePathPtr = builder.CreateStructGEP(type, fileAlloc, 0, "path_ptr");
-    //     llvm::Value* fileHandlePtr = builder.CreateStructGEP(type, fileAlloc, 1, "handle_ptr");
-    
-    //     // Convert std::string to LLVM char* (usually via GlobalString)
-    //    llvm::Value* llvmStr = builder.CreateGlobalStringPtr(file.path, "file_path");
-    //    llvm::Value* nullPtr = llvm::ConstantPointerNull::get(llvm::Type::getInt8PtrTy(context));
-
-    //     builder.CreateStore(llvmStr, filePathPtr);
-    //     builder.CreateStore(nullPtr, fileHandlePtr);
-    
-    //     return fileAlloc;
-    // }
 
     llvm::Value* FileType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
         LOG_INFO("Invoked...");

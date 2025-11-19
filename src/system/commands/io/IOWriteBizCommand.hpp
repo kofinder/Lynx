@@ -47,7 +47,7 @@ namespace LynxSystem {
                 for (size_t i = 0; i < args.size(); ++i) {
                     auto* arg = args[i];
                     if (!arg) continue;
-                    format += std::string(getFormatSpecifier(arg->getType()));
+                    format += std::string(getFormatSpecifier(arg->getType(), arg));
                     if (format.ends_with('\n')) format.pop_back();
                     if (i < args.size() - 1) format += " ";
                 }
@@ -62,7 +62,7 @@ namespace LynxSystem {
             */
             std::vector<llvm::Value*> buildPrintfArgs(llvm::IRBuilder<>& builder, llvm::Module* module, const std::string& fmt, const std::vector<llvm::Value*>& args) const noexcept {
                 std::vector<llvm::Value*> printfArgs;
-                printfArgs.push_back(builder.CreateGlobalStringPtr(fmt, "fmt"));
+                printfArgs.push_back(builder.CreateGlobalString(fmt, "fmt"));
                 for (auto* arg : args) {
                     if (!arg) continue;
                     auto prepared = preparePrintfArguments(builder, module, arg);

@@ -123,7 +123,7 @@ namespace LynxConstants {
     }
     
     inline std::shared_ptr<VariableType> createVariableType(DataType type, const std::string& name) {
-        auto dateType = parseDataType(name);
+        auto dateType = dataTypeFromString(name);
         return std::make_shared<VariableType>(dateType, name);
     }
 
@@ -150,7 +150,7 @@ namespace LynxConstants {
             return createVariableType(DataType::OTHER, genericName);
         }
 
-        auto resolvedType = parseDataType(genericName);
+        auto resolvedType = dataTypeFromString(genericName);
         std::vector<std::shared_ptr<VariableType>> args;
         size_t arraySize = 0;
 

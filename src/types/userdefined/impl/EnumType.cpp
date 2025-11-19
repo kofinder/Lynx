@@ -1,7 +1,7 @@
 #include "userdefined/EnumType.hpp"
 #include <context/AstContext.hpp>
 #include "utils/TypeUtils.hpp"
-
+#include "resolver/methods/EnumMethodResolver.hpp"
 
 namespace LynxTypes {
     
@@ -46,7 +46,7 @@ namespace LynxTypes {
     
         // Now set the members
         std::vector<llvm::Type*> members = {
-            llvm::Type::getInt8PtrTy(context),  // e.g., pointer payload
+            llvm::PointerType::get(context, 0),  // e.g., pointer payload
             llvm::Type::getInt8Ty(context),     // example 1-byte field
             llvm::Type::getInt64Ty(context)     // example 8-byte field
         };
@@ -63,10 +63,9 @@ namespace LynxTypes {
 
     EnumType* EnumType::fromLLVMType(const llvm::Type* type) {
         if (!type) return nullptr;
-        if (auto ptrType = llvm::dyn_cast<llvm::PointerType>(type)) {
-            type = ptrType->getPointerElementType();
-        }
-
+        // if (auto ptrType = llvm::dyn_cast<llvm::PointerType>(type)) {
+        //     type = ptrType->getPointerElementType();
+        // }
         if (auto structType = llvm::dyn_cast<llvm::StructType>(type)) {
             auto it = llvmTypeToClass.find(structType);
             if (it != llvmTypeToClass.end())  return it->second;
@@ -77,7 +76,7 @@ namespace LynxTypes {
     llvm::Type* EnumType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
         if (cachedPointerType) return cachedPointerType;
-        cachedPointerType = llvm::PointerType::get(computeLLVMType(), 0);
+        cachedPointerType = llvm::PointerType::get(computeLLVMType()->getContext(), 0);
         return cachedPointerType;
 
     }
@@ -91,10 +90,10 @@ namespace LynxTypes {
         std::vector<llvm::Constant*> values;
         if (structType->getElementType(0)->isIntegerTy()) {
             values.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(ctx), 0));
-            values.push_back(llvm::ConstantPointerNull::get(llvm::Type::getInt8PtrTy(ctx)));
+            values.push_back(llvm::ConstantPointerNull::get(llvm::PointerType::get(ctx, 0)));
         } else {
-            values.push_back(llvm::ConstantPointerNull::get(llvm::Type::getInt8PtrTy(ctx)));
-            values.push_back(llvm::ConstantPointerNull::get(llvm::Type::getInt8PtrTy(ctx)));
+            values.push_back(llvm::ConstantPointerNull::get(llvm::PointerType::get(ctx, 0)));
+            values.push_back(llvm::ConstantPointerNull::get(llvm::PointerType::get(ctx, 0)));
         }
 
         return llvm::ConstantStruct::get(structType, values);
@@ -117,17 +116,18 @@ namespace LynxTypes {
         auto& builder = astContext->getBuilder();
         auto& context = astContext->getLLVMContext();
         auto* module  = astContext->getModule();
-    
+        auto* int8PtrTy = llvm::PointerType::get(context, 0);
+
         // Cast both source and destination to i8*
-        llvm::Value* destPtr = builder.CreateBitCast(syntaxAlloca, builder.getInt8PtrTy());
-        llvm::Value* srcPtr  = builder.CreateBitCast(valuePtr, builder.getInt8PtrTy());
+        llvm::Value* destPtr = builder.CreateBitCast(syntaxAlloca, int8PtrTy);
+        llvm::Value* srcPtr  = builder.CreateBitCast(valuePtr, int8PtrTy);
 
         uint64_t sizeInBytes = module->getDataLayout().getTypeAllocSize(computeLLVMType());
 
         // Get memcpy intrinsic declaration (4-arg version)
-        llvm::Function* memcpyFunc = llvm::Intrinsic::getDeclaration(
+        llvm::Function* memcpyFunc = llvm::Intrinsic::getOrInsertDeclaration(
             module, llvm::Intrinsic::memcpy,
-            { builder.getInt8PtrTy(), builder.getInt8PtrTy(), builder.getInt64Ty() }
+            {int8PtrTy, int8PtrTy, builder.getInt64Ty() }
         );
 
         // Call llvm.memcpy with 4 arguments: dest, src, size, isVolatile
@@ -140,6 +140,10 @@ namespace LynxTypes {
 
         return nullptr;
     }
+
+    // std::unique_ptr<TypeMethodResolver> EnumType::getOrCreateResolver() const {
+    //     return std::make_unique<EnumMethodResolver>();
+    // }
 
     const BaseType* EnumType::createWithStatic(bool newIsStatic) const {
         LOG_INFO("Invoked...");

@@ -42,7 +42,7 @@ namespace LynxSystem {
             [[nodiscard]] llvm::Function* getOrCreateGetCharValidated(llvm::LLVMContext& context, llvm::Module* module) const noexcept {
                 auto* funcType = llvm::FunctionType::get(
                     llvm::Type::getInt8Ty(context),
-                    { llvm::Type::getInt8PtrTy(context) },
+                    { llvm::PointerType::get(context, 0) },
                     false 
                 );
                 return llvm::cast<llvm::Function>(module->getOrInsertFunction("IO_GET_CHAR_VALIDATED", funcType).getCallee());

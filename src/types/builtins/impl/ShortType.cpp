@@ -1,23 +1,19 @@
 #include "builtins/ShortType.hpp"
-#include <context/AstContext.hpp>
-#include <resolver/TypeVisitor.hpp>
-#include <resolver/TypeMethodResolver.hpp>
-#include <resolver/ShortMethodResolver.hpp>
-
-using namespace LynxContext;
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/ShortMethodResolver.hpp"
 
 namespace LynxTypes {
 
     llvm::Type* ShortType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt16Ty(context);
+        return llvm::Type::getInt16Ty(astContext->getLLVMContext());
     }
 
     llvm::Type* ShortType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt16PtrTy(context);
+        auto* shortTy = llvm::Type::getInt16Ty(astContext->getLLVMContext());
+        return llvm::PointerType::get(shortTy->getContext(), 0);
     }
 
     llvm::Value* ShortType::getDefaultValue() {
@@ -62,15 +58,15 @@ namespace LynxTypes {
         auto& builder = astContext->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
+    
+    void ShortType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
-    void ShortType::accept(TypeVisitor& visitor) { 
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
-    }
+    TypeMethodResolver* ShortType::getOrCreateResolver() const { return ShortMethodResolver::create(); }
 
-    std::unique_ptr<TypeMethodResolver> ShortType::createMethodResolver() const { 
-        LOG_INFO("Invoked...");
-        return std::make_unique<ShortMethodResolver>();
+    llvm::Value* ShortType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        LOG_ERROR("Emit Method Call Invocation.");
+        if (!resolver) resolver = getOrCreateResolver();
+        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
     }
 
     const BaseType* ShortType::createWithStatic(bool newIsStatic) const {

@@ -17,21 +17,21 @@
 #ifndef LYNX_FUNC_OPTIMIZE_FOR_SIZE_HANDLER_HPP
 #define LYNX_FUNC_OPTIMIZE_FOR_SIZE_HANDLER_HPP
 
-#include "interfaces/FunctionAttributeHandler.hpp"
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
-    using namespace LynxLogger;
-
 
     class OptimizeForSizeHandler : public FunctionAttributeHandler {
+
         protected:
+
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked OptimizeForSizeHandler");
+                if (!func) return;
+
                 if (func->hasFnAttribute("optimize-for-size")) {
-                    builder.addAttribute(llvm::Attribute::OptimizeForSize);
-                    LOG_WARN("Applied optimize-for-size attributes");
-                }
+                    builder.addAttribute(llvm::Attribute::get(func->getContext(), "optsize"));
+                    LOG_INFO("Applied 'optimize-for-size' attribute to function {}", func->getName().str());
+                }        
             }
     };
 }

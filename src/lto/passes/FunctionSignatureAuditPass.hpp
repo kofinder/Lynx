@@ -18,16 +18,14 @@
 #ifndef LYNX_FUNCTION_SIGNATURE_AUDIT_PASS_HPP
 #define LYNX_FUNCTION_SIGNATURE_AUDIT_PASS_HPP
 
-#include "llvm/IR/PassManager.h"
-
+#include <llvm/IR/PassManager.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Function.h>
 
 namespace LynxLTO {
 
-    class FunctionSignatureAuditPass : public llvm::PassInfoMixin<FunctionSignatureAuditPass> {
-
-        public:
-
-            llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
+    struct FunctionSignatureAuditPass : public llvm::PassInfoMixin<FunctionSignatureAuditPass> {
+        llvm::PreservedAnalyses run(llvm::Module& M, llvm::ModuleAnalysisManager& MAM);
     };
 
 }

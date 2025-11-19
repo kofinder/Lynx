@@ -40,7 +40,7 @@ namespace LynxSystem {
                 auto* inputBuffer = builder.CreateAlloca(bufferType, bufferSize, "input_buffer");
     
                 // Prepare format string for reading until newline
-                auto* fmtStr = builder.CreateGlobalStringPtr("%1023[^\n]", "read_line_fmt");
+                auto* fmtStr = builder.CreateGlobalString("%1023[^\n]", "read_line_fmt");
                 auto* scanfFunc = getOrCreateScanf(builder.getContext(), module);
     
                 // Emit scanf call

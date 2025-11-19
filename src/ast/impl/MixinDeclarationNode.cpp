@@ -13,6 +13,7 @@ namespace LynxAst {
     using namespace LynxLogger;
     using namespace LynxContext;
     using namespace LynxConstants;
+    using namespace Cloneable;
 
     void MixinDeclarationNode::processMembers(std::unique_ptr<std::vector<std::unique_ptr<Node>>> members) {
         Members::Processor<MixinDeclarationNode>::process(this, std::move(members), methods, fields);  
@@ -129,8 +130,8 @@ namespace LynxAst {
     }
 
     std::unique_ptr<Node> MixinDeclarationNode::clone() const {
-        auto clonedMethods = Cloneable::cloneNodeVector(methods);
-        auto clonedFields = Cloneable::cloneNodeVector(fields);
+        auto clonedMethods = cloneNodeVector(methods);
+        auto clonedFields = cloneNodeVector(fields);
         auto cloned = std::make_unique<MixinDeclarationNode>(mixinName);
         cloned->inheritMixins = inheritMixins;
         cloned->methods = std::move(clonedMethods);

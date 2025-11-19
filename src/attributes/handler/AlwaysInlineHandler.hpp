@@ -17,21 +17,20 @@
 #ifndef LYNX_FUNC_ALWAYS_INLINE_HANDLER_HPP
 #define LYNX_FUNC_ALWAYS_INLINE_HANDLER_HPP
 
-#include "interfaces/FunctionAttributeHandler.hpp"
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
-
-    using namespace LynxLogger;
 
     class AlwaysInlineHandler : public FunctionAttributeHandler {
 
         protected:
         
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                if (func->size() <= 5 && !func->isDeclaration()) {
-                    builder.addAttribute(llvm::Attribute::AlwaysInline);
-                    LOG_ERROR("Applied alwayinline attributes");
+                if (!func || func->isDeclaration()) return;
+                if (func->size() <= 5) {
+                    llvm::LLVMContext &ctx = func->getContext();
+                    builder.addAttribute(llvm::Attribute::get(ctx, llvm::Attribute::AlwaysInline));
+                    LOG_INFO("Applied alwaysinline attribute");
                 }
             }
     };    

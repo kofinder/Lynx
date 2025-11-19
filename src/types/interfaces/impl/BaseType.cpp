@@ -1,6 +1,6 @@
 #include "interfaces/BaseType.hpp"
-#include <resolver/TypeVisitor.hpp>
-#include <resolver/TypeMethodResolver.hpp>
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
 
 namespace LynxTypes {
 
@@ -23,7 +23,21 @@ namespace LynxTypes {
         return cachedLLVMType;
     }
     
-    std::unique_ptr<LynxResolver::TypeMethodResolver> BaseType::createMethodResolver() const {
-        return nullptr; // default: no method resolver
-    }    
+    const std::unordered_map<std::string_view, int>& BaseType::getMethodRegistry() const {
+        static const std::unordered_map<std::string_view, int> emptyRegistry;
+        return emptyRegistry;
+    }   
+
+    llvm::Value* BaseType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        return nullptr;
+    }
+
+    TypeMethodResolver* BaseType::getOrCreateResolver() const {
+        return nullptr;
+    }
+
+    BaseType::~BaseType() {
+        if(resolver) delete resolver;
+        resolver = nullptr;        
+    };
 }

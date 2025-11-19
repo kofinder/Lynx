@@ -17,25 +17,51 @@
 #ifndef LYNX_FUNC_SANITIZE_ADDRESS_HANDLER_HPP
 #define LYNX_FUNC_SANITIZE_ADDRESS_HANDLER_HPP
 
-#include "interfaces/FunctionAttributeHandler.hpp"
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
-    using namespace LynxLogger;
-
-
     class SanitizeAddressHandler : public FunctionAttributeHandler {
+
         protected:
+
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked SanitizeAddressHandler");
-                if (false) {
-                    builder.addAttribute(llvm::Attribute::SanitizeAddress);
-                    LOG_INFO("Applied SanitizeAddres attribues");
+                if (!func) return;
+
+                bool requiresASan = false; 
+
+                for (const auto &BB : *func) {
+                    for (const auto &I : BB) {
+                        if (llvm::isa<llvm::StoreInst>(&I)) {
+                            requiresASan = true;
+                            break;
+                        }
+        
+                        if (llvm::isa<llvm::GetElementPtrInst>(&I)) {
+                            requiresASan = true;
+                            break;
+                        }
+        
+                        if (const auto *call = llvm::dyn_cast<llvm::CallBase>(&I)) {
+                            if (call->getCalledFunction()) {
+                                llvm::StringRef name = call->getCalledFunction()->getName();
+                                if (name.contains("memcpy") || name.contains("memset") || name.contains("memmove")) {
+                                    requiresASan = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (requiresASan) break;
+                }
+        
+                if (requiresASan) {
+                    builder.addAttribute(llvm::Attribute::get(func->getContext(), "sanitize_address"));
+                    LOG_INFO("Applied 'sanitize_address' attribute to function {}", func->getName().str());
                 }
             }
-    };
-        
+    };    
 
 }
 

@@ -35,7 +35,7 @@ namespace LynxLibRuntime {
                     return nullptr;
                 }
 
-                contentArg = builder.CreateBitCast(contentArg, llvm::Type::getInt8PtrTy(llvmCtx));
+                contentArg = builder.CreateBitCast(contentArg, llvm::PointerType::get(llvmCtx, 0));
 
                 llvm::Function* writeFunc = module->getFunction("file_write");
 
@@ -46,8 +46,8 @@ namespace LynxLibRuntime {
                 }
 
                 // Cast file to void* if needed
-                if (file->getType() != llvm::Type::getInt8PtrTy(llvmCtx)) {
-                    file = builder.CreateBitCast(file, llvm::Type::getInt8PtrTy(llvmCtx), "file_cast");
+                if (file->getType() != llvm::PointerType::get(llvmCtx, 0)) {
+                    file = builder.CreateBitCast(file, llvm::PointerType::get(llvmCtx, 0), "file_cast");
                 }
             
                 // Call file_write(file, content)

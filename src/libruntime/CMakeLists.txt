@@ -60,7 +60,6 @@ target_link_libraries(LynxLibRuntime PRIVATE
   LynxLogger
   LynxTypes
   LynxConstants
-  LynxRuntime
 )
 
 

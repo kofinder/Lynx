@@ -18,10 +18,10 @@ namespace LynxAst {
         auto fncNode = scopeContext->getFunctionNode();
 
         // Unwind block for invoke
-        this->exceptionBlock = llvm::BasicBlock::Create(context, "exception", fncNode->getLLVMFunctionRef());
+        exceptionBlock = llvm::BasicBlock::Create(context, "exception", fncNode->getLLVMFunctionRef());
 
         // finally block
-       llvm::BasicBlock* afterExceptionBlock = llvm::BasicBlock::Create(context, "afterExceptionBlock", fncNode->getLLVMFunctionRef());
+        auto* afterExceptionBlock = llvm::BasicBlock::Create(context, "afterExceptionBlock", fncNode->getLLVMFunctionRef());
 
         // try block
         fncNode->pushExceptionHandler(this);
@@ -34,23 +34,21 @@ namespace LynxAst {
         }
 
         // catch block
+        auto int8PtrTy = llvm::PointerType::get(context, 0);
         builder.SetInsertPoint(exceptionBlock);
-        std::vector<llvm::Type *> caughtResultFieldTypes = {
-            builder.getInt8PtrTy(),
-            builder.getInt32Ty()
-        };
+        std::vector<llvm::Type *> caughtResultFieldTypes = { int8PtrTy, builder.getInt32Ty()};
 
-        llvm::StructType* ourCaughtResultType = llvm::StructType::get(context, caughtResultFieldTypes);
-        llvm::LandingPadInst* caughtResult = builder.CreateLandingPad(ourCaughtResultType, 1, "landingPad");
-        auto ptr = builder.CreateBitCast(module->getGlobalVariable("_ZTIi"), builder.getInt8PtrTy());
+        auto* ourCaughtResultType = llvm::StructType::get(context, caughtResultFieldTypes);
+        auto* caughtResult = builder.CreateLandingPad(ourCaughtResultType, 1, "landingPad");
+        auto ptr = builder.CreateBitCast(module->getGlobalVariable("_ZTIi"), int8PtrTy);
         caughtResult->addClause(static_cast<llvm::Constant *>(ptr));
 
         // TODO properly
-        this->catchBlocksStmts.begin()->second->generateCode(astContext->createContext());
+        catchBlocksStmts.begin()->second->generateCode(astContext->createContext());
 
         // TODO properly
-        if (this->finallyBlockStmts != nullptr && exceptionBlock->getTerminator() == nullptr) {
-            this->finallyBlockStmts->generateCode(astContext->createContext());
+        if (finallyBlockStmts != nullptr && exceptionBlock->getTerminator() == nullptr) {
+            finallyBlockStmts->generateCode(astContext->createContext());
         }
             
         if (exceptionBlock->getTerminator() == nullptr) {

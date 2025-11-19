@@ -1,6 +1,6 @@
 #include <logger/Logger.hpp>
 #include <types/tmpl/TypeChecker.hpp>
-#include "utils/NumericPromotion.hpp"
+#include <types/tmpl/TypeNumericPromotion.hpp>
 #include "ComparisonExpressionNode.hpp"
 
 namespace LynxAst {
@@ -8,7 +8,7 @@ namespace LynxAst {
     using namespace LynxLogger;
     using namespace LynxContext;
     using namespace LynxTypes;
-    using namespace TypePromotion;
+    using namespace LynxTypes::TypePromotion;
     using namespace MetadataTypeConstants;
     
     llvm::Value* ComparisonExpressionNode::generateCode(std::shared_ptr<AstContext> astContext) {
@@ -143,10 +143,15 @@ namespace LynxAst {
         );
     }
 
-
-    llvm::Value* ComparisonExpressionNode::generateCharCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) const {
+    llvm::Value* ComparisonExpressionNode::generateCharCode(
+        llvm::Value* lhsValue,
+        llvm::Value* rhsValue,
+        const AstContext& astContext
+    ) const {
         LOG_WARN("IR Code Generation ......");
-        const auto resolveComparisonOperator = [this]() noexcept -> std::optional<std::pair<llvm::CmpInst::Predicate, const char*>> {
+    
+        const auto resolveComparisonOperator = [this]() noexcept
+            -> std::optional<std::pair<llvm::CmpInst::Predicate, const char*>> {
             switch (operatorType) {
                 case GREATER_THAN:         return std::make_pair(llvm::CmpInst::ICMP_SGT, OPR_GT);
                 case LESS_THAN:            return std::make_pair(llvm::CmpInst::ICMP_SLT, OPR_LT);
@@ -157,36 +162,47 @@ namespace LynxAst {
                 default:                   return std::nullopt;
             }
         };
-
+    
         auto& builder = astContext.getBuilder();
+        auto& ctx = builder.getContext();
+
         auto extractStructField = [&](llvm::Value* value, const std::string& labelPrefix) -> llvm::Value* {        
             if (llvm::isa<llvm::Constant>(value)) {
                 const auto charType = astContext.findType(value);
                 auto stackVar = charType->createInstance(labelPrefix + "_stack");
                 charType->assignTo(stackVar, value);
-                auto loadedStruct = builder.CreateLoad(stackVar->getType()->getPointerElementType(), stackVar, labelPrefix + ".load");
+                llvm::Type* pointeeTy = charType->getLLVMType();
+                if (!pointeeTy) {
+                    LOG_ERROR("Failed to resolve pointee type for character struct");
+                    pointeeTy = llvm::Type::getInt8Ty(builder.getContext()); // fallback
+                }
+                auto* loadedStruct = builder.CreateLoad(
+                    pointeeTy,
+                    stackVar,
+                    labelPrefix + ".load"
+                );
                 return builder.CreateExtractValue(loadedStruct, {0}, labelPrefix + ".short");
             }
+        
             return builder.CreateExtractValue(value, {0}, labelPrefix + ".short");
-        };
-
-
+        };        
+    
         const auto maybeComparison = resolveComparisonOperator();
         if (!maybeComparison) return nullptr;
-
+    
         const auto& [predicate, label] = *maybeComparison;
         auto* lhsExtractValue = extractStructField(lhsValue, "lhs");
         auto* rhsExtractValue = extractStructField(rhsValue, "rhs");
-
+    
         return llvm::CmpInst::Create(
-            llvm::Instruction::ICmp, 
-            predicate, 
-            lhsExtractValue, 
-            rhsExtractValue, 
-            llvm::Twine(label), 
+            llvm::Instruction::ICmp,
+            predicate,
+            lhsExtractValue,
+            rhsExtractValue,
+            llvm::Twine(label),
             builder.GetInsertBlock()
         );
-    }
+    }   
 
     llvm::Value* ComparisonExpressionNode::generateStringCode(llvm::Value* lhsValue, llvm::Value* rhsValue, const AstContext& astContext) const {
         LOG_WARN("IR Code Generation ......");
@@ -207,7 +223,8 @@ namespace LynxAst {
 
         llvm::Function* strcmpFunc = module->getFunction("strcmp");
         if (!strcmpFunc) {
-            llvm::FunctionType* strcmpType = llvm::FunctionType::get(builder.getInt32Ty(), {builder.getInt8PtrTy(), builder.getInt8PtrTy()}, false);
+            auto int8PtrTy = llvm::PointerType::get(astContext.getLLVMContext(), 0);
+            llvm::FunctionType* strcmpType = llvm::FunctionType::get(builder.getInt32Ty(), {int8PtrTy, int8PtrTy}, false);
             strcmpFunc = llvm::Function::Create(strcmpType, llvm::Function::ExternalLinkage, "strcmp", module);
         }
 
@@ -243,7 +260,12 @@ namespace LynxAst {
                 const auto enumType = astContext.findType(value);
                 auto stackVar = enumType->createInstance(labelPrefix + "_stack");
                 enumType->assignTo(stackVar, value);
-                auto* loadedStruct = builder.CreateLoad(stackVar->getType()->getPointerElementType(), stackVar, labelPrefix + ".load");
+                llvm::Type* pointeeTy = enumType->getLLVMType();
+                if (!pointeeTy) {
+                    LOG_ERROR("Failed to resolve pointee type for character struct");
+                    pointeeTy = llvm::Type::getInt8Ty(builder.getContext()); // fallback
+                }
+                auto* loadedStruct = builder.CreateLoad(pointeeTy, stackVar, labelPrefix + ".load");
                 return builder.CreateExtractValue(loadedStruct, {0}, labelPrefix + ".short");
             }
             return builder.CreateExtractValue(value, {0}, labelPrefix + ".short");
@@ -269,8 +291,8 @@ namespace LynxAst {
     std::unique_ptr<Node> ComparisonExpressionNode::clone() const {
         return std::make_unique<ComparisonExpressionNode>(
             operatorType, 
-            this->leftOperand->clone(), 
-            this->rightOperand->clone()
+            leftOperand->clone(), 
+            rightOperand->clone()
         ); 
     }
 

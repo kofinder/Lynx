@@ -14,24 +14,20 @@
  * @date: November 4, 2025
 */
 
-
 #ifndef LYNX_FUNC_NO_RECURSE_HANDLER_HPP
 #define LYNX_FUNC_NO_RECURSE_HANDLER_HPP
 
-#include "interfaces/FunctionAttributeHandler.hpp"
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
-
-    using namespace LynxLogger;
 
     class NoRecurseHandler : public FunctionAttributeHandler {
 
         protected:
 
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked NoRecurseHandler");
-                //Basic heuristic: no calls to self
+                if (!func) return;
+
                 bool recurses = false;
                 for (auto& bb : *func) {
                     for (auto& inst : bb) {
@@ -45,10 +41,12 @@ namespace LynxFunctionAttr {
                     if (recurses) break;
                 }
                 if (!recurses) {
-                    builder.addAttribute(llvm::Attribute::NoRecurse);
+                    builder.addAttribute(llvm::Attribute::get(func->getContext(), "norecurse"));
+                    LOG_INFO("Applied 'norecurse' attribute to function {}", func->getName().str());
                 }
+
             }
-        };
+    };
         
 }
 

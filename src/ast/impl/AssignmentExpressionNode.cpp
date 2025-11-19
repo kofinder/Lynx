@@ -10,6 +10,7 @@
 namespace LynxAst {
 
     using namespace VariableUtils;
+    using namespace Cloneable;
 
     llvm::Value* AssignmentExpressionNode::generateCode(std::shared_ptr<AstContext> astContext) {
         LOG_WARN("IR Code Generation .....");
@@ -83,11 +84,9 @@ namespace LynxAst {
     }
     
     llvm::Value* AssignmentExpressionNode::generateSimpleAssign(const AstContext& astContext) {
-        std::cout << "HELLO \n";
         auto& builder = astContext.getBuilder();
         auto* lhsPtr = assignableNode->generateCode(astContext.createContext());
         auto* rhsValue = expressionNode->generateCode(astContext.createContext());
-
         if (!lhsPtr || !rhsValue) {
             LOG_ERROR("Null in assignment operands.");
             return nullptr;
@@ -97,7 +96,7 @@ namespace LynxAst {
     }
 
     std::unique_ptr<Node> AssignmentExpressionNode::clone() const {
-        auto clonedExpr = Cloneable::cloneNode(expressionNode);
+        auto clonedExpr = cloneNode(expressionNode);
         if (assignableNode) {
             return std::make_unique<AssignmentExpressionNode>(Cloneable::cloneNode(assignableNode), operatorType, std::move(clonedExpr), assignExprType);
         } else if (!baseName.empty()) {

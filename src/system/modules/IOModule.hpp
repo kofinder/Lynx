@@ -53,6 +53,7 @@ namespace LynxSystem {
         public:
 
             IOModule() {
+                
                 // write
                 registerCommand<IOPrintOutCommand>("out", commands); 
                 registerCommand<IOPrintfCommand>("printf", commands);   

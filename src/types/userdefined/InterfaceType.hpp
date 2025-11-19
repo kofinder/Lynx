@@ -105,37 +105,37 @@ namespace LynxTypes {
                 std::string interfaceName
             ) : UserDefinedType(context), interfaceName(std::move(interfaceName))  {}
 
-            const std::string& qualifiedName() const;
-            const std::string& originalNameLower() const;
-            const std::string& originalName() const { return interfaceName; }
+            llvm::Type* getLLVMPointerType() const override;
 
-            inline DataType getTypeTag() const override { return DataType::INTERFACE; }
+            llvm::Value* getDefaultValue() override;
 
             llvm::Value* createInstance(std::string variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
-            llvm::Type* getLLVMPointerType() const override;
+            // void accept(TypeVisitor& visitor) override;
 
-            llvm::Value* getDefaultValue() override;
+            // TypeMethodResolver* getOrCreateResolver() const  override;
 
-            bool isAssignable(BaseType* lhsType, BaseType* rhsType);
+            // const std::unordered_map<std::string_view, int>& getMethodRegistry() const override;
 
-            void addParentInterface(const InterfaceType* iface);
+            // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
+
+            // llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
 
             std::unique_ptr<BaseType> clone() const override;
             
             bool equals(const BaseType* other) const override;
 
-            std::string getDebugName() const override;
+            bool isAssignable(BaseType* lhsType, BaseType* rhsType);
 
-            llvm::DIType* getDIType(llvm::DIScope* scope) const override;
+            void addParentInterface(const InterfaceType* iface);
 
-            uint64_t getDebugSizeInBits() const override;
+            inline DataType getTypeTag() const override { return DataType::INTERFACE; }
 
-            uint32_t getDebugAlignInBits() const override;
-
-            llvm::DINode::DIFlags getDIFlags() const override;
+            const std::string& qualifiedName() const;
+            const std::string& originalNameLower() const;
+            const std::string& originalName() const { return interfaceName; }
 
             void registerLLVMType(llvm::StructType* llvmStruct);
             static InterfaceType* fromLLVMType(const llvm::Type* type);
@@ -161,9 +161,13 @@ namespace LynxTypes {
             llvm::Value* loadVTablePtr(llvm::Value* objValue) const;
             llvm::Value* loadVirtualMethodPtr(llvm::Value* vtablePtr, const std::string& fnName) const;
             unsigned getVirtualMethodIndex(const std::string& methodName) const;
-
             std::string resolveMethodCall(MethodKind kind, const std::string& mangledName, const std::vector<llvm::Type*>& argTypes) const;
 
+            std::string getDebugName() const override;
+            llvm::DIType* getDIType(llvm::DIScope* scope) const override;
+            uint64_t getDebugSizeInBits() const override;
+            uint32_t getDebugAlignInBits() const override;
+            llvm::DINode::DIFlags getDIFlags() const override;
 
             ~InterfaceType() override = default;
     };

@@ -91,9 +91,9 @@ namespace LynxTypes {
                 std::string name
             ) : UserDefinedType(context), mixinName(std::move(name))  {}
 
-            const std::string& qualifiedName() const;
-            const std::string& originalNameLower() const;
-            const std::string& originalName() const { return mixinName; }
+            llvm::Type* getLLVMPointerType() const override;
+
+            llvm::Value* getDefaultValue() override;
 
             inline DataType getTypeTag() const override { return DataType::MIXIN; }
 
@@ -101,25 +101,25 @@ namespace LynxTypes {
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
-            llvm::Type* getLLVMPointerType() const override;
+            // void accept(TypeVisitor& visitor) override;
 
-            llvm::Value* getDefaultValue() override;
+            // TypeMethodResolver* getOrCreateResolver() const  override;
 
-            bool isAssignable(BaseType* lhsType, BaseType* rhsType);
+            // const std::unordered_map<std::string_view, int>& getMethodRegistry() const override;
+
+            // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
+
+            // llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
 
             std::unique_ptr<BaseType> clone() const override;
             
             bool equals(const BaseType* other) const override;
 
-            std::string getDebugName() const override;
+            bool isAssignable(BaseType* lhsType, BaseType* rhsType);
 
-            llvm::DIType* getDIType(llvm::DIScope* scope) const override;
-
-            uint64_t getDebugSizeInBits() const override;
-
-            uint32_t getDebugAlignInBits() const override;
-
-            llvm::DINode::DIFlags getDIFlags() const override;
+            const std::string& qualifiedName() const;
+            const std::string& originalNameLower() const;
+            const std::string& originalName() const { return mixinName; }
 
             void registerLLVMType(llvm::StructType* llvmStruct);
             static MixinType* fromLLVMType(const llvm::Type* type);
@@ -153,6 +153,13 @@ namespace LynxTypes {
             void setFlattenedMethods(const std::unordered_map<std::string, MethodType*>& methodsMap, const std::vector<std::string>& methodOrder = {});
             const std::vector<std::string>& getFlattenedMethodOrder() const { return flattenedMethodOrder; }
             const MethodType* getFlattenedMethod(const std::string& sig) const;
+
+            std::string getDebugName() const override;
+            llvm::DIType* getDIType(llvm::DIScope* scope) const override;
+            uint64_t getDebugSizeInBits() const override;
+            uint32_t getDebugAlignInBits() const override;
+            llvm::DINode::DIFlags getDIFlags() const override;
+
 
             ~MixinType() override = default;
     };

@@ -17,25 +17,34 @@
 #ifndef LYNX_FUNC_READ_NONE_HANDLER_HPP
 #define LYNX_FUNC_READ_NONE_HANDLER_HPP
 
-#include "interfaces/FunctionAttributeHandler.hpp"
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
-
-    using namespace LynxLogger;
 
     class ReadNoneHandler : public FunctionAttributeHandler {
 
         protected:
         
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked ReadNoneHandler");
-                if (/* check if function is pure and side-effect free */ false) {
-                    builder.addAttribute(llvm::Attribute::ReadNone);
-                    LOG_WARN("Applied read-none attributes");
+                if (!func) return;
+
+                bool isPureAndSideEffectFree = true;
+
+                for (const auto &BB : *func) {
+                    for (const auto &I : BB) {
+                        if (I.mayWriteToMemory() || I.mayHaveSideEffects()) {
+                            isPureAndSideEffectFree = false;
+                            break;
+                        }
+                    }
+                    if (!isPureAndSideEffectFree) break;
+                }
+        
+                if (isPureAndSideEffectFree) {
+                    builder.addAttribute(llvm::Attribute::get(func->getContext(), llvm::Attribute::ReadNone));
+                    LOG_WARN("Applied 'readnone' attribute to function {}", func->getName().str());
                 }
             }    
-    
     };    
 
 }

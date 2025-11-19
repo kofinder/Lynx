@@ -64,7 +64,7 @@ namespace LynxTypes {
     }    
 
     llvm::Type* MixinType::getLLVMPointerType() const {
-        if (!cachedPointerType) cachedPointerType = llvm::PointerType::getUnqual(getLLVMType());
+        if (!cachedPointerType) cachedPointerType = llvm::PointerType::get(getLLVMType()->getContext(), 0);
         return cachedPointerType;
     }
 
@@ -137,6 +137,10 @@ namespace LynxTypes {
         return methods.find(mangleName) != methods.end();
     }
 
+    // std::unique_ptr<TypeMethodResolver> MixinType::getOrCreateResolver() const {
+    //     return std::make_unique<MixinMethodResolver>();
+    // }
+
     void MixinType::addField(const std::string& name, std::unique_ptr<FieldType> field) {
         if (fields.find(name) != fields.end()) {
             std::cerr << "Warning: Field '" << name << "' already exists in interface '" << mixinName << "'\n";
@@ -203,9 +207,9 @@ namespace LynxTypes {
     MixinType* MixinType::fromLLVMType(const llvm::Type* type) {
         if (!type) return nullptr;
 
-        if (auto ptrType = llvm::dyn_cast<llvm::PointerType>(type)) {
-            type = ptrType->getPointerElementType();
-        }
+        // if (auto ptrType = llvm::dyn_cast<llvm::PointerType>(type)) {
+        //     type = ptrType->getPointerElementType();
+        // }
 
         if (auto structType = llvm::dyn_cast<llvm::StructType>(type)) {
             auto it = llvmTypeToClass.find(structType);

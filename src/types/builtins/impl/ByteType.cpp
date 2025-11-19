@@ -1,10 +1,9 @@
 #include "builtins/ByteType.hpp"
-#include <context/AstContext.hpp>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Constants.h>
-#include <resolver/TypeVisitor.hpp>
-#include <resolver/TypeMethodResolver.hpp>
-#include <resolver/ByteMethodResolver.hpp>
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/ByteMethodResolver.hpp"
 
 namespace LynxTypes {
     
@@ -23,7 +22,7 @@ namespace LynxTypes {
 
     llvm::Type* ByteType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        return llvm::PointerType::getUnqual(computeLLVMType());
+        return llvm::PointerType::get(computeLLVMType()->getContext(), 0);
     }
 
     llvm::Value* ByteType::getDefaultValue() {
@@ -69,14 +68,17 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    void ByteType::accept(TypeVisitor& visitor) { 
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
+    void ByteType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
+
+    TypeMethodResolver* ByteType::getOrCreateResolver() const { 
+        if (!resolver) resolver = new ByteMethodResolver();
+        return resolver;
     }
 
-    std::unique_ptr<TypeMethodResolver> ByteType::createMethodResolver() const { 
-        LOG_INFO("Invoked...");
-        return std::make_unique<ByteMethodResolver>();
+    llvm::Value* ByteType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        LOG_ERROR("Emit Method Call Invocation.");
+        if (!resolver) resolver = getOrCreateResolver();
+        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
     }
 
     const BaseType* ByteType::createWithStatic(bool newIsStatic) const {

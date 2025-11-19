@@ -31,47 +31,60 @@ namespace LynxCore {
             std::cerr << "[RuntimeBindingManager] Error: module is null in declareAll\n";
             return;
         }
-
+    
         auto& ctx = module->getContext();
-
-        // Declare: void* GC_malloc(size_t)
+    
+        // opaque i8* for GC_malloc
+        auto* i8PtrTy = llvm::PointerType::get(ctx, 0); 
+    
+        // void* GC_malloc(size_t)
         auto* mallocType = llvm::FunctionType::get(
-            llvm::Type::getInt8PtrTy(ctx),
+            i8PtrTy,
             { llvm::Type::getInt64Ty(ctx) },
             false
         );
         module->getOrInsertFunction("GC_malloc", mallocType);
-
-        // Declare: int pthread_create(pthread_t*, const pthread_attr_t*, void*(*)(void*), void*)
+    
+        // int pthread_create(pthread_t*, const pthread_attr_t*, void*(*)(void*), void*)
         auto* pthreadCreateType = llvm::FunctionType::get(
             llvm::Type::getInt32Ty(ctx),
             {
-                llvm::PointerType::getUnqual(llvm::Type::getInt8PtrTy(ctx)), // opaque pthread_t*
-                llvm::PointerType::getUnqual(llvm::Type::getInt8PtrTy(ctx)), // pthread_attr_t*
-                llvm::PointerType::getUnqual(llvm::FunctionType::get(
-                    llvm::Type::getInt8PtrTy(ctx), { llvm::Type::getInt8PtrTy(ctx) }, false
-                )),
-                llvm::Type::getInt8PtrTy(ctx)
+                i8PtrTy, // opaque pthread_t*
+                i8PtrTy, // opaque pthread_attr_t*
+                llvm::PointerType::get(
+                    llvm::FunctionType::get(
+                        i8PtrTy, // returns void*
+                        { i8PtrTy }, // argument void*
+                        false
+                    )->getContext(),
+                    0
+                ),
+                i8PtrTy // void* argument
             },
             false
         );
         module->getOrInsertFunction("pthread_create", pthreadCreateType);
-
-        // Declare: int pthread_join(pthread_t, void**)
+    
+        // int pthread_join(pthread_t, void**)
         auto* pthreadJoinType = llvm::FunctionType::get(
             llvm::Type::getInt32Ty(ctx),
             {
-                llvm::Type::getInt64Ty(ctx), // assuming pthread_t = uint64_t (adjust per target)
-                llvm::PointerType::getUnqual(llvm::Type::getInt8PtrTy(ctx))
+                llvm::Type::getInt64Ty(ctx),           // pthread_t as uint64_t
+                llvm::PointerType::get(i8PtrTy->getContext(), 0) // void**
             },
             false
         );
         module->getOrInsertFunction("pthread_join", pthreadJoinType);
-
-        // Similarly declare pthread_self and pthread_equal as needed
-        auto* pthreadSelfType = llvm::FunctionType::get(llvm::Type::getInt64Ty(ctx), {}, false);
+    
+        // pthread_self()
+        auto* pthreadSelfType = llvm::FunctionType::get(
+            llvm::Type::getInt64Ty(ctx),
+            {},
+            false
+        );
         module->getOrInsertFunction("pthread_self", pthreadSelfType);
-
+    
+        // pthread_equal(pthread_t, pthread_t)
         auto* pthreadEqualType = llvm::FunctionType::get(
             llvm::Type::getInt32Ty(ctx),
             { llvm::Type::getInt64Ty(ctx), llvm::Type::getInt64Ty(ctx) },
@@ -79,13 +92,17 @@ namespace LynxCore {
         );
         module->getOrInsertFunction("pthread_equal", pthreadEqualType);
     }
+       
 
     void RuntimeBindingManager::declareGCAllocFunction(llvm::Module* module, const std::string& typeName) {
         if (!module) return;
         auto& ctx = module->getContext();
     
         auto* int64Ty = llvm::Type::getInt64Ty(ctx);
-        auto* voidPtrTy = llvm::Type::getInt8PtrTy(ctx);
+        llvm::Type* i8Ty = llvm::Type::getInt8Ty(ctx);               // i8
+        llvm::PointerType* voidPtrTy = llvm::PointerType::get(i8Ty->getContext(), 0); // i8*
+
+        // auto* voidPtrTy = llvm::PointerType::get(ctx, 0);
     
         auto* allocFnType = llvm::FunctionType::get(voidPtrTy, { int64Ty }, false);
         std::string fnName = "LYNX_GC_ALLOC_" + typeName;

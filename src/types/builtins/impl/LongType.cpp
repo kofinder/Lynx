@@ -1,23 +1,19 @@
 #include "builtins/LongType.hpp"
-#include <context/AstContext.hpp>
-#include <resolver/TypeVisitor.hpp>
-#include <resolver/TypeMethodResolver.hpp>
-#include <resolver/LongMethodResolver.hpp>
-
-using namespace LynxContext;
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/LongMethodResolver.hpp"
 
 namespace LynxTypes {
 
     llvm::Type* LongType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt64Ty(context);
+        return llvm::Type::getInt64Ty(astContext->getLLVMContext());
     }
 
     llvm::Type* LongType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt64PtrTy(context);
+        auto* longTy = llvm::Type::getInt64Ty(astContext->getLLVMContext());
+        return llvm::PointerType::get(longTy->getContext(), 0);
     }
 
     llvm::Value* LongType::getDefaultValue() {
@@ -61,15 +57,15 @@ namespace LynxTypes {
         auto& builder = astContext->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
+    
+    void LongType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
-    void LongType::accept(TypeVisitor& visitor) { 
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
-    }
+    TypeMethodResolver* LongType::getOrCreateResolver() const { return LongMethodResolver::create(); }
 
-    std::unique_ptr<TypeMethodResolver> LongType::createMethodResolver() const { 
-        LOG_INFO("Invoked...");
-        return std::make_unique<LongMethodResolver>();
+    llvm::Value* LongType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        LOG_ERROR("Emit Method Call Invocation.");
+        if (!resolver)  resolver = getOrCreateResolver();
+        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
     }
 
     const BaseType* LongType::createWithStatic(bool newIsStatic) const {

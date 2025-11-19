@@ -59,23 +59,23 @@ namespace LynxSystem::utils {
      * @param valueType LLVM type of the value being printed.
      * @return A string_view containing the format specifier.
     */
-    [[nodiscard]] inline constexpr std::string_view getFormatSpecifier(llvm::Type* const valueType) noexcept {
+    [[nodiscard]] inline constexpr std::string_view getFormatSpecifier(llvm::Type* const valueType, llvm::Value* value = nullptr) noexcept {
         if (!valueType) return "%p\n";
-        if (TypeChecker::is<StringType>(valueType))      return "%s\n";
-        if (TypeChecker::is<BooleanType>(valueType))     return "%s\n";
-        if (TypeChecker::is<CharType>(valueType))        return "%c\n";
-        if (TypeChecker::is<ByteType>(valueType))        return "%d\n";
-        if (TypeChecker::is<ShortType>(valueType))       return "%d\n";
-        if (TypeChecker::is<IntegerType>(valueType))     return "%d\n";
-        if (TypeChecker::is<LongType>(valueType))        return "%ld\n";
-        if (TypeChecker::is<FloatType>(valueType))       return "%f\n";
-        if (TypeChecker::is<DoubleType>(valueType))      return "%lf\n";
-        if (TypeChecker::is<EnumType>(valueType))        return "Enum: [index: %d, value: %c, name: %s]\n";
-        if (TypeChecker::is<DateType>(valueType))        return "%04d-%02d-%02d\n";
-        if (TypeChecker::is<DateTimeType>(valueType))    return "%04d-%02d-%02dT%02d:%02d:%02d.%03d\n";
-        if (TypeChecker::is<ClassType>(valueType))       return "%p\n";
-        if (TypeChecker::is<ArrayType>(valueType))       return "[array]\n";
-        if (TypeChecker::is<FileType>(valueType))        return "[file]\n";
+        if (TypeChecker::is<StringType>(valueType, value))      return "%s\n";
+        if (TypeChecker::is<BooleanType>(valueType, value))     return "%s\n";
+        if (TypeChecker::is<CharType>(valueType, value))        return "%c\n";
+        if (TypeChecker::is<ByteType>(valueType, value))        return "%d\n";
+        if (TypeChecker::is<ShortType>(valueType, value))       return "%d\n";
+        if (TypeChecker::is<IntegerType>(valueType, value))     return "%d\n";
+        if (TypeChecker::is<LongType>(valueType, value))        return "%ld\n";
+        if (TypeChecker::is<FloatType>(valueType, value))       return "%f\n";
+        if (TypeChecker::is<DoubleType>(valueType, value))      return "%lf\n";
+        if (TypeChecker::is<EnumType>(valueType, value))        return "Enum: [index: %d, value: %c, name: %s]\n";
+        if (TypeChecker::is<DateType>(valueType, value))        return "%04d-%02d-%02d\n";
+        if (TypeChecker::is<DateTimeType>(valueType, value))    return "%04d-%02d-%02dT%02d:%02d:%02d.%03d\n";
+        if (TypeChecker::is<ClassType>(valueType, value))       return "%p\n";
+        if (TypeChecker::is<ArrayType>(valueType, value))       return "[array]\n";
+        if (TypeChecker::is<FileType>(valueType, value))        return "[file]\n";
 
         std::cerr << "[TypeChecker] Warning: Unrecognized type for format specifier\n";
         return "%p\n";
@@ -107,6 +107,24 @@ namespace LynxSystem::utils {
         else return "%p\n";
     }
 
+    inline llvm::StructType* getStructTypeFromPointer(llvm::Type* type) {
+        if (!type) {
+            throw std::runtime_error("Null type provided to getStructTypeFromPointer");
+        }
+        if (type->isPointerTy()) {
+            llvm::PointerType* ptrType = llvm::cast<llvm::PointerType>(type);
+            throw std::runtime_error(
+                "Opaque pointer encountered. You must provide a mapping from pointer type to StructType."
+            );
+        }
+    
+        if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
+            return structType;
+        }
+        throw std::runtime_error("Type is neither a StructType nor a pointer to StructType");
+    }
+    
+
     /**
      * @brief Prepares argument list for a `printf` call based on the given value.
      *
@@ -128,17 +146,15 @@ namespace LynxSystem::utils {
         auto* llvmType = expressionValue->getType();
         std::vector<llvm::Value*> printfArgs;
 
-        llvmType->print(llvm::outs());
-
-        const auto formatSpecifier = getFormatSpecifier(llvmType);
-        auto* formatString = builder.CreateGlobalStringPtr(std::string(formatSpecifier), "fmt");
+        const auto formatSpecifier = getFormatSpecifier(llvmType, expressionValue);
+        auto* formatString = builder.CreateGlobalString(std::string(formatSpecifier), "fmt");
         printfArgs.push_back(formatString);
 
         if(TypeChecker::is<BooleanType>(llvmType)) {
             auto* booleanAsString = builder.CreateSelect(
                 expressionValue, 
-                builder.CreateGlobalStringPtr("true"),
-                builder.CreateGlobalStringPtr("false")
+                builder.CreateGlobalString("true"),
+                builder.CreateGlobalString("false")
             );
             printfArgs.push_back(booleanAsString);
         } else if(TypeChecker::is<FloatType>(llvmType)) {
@@ -146,14 +162,7 @@ namespace LynxSystem::utils {
             printfArgs.push_back(floatPromotion);
         } else if(TypeChecker::is<DateTimeType>(llvmType)) {
 
-            llvm::StructType* structTy = nullptr;
-            if (auto* ptrType = llvm::dyn_cast<llvm::PointerType>(llvmType)) {
-                structTy = llvm::dyn_cast<llvm::StructType>(ptrType->getPointerElementType());
-            } else {
-                structTy = llvm::dyn_cast<llvm::StructType>(llvmType);
-            }
-
-            if (!structTy) throw std::runtime_error("Expected DateTime struct type");
+            auto* structTy = getStructTypeFromPointer(llvmType);
 
             // Extract fields in order
             llvm::Value* yearPtr = builder.CreateStructGEP(structTy, expressionValue, 0);
@@ -197,8 +206,7 @@ namespace LynxSystem::utils {
         } else if(TypeChecker::is<CharType>(llvmType)) {
             llvm::Value* charVal = nullptr;
             if (auto* ptrType = llvm::dyn_cast<llvm::PointerType>(llvmType)) {
-                auto* structTy = llvm::dyn_cast<llvm::StructType>(ptrType->getPointerElementType());
-                if (!structTy) throw std::runtime_error("Expected Char struct type pointer");
+                auto* structTy = getStructTypeFromPointer(llvmType);
                 auto* fieldPtr = builder.CreateStructGEP(structTy, expressionValue, 0, "char_field_ptr");
                 charVal = builder.CreateLoad(builder.getInt8Ty(), fieldPtr, "char_load_val");
             } else if (llvm::dyn_cast<llvm::StructType>(llvmType)) {
@@ -219,15 +227,22 @@ namespace LynxSystem::utils {
         return printfArgs;
     }
 
+    inline llvm::Value* getGlobalStringPtr(llvm::IRBuilder<>& builder, llvm::Module* module, const std::string& str, const std::string& name) noexcept {
+        auto* gv = builder.CreateGlobalString(str, name);
+        auto* arrayTy = llvm::cast<llvm::ArrayType>(gv->getValueType());
+        auto* zero = llvm::ConstantInt::get(builder.getInt32Ty(), 0);
+        return builder.CreateInBoundsGEP(arrayTy, gv, {zero, zero}, name + "_ptr");
+    }
 
     /**
      * @brief Retrieves (or inserts) the `printf` function declaration into the module.
     */
     [[nodiscard]] inline llvm::Function* getOrCreatePrintf(llvm::LLVMContext& context, llvm::Module* module) noexcept {
         constexpr bool isVarArg = true;
+        llvm::Type* i8ptrType = llvm::PointerType::get(llvm::IntegerType::get(context, 8)->getContext(), 0);
         auto* printfType = llvm::FunctionType::get(
             llvm::Type::getInt32Ty(context),
-            { llvm::Type::getInt8PtrTy(context) },
+            { i8ptrType  },
             isVarArg
         );
         return llvm::cast<llvm::Function>(module->getOrInsertFunction("printf", printfType).getCallee());
@@ -240,7 +255,7 @@ namespace LynxSystem::utils {
         constexpr bool isVarArg = true;
         auto* scanfType = llvm::FunctionType::get(
             llvm::Type::getInt32Ty(context),
-            { llvm::Type::getInt8PtrTy(context) },
+            { llvm::PointerType::get(context, 0) },
             isVarArg
         );
         return llvm::cast<llvm::Function>(module->getOrInsertFunction("scanf", scanfType).getCallee());

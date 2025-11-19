@@ -159,43 +159,6 @@ namespace MetadataTypeConstants {
     inline constexpr const char* TMP_GENERIC   = "tmp.value";        // Generic unnamed temporary
     inline constexpr const char* TMP_COMPARE   = "tmp.compare";      // Result of comparison
 
-
-
-    // // *** For arithmetic operations: ***
-    // inline constexpr auto OPR_ADD_TMP = "addTmp";
-    // inline constexpr const char* oprAddTmp = "sum";    // If the operation is addition.
-    // inline constexpr const char* oprSubTmp = "sub_tmp";    // If the operation is subtraction.
-    // inline constexpr const char* oprMulTmp = "mul_thmp";   // If the operation is multiplication.
-    // inline constexpr const char* oprDivTmp = "div_tmp";    // If the operation is division.
-    // inline constexpr const char* oprXor = "xor_tmp";       // If the operation is binary.
-
-
-    // // *** For specific operation types: ***
-    // inline constexpr const char* oprSumTmp = "lynx.sumtmp";    // If you're adding.
-    // inline constexpr const char* oprDiffTmp = "lynx.difftmp";  // If you're subtracting.
-    // inline constexpr const char* oprProdTmp = "lynx.prodtmp";  // If you're multiplying.
-    // inline constexpr const char* oprQuotTmp = "lynx.quottmp";  // If the operation is division.
-
-
-    // // *** For operations involving boolean expressions: ***
-    // inline constexpr const char* oprAndTmp = "lynx.andtmp";    // If it's an AND operation.
-    // inline constexpr const char* oprOrTmp = "lynx.ortmp";      // If it's an OR operation.
-    // inline constexpr const char* oprBoolResult = "lynx.boolresult"; // For boolean results in general.
-
-
-    // inline constexpr const char* oprGreaterThanTmp = "greaterthan_tmp"; // For boolean results in general.
-    // inline constexpr const char* oprLessThanTmp = "lessthan_tmp"; // For boolean results in general.
-    // inline constexpr const char* oprGreaterEqualTmp = "greaterequal_tmp"; // For boolean results in general.
-    // inline constexpr const char* oprLessEqualTmp = "lessequal_tmp"; // For boolean results in general.
-    // inline constexpr const char* oprEqualityTmp = "equality_tmp"; // For boolean results in general.
-    // inline constexpr const char* oprNotEqualityTmp = "notequality_tmp"; // For boolean results in general.
-
-    // inline constexpr const char* oprNegTmp = "neg_tmp";    // If the operation is subtraction.
-    // inline constexpr const char* oprIncTmp = "inc_tmp";   // If the operation is multiplication.
-    // inline constexpr const char* oprDecTmp = "dec_tmp";    // If the operation is division.
-    // inline constexpr const char* oprNotTmp = "not_tmp";    // If the operation is division.
-    // inline constexpr const char* oprXorTmp = "xor_tmp";    // If the operation is division.
-
 }
 
 #endif

@@ -8,8 +8,8 @@ namespace LynxLibRuntime::FileOps {
 
     inline llvm::FunctionType* getOpenFuncType(llvm::LLVMContext& ctx) {
         static llvm::FunctionType* funcType = llvm::FunctionType::get(
-            llvm::Type::getInt8PtrTy(ctx),
-            { llvm::Type::getInt8PtrTy(ctx) },
+            llvm::PointerType::get(ctx, 0),
+            { llvm::PointerType::get(ctx, 0) },
             false
         );
         return funcType;
@@ -18,7 +18,7 @@ namespace LynxLibRuntime::FileOps {
     inline llvm::FunctionType* getWriteFuncType(llvm::LLVMContext& ctx) {
         static llvm::FunctionType* funcType = llvm::FunctionType::get(
             llvm::Type::getVoidTy(ctx),
-            { llvm::Type::getInt8PtrTy(ctx), llvm::Type::getInt8PtrTy(ctx) },
+            { llvm::PointerType::get(ctx, 0), llvm::PointerType::get(ctx, 0) },
             false
         );
         return funcType;
@@ -27,7 +27,7 @@ namespace LynxLibRuntime::FileOps {
     inline llvm::FunctionType* getCloseFuncType(llvm::LLVMContext& ctx) {
         static llvm::FunctionType* funcType = llvm::FunctionType::get(
             llvm::Type::getVoidTy(ctx),
-            { llvm::Type::getInt8PtrTy(ctx), },
+            { llvm::PointerType::get(ctx, 0), },
             false
         );
         

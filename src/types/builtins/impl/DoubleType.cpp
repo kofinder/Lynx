@@ -1,23 +1,19 @@
 #include "builtins/DoubleType.hpp"
-#include <context/AstContext.hpp>
-#include <resolver/TypeVisitor.hpp>
-#include <resolver/TypeMethodResolver.hpp>
-#include <resolver/DoubleMethodResolver.hpp>
-
-using namespace LynxContext;
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/DoubleMethodResolver.hpp"
 
 namespace LynxTypes {
 
     llvm::Type* DoubleType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getDoubleTy(context);  // Correct type for 64-bit double
+        return llvm::Type::getDoubleTy(astContext->getLLVMContext());  // Correct type for 64-bit double
     }
 
     llvm::Type* DoubleType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getDoublePtrTy(context);  // Pointer to double type
+        auto* doubleTy = llvm::Type::getDoubleTy(astContext->getLLVMContext());
+        return llvm::PointerType::get(doubleTy->getContext(), 0);
     }
 
     llvm::Value* DoubleType::getDefaultValue() {
@@ -61,14 +57,14 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    void DoubleType::accept(TypeVisitor& visitor) { 
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
-    }
+    void DoubleType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
-    std::unique_ptr<TypeMethodResolver> DoubleType::createMethodResolver() const {
-        LOG_INFO("Invoked...");
-        return std::make_unique<DoubleMethodResolver>();
+    TypeMethodResolver* DoubleType::getOrCreateResolver() const { return DoubleMethodResolver::create(); }
+
+    llvm::Value* DoubleType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        LOG_ERROR("Emit Method Call Invocation.");
+        if (!resolver) resolver = getOrCreateResolver();
+        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
     }
 
     const BaseType* DoubleType::createWithStatic(bool newIsStatic) const {

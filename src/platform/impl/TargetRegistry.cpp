@@ -1,6 +1,10 @@
 #include "TargetRegistry.hpp"
 #include <iostream>
 #include <sstream>
+#include <set>
+#include <map>
+#include <vector>
+#include <string>
 
 namespace LynxPlatform {
 

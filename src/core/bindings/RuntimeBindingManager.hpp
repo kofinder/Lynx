@@ -55,6 +55,7 @@ namespace LynxCore {
 
             // Bind the MemoryManager pointer used by the generic allocator to register allocations
             static void setMemoryManager(MemoryManager* mgr);
+            
             static MemoryManager* getBoundMemoryManager();
 
     };

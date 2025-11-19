@@ -1,6 +1,7 @@
 #include "FunctionCallNode.hpp"
 #include <logger/Logger.hpp>
 #include "FunctionNode.hpp"
+#include "tmpl/CloneNodeTemplate.hpp"
 #include "tmpl/ImportSymbolTemplate.hpp"
 #include "utils/LLVMFunctionUtils.hpp"
 #include "ExceptionHandlerNode.hpp"
@@ -10,6 +11,7 @@ namespace LynxAst {
 
      using namespace LynxLogger;
      using namespace LynxContext;
+     using namespace Cloneable;
 
      llvm::Value* FunctionCallNode::generateCode(std::shared_ptr<AstContext> astContext) {
           std::vector<llvm::Value*> calleeArgs;
@@ -72,24 +74,10 @@ namespace LynxAst {
      }
 
      std::unique_ptr<Node> FunctionCallNode::clone() const {
-          auto clonedArgs = std::make_unique<std::vector<std::unique_ptr<ExpressionNode>>>();
-          if(arguments) {
-               clonedArgs->reserve(arguments->size());
-               for (const auto& arg : *arguments) {
-                    if (arg) {
-                        auto clonedArg = arg->clone();
-                        auto exprPtr = dynamic_cast<ExpressionNode*>(clonedArg.release());
-                        assert(exprPtr && "Cloned node is not an ExpressionNode");
-                        clonedArgs->push_back(std::unique_ptr<ExpressionNode>(exprPtr));
-                    } else {
-                        clonedArgs->push_back(nullptr);
-                    }
-               }
-          }
-      
+          auto clonedArgs = cloneNodeVector(arguments);
           auto clonedNode = std::make_unique<FunctionCallNode>(functionName, std::move(clonedArgs));
-          clonedNode->setClassName(className);
-          clonedNode->setObjectName(objectName);
+          clonedNode->className  = className;
+          clonedNode->objectName = objectName;
           return clonedNode;
      }
 }

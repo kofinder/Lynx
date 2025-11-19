@@ -32,6 +32,8 @@
 
 namespace LynxTypes {
 
+    using namespace LynxContext;
+
     class UserDefinedType : public BaseType {
 
         public:

@@ -43,6 +43,11 @@ int main(int argc, char const *argv[]) {
     {
         Lynx lynx(config);
 
+        timeExecution("Step 0: LLVM Initialization...", [&]() {
+            lynx.initializeLLVM();
+            return 0;
+        });
+
         int parseStatus = timeExecution("Step 1: Parsing Sources", [&]() {
             return lynx.parseSource();
         });

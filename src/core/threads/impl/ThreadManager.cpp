@@ -65,7 +65,7 @@ namespace LynxCore {
     }
 
     void ThreadManager::joinAll() {
-        std::cout << "[ThreadManager] Joining all worker threads...\n";
+        // std::cout << "[ThreadManager] Joining all worker threads...\n";
         {
             std::unique_lock<std::mutex> lock(queueMutex);
             running = false;
@@ -77,7 +77,7 @@ namespace LynxCore {
         }
 
         workerThreads.clear();
-        std::cout << "[ThreadManager] All threads joined.\n";
+        // std::cout << "[ThreadManager] All threads joined.\n";
     }
 
     pthread_t ThreadManager::self() {

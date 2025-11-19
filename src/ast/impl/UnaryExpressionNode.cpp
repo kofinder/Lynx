@@ -1,6 +1,5 @@
 #include <logger/Logger.hpp>
 #include "UnaryExpressionNode.hpp"
-#include "utils/NumericPromotion.hpp"
 #include "utils/VariableUtils.hpp"
 #include <context/GlobalSymbolContext.hpp>
 #include <constants/metadata/LabelTypeConstants.hpp>
@@ -10,8 +9,8 @@ namespace LynxAst {
     using namespace LynxLogger;
     using namespace LynxContext;
     using namespace LynxTypes;
-    using namespace MetadataTypeConstants;
     using namespace VariableUtils;
+    using namespace MetadataTypeConstants;
 
     llvm::Value* UnaryExpressionNode::generateCode(std::shared_ptr<AstContext> astContext) {
         LOG_WARN("IR Code Generation ......");

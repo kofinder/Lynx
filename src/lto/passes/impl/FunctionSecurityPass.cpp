@@ -1,12 +1,38 @@
 #include <passes/FunctionSecurityPass.hpp>
+#include "llvm/IR/Verifier.h"
+#include <llvm/IR/Constants.h>
+#include <llvm/IR/Instructions.h>
+#include <llvm/Support/raw_ostream.h>
+#include <llvm/IR/Metadata.h>
+#include <llvm/IR/MDBuilder.h>
 
 namespace LynxLTO {
+
     llvm::PreservedAnalyses FunctionSecurityPass::run(llvm::Module &M, llvm::ModuleAnalysisManager &MAM) {
-        llvm::errs() << "Running FunctionSecurityPass on module: " << M.getName() << "\n";
+        llvm::errs() << "Running FunctionSecurityPass on module: " << "\n";
+
+        bool Changed = false;
+
+        
+        llvm::LLVMContext &Ctx = M.getContext();
+        llvm::MDBuilder MDB(Ctx);
     
-        // Iterate functions and dump documentation metadata or other info here
+        for (auto &F : M) {
+            if (F.isDeclaration()) continue;
+            llvm::MDString *Str = MDB.createString("security-critical");
+            llvm::MDNode *Node = llvm::MDNode::get(Ctx, Str);
     
-        return llvm::PreservedAnalyses::all();
+            F.setMetadata("lynx.security", Node);
+            Changed = true;
+    
+            F.addFnAttr(llvm::Attribute::NoInline); // prevent certain attacks
+            F.addFnAttr(llvm::Attribute::SanitizeAddress); // if enabled in compiler
+            llvm::errs() << "Security metadata attached to function: "  << F.getName() << "\n";
+        }
+    
+        return Changed ? llvm::PreservedAnalyses::none()
+                       : llvm::PreservedAnalyses::all();
+    
     }
     
 }

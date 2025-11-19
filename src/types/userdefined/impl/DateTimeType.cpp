@@ -1,9 +1,9 @@
 #include "userdefined/DateTimeType.hpp"
 #include <context/AstContext.hpp>
 #include <logger/Logger.hpp>
-#include <resolver/TypeVisitor.hpp>
-#include <resolver/TypeMethodResolver.hpp>
-#include <resolver/DateTimeMethodResolver.hpp>
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/DateTimeMethodResolver.hpp"
 
 using namespace LynxContext;
 using namespace LynxLogger;
@@ -14,7 +14,6 @@ namespace LynxTypes {
 
     llvm::Type* DateTimeType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        
         if (!cachedType) {
             auto& context = astContext->getLLVMContext();
             cachedType = llvm::StructType::create(context, MetadataTypeConstants::structureDateTimeType);
@@ -36,7 +35,7 @@ namespace LynxTypes {
 
     llvm::Type* DateTimeType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        return computeLLVMType()->getPointerTo();
+        return llvm::PointerType::get(computeLLVMType()->getContext(), 0);
     }
 
     llvm::Value* DateTimeType::getDefaultValue() {
@@ -44,15 +43,15 @@ namespace LynxTypes {
         return llvm::Constant::getNullValue(computeLLVMType());
     }
 
-    void DateTimeType::accept(TypeVisitor& visitor) { 
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
-    }
+    // void DateTimeType::accept(TypeVisitor& visitor) { 
+    //     LOG_INFO("Invoked...");
+    //     visitor.visit(*this); 
+    // }
 
-    std::unique_ptr<TypeMethodResolver> DateTimeType::createMethodResolver() const {
-        LOG_INFO("Invoked...");
-        return std::make_unique<DateTimeMethodResolver>();
-    }
+    // std::unique_ptr<TypeMethodResolver> DateTimeType::getOrCreateResolver() const {
+    //     LOG_INFO("Invoked...");
+    //     return std::make_unique<DateTimeMethodResolver>();
+    // }
 
 
     llvm::Value* DateTimeType::createInstance(std::string variableName) {
@@ -66,35 +65,6 @@ namespace LynxTypes {
         }
         return var;
     }
-
-    // llvm::Value* DateTimeType::createValue(LValueType value) const {
-    //     LOG_INFO("Invoked...");
-    //     if (!std::holds_alternative<DateTime>(value)) {
-    //         LOG_ERROR("Invalid LValueType for DateTimeType");
-    //         return nullptr;
-    //     }
-
-    //     LOG_ERROR("Unsupported value type");
-
-    //     auto& builder = astContext->getBuilder();
-    //     auto& context = astContext->getLLVMContext();
-    
-    //     const DateTime& date = std::get<DateTime>(value);
-    //     auto* structType = llvm::cast<llvm::StructType>(computeLLVMType());
-
-    //     llvm::Constant* constant = llvm::ConstantStruct::get(structType, {
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.year)),
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.month)),
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.day)),
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.hour)), // hour
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.minute)), // minute
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.second)), // second
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.millisecond)),  // millisecond
-    //         llvm::ConstantInt::get(context, llvm::APInt(32, date.timeZoneOffsetMinutes))  // millisecond
-    //     });
-
-    //     return constant;
-    // }
 
     llvm::Value* DateTimeType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
         LOG_INFO("Invoked...");
@@ -192,17 +162,14 @@ namespace LynxTypes {
     }
 
     uint64_t DateTimeType::getDebugSizeInBits() const {
-        LOG_INFO("Invoked...");
-        return 8 * 32; // 8 fields × 32 bits each
+        return 8 * 32;
     }
 
     uint32_t DateTimeType::getDebugAlignInBits() const {
-        LOG_INFO("Invoked...");
-        return 32; // i32 alignment
+        return 32;
     }
 
     llvm::DINode::DIFlags DateTimeType::getDIFlags() const {
-        LOG_INFO("Invoked...");
         return llvm::DINode::FlagZero;
     }
 

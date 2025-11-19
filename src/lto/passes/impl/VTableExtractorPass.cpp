@@ -1,8 +1,5 @@
 #include <passes/VTableExtractorPass.hpp>
 #include "llvm/Support/JSON.h" 
-#include "llvm/IR/Module.h"
-#include "llvm/Pass.h"
-#include "llvm/IR/Function.h"
 #include "llvm/IR/Instructions.h"
 #include <llvm/Support/FileSystem.h>
 #include "llvm/Support/raw_ostream.h"
@@ -10,9 +7,8 @@
 namespace LynxLTO {
 
     llvm::PreservedAnalyses VTableExtractorPass::run(llvm::Module &M, llvm::ModuleAnalysisManager &MAM) {
-        llvm::errs() << "Running LynxVTableExtractorPass on module: " << M.getName() << "\n";
+        llvm::errs() << "Running Lynx VTable Extractor Pass on module: "  << "\n";
     
-        llvm::errs() << "Module named metadata nodes:\n";
         for (auto &NMD : M.named_metadata()) {
             llvm::errs() << "  " << NMD.getName() << " (" << NMD.getNumOperands() << " operands)\n";
         }
@@ -22,9 +18,7 @@ namespace LynxLTO {
             llvm::errs() << "[Lynx] No vtables found.\n";
             return llvm::PreservedAnalyses::all();
         }
-    
-        llvm::errs() << "[Lynx] Found " << vtables->getNumOperands() << " vtable metadata nodes.\n";
-    
+        
         llvm::json::Object outJson;
     
         for (const llvm::MDNode *node : vtables->operands()) {
@@ -70,25 +64,21 @@ namespace LynxLTO {
             return llvm::PreservedAnalyses::all();
         }
     
-        llvm::json::Value jsonVal = llvm::json::Value(std::move(outJson));
-        const std::string filePath = "toy/build/vtable_metadata.json";
+        // llvm::json::Value jsonVal = llvm::json::Value(std::move(outJson));
+        // const std::string filePath = "toy/build/vtable_metadata.json";
+    
+        // // Save JSON to file in project directory
+        // std::error_code EC;
+        // llvm::raw_fd_ostream fileOS(filePath, EC, llvm::sys::fs::OF_Text); // F_Text in LLVM 21
+        // if (EC) {
+        //     llvm::errs() << "[Lynx] Failed to open vtable_metadata.json for writing: " << EC.message() << "\n";
+        // } else {
+        //     // RTTI-free JSON output
+        //     fileOS << jsonVal;
+        //     fileOS.close();
+        //     llvm::errs() << "[Lynx] vtable_metadata.json saved successfully.\n";
+        // }
 
-        // Print JSON to console nicely formatted
-       llvm::outs() << "[Lynx Reflection JSON]\n";
-       // llvm::outs() << llvm::formatv("{0:2}", jsonVal) << "\n";
-    
-        // Save JSON to file in project directory
-        std::error_code EC;
-        llvm::raw_fd_ostream fileOS(filePath, EC, llvm::sys::fs::OF_Text);
-        if (EC) {
-            llvm::errs() << "[Lynx] Failed to open vtable_metadata.json for writing: " << EC.message() << "\n";
-        } else {
-            fileOS << llvm::formatv("{0:2}", jsonVal);
-            fileOS.close();
-            llvm::errs() << "[Lynx] vtable_metadata.json saved successfully.\n";
-        }
-    
-        // Preserve all analyses, since we do not modify IR here
         return llvm::PreservedAnalyses::all();
     }
 }

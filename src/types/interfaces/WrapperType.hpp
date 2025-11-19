@@ -35,6 +35,8 @@
 
 namespace LynxTypes {
 
+    using namespace LynxContext;
+
     class WrapperType : public BaseType {
 
         public: 

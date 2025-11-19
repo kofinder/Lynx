@@ -17,6 +17,7 @@ namespace LynxAst {
     using namespace LynxContext;
     using namespace LynxTypes;
     using namespace LynxLibRuntime;
+    using namespace Cloneable;
 
     template <typename T>
     inline constexpr bool always_false = false;
@@ -55,10 +56,16 @@ namespace LynxAst {
         LOG_INFO("Emited ......");
         auto& builder = astContext.getBuilder();
 
-        if (objectValue->getType()->isPointerTy() &&
-            objectValue->getType()->getPointerElementType()->isPointerTy()) {
-            objectValue = builder.CreateLoad(objectValue->getType()->getPointerElementType(), objectValue, "load_deref");
+        // LLVM 21-safe: check for pointer to pointer and load if necessary
+        if (auto* ptrType = llvm::dyn_cast<llvm::PointerType>(objectValue->getType())) {
+            objectValue = builder.CreateLoad(objectValue->getType(), objectValue, "load_deref");
         }
+
+
+        // if (objectValue->getType()->isPointerTy() &&
+        //     objectValue->getType()->getPointerElementType()->isPointerTy()) {
+        //     objectValue = builder.CreateLoad(objectValue->getType()->getPointerElementType(), objectValue, "load_deref");
+        // }
 
         argValues.insert(argValues.begin(), objectValue);
 
@@ -132,8 +139,8 @@ namespace LynxAst {
         auto* methodPtr = usrDefinedType.loadVirtualMethodPtr(vtablePtr, mangled);
 
         // Cast to the correct function type
-        auto& builder = astContext.getBuilder();
-        auto* methodPtrCast = builder.CreateBitCast(methodPtr, methodFnType->getPointerTo(), llvm::Twine(fnName + "_ptr_cast"));
+        auto& builder = astContext.getBuilder();//  methodFnType->getPointerTo()
+        auto* methodPtrCast = builder.CreateBitCast(methodPtr, llvm::PointerType::get(methodFnType->getContext(), 0), llvm::Twine(fnName + "_ptr_cast"));
         llvm::FunctionCallee callee(methodFnType, methodPtrCast);
 
         return builder.CreateCall(callee, callArgs);    
@@ -311,8 +318,8 @@ namespace LynxAst {
     }
 
     std::unique_ptr<Node> MethodCallNode::clone() const {
-        auto fnNode = Cloneable::cloneNode(functionCallNode);
-        auto objNode = Cloneable::cloneNode(objectTargetNode);
+        auto fnNode = cloneNode(functionCallNode);
+        auto objNode = cloneNode(objectTargetNode);
         auto cloneNode = std::make_unique<MethodCallNode>(std::move(fnNode), std::move(objNode));
         return cloneNode;
     }   

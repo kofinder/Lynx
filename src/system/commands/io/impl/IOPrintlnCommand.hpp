@@ -19,7 +19,6 @@
  * @date: November 2, 2024
 */
 
-
 #ifndef LYNX_SYSTEM_IO_PRINTLN_COMMAND_HPP
 #define LYNX_SYSTEM_IO_PRINTLN_COMMAND_HPP
 
@@ -39,12 +38,14 @@ namespace LynxSystem {
                 auto* module = context->getModule();
     
                 if (calleeArgs.empty()) {
-                    auto* fmtStr = builder.CreateGlobalStringPtr("\n", "newline");
+                    auto* fmtStr = builder.CreateGlobalString("\n", "newline");
                     return emitPrintfCall(builder, module, { fmtStr });
                 }
     
                 auto fmt = buildFormatString(calleeArgs, true);
+
                 auto args = buildPrintfArgs(builder, module, fmt, calleeArgs);
+
                 return emitPrintfCall(builder, module, args);
             }
     };

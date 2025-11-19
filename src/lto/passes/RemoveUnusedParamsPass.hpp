@@ -20,15 +20,14 @@
 #ifndef LYNX_REMOVE_UNUSED_PARAMS_PASS_HPP
 #define LYNX_REMOVE_UNUSED_PARAMS_PASS_HPP
 
-#include "llvm/IR/PassManager.h"
+#include <llvm/IR/PassManager.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Function.h>
 
 namespace LynxLTO {
 
-    class RemoveUnusedParamsPass : public llvm::PassInfoMixin<RemoveUnusedParamsPass> {
-
-        public:
-
-            llvm::PreservedAnalyses run(llvm::Function& F, llvm::FunctionAnalysisManager& FAM);
+    struct RemoveUnusedParamsPass : public llvm::PassInfoMixin<RemoveUnusedParamsPass> {
+        llvm::PreservedAnalyses run(llvm::Function& F, llvm::FunctionAnalysisManager& FAM);
     };
 
 }

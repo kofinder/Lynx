@@ -35,7 +35,7 @@ namespace LynxAst {
             resolveInternalTypes(varType, *astContext);
 
             if (!baseType) {
-                std::cerr << "Invalid collection type: " << toString(varType->type) << "\n";
+                // std::cerr << "Invalid collection type: " << toString(varType->type) << "\n";
                 astContext->reportError(makeRuntimeError("Invalid collection type"));
                 return nullptr;
             }
@@ -170,7 +170,7 @@ namespace LynxAst {
             default: prefix = "col_"; break; // fallback
         }
     
-        ss << prefix << toString(collectionType->getElementType()->getTypeTag());
+        // ss << prefix << toString(collectionType->getElementType()->getTypeTag());
         ss << "_" << values.size();
         return ss.str();   
     }
@@ -186,9 +186,9 @@ namespace LynxAst {
         }
     
         ss << prefix
-           << toString(collectionType->getElementType()->getTypeTag())
+        //    << toString(collectionType->getElementType()->getTypeTag())
            << "_to_"
-           << toString(collectionType->getElementType()->getTypeTag())
+        //    << toString(collectionType->getElementType()->getTypeTag())
            << "_" << pairs.size();
     
         return ss.str();    
@@ -216,7 +216,7 @@ namespace LynxAst {
 
         auto base = context.findType(varType->type);
         if (!base) {
-            std::cerr << "Error: No base type found for " << toString(varType->type) << std::endl;
+            // std::cerr << "Error: No base type found for " << toString(varType->type) << std::endl;
             return;
         }
 

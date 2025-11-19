@@ -16,23 +16,21 @@
 #ifndef LYNX_FUNC_NO_SANITIZE_THREAD_HANDLER_HPP
 #define LYNX_FUNC_NO_SANITIZE_THREAD_HANDLER_HPP
 
-#include "interfaces/FunctionAttributeHandler.hpp"
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
-    using namespace LynxLogger;
-
-
     class NoSanitizeThreadHandler : public FunctionAttributeHandler {
-        protected:
-            void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked NoSanitizeThreadHandler");
-            }
-        };        
         
+        protected:
 
-                
+            void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
+                if (!func) return;
+                builder.addAttribute(llvm::Attribute::get(func->getContext(), "no_sanitize_thread"));
+                LOG_INFO("Applied 'no_sanitize_thread' attribute to function {}", func->getName().str());        
+            }
+    };        
+        
 }
 
 #endif

@@ -73,7 +73,9 @@ namespace LynxTypes {
                 std::string name
             ) : UserDefinedType(context), enumName(std::move(name)) {}
 
-            inline DataType getTypeTag() const override { return DataType::ENUM; }
+            llvm::Type* getLLVMPointerType() const override;
+
+            llvm::Value* getDefaultValue() override;
 
             llvm::Value* createInstance(std::string variableName) override;
 
@@ -81,11 +83,19 @@ namespace LynxTypes {
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
             
-            llvm::Type* getLLVMPointerType() const override;
+            // void accept(TypeVisitor& visitor) override;
 
-            llvm::Value* getDefaultValue() override;
+            // TypeMethodResolver* getOrCreateResolver() const  override;
+
+            // const std::unordered_map<std::string_view, int>& getMethodRegistry() const override;
+
+            // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
+
+            // llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
 
             bool equals(const BaseType* other) const override;
+
+            inline DataType getTypeTag() const override { return DataType::ENUM; }
 
             std::string getDebugName() const override;
 

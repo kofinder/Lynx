@@ -73,19 +73,25 @@ namespace LynxAst::VariableUtils {
             return {};
         }
 
-        // Load the value from memory
-        llvm::Type* loadType = llvmVarRef->getType()->getPointerElementType();
+        llvm::Type* loadType = nullptr;
+        if (auto* alloca = llvm::dyn_cast<llvm::AllocaInst>(llvmVarRef)) {
+            loadType = alloca->getAllocatedType();
+        } else if (auto* gv = llvm::dyn_cast<llvm::GlobalVariable>(llvmVarRef)) {
+            loadType = gv->getValueType();
+        } else if (auto* constExpr = llvm::dyn_cast<llvm::ConstantExpr>(llvmVarRef)) {
+            loadType = constExpr->getType();
+        }
+    
         if (!loadType) {
             LOG_ERROR("Failed to determine pointer element type.");
             return {};
         }
 
-        // If already a pointer to an object, no load
-        if (llvmVarRef->getType()->isPointerTy() && llvmVarRef->getType()->getPointerElementType()->isStructTy()) {
-            std::cerr << "already a pointer to an object, no need to load!\n";
+        if (loadType->isPointerTy()) {
+            LOG_ERROR("Variable '{}' is a pointer-to-object; returning pointer without load.", variableName);
             return { llvmVarRef, llvmVarRef };
         }
-
+    
         auto loaded = builder.CreateLoad(loadType, llvmVarRef, variableName + "_load");
 
         return { loaded, llvmVarRef };

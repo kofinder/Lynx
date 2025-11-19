@@ -15,30 +15,28 @@
  * @date: November 4, 2025
 */
 
-
 #ifndef LYNX_FUNC_SIGN_EXTEND_HANDLER_HPP
 #define LYNX_FUNC_SIGN_EXTEND_HANDLER_HPP
 
-#include "interfaces/FunctionAttributeHandler.hpp"
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
 
-    using namespace LynxLogger;
-
-
     class SignExtendHandler : public FunctionAttributeHandler {
-        protected:
-            void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked SignExtendHandler");
-                llvm::Type* retType = func->getReturnType();
 
+        protected:
+
+            void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
+                if (!func) return;
+
+                auto* retType = func->getReturnType();
                 if (retType->isIntegerTy() && retType->getIntegerBitWidth() > 1) {
-                    LOG_ERROR("Applied SExt attributes");
-                    builder.addAttributeAtRet(llvm::Attribute::SExt);
+                    llvm::LLVMContext &ctx = func->getContext();
+                    builder.addAttributeAtRet(llvm::Attribute::get(ctx, llvm::Attribute::SExt));
+                    LOG_INFO("Applied 'SExt' attribute to return of function {}", func->getName().str());
                 }
             }
-        };
+    };
                 
 }
 

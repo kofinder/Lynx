@@ -119,12 +119,6 @@ class Lynx {
 
         bool systemModulesInitialized = false;
 
-        /**
-         * @brief Initialize LLVM targets (native) and backend support.
-         *
-         * Must be called before IR generation or JIT compilation.
-        */
-        void initializeLLVM();
 
         /**
          * @brief Load and parse all source files for the project.
@@ -146,6 +140,13 @@ class Lynx {
                 systemModulesInitialized = true;
             }    
         }
+
+        /**
+         * @brief Initialize LLVM targets (native) and backend support.
+         *
+         * Must be called before IR generation or JIT compilation.
+        */
+        void initializeLLVM();
 
         /**
          * @brief Parse the source files into AST.

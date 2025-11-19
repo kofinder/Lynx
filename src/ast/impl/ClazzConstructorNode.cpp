@@ -13,9 +13,10 @@ namespace LynxAst {
     using namespace LynxLogger;
     using namespace LynxContext;
     using namespace LynxTypes;
+    using namespace Cloneable;
 
     llvm::Value* ClazzConstructorNode::generateCode(std::shared_ptr<AstContext> astContext) {
-        LOG_INFO("Generating constructor for class: {}", constructorName);
+        LOG_INFO("IR code generation... {}", constructorName);
 
         auto* module = astContext->getModule();
         auto& context = astContext->getLLVMContext();
@@ -108,8 +109,8 @@ namespace LynxAst {
     }
 
     std::unique_ptr<Node> ClazzConstructorNode::clone() const {   
-        auto clonedExpressions = Cloneable::cloneNodeVector(expressions);
-        auto clonedSuperCallNode = Cloneable::cloneOptionalNode(superCallNode);
+        auto clonedExpressions = cloneNodeVector(expressions);
+        auto clonedSuperCallNode = cloneOptionalNode(superCallNode);
         auto cloned = std::make_unique<ClazzConstructorNode>(
             accessModifierType,
             constructorName,

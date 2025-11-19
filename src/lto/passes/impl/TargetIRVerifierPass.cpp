@@ -1,87 +1,68 @@
 #include <passes/TargetIRVerifierPass.hpp>
 #include "llvm/IR/Verifier.h"
-#include "llvm/IR/CallSite.h"
-#include "llvm/Support/raw_ostream.h"
+#include <llvm/IR/Constants.h>
+#include <llvm/IR/Instructions.h>
+#include <llvm/Support/raw_ostream.h>
 
 
 namespace LynxLTO {
 
-    llvm::PreservedAnalyses TargetIRVerifierPass::run(llvm::Module &M, llvm::ModuleAnalysisManager &MAM) {
-        bool hasErrors = false;
-
-        // Step 1: Run standard LLVM verification (basic IR correctness)
-        if (llvm::verifyModule(M, &llvm::errs())) {
-            llvm::errs() << "[TargetIRVerifierPass] Standard LLVM verification failed\n";
-            hasErrors = true;
-        }
-
-        // Step 2: Run your target-specific IR checks
-        if (!verifyModuleForTarget(M)) {
-            llvm::errs() << "[TargetIRVerifierPass] Target-specific verification failed\n";
-            hasErrors = true;
-        }
-
-        // Return preserved analyses if no errors, else none
-        return hasErrors ? llvm::PreservedAnalyses::none() : llvm::PreservedAnalyses::all();
-    }
-
     bool TargetIRVerifierPass::verifyModuleForTarget(llvm::Module &M) {
-        bool allOk = true;
-
-        for (llvm::Function &F : M) {
-            if (!verifyFunctionForTarget(F)) {
-               llvm::errs() << "[TargetIRVerifierPass] Function '" << F.getName() << "' failed target verification\n";
-                allOk = false;
-            }
+        bool Valid = true;
+    
+        for (auto &F : M) {
+            if (F.isDeclaration()) continue;
+            if (!verifyFunctionForTarget(F))
+                Valid = false;
         }
 
-        // Add more module-level checks here if needed
-
-        return allOk;
+        for (auto &GV : M.globals()) {
+            llvm::Type *Ty = GV.getType();
+            if (Ty->isPointerTy()) {
+                llvm::errs() << "[Note] Global pointer (cannot inspect element type in opaque mode): "
+                             << GV.getName() << "\n";
+                Valid = false;
+            }
+        }
+        
+        return Valid;
     }
-
+    
     bool TargetIRVerifierPass::verifyFunctionForTarget(llvm::Function &F) {
-        // Example target-specific checks:
-
-        // 1. Disallow calls to unsupported intrinsics (customize per target)
-        for (auto &BB : F) {
-            for (auto &I : BB) {
-                if (auto *callInst = dyn_cast<llvm::CallBase>(&I)) {
-                    llvm::Function *calledFunc = callInst->getCalledFunction();
-                    if (calledFunc && calledFunc->isIntrinsic()) {
-                        unsigned intrinsicID = calledFunc->getIntrinsicID();
-                        // Example: disallow some intrinsic (replace with your target logic)
-                        // if (intrinsicID == llvm::Intrinsic::x86_sse_add_ps) {
-                        //     llvm::errs() << "[TargetIRVerifierPass] Disallowed SSE intrinsic found\n";
-                        //     return false;
-                        // }
-                    }
-                }
-            }
+        bool Valid = true;
+    
+        // Example: disallow functions returning floating point types for this target
+        if (F.getReturnType()->isFloatingPointTy()) {
+            llvm::errs() << "[Error] Function " << F.getName()
+                         << " returns a floating-point type, which is unsupported for target\n";
+            Valid = false;
         }
-
-        // 2. Enforce calling convention (example: only C calling convention allowed)
-        if (F.getCallingConv() != llvm::CallingConv::C) {
-            llvm::errs() << "[TargetIRVerifierPass] Function '" << F.getName() << "' uses disallowed calling convention\n";
-            return false;
+    
+        // Example: disallow vararg functions
+        if (F.isVarArg()) {
+            llvm::errs() << "[Error] Function " << F.getName()
+                         << " is vararg, which is unsupported for target\n";
+            Valid = false;
         }
-
-        // 3. Check for unsupported types (example: no floating point on embedded)
-        for (auto &BB : F) {
-            for (auto &I : BB) {
-                for (unsigned i = 0; i < I.getNumOperands(); ++i) {
-                    llvm::Type *operandType = I.getOperand(i)->getType();
-                    if (operandType->isFloatingPointTy()) {
-                        llvm::errs() << "[TargetIRVerifierPass] Floating point type detected in function '" << F.getName() << "'\n";
-                        return false;
-                    }
-                }
-            }
-        }
-
-        // Add more target-specific checks here...
-
-        return true;
+    
+        return Valid;
     }
+    
+
+    llvm::PreservedAnalyses TargetIRVerifierPass::run(
+        llvm::Module &M, llvm::ModuleAnalysisManager &MAM) {
+    
+        llvm::errs() << "[Lynx] Running TargetIRVerifierPass on module: " << M.getName() << "\n";
+    
+        bool Valid = verifyModuleForTarget(M);
+    
+        if (!Valid) {
+            llvm::errs() << "[Lynx] Target IR verification failed. Module contains invalid constructs.\n";
+        } else {
+            llvm::errs() << "[Lynx] Target IR verification passed.\n";
+        }
+    
+        return llvm::PreservedAnalyses::all(); // read-only
+    }    
 
 }

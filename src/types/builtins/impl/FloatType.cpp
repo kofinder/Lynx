@@ -1,24 +1,20 @@
 #include "builtins/FloatType.hpp"
-#include <context/AstContext.hpp>
-#include <resolver/TypeVisitor.hpp>
-#include <resolver/TypeMethodResolver.hpp>
-#include <resolver/FloatMethodResolver.hpp>
-
-using namespace LynxContext;
-
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/FloatMethodResolver.hpp"
 
 namespace LynxTypes {
 
     llvm::Type* FloatType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getFloatTy(context);
+        return llvm::Type::getFloatTy(astContext->getLLVMContext());
     }
 
     llvm::Type* FloatType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getFloatPtrTy(context);
+        auto* floatTy = llvm::Type::getFloatTy(astContext->getLLVMContext());
+        auto* floatPtr = llvm::PointerType::get(floatTy->getContext(), 0); 
+        return floatPtr;
     }
 
     llvm::Value* FloatType::getDefaultValue() {
@@ -61,14 +57,14 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    void FloatType::accept(TypeVisitor& visitor) { 
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
-    }
+    void FloatType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
-    std::unique_ptr<TypeMethodResolver> FloatType::createMethodResolver() const { 
-        LOG_INFO("Invoked...");
-        return std::make_unique<FloatMethodResolver>();
+    TypeMethodResolver* FloatType::getOrCreateResolver() const { return FloatMethodResolver::create(); }
+
+    llvm::Value* FloatType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        LOG_ERROR("Emit Method Call Invocation.");
+        if (!resolver) resolver = getOrCreateResolver();
+        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
     }
 
     const BaseType* FloatType::createWithStatic(bool newIsStatic) const {

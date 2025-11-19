@@ -1,10 +1,7 @@
 #include "builtins/CharType.hpp"
-#include <context/AstContext.hpp>
-#include <resolver/TypeVisitor.hpp>
-#include <resolver/TypeMethodResolver.hpp>
-#include <resolver/CharacterMethodResolver.hpp>
-
-using namespace LynxContext;
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/CharacterMethodResolver.hpp"
 
 namespace LynxTypes {
 
@@ -23,7 +20,7 @@ namespace LynxTypes {
 
     llvm::Type* CharType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        return llvm::PointerType::getUnqual(computeLLVMType());
+        return llvm::PointerType::get(computeLLVMType()->getContext(), 0);
     }
 
     llvm::Value* CharType::getDefaultValue() {
@@ -69,14 +66,17 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    void CharType::accept(TypeVisitor& visitor) {
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
+    void CharType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
+
+    TypeMethodResolver* CharType::getOrCreateResolver() const { 
+        if (!resolver) resolver = new CharacterMethodResolver();
+        return resolver;
     }
 
-    std::unique_ptr<TypeMethodResolver> CharType::createMethodResolver() const { 
-        LOG_INFO("Invoked...");
-        return std::make_unique<CharacterMethodResolver>();
+    llvm::Value* CharType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        LOG_ERROR("Emit Method Call Invocation.");
+        if (!resolver)  resolver = getOrCreateResolver();
+        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
     }
 
     const BaseType* CharType::createWithStatic(bool newIsStatic) const {

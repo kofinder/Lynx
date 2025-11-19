@@ -38,7 +38,7 @@ namespace LynxSystem {
                 auto* module = context->getModule();
 
                 if (calleeArgs.empty()) {
-                    auto* fmtStr = builder.CreateGlobalStringPtr("", "empty_inline");
+                    auto* fmtStr = builder.CreateGlobalString("", "empty_inline");
                     return emitPrintfCall(builder, module, { fmtStr });
                 }
 

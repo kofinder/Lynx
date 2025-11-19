@@ -19,16 +19,14 @@
 #ifndef LYNX_DEADCODE_ELIMINATION_PASS_HPP
 #define LYNX_DEADCODE_ELIMINATION_PASS_HPP
 
-#include "llvm/IR/PassManager.h"
-
+#include <llvm/IR/PassManager.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Function.h>
 
 namespace LynxLTO {
 
-    class DeadCodeEliminationPass : public llvm::PassInfoMixin<DeadCodeEliminationPass> {
-
-        public:
-
-            llvm::PreservedAnalyses run(llvm::Function& F, llvm::FunctionAnalysisManager& FAM);
+    struct DeadCodeEliminationPass : public llvm::PassInfoMixin<DeadCodeEliminationPass> {
+        llvm::PreservedAnalyses run(llvm::Function& F, llvm::FunctionAnalysisManager& FAM);
     };
 
 }

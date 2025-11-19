@@ -17,22 +17,20 @@
 #ifndef LYNX_FUNC_NO_INLINE_HANDLER_HPP
 #define LYNX_FUNC_NO_INLINE_HANDLER_HPP
 
-#include "interfaces/FunctionAttributeHandler.hpp"
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
-
-    using namespace LynxLogger;
 
     class NoInlineHandler : public FunctionAttributeHandler {
 
         protected:
+            
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked NoInlineHandler");
+                if(!func) return;
                 if (func->size() > 100) {
-                    builder.addAttribute(llvm::Attribute::NoInline);
-                    LOG_WARN("Applied no-inline attributes");
-                }
+                    builder.addAttribute(llvm::Attribute::get(func->getContext(), llvm::Attribute::NoInline));
+                    LOG_INFO("Applied 'noinline' attribute");
+                }        
             }
     };    
 

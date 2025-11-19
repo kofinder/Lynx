@@ -19,12 +19,12 @@ namespace LynxLibRuntime {
         private:
             // Emit runtime error and abort
             void callRuntimeError(llvm::IRBuilder<> &builder, llvm::Module *module, llvm::StringRef msg) {
-                llvm::LLVMContext &ctx = builder.getContext();
+                auto& ctx = builder.getContext();
 
                 // Declare or get 'puts'
                 llvm::Function* putsFunc = module->getFunction("puts");
                 if (!putsFunc) {
-                    auto putsType = llvm::FunctionType::get(builder.getInt32Ty(), builder.getInt8PtrTy(), false);
+                    auto putsType = llvm::FunctionType::get(builder.getInt32Ty(), llvm::PointerType::get(ctx, 0), false);
                     putsFunc = llvm::Function::Create(putsType, llvm::Function::ExternalLinkage, "puts", module);
                 }
 
@@ -36,7 +36,7 @@ namespace LynxLibRuntime {
                 }
 
                 // Emit global string for message
-                llvm::Value* errMsg = builder.CreateGlobalStringPtr(msg, "runtime_error_msg");
+                llvm::Value* errMsg = builder.CreateGlobalString(msg, "runtime_error_msg");
 
                 // Call puts(message)
                 builder.CreateCall(putsFunc, errMsg);
@@ -74,20 +74,18 @@ namespace LynxLibRuntime {
 
             // Get the array[index] element
             llvm::Value* getArrayElement(std::shared_ptr<AstContext> ctx, llvm::Value* arrayPtr, llvm::Value* index) {
-                auto &builder = ctx->getBuilder();
+                auto& builder = ctx->getBuilder();
+                auto& llvmCtx = ctx->getLLVMContext();
 
-                llvm::Value* innerArrayPtr = builder.CreateStructGEP(
-                    arrayPtr->getType()->getPointerElementType(), arrayPtr, 0, "array_inner");
+                auto* i8PtrTy = llvm::PointerType::get(llvmCtx, 0);
 
-                llvm::Value* elementPtr = builder.CreateGEP(
-                    innerArrayPtr->getType()->getPointerElementType(), innerArrayPtr,
-                    {builder.getInt32(0), index}, "array_element_ptr");
-
-                return builder.CreateLoad(
-                    elementPtr->getType()->getPointerElementType(), elementPtr, "array_element");
+                auto* innerArrayPtr = builder.CreateStructGEP(i8PtrTy, arrayPtr, 0, "array_inner");
+                auto* elementPtr = builder.CreateGEP(i8PtrTy, innerArrayPtr, {builder.getInt32(0), index}, "array_element_ptr");
+                return builder.CreateLoad(i8PtrTy, elementPtr, "array_element");
             }
 
         public:
+        
             llvm::Value* call(std::shared_ptr<AstContext> astContext, std::vector<std::unique_ptr<ExpressionNode>> args) override {
                 LOG_ERROR("Array.at requires array instance and index.");
                 astContext->reportError(makeRuntimeError("Array.at requires array instance and index."));

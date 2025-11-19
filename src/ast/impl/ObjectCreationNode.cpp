@@ -18,6 +18,7 @@ namespace LynxAst {
     using namespace LynxTypes;
     using namespace LynxLogger;
     using namespace LynxContext;
+    using namespace Cloneable;
 
     llvm::Value* ObjectCreationNode::generateCode(std::shared_ptr<AstContext> astContext)  {
         LOG_WARN("IR Code Generation ...", variableType->name);
@@ -56,7 +57,7 @@ namespace LynxAst {
         auto mangledName = clazzType->resolveMethodCall(MethodKind::CONSTRUCTOR, exactMangled, argTypes);
 
         std::vector<llvm::Type*> arguments = argTypes;
-        arguments.insert(arguments.begin(), objectType->getPointerTo());
+        arguments.insert(arguments.begin(), llvm::PointerType::get(objectType->getContext(), 0));
 
         auto* module = astContext.getModule();
         auto& context = astContext.getLLVMContext();
@@ -133,19 +134,23 @@ namespace LynxAst {
                 auto* argValue = arg->generateCode(astContext.createContext());
                 if (!argValue) continue;
 
-                // If argument is a pointer but constructor expects value, load it
                 llvm::Type* argType = argValue->getType();
                 if (argType->isPointerTy()) {
-                    llvm::Type* elemType = argType->getPointerElementType();
-                    if (elemType->isStructTy()) {
-                        auto* structType = llvm::dyn_cast<llvm::StructType>(elemType);
-                        if (structType->getName().startswith("enum.")) {
-                            LOG_ERROR("Likely a bitcast from struct pointer → safe to dereference") ;
-                            argValue = builder.CreateLoad(elemType, argValue, "enum_val");                        
-                        }                    
-                    } 
-                }        
-
+                    llvm::Type* elemType = nullptr;
+                    if (auto* ptrTy = llvm::dyn_cast<llvm::PointerType>(argType)) {
+                        elemType = llvm::Type::getInt8Ty(builder.getContext()); 
+                    }
+                
+                    if (elemType && elemType->isStructTy()) {
+                        if (auto* structType = llvm::dyn_cast<llvm::StructType>(elemType)) {
+                            if (structType->getName().starts_with("enum.")) {
+                                LOG_ERROR("Likely a bitcast from struct pointer → safe to dereference");
+                                argValue = builder.CreateLoad(elemType, argValue, "enum_val");
+                            }
+                        }
+                    }
+                }
+                
                 ctorArgs.push_back(argValue);
                 ctorArgTypes.push_back(argType);
             }
@@ -190,7 +195,7 @@ namespace LynxAst {
 
 
     std::unique_ptr<Node> ObjectCreationNode::clone() const {
-        auto clonedArgs = Cloneable::cloneNodeVector(arguments);
+        auto clonedArgs = cloneNodeVector(arguments);
         auto clonedNode = std::make_unique<ObjectCreationNode>(variableType, std::move(clonedArgs));
         return clonedNode;
     }

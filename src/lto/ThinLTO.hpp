@@ -19,40 +19,92 @@
 #ifndef LYNX_THIN_LTO_HPP
 #define LYNX_THIN_LTO_HPP
 
-#include <logger/Logger.hpp>
 #include "llvm/IR/Verifier.h"
-#include "llvm/IR/LegacyPassManager.h"
-#include "llvm/Transforms/IPO/PassManagerBuilder.h"
-#include "strategy/DefaultLTOOptimizationStrategy.hpp"
+#include "llvm/IR/PassManager.h"
+#include "llvm/Passes/PassBuilder.h"
+
+#include "passes/AccessModifierPass.hpp"
+#include "passes/AttributorPass.hpp"
+#include "passes/DeadCodeEliminationPass.hpp"
+#include "passes/DevirtualizeFunctionCallsPass.hpp"
+#include "passes/DevirtualizePass.hpp"
+#include "passes/FunctionDocDumperPass.hpp"
+#include "passes/FunctionDocExtractorPass.hpp"
+#include "passes/FunctionInliningPass.hpp"
+#include "passes/FunctionMetadataPass.hpp"
+#include "passes/FunctionSecurityPass.hpp"
+#include "passes/FunctionSignatureAuditPass.hpp"
+#include "passes/GlobalDCEPPass.hpp"
+#include "passes/PointerCaptureAnalysisPass.hpp"
+#include "passes/RemoveUnusedParamsPass.hpp"
+#include "passes/RequireAnalysisPass.hpp"
+#include "passes/TargetIRVerifierPass.hpp"
+#include "passes/UndenfinedBehaviorPass.hpp"
+#include "passes/VirtualCallOptimizationPass.hpp"
+#include "passes/VTableExtractorPass.hpp"
+#include "passes/WholeProgramDevirtPass.hpp"
+#include "strategies/DefaultLTOOptimizationStrategy.hpp"
 
 namespace LynxLTO {
 
-    using namespace LynxLogger;
-
     class ThinLTO : public DefaultLTOOptimizationStrategy {
 
-        void optimize(llvm::Module &M) override {
+        void optimize(llvm::Module& M) override {
+
             if (llvm::verifyModule(M, &llvm::errs())) {
                 llvm::errs() << "Module verification failed! Aborting optimization.\n";
                 return;
             }
+        
+            // Setup analysis managers
+            llvm::LoopAnalysisManager       LAM;
+            llvm::FunctionAnalysisManager   FAM;
+            llvm::CGSCCAnalysisManager      CGAM;
+            llvm::ModuleAnalysisManager     MAM;
+            llvm::PassBuilder               PB;
+        
+            PB.registerModuleAnalyses(MAM);
+            PB.registerCGSCCAnalyses(CGAM);
+            PB.registerFunctionAnalyses(FAM);
+            PB.registerLoopAnalyses(LAM);
+            PB.crossRegisterProxies(LAM, FAM, CGAM, MAM);
 
-            // Create legacy pass manager to run ThinLTO passes
-            llvm::legacy::PassManager PM;
-    
-            // You can use PassManagerBuilder for IPO passes, with ThinLTO enabled
-            llvm::PassManagerBuilder PMBuilder;
-            PMBuilder.OptLevel = 3;
-            PMBuilder.SizeLevel = 0;
-            PMBuilder.populateLTOPassManager(PM);
-    
-            PM.run(M);
-    
-            // Verify module again after optimization
+            auto MPM = PB.buildModuleOptimizationPipeline(
+                llvm::OptimizationLevel::O3,
+                llvm::ThinOrFullLTOPhase::ThinLTOPreLink
+            );
+
+            MPM.addPass(AccessModifierPass());
+            MPM.addPass(AttributorPass());
+            MPM.addPass(llvm::createModuleToFunctionPassAdaptor(DeadCodeEliminationPass()));
+            MPM.addPass(DevirtualizeFunctionCallsPass());
+            MPM.addPass(DevirtualizePass());
+            MPM.addPass(FunctionDocDumperPass());
+            MPM.addPass(FunctionDocExtractorPass());
+            MPM.addPass(FunctionInliningPass());
+            MPM.addPass(FunctionMetadataPass());
+            MPM.addPass(FunctionSecurityPass());
+            MPM.addPass(FunctionSignatureAuditPass());
+            MPM.addPass(GlobalDCEPPass());
+            MPM.addPass(PointerCaptureAnalysisPass());
+            MPM.addPass(llvm::createModuleToFunctionPassAdaptor(RemoveUnusedParamsPass()));
+            MPM.addPass(RequireAnalysisPass());
+            MPM.addPass(TargetIRVerifierPass());
+            MPM.addPass(UndenfinedBehaviorPass());
+            MPM.addPass(VirtualCallOptimizationPass());
+            MPM.addPass(VTableExtractorPass());
+            MPM.addPass(WholeProgramDevirtPass());
+
+            llvm::errs() << "[LynxLTO] Running ThinLTO optimization pipeline...\n";
+
+            MPM.run(M, MAM);
+        
             if (llvm::verifyModule(M, &llvm::errs())) {
                 llvm::errs() << "Module verification failed after optimization!\n";
                 return;
             }
+
+            llvm::errs() << "[LynxLTO] ThinLTO optimization complete.\n";
         }
         
     };

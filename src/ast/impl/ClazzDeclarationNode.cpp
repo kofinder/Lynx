@@ -75,7 +75,7 @@ namespace LynxAst {
         if (!hasMixins()) return;
         auto clazzType = TypeCasting::castType<ClassType>(astContext.findType(className).get());
         auto* classStructType = llvm::cast<llvm::StructType>(clazzType->getLLVMType());
-        auto* classPointerType = llvm::PointerType::getUnqual(classStructType);
+        auto* classPointerType = llvm::PointerType::get(classStructType->getContext(), 0);
 
         for(auto[mixinOffset, mixinName, methodMap] : clazzType->getAllMixinMethods()) {
             std::cout << "Mixin Offset ====>" << mixinOffset << std::endl;

@@ -6,14 +6,12 @@ namespace LynxTypes {
 
     llvm::Type* DictionaryType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getFloatTy(context);
+        return nullptr;
     }
 
     llvm::Type* DictionaryType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getFloatPtrTy(context);
+        return nullptr;
     }
 
     llvm::Value* DictionaryType::getDefaultValue() {
@@ -23,21 +21,13 @@ namespace LynxTypes {
 
     llvm::Value* DictionaryType::createInstance(std::string variableName) {
         LOG_INFO("Invoked...");
-        auto& builder = astContext->getBuilder();
-        llvm::Type* floatType = this->getLLVMType();
-        auto var = builder.CreateAlloca(floatType, nullptr, variableName);
-        if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
-            auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::floatType));
-            var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
-        }
-        
-        return var;
+        return nullptr;
     }
 
     llvm::Value* DictionaryType::createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> pairs) const {
         LOG_INFO("Invoked...");
-        std::cout << "Dictionary Key Type ===>" << toString(elementType->getTypeTag()) << std::endl;
-        std::cout << "Dictionary ValueType  ===>" << toString(elementValue->getTypeTag()) << std::endl;
+        std::cout << "Dictionary Key Type ===>" << dataTypeToString(elementType->getTypeTag()) << std::endl;
+        std::cout << "Dictionary ValueType  ===>" << dataTypeToString(elementValue->getTypeTag()) << std::endl;
         return nullptr;       
     }     
 

@@ -1,13 +1,10 @@
 #include "PrimaryExpressionNode.hpp"
-#include <logger/Logger.hpp>
-
-
-using namespace LynxLogger;
-using namespace LynxContext;
 
 namespace LynxAst {
+
+    using namespace LynxContext;
+
     llvm::Value* PrimaryExpressionNode::generateCode(std::shared_ptr<AstContext> astContext) {
-        LOG_INFO("Invoked..");
         return innerExpNode->generateCode(astContext->createContext());
     }
 

@@ -4,6 +4,7 @@
 #include "userdefined/ClassType.hpp"
 #include "userdefined/InterfaceType.hpp"
 #include <constants/LinkageType.hpp>
+#include "resolver/methods/InterfaceMethodResolver.hpp"
 
 namespace LynxTypes {
 
@@ -36,7 +37,7 @@ namespace LynxTypes {
             }
             llvm::Type* retType = method->getReturnType()->getLLVMType();
             auto funcType = llvm::FunctionType::get(retType, paramTypes, false);
-            vtableEntries.push_back(llvm::PointerType::getUnqual(funcType));
+            vtableEntries.push_back(llvm::PointerType::get(funcType->getContext(), 0));
         }
 
         setStructBodySafe(structType, vtableEntries);
@@ -44,7 +45,9 @@ namespace LynxTypes {
     }
 
     llvm::Type* InterfaceType::getLLVMPointerType() const {
-        if (!cachedPointerType) cachedPointerType = llvm::PointerType::getUnqual(getLLVMType());
+        if (!cachedPointerType) {
+            cachedPointerType = llvm::PointerType::get(getLLVMType()->getContext(), 0);
+        } 
         return cachedPointerType;
     }
 
@@ -73,6 +76,10 @@ namespace LynxTypes {
         }
         return false;    
     }
+
+    // std::unique_ptr<TypeMethodResolver> InterfaceType::getOrCreateResolver() const {
+    //     return std::make_unique<InterfaceMethodResolver>();
+    // }
 
     const std::string& InterfaceType::qualifiedName() const { 
         if (cachedFullName.empty()) {
@@ -208,9 +215,9 @@ namespace LynxTypes {
     InterfaceType* InterfaceType::fromLLVMType(const llvm::Type* type) {
         if (!type) return nullptr;
 
-        if (auto ptrType = llvm::dyn_cast<llvm::PointerType>(type)) {
-            type = ptrType->getPointerElementType();
-        }
+        // if (auto ptrType = llvm::dyn_cast<llvm::PointerType>(type)) {
+        //     type = ptrType->getPointerElementType();
+        // }
 
         if (auto structType = llvm::dyn_cast<llvm::StructType>(type)) {
             auto it = llvmTypeToClass.find(structType);
@@ -272,8 +279,9 @@ namespace LynxTypes {
     
         auto& builder = astContext->getBuilder();
         auto* vtablePtrPtr = getVTablePtrPtr(objValue);
+        auto* vtablePtrType = llvm::PointerType::get(vtableType->getContext(), 0); 
 
-        auto* vtablePtr = builder.CreateLoad(vtableType->getPointerTo(), vtablePtrPtr, llvm::Twine(originalNameLower() + + "_vtable"));
+        auto* vtablePtr = builder.CreateLoad(vtablePtrType, vtablePtrPtr, llvm::Twine(originalNameLower() + + "_vtable"));
         vtableLoadCache[objValue] = vtablePtr;
 
         return vtablePtr;
@@ -284,7 +292,9 @@ namespace LynxTypes {
         auto& builder = astContext->getBuilder();
         unsigned methodIndex = getVirtualMethodIndex(fnName);
         auto* methodPtrPtr = builder.CreateStructGEP(vtableType, vtablePtr, methodIndex, llvm::Twine(fnName + "_ptr_ptr"));
-        return builder.CreateLoad(methodPtrPtr->getType()->getPointerElementType(), methodPtrPtr, llvm::Twine(fnName + "_ptr"));
+
+        auto* methodPtrType = llvm::PointerType::get(methodPtrPtr->getContext(), 0);
+        return builder.CreateLoad(methodPtrType, methodPtrPtr, llvm::Twine(fnName + "_ptr"));
     }
 
     llvm::GlobalVariable* InterfaceType::getOrCreateOrVTableGlobal() const {

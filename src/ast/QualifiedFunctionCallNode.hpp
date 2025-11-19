@@ -46,6 +46,10 @@ namespace LynxAst {
 
             std::unique_ptr<QualifiedPrefixType> qualifiedPrefixType;
 
+        private:
+
+            llvm::Value* dispatchInstanceExtensionMethod(std::shared_ptr<AstContext> astContext);
+
         public:
             QualifiedFunctionCallNode(
                 const std::string& name,

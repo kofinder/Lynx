@@ -6,14 +6,12 @@ namespace LynxTypes {
 
     llvm::Type* ListType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getFloatTy(context);
+        return nullptr;
     }
 
     llvm::Type* ListType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getFloatPtrTy(context);
+        return nullptr;
     }
 
     llvm::Value* ListType::getDefaultValue() {
@@ -23,20 +21,12 @@ namespace LynxTypes {
 
     llvm::Value* ListType::createInstance(std::string variableName) {
         LOG_INFO("Invoked...");
-        auto& builder = astContext->getBuilder();
-        llvm::Type* floatType = this->getLLVMType();
-        auto var = builder.CreateAlloca(floatType, nullptr, variableName);
-        if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
-            auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::floatType));
-            var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
-        }
-        
-        return var;
+        return nullptr;
     }
 
     llvm::Value* ListType::createValue(std::vector<llvm::Value*> values) const {
         LOG_INFO("Invoked...");
-        std::cout << "ELEMENT TYPE ===>" << toString(elementType->getTypeTag()) << std::endl;
+        std::cout << "ELEMENT TYPE ===>" << dataTypeToString(elementType->getTypeTag()) << std::endl;
         return nullptr;    
     }  
     

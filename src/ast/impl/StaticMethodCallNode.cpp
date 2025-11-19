@@ -1,30 +1,53 @@
 #include "StaticMethodCallNode.hpp"
+#include "tmpl/CloneNodeTemplate.hpp"
+#include <types/visitor/TypeMethodRegistry.hpp>
+#include <types/visitor/TypeMethodCallVisitor.hpp>
 
 namespace LynxAst {
 
     llvm::Value* StaticMethodCallNode::generateCode(std::shared_ptr<AstContext> astContext) {
-        LOG_ERROR("Invoked...");
-        return nullptr;
+
+        const std::string typeName = varType->name;
+        auto baseType = astContext->findType(typeName);
+        if (!baseType.get()) {
+            std::string msg = "Runtime Error: Variable '" + typeName + "' has no associated type in the type system.";
+            throw std::runtime_error(msg);
+        }
+    
+        auto& registry = astContext->getMethodTypeRegistry();
+        if (!registry.hasMethod(typeName, methodName)) {
+            std::string msg = "Runtime Error: Static method '" + methodName + "' does not exist on type '" + typeName + "'.";
+            throw std::runtime_error(msg);
+        }
+
+        if (!registry.validateMethodCall(typeName, methodName, arguments->size())) {
+            std::string msg = "Runtime Error: Static method '" + methodName + "' on type '" + typeName +
+                                "' expects " + std::to_string(registry.getExpectedParamCount(typeName, methodName)) +
+                                " arguments, but " + std::to_string(arguments->size()) + " were provided.";
+            throw std::runtime_error(msg);
+        }
+    
+        std::vector<llvm::Value*> argValues;
+        argValues.reserve(arguments->size());
+        for (auto& arg : *arguments) {
+            argValues.push_back(arg->generateCode(astContext->createContext()));
+        }
+    
+        TypeMethodCallVisitor visitor(methodName, argValues);
+        baseType->accept(visitor);
+
+        if (!visitor.result) {
+            std::string msg = "Runtime Error: Failed to execute method '" + methodName  + "' of type '" + typeName + "'.";
+            throw std::runtime_error(msg);
+        }
+
+        return visitor.result;
     }
 
     std::unique_ptr<Node> StaticMethodCallNode::clone() const  {
-        LOG_ERROR("Cloning FunctionCallNode...");
-        auto clonedArgs = std::make_unique<std::vector<std::unique_ptr<ExpressionNode>>>();
-        if(arguments) {
-             clonedArgs->reserve(arguments->size());
-             for (const auto& arg : *arguments) {
-                  if (arg) {
-                      auto clonedArg = arg->clone();
-                      auto exprPtr = dynamic_cast<ExpressionNode*>(clonedArg.release());
-                      assert(exprPtr && "Cloned node is not an ExpressionNode");
-                      clonedArgs->push_back(std::unique_ptr<ExpressionNode>(exprPtr));
-                  } else {
-                      clonedArgs->push_back(nullptr);
-                  }
-              }
-        }
-    
-        auto clonedNode = std::make_unique<StaticMethodCallNode>(typeName, methodName, std::move(clonedArgs));
+        using namespace Cloneable;
+        auto clonedArgs = cloneNodeVector(arguments);
+        auto clonedNode = std::make_unique<StaticMethodCallNode>(methodName, varType, std::move(clonedArgs));
         return clonedNode;
     }
 }

@@ -2,8 +2,10 @@
 #define LYNX_LIB_RUNTIME_FS_READ_FUNCTION_HPP
 
 #include "RuntimeFunction.hpp"
+#include <llvm/IR/Module.h>
 
 namespace LynxLibRuntime {
+
     class FSReadFunction : public RuntimeFunction {
         
         public:
@@ -30,23 +32,26 @@ namespace LynxLibRuntime {
                 auto& llvmCtx = astContext->getLLVMContext();
     
                 // Validate that optionalValue is a pointer to a struct (File)
-                llvm::Type* valType = optionalValue->getType();
-                if (!valType->isPointerTy() || !valType->getPointerElementType()->isStructTy()) {
-                    LOG_ERROR("FSReadFunction: Invalid file struct type passed");
-                    return nullptr;
-                }
+                // llvm::Type* valType = optionalValue->getType();
+                // if (!valType->isPointerTy() || !valType->getPointerElementType()->isStructTy()) {
+                //     LOG_ERROR("FSReadFunction: Invalid file struct type passed");
+                //     return nullptr;
+                // }
+
+                auto* i8PtrTy = llvm::PointerType::get(llvmCtx, 0);
+
     
                 // Extract the file handle pointer inside the struct: file handle is second element (index 1)
-                llvm::Value* fileHandlePtr = builder.CreateStructGEP(valType->getPointerElementType(), optionalValue, 1, "file_handle_ptr");
-                llvm::Value* fileHandle = builder.CreateLoad(builder.getInt8PtrTy(), fileHandlePtr, "file_handle");
+                llvm::Value* fileHandlePtr = builder.CreateStructGEP(i8PtrTy, optionalValue, 1, "file_handle_ptr");
+                llvm::Value* fileHandle = builder.CreateLoad(i8PtrTy, fileHandlePtr, "file_handle");
     
                 // Bitcast fileHandle to i8* (void*) if necessary (should already be i8*)
-                llvm::Value* fileHandleCast = builder.CreateBitCast(fileHandle, builder.getInt8PtrTy(), "file_handle_cast");
+                llvm::Value* fileHandleCast = builder.CreateBitCast(fileHandle, i8PtrTy, "file_handle_cast");
     
                 // Declare or get the file_read_all function: const char* file_read_all(void*)
                 llvm::FunctionType* readAllFuncType = llvm::FunctionType::get(
-                    builder.getInt8PtrTy(),         // returns char*
-                    { builder.getInt8PtrTy() },    // takes void*
+                    i8PtrTy,         // returns char*
+                    { i8PtrTy },    // takes void*
                     false
                 );
     

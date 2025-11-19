@@ -1,7 +1,6 @@
 #include "AstContext.hpp"
 #include "GlobalSymbolContext.hpp"
 #include <llvm/IR/Verifier.h>
-#include <llvm/Support/Host.h>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/Target/TargetMachine.h>
 #include <llvm/Support/TargetSelect.h>
@@ -35,6 +34,7 @@
 
 #include <logger/Logger.hpp>
 #include <errors/LoggingVisitor.hpp>
+#include <types/visitor/TypeMethodCallVisitor.hpp>
 
 namespace LynxContext {
 
@@ -54,6 +54,7 @@ namespace LynxContext {
         builder(std::make_shared<llvm::IRBuilder<>>(*llvmContext)),
         debugBuilder(std::make_shared<llvm::DIBuilder>(*module)),
         errors(std::make_shared<CompositeError>()),
+        methodRegistry(std::make_shared<TypeMethodRegistry>()),
         dataLayout(module->getDataLayout()),
         types(sharedTypes ? sharedTypes : std::make_shared<std::map<std::string, std::shared_ptr<BaseType>>>()) {}
 
@@ -72,21 +73,21 @@ namespace LynxContext {
         newCtx->dataLayout = this->dataLayout;
         newCtx->debugBuilder = this->debugBuilder;
         newCtx->globalContext = this->globalContext;
+        newCtx->methodRegistry = this->methodRegistry;
         newCtx->currentDepth = this->currentDepth + 1;
 
-        // Step 3: Rebind all shared BaseType objects to the new AstContext
-        if (newCtx->types) {
-            for (auto& kv : *newCtx->types) {
-                if (kv.second && kv.second->getContext() != newCtx.get()) {
-                    kv.second->setContext(newCtx.get());
-                }
+        // Rebind types to the new context
+        for (auto& [name, typePtr] : *newCtx->types) {
+            if (typePtr && typePtr->getContext() != newCtx.get()) {
+                typePtr->setContext(newCtx.get());
             }
-        }
+        }    
         
         return newCtx;  
     }
 
     void AstContext::initializeDefaultTypes() {
+        // Core primitive types
         registerCustomType("byte", std::make_shared<ByteType>(this));
         registerCustomType("short", std::make_shared<ShortType>(this));
         registerCustomType("int", std::make_shared<IntegerType>(this));
@@ -97,12 +98,14 @@ namespace LynxContext {
         registerCustomType("boolean", std::make_shared<BooleanType>(this));
         registerCustomType("string", std::make_shared<StringType>(this));
         registerCustomType("void", std::make_shared<VoidType>(this));
-        
+
+        // Extended types
         registerCustomType("Date", std::make_shared<DateType>(this));
         registerCustomType("File", std::make_shared<FileType>(this));
         registerCustomType("auto", std::make_shared<AutoType>(this));
         registerCustomType("DateTime", std::make_shared<DateTimeType>(this));
 
+        // Collection types
         registerCustomType("array", std::make_shared<ArrayType>(this));
         registerCustomType("vector", std::make_shared<VectorType>(this));
         registerCustomType("list", std::make_shared<ListType>(this));
@@ -113,74 +116,29 @@ namespace LynxContext {
         registerCustomType("dictionary", std::make_shared<DictionaryType>(this));
     } 
 
-    std::shared_ptr<BaseType> AstContext::findType(DataType variableType) const {
-        switch(variableType) {
-            case DataType::BYTE: return findType("byte");
-            case DataType::SHORT: return findType("short");
-            case DataType::INT: return findType("int");
-            case DataType::LONG: return findType("long");
-            case DataType::FLOAT: return findType("float");
-            case DataType::DOUBLE: return findType("double");
-            case DataType::BOOLEAN: return findType("boolean");
-            case DataType::CHAR: return findType("char");
-            case DataType::STRING: return findType("string");
-            case DataType::ENUM: return findType("enum");
-            case DataType::VOID: return findType("void");
-            case DataType::DATE: return findType("Date");
-            case DataType::DATETIME: return findType("DateTime");
-            case DataType::FILE: return findType("File");
-            case DataType::AUTO: return findType("auto");
-
-            case DataType::ARRAY: return findType("array");
-            case DataType::LIST: return findType("list");
-            case DataType::SET: return findType("set");
-            case DataType::STACK: return findType("stack");
-            case DataType::QUEUE: return findType("queue");
-            case DataType::VECTOR: return findType("vector");
-            case DataType::MAP: return findType("map");
-            case DataType::DICT: return findType("dict");
-            case DataType::TREE: return findType("tree");
-            case DataType::GRAPH: return findType("graph");
-
-            case DataType::CLAZZ:
-            case DataType::OTHER: 
-            case DataType::COLLECTION:
-            default: return nullptr;
-        };
-        
-        throw std::runtime_error("could not find type!");
+    void AstContext::initializeTypeMethods() {
+        for (auto& [typeName, typePtr] : *types) {
+            const auto& methods = typePtr->getMethodRegistry();
+            if (!methods.empty()) methodRegistry->registerMethods(typeName, methods);
+        }
     }
 
+    std::shared_ptr<BaseType> AstContext::findType(DataType dt) const {
+        return findType(dataTypeToString(dt));  
+    }
 
     std::shared_ptr<BaseType> AstContext::findType(llvm::Value* llvmValue) const {
-        if (!llvmValue) nullptr;
-
+        if (!llvmValue) return nullptr;
         llvm::Type* valType = llvmValue->getType();
-        if(valType->isPointerTy()) {
-            valType = valType->getPointerElementType();
-        }
-
-        for (const auto& x : *types) {
-
-            if (x.second->getTypeTag() == DataType::AUTO) continue;
-
-            llvm::Type* llvmType = x.second->getLLVMType();
-
-            if (llvmType->isPointerTy()) {
-                llvmType = llvmType->getPointerElementType();
-            }
-
-            // llvmType->print(llvm::errs()); llvm::errs() << " vs ";
-            // valType->print(llvm::errs()); llvm::errs() << "\n";
-
-            if (llvmType == valType) return x.second;
-                
+        for (const auto& [name, typePtr] : *types) {
+            if (!typePtr || typePtr->getTypeTag() == DataType::AUTO) continue;
+            if (typePtr->getLLVMType() == valType) return typePtr;
         }
 
         std::cerr << "[AstContext] Type not found! \n";
         return nullptr;
     }
-
+    
     std::shared_ptr<BaseType> AstContext::findType(const std::string& name) const {
         auto it = types->find(name);
         return it != types->end() ? it->second : nullptr;
@@ -215,7 +173,8 @@ namespace LynxContext {
         auto* mallocCall = builder.CreateCall(mallocFn, { allocSize }, "gc_alloc");
 
         // Cast to the correct object pointer type
-        auto objectInstance = builder.CreateBitCast(mallocCall, objType->getPointerTo(), "gc_cast");
+        auto* objectPtrTy = llvm::PointerType::get(objType->getContext(), 0);
+        auto objectInstance = builder.CreateBitCast(mallocCall, objectPtrTy, "gc_cast");
 
         auto baseType = findType(objectInstance);
         if(auto clazzType = TypeCasting::castType<ClassType>(baseType.get())) {
@@ -228,7 +187,7 @@ namespace LynxContext {
 
     llvm::Function* AstContext::getOrInsertGCAllocFunc(llvm::ConstantInt* allocSize, const std::string& fnName) {
     
-        auto* voidPtrType = llvm::Type::getInt8PtrTy(getLLVMContext());
+        auto* voidPtrType = llvm::PointerType::get(getLLVMContext(), 0);
 
         // Define function type: i8* func(i64)
         auto mallocType = llvm::FunctionType::get(voidPtrType, { allocSize->getType() }, false);

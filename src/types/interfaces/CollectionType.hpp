@@ -25,10 +25,11 @@
 #define LYNX_COLLECTION_TYPE_HPP
 
 #include <optional>
-#include "BaseType.hpp"
 #include <context/AstContext.hpp>
 
 namespace LynxTypes {
+    
+    using namespace LynxContext;
 
     class CollectionType : public BaseType {
 
@@ -197,7 +198,8 @@ namespace LynxTypes {
             */
             virtual void forEachKeyValue(const KeyValueCallback& callback) {
                 astContext->reportError(makeRuntimeError("forEachKeyValue must be implemented by derived AssociativeType"));
-            }   
+            }  
+
     };
 }
 

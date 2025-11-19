@@ -17,23 +17,22 @@
 #ifndef LYNX_FUNC_NO_CAPTURE_HANDLER_HPP
 #define LYNX_FUNC_NO_CAPTURE_HANDLER_HPP
 
-#include "interfaces/FunctionAttributeHandler.hpp"
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
-
-    using namespace LynxLogger;
 
     class NoCaptureHandler : public FunctionAttributeHandler {
 
         protected:
         
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked NoCaptureHandler");
-                for (auto& arg : func->args()) {
+                if (!func) return;
+        
+                for (auto &arg : func->args()) {
                     if (arg.getType()->isPointerTy()) {
-                        builder.addAttributeAtParam(llvm::Attribute::NoCapture, arg.getArgNo());
-                        LOG_WARN("Applied no capture attributes");
+                        auto &ctx = func->getContext();
+                        builder.addAttributeAtParam(llvm::Attribute::get(ctx, "nocapture"), arg.getArgNo());
+                        LOG_INFO("Applied 'nocapture' attribute to argument #{}", std::to_string(arg.getArgNo()));
                     }
                 }
             }

@@ -1,24 +1,20 @@
 #include "builtins/IntegerType.hpp"
 #include <llvm/IR/DebugInfoMetadata.h>
-#include <context/AstContext.hpp>
-#include <resolver/TypeVisitor.hpp>
-#include <resolver/TypeMethodResolver.hpp>
-#include <resolver/IntMethodResolver.hpp>
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/IntMethodResolver.hpp"
 
 namespace LynxTypes {
 
-    using namespace LynxContext;
-
     llvm::Type* IntegerType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt32Ty(context);
+        return llvm::Type::getInt32Ty(astContext->getLLVMContext());
     }
 
     llvm::Type* IntegerType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt32PtrTy(context);
+        auto* intTy = llvm::Type::getInt32Ty(astContext->getLLVMContext());
+        return llvm::PointerType::get(intTy->getContext(), 0);
     }
 
     llvm::Value* IntegerType::getDefaultValue() {
@@ -40,13 +36,10 @@ namespace LynxTypes {
        
         return var;
     }
-    
 
     llvm::Value* IntegerType::createValue(LValueType value) const {
-        assert(astContext && "IntegerType must be constructed with a valid AstContext");      
         if(std::holds_alternative<int>(value)) {
             auto& context = astContext->getLLVMContext();
-            assert(&context && "LLVMContext is not initialized!");   
             int intValue = std::get<int>(value); 
             return llvm::ConstantInt::get(context, llvm::APInt(32, intValue));
         }
@@ -64,15 +57,14 @@ namespace LynxTypes {
         auto& builder = astContext->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
+    
+    void IntegerType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
-    void IntegerType::accept(TypeVisitor& visitor) { 
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
-    }
+    TypeMethodResolver* IntegerType::getOrCreateResolver() const { return IntMethodResolver::create(); }
 
-    std::unique_ptr<TypeMethodResolver> IntegerType::createMethodResolver() const { 
-        LOG_INFO("Invoked...");
-        return std::make_unique<IntMethodResolver>();
+    llvm::Value* IntegerType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        if (!resolver) resolver = IntMethodResolver::create();
+        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
     }
 
     const BaseType* IntegerType::createWithStatic(bool newIsStatic) const {
@@ -130,8 +122,8 @@ namespace LynxTypes {
         if (isStatic()) {
             flags |= llvm::DINode::FlagStaticMember;
         }
-    
         return flags;
     }
     
 }
+

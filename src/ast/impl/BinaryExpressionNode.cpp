@@ -2,14 +2,14 @@
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/InstrTypes.h"
 #include "BinaryExpressionNode.hpp"
-#include "utils/NumericPromotion.hpp"
+#include <types/tmpl/TypeNumericPromotion.hpp>
 
 namespace LynxAst {
 
     using namespace LynxLogger;
     using namespace LynxContext;
     using namespace LynxTypes;
-    using namespace TypePromotion;
+    using namespace LynxTypes::TypePromotion;
     using namespace MetadataTypeConstants;
 
     llvm::Value* BinaryExpressionNode::generateCode(std::shared_ptr<AstContext> astContext) {
@@ -94,7 +94,7 @@ namespace LynxAst {
             default: return nullptr; // Overflow intrinsic not supported
         }
     
-        llvm::Function* intrinsic = llvm::Intrinsic::getDeclaration(module, intrinsicID, {type});
+        llvm::Function* intrinsic = llvm::Intrinsic::getOrInsertDeclaration(module, intrinsicID, {type});
         llvm::Value* resultStruct = builder.CreateCall(intrinsic, {lhsValue, rhsValue});
     
         // Extract the sum and overflow flag
@@ -102,70 +102,6 @@ namespace LynxAst {
         llvm::Value* overflow = builder.CreateExtractValue(resultStruct, 1, "overflow");
 
         return sum;
-    
-        // Optional: trap or branch on overflow
-        // // =============================================================
-        // // Optional: handle overflow (trap, log, or clamp)
-        // // =============================================================
-
-        // // Prepare basic blocks
-        // llvm::Function* parentFunc = builder.GetInsertBlock()->getParent();
-        // llvm::BasicBlock* currentBlock = builder.GetInsertBlock();
-        // llvm::BasicBlock* overflowBlock = llvm::BasicBlock::Create(module->getContext(), "overflow_block", parentFunc);
-        // llvm::BasicBlock* contBlock = llvm::BasicBlock::Create(module->getContext(), "no_overflow", parentFunc);
-
-        // builder.CreateCondBr(overflow, overflowBlock, contBlock);
-
-        // // -------------------------------
-        // // Overflow handling branch
-        // // -------------------------------
-        // builder.SetInsertPoint(overflowBlock);
-
-        // if (astContext.enableOverflowTrap()) {
-        //     // === Trap ===
-        //     llvm::Function* trapFn = llvm::Intrinsic::getDeclaration(module, llvm::Intrinsic::trap);
-        //     builder.CreateCall(trapFn);
-        //     builder.CreateUnreachable();
-        // } 
-        // else if (astContext.enableOverflowLog()) {
-        //     // === Log ===
-        //     llvm::Function* printfFn = astContext.getOrCreatePrintf(module);
-        //     llvm::Value* msg = builder.CreateGlobalStringPtr("⚠️ Integer overflow detected at runtime!\n");
-        //     builder.CreateCall(printfFn, {msg});
-
-        //     // Continue execution safely with clamped value or undefined
-        //     builder.CreateBr(contBlock);
-        // } 
-        // else if (astContext.enableOverflowClamp()) {
-        //     // === Clamp ===
-        //     unsigned bitWidth = type->getIntegerBitWidth();
-        //     llvm::Value* maxVal = llvm::ConstantInt::get(type, (1ULL << (bitWidth - 1)) - 1);
-        //     llvm::Value* minVal = llvm::ConstantInt::get(type, -(1LL << (bitWidth - 1)));
-
-        //     // Simple policy: clamp to max for + or *
-        //     llvm::Value* clamped = (operatorType == PLUS || operatorType == MUL)
-        //                             ? maxVal
-        //                             : minVal;
-
-        //     builder.CreateBr(contBlock);
-
-        //     // Record the clamped value in a PHI node later
-        //     llvm::BasicBlock* clampBlock = builder.GetInsertBlock();
-        //     builder.SetInsertPoint(contBlock);
-        //     llvm::PHINode* phi = builder.CreatePHI(type, 2, "clamped_result");
-        //     phi->addIncoming(clamped, clampBlock);
-        //     phi->addIncoming(sum, currentBlock);
-        //     return phi;
-        // } 
-        // else {
-        //     // Default: ignore overflow and continue
-        //     builder.CreateBr(contBlock);
-        // }
-
-        // // -------------------------------
-        // // Continue normal execution
-        // // -------------------------------
-        // builder.SetInsertPoint(contBlock);
     }
 
 
@@ -269,8 +205,8 @@ namespace LynxAst {
     std::unique_ptr<Node> BinaryExpressionNode::clone() const {
         return std::make_unique<BinaryExpressionNode>(
             operatorType,
-            this->leftOperand->clone(),
-            this->rightOperand->clone()
+            leftOperand->clone(),
+            rightOperand->clone()
         ); 
     }
 

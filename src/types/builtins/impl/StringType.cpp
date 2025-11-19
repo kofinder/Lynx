@@ -1,26 +1,21 @@
 #include <string>
 #include "builtins/StringType.hpp"
-#include <context/AstContext.hpp>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Constants.h>
 #include <llvm/Support/raw_ostream.h>
-#include <resolver/TypeVisitor.hpp>
-#include <resolver/TypeMethodResolver.hpp>
 #include <constants/LinkageType.hpp>
-#include <resolver/StringMethodResolver.hpp>
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/StringMethodResolver.hpp"
 
 namespace LynxTypes {
 
     llvm::Type* StringType::computeLLVMType() const {
-        LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::PointerType::get(llvm::Type::getInt8Ty(context), 0); // i8* pointer type
+        return llvm::PointerType::get(llvm::Type::getInt8Ty(astContext->getLLVMContext())->getContext(), 0);
     }
 
     llvm::Type* StringType::getLLVMPointerType() const {
-        LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::PointerType::get(llvm::Type::getInt8Ty(context), 0); // i8* pointer type
+        return llvm::PointerType::get(llvm::Type::getInt8Ty(astContext->getLLVMContext())->getContext(), 0);
     }
 
     llvm::Value* StringType::getDefaultValue() {
@@ -65,14 +60,17 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    void StringType::accept(TypeVisitor& visitor) { 
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
+    void StringType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
+
+    llvm::Value* StringType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        LOG_ERROR("Emit Method Call Invocation.");
+        if (!resolver) resolver = getOrCreateResolver();
+        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
     }
 
-    std::unique_ptr<TypeMethodResolver> StringType::createMethodResolver() const { 
-        LOG_INFO("Invoked...");
-        return std::make_unique<StringMethodResolver>();
+    TypeMethodResolver* StringType::getOrCreateResolver() const { 
+        if (!resolver) resolver = new StringMethodResolver();
+        return resolver;
     }
 
     bool StringType::equals(const BaseType* other) const {

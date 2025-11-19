@@ -1,23 +1,19 @@
 #include "builtins/BooleanType.hpp"
-#include <context/AstContext.hpp>
-#include <resolver/TypeVisitor.hpp>
-#include <resolver/TypeMethodResolver.hpp>
-#include <resolver/BoolMethodResolver.hpp>
-
-using namespace LynxContext;
+#include "visitor/TypeVisitor.hpp"
+#include "resolver/TypeMethodResolver.hpp"
+#include "resolver/methods/BoolMethodResolver.hpp"
 
 namespace LynxTypes {
 
     llvm::Type* BooleanType::computeLLVMType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt1Ty(context);
+        return llvm::Type::getInt1Ty(astContext->getLLVMContext());
     }
 
     llvm::Type* BooleanType::getLLVMPointerType() const {
         LOG_INFO("Invoked...");
-        auto& context = astContext->getLLVMContext();
-        return llvm::Type::getInt1PtrTy(context);
+        auto* boolTy = llvm::Type::getInt1Ty(astContext->getLLVMContext());
+        return llvm::PointerType::get(boolTy->getContext(), 0);
     }
 
     llvm::Value* BooleanType::getDefaultValue() {
@@ -25,7 +21,6 @@ namespace LynxTypes {
         LValueType LValueType = false;
         return this->createValue(LValueType);
     }
-
 
     llvm::Value* BooleanType::createInstance(std::string variableName) {
         LOG_INFO("Invoked...");
@@ -45,8 +40,8 @@ namespace LynxTypes {
         // Directly use the boolean (i1) to select the string value.
         llvm::Value* booleanAsString = builder.CreateSelect(
             value,  // Boolean condition (i1)
-            builder.CreateGlobalStringPtr("true"),  // If true
-            builder.CreateGlobalStringPtr("false")  // If false
+            builder.CreateGlobalString("true"),  // If true
+            builder.CreateGlobalString("false")  // If false
         );
         
         return booleanAsString;
@@ -56,8 +51,7 @@ namespace LynxTypes {
         LOG_ERROR("Invoked...");
         if(std::holds_alternative<bool>(value)) {
             bool boolValue = std::get<bool>(value);
-            auto& context = astContext->getLLVMContext();
-            return llvm::ConstantInt::get(context, llvm::APInt(1, boolValue));
+            return llvm::ConstantInt::get(astContext->getLLVMContext(), llvm::APInt(1, boolValue));
         }
         LOG_ERROR("BooleanType: Unsupported value type!");
         return nullptr;
@@ -73,14 +67,17 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    void BooleanType::accept(TypeVisitor& visitor) { 
-        LOG_INFO("Invoked...");
-        visitor.visit(*this); 
+    void BooleanType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
+
+    TypeMethodResolver* BooleanType::getOrCreateResolver() const { 
+        if (!resolver) resolver = new BoolMethodResolver();
+        return resolver;
     }
 
-    std::unique_ptr<TypeMethodResolver> BooleanType::createMethodResolver() const { 
-        LOG_INFO("Invoked...");
-        return std::make_unique<BoolMethodResolver>();
+    llvm::Value* BooleanType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+        LOG_ERROR("Emit Method Call Invocation.");
+        if (!resolver) resolver = getOrCreateResolver();
+        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
     }
 
     const BaseType* BooleanType::createWithStatic(bool newIsStatic) const {

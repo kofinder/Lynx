@@ -26,16 +26,15 @@ namespace LynxAst {
             valueToAssign = argOfValues[argIndex];
         }
 
-        int fieldIndex = clazzType.getFieldIndex(fieldName);
-        if (thisPtr->getType()->isPointerTy() && thisPtr->getType()->getPointerElementType()->isIntegerTy(8)) {
-            thisPtr = builder.CreateBitCast(thisPtr, llvmStructType->getPointerTo());
-        }
+        if (thisPtr->getType()->isPointerTy()) {
+            auto llvmPtrType = llvm::PointerType::get(llvmStructType->getContext(), 0);
+            if (thisPtr->getType() != llvmPtrType) {
+                thisPtr = builder.CreateBitCast(thisPtr, llvmPtrType, "this.cast");
+            }
+        } 
 
+        int fieldIndex = clazzType.getFieldIndex(fieldName);
         auto* fieldPtr = builder.CreateStructGEP(llvmStructType, thisPtr, fieldIndex, fieldName + "_ptr");
-        
-        if (valueToAssign->getType() != fieldPtr->getType()->getPointerElementType()) {
-            llvm::errs() << "Type mismatch when storing field '" << fieldName << "'\n";
-        }
 
         builder.CreateStore(valueToAssign, fieldPtr);
         

@@ -24,6 +24,7 @@
 #include <types/interfaces/BaseType.hpp>
 #include <constants/VariableType.hpp>
 #include <errors/includes/CompositeError.hpp>
+#include <types/visitor/TypeMethodRegistry.hpp>
 
 namespace LynxContext {
 
@@ -46,6 +47,8 @@ namespace LynxContext {
             std::shared_ptr<llvm::Module> module;
 
             llvm::DataLayout dataLayout;
+
+            std::shared_ptr<TypeMethodRegistry> methodRegistry;
 
             std::shared_ptr<llvm::DIBuilder> debugBuilder;
 
@@ -75,6 +78,26 @@ namespace LynxContext {
              * @brief Initializes default types within the context's type registry.
             */
             void initializeDefaultTypes();  
+
+            /**
+             * @brief Initializes the static and instance method registry for all known types.
+             * 
+             * This function iterates over all types registered in the context's type table and
+             * uses the TypeMethodCallVisitor to extract and register all static and instance-level
+             * method definitions associated with each BaseType. These methods are inserted into
+             * the TypeMethodRegistry owned by the AstContext.
+             * 
+             * This enables support for static method calls such as:
+             *     Integer.max(a, b)
+             *     String.fromString("123")
+             * 
+             * The method registration occurs only once—typically during construction of the
+             * AstContext—ensuring that all method metadata is ready before code generation begins.
+             * 
+             * @note This function must be called after all BaseTypes are created and registered
+             *       within the AstContext's type registry.
+            */
+            void initializeTypeMethods();
 
             /**
              * @brief Searches for a type by its name within the context's type registry.
@@ -125,6 +148,20 @@ namespace LynxContext {
              * @return true if the type was successfully registered; false if it already exists.
              */
             bool registerCustomType(const std::string& name, std::shared_ptr<BaseType> type); 
+
+            /**
+             * @brief Provides access to the context's TypeMethodRegistry.
+             * 
+             * The TypeMethodRegistry contains all registered static and instance methods
+             * for the types managed by this AstContext. This registry is used by AST nodes,
+             * such as StaticMethodCallNode, to resolve and invoke type-specific methods
+             * during code generation.
+             * 
+             * @return Reference to the TypeMethodRegistry owned by this AstContext.
+             * 
+             * @note The returned reference is valid as long as the AstContext exists.
+            */
+            TypeMethodRegistry& getMethodTypeRegistry() const { return *methodRegistry; }
 
             /**
              * @brief Retrieves the global symbol context.

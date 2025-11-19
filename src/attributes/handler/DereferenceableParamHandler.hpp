@@ -17,23 +17,23 @@
 #ifndef LYNX_FUNC_DEREFRENCEABLE_PARAM_HANDLER_HPP
 #define LYNX_FUNC_DEREFRENCEABLE_PARAM_HANDLER_HPP
 
-#include "interfaces/FunctionAttributeHandler.hpp"
-#include <logger/Logger.hpp>
+#include "attributes/FunctionAttributeHandler.hpp"
 
 namespace LynxFunctionAttr {
-
-    using namespace LynxLogger;
 
     class DereferenceableParamHandler : public FunctionAttributeHandler {
 
         protected:
         
             void apply(llvm::Function* func, FunctionAttributeBuilder& builder) override {
-                // LOG_INFO("Invoked DereferenceableParamHandler");
-
-                if (func->size() <= 5 && !func->isDeclaration()) {
-                   // builder.addAttributeAtParam(llvm::Attribute::Dereferenceable, 0);
-                    LOG_ERROR("Applied alwayinline attributes");
+                if (!func || func->isDeclaration()) return;
+                if (func->size() <= 5) {
+                    auto args = func->args().begin();
+                    if (args != func->args().end() && args->getType()->isPointerTy()) {
+                        llvm::LLVMContext &ctx = func->getContext();
+                        builder.addAttributeAtParam(llvm::Attribute::get(ctx, llvm::Attribute::Dereferenceable), 0);
+                        LOG_INFO("Applied 'Dereferenceable' attribute to first parameter of function {}", func->getName().str());
+                    }
                 }
             }
     };    
