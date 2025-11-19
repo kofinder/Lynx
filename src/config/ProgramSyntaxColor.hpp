@@ -6,7 +6,7 @@
  * when outputting to the terminal. It is intended for use in program visualization, REPLs, logs,
  * or any textual output that benefits from syntax differentiation.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
  */
 

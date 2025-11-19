@@ -13,7 +13,6 @@ namespace LynxAst {
     using namespace Cloneable;
 
     llvm::Value* AssignmentExpressionNode::generateCode(std::shared_ptr<AstContext> astContext) {
-        LOG_WARN("IR Code Generation .....");
         if(assignExprType == AssignExpressionType::SIMPLE_ASSIGN) {
            return generateSimpleAssign(*astContext);
         } else {

@@ -16,7 +16,7 @@
  * - IRPlanner to determine compilation order for code generation.
  * - IRGenerator to orchestrate module-level LLVM IR generation.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 

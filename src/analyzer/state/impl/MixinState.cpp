@@ -78,8 +78,6 @@ namespace LynxAnalyzer {
     }
 
     void MixinState::handleNode(SemanticAnalyzer& analyzer, Node* node) {
-        LOG_ERROR("Invoked");
-
         auto* mixinNode = dynamic_cast<MixinDeclarationNode*>(node);
         if (!mixinNode) return;
     

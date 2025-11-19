@@ -4,16 +4,35 @@
 
 Checks:
   - '-*'                               # disable all checks first
+    # Core analyzers
   - 'clang-analyzer-*'                 # static analyzer checks
   - 'clang-diagnostic-*'               # compiler diagnostics
+
+    # Code correctness
   - 'bugprone-*'                       # common bug patterns
   - 'cppcoreguidelines-*'              # C++ Core Guidelines
-  - 'modernize-*'                      # modern C++ usage suggestions
+  - 'cppcoreguidelines-*'
+  - 'hicpp-*'                           # High Integrity C++ guidelines
+
+  - 'modernize-*'                           # modern C++ usage suggestions
+  - '-modernize-use-trailing-return-type'   # ❌ Not useful for OOP projects
+  - '-modernize-pass-by-value'              # ❌ Too aggressive, noisy
+
+    # Performance
   - 'performance-*'                    # performance-related checks
-  - 'readability-*'                    # readability improvements
-  - 'hicpp-*'                          # High Integrity C++ guidelines
+
+    # Readability
+  - 'readability-*'                             # readability improvements
+  - '-readability-redundant-access-specifiers'  # optional disable
+  - '-readability-magic-numbers'                # optional disable (very noisy)
+
   - 'portability-*'                    # portability issues
-  - 'misc-*'                           # miscellaneous checks
+
+    # Misc cleanups
+  - 'misc-*'                                        # miscellaneous checks
+  - '-misc-non-private-member-variables-in-classes' # disable, unrealistic for many designs
+
+    # Extra checks you explicitly wanted
   - 'readability-non-const-parameter' # catch non-const parameters
   - 'misc-const-correctness'           # const-correctness issues
   - 'misc-use-anonymous-namespace'    # prefer anonymous namespaces for internal linkage
@@ -23,8 +42,6 @@ WarningsAsErrors: 'cppcoreguidelines-*' # treat all cppcoreguidelines warnings a
 
 HeaderFilterRegex: '^src/.*'          # only analyze headers under src/ or include/  
 
-# HeaderFilterRegex: '^(src/|include/)'   # only analyze headers under src/ or include/
-
 FormatStyle: file                       # use clang-format settings from file
 
 SystemHeaders: false                    # Exclude system headers from analysis; only process project source files
@@ -32,13 +49,11 @@ SystemHeaders: false                    # Exclude system headers from analysis; 
 ExtraArgs: ["-isystem", "/home/jovian/Workspaces/finderbar/Lynx/external"]
 
 CheckOptions:
-  - key: clang-analyzer-deadcode.DeadStores:SuppressWarningsInHeaders
-    value: 'external/.*'
   - key: modernize-use-auto.MinTypeNameLength
     value: '5'                          # use 'auto' for types with name length >= 5
   - key: modernize-use-auto.IncludeStyle
     value: 'llvm'                        # style of #include when adding auto
   - key: cppcoreguidelines-pro-type-vararg.WarnOnVararg
     value: '1'                          # warn on usage of varargs
-  - key: readability-identifier-naming.VariableCase
-    value: 'lower_case'                 # require lower_case variable names
+  # - key: readability-identifier-naming.VariableCase
+  #   value: 'lower_case'                 # require lower_case variable names

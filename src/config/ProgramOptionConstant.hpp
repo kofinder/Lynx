@@ -16,7 +16,7 @@
  * - ProgramOptionConfig and CLI parsers to validate, display, and execute commands.
  * - Build, run, and analysis subsystems to interpret user input consistently.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 

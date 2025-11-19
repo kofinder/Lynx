@@ -15,13 +15,13 @@
  * - SemanticAnalyzer for parallel AST semantic checks.
  * - SemanticStateFactory for automatic state registration.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 
 
-#ifndef LYNX_INTERFACE_STATE_HPP
-#define LYNX_INTERFACE_STATE_HPP
+#ifndef LYNX_ANALYZER_INTERFACE_STATE_HPP
+#define LYNX_ANALYZER_INTERFACE_STATE_HPP
 
 #include <unordered_map>
 #include "interfaces/SemanticState.hpp"

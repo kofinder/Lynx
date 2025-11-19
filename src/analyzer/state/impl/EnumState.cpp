@@ -1,12 +1,11 @@
+#include <ast/Node.hpp>
 #include "state/EnumState.hpp"
-#include <logger/Logger.hpp>
-
+#include "interfaces/SemanticAnalyzer.hpp"
 
 namespace LynxAnalyzer {
-    using namespace LynxLogger;
-
+    using namespace LynxAst;
     void EnumState::handleNode(SemanticAnalyzer& analyzer, Node* node) {
-        LOG_ERROR("Invoked");
+        
     }
 
 }

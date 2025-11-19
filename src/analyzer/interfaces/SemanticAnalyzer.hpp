@@ -17,7 +17,7 @@
  * - The compiler frontend during AST traversal and analysis.
  * - Optimization and code generation subsystems relying on correct semantic information.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
  */
 

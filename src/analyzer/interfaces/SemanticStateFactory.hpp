@@ -15,12 +15,12 @@
  * - SemanticAnalyzer during setup to populate `activeStates`.
  * - Any testing or tooling utilities requiring a full set of semantic states.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 
-#ifndef LYNX_SEMANTIC_STATE_FACTORY_HPP
-#define LYNX_SEMANTIC_STATE_FACTORY_HPP
+#ifndef LYNX_ANALYZER_SEMANTIC_STATE_FACTORY_HPP
+#define LYNX_ANALYZER_SEMANTIC_STATE_FACTORY_HPP
 
 #include <vector>
 #include <memory>

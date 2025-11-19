@@ -15,12 +15,12 @@
  * - SemanticAnalyzer to perform multi-threaded analysis of AST nodes.
  * - Any subsystem requiring task parallelization with thread safety guarantees.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 
-#ifndef LYNX_SEMANTIC_THREAD_POOL_HPP
-#define LYNX_SEMANTIC_THREAD_POOL_HPP
+#ifndef LYNX_ANALYZER_SEMANTIC_THREAD_POOL_HPP
+#define LYNX_ANALYZER_SEMANTIC_THREAD_POOL_HPP
 
 #include <vector>
 #include <thread>

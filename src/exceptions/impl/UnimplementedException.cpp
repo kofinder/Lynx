@@ -14,7 +14,7 @@
  * - Compiler or interpreter components encountering incomplete or unimplemented functionality.
  * - Semantic checks that detect stubbed or placeholder code.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 

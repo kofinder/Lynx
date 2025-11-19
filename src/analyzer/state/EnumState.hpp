@@ -15,12 +15,12 @@
  * - SemanticAnalyzer for parallel or sequential semantic validation.
  * - SemanticStateFactory for automatic state registration and management.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 
-#ifndef LYNX_ENUM_STATE_HPP
-#define LYNX_ENUM_STATE_HPP
+#ifndef LYNX_ANALYZER_ENUM_STATE_HPP
+#define LYNX_ANALYZER_ENUM_STATE_HPP
 
 #include <unordered_map>
 #include "interfaces/SemanticState.hpp"

@@ -56,29 +56,9 @@ make
 
 ---
 
-## 🤝 Contributing
-
-Lynx is an open, community-driven language project.  
-We’re looking for **enthusiastic C++ developers** who want to explore programming language design and compiler development.
-
-### How to Contribute
-1. Fork the repository  
-2. Create a new branch (`feature/your-feature`)  
-3. Commit and push your changes  
-4. Open a Pull Request
-
----
-
-## 🌟 Acknowledgements
-
-- **Boehm GC** for garbage collection  
-- **LLVM/JIT** for runtime performance  
-- The **open-source community** for continuous inspiration  
-
----
-
 ## Credit
 - [Flex & Bison C++ Example](https://panthema.net/2007/flex-bison-cpp-example/)
+- [2019 LLVM Developers’ Meeting: S. Haastregt & A. Stulova An overview of Clang](https://www.youtube.com/watch?v=5kkMpJpIGYU)
 - [Jonathan Beard Tutorial on Flex & Bison](https://www.jonathanbeard.io/tutorials/FlexBisonC%2B%2B)
 - [LLVM Language Reference – Identifiers](https://llvm.org/docs/LangRef.html#identifiers)
 - [GNU Bison Manual – Location Type](https://www.gnu.org/software/bison/manual/html_node/Location-Type.html)

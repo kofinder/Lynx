@@ -20,5 +20,5 @@ else
   echo "run-clang-tidy.py not found — falling back to parallel clang-tidy via xargs"
   # Accept common source extensions; headers will be examined when referenced from TU
   find "${ROOT_DIR}/src" -name '*.cpp' -o -name '*.cxx' -o -name '*.cc' | \
-    xargs -n1 -P"${THREADS}" -I{} clang-tidy {} -p "${BUILD_DIR}" --extra-arg=-std=c++23 --header-filter='^(src/|include/)' || true
+    xargs -n1 -P"${THREADS}" -I{} clang-tidy {} -p "${BUILD_DIR}" --extra-arg=-std=c++23 --header-filter='^(src/)' || true
 fi

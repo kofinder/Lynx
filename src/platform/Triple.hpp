@@ -7,7 +7,7 @@
  * and optional environment. It provides utilities for encoding/decoding triples, converting to
  * LLVM triple strings, and creating Triple instances from strings.
  * 
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
  */
 

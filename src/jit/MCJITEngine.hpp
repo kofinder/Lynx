@@ -5,7 +5,7 @@
  * This header defines the MCJITEngine class which wraps LLVM's MCJIT
  * execution engine to provide a unified JIT execution interface.
  *
- * * @author: Ko Thein (Nathan Mratt)
+ * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
 
