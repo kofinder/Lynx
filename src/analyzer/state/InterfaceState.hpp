@@ -23,14 +23,19 @@
 #ifndef LYNX_ANALYZER_INTERFACE_STATE_HPP
 #define LYNX_ANALYZER_INTERFACE_STATE_HPP
 
+#include <string>
 #include <unordered_map>
+#include <ast/Node.hpp>
 #include "interfaces/SemanticState.hpp"
 #include <types/userdefined/helper/MethodType.hpp>
 #include <types/userdefined/helper/FieldType.hpp>
 
 namespace LynxAnalyzer {
     
-    using namespace LynxTypes;
+    using LynxTypes::FieldType;
+    using LynxTypes::MethodType;
+    using LynxAst::Node; 
+
 
     class InterfaceState : public SemanticState {
 

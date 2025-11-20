@@ -22,13 +22,18 @@
 #ifndef LYNX_ANALYZER_MIXIN_STATE_HPP
 #define LYNX_ANALYZER_MIXIN_STATE_HPP
 
+#include <vector>
 #include <unordered_map>
+#include <ast/Node.hpp>
+#include <string>
 #include "interfaces/SemanticState.hpp"
 #include <types/userdefined/MixinType.hpp>
 
 namespace LynxAnalyzer {
     
-    using namespace LynxTypes;
+    using LynxTypes::MixinType;
+    using LynxAst::Node; 
+
 
     class MixinState : public SemanticState {
         
