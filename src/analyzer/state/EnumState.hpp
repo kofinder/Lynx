@@ -22,10 +22,12 @@
 #ifndef LYNX_ANALYZER_ENUM_STATE_HPP
 #define LYNX_ANALYZER_ENUM_STATE_HPP
 
-#include <unordered_map>
+#include <ast/Node.hpp>
 #include "interfaces/SemanticState.hpp"
 
 namespace LynxAnalyzer {
+
+    using LynxAst::Node; 
 
     class EnumState : public SemanticState {
 

@@ -22,9 +22,12 @@
 #ifndef LYNX_ANALYZER_FUNCTION_STATE_HPP
 #define LYNX_ANALYZER_FUNCTION_STATE_HPP
 
+#include <ast/Node.hpp>
 #include "interfaces/SemanticState.hpp"
 
 namespace LynxAnalyzer {
+
+    using LynxAst::Node;
 
     class FunctionState : public SemanticState {
 
