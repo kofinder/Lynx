@@ -52,7 +52,6 @@ extension/build
 
 backup
 
-src/lang/*
 toy/cpp
 toy/dart
 toy/java

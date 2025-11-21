@@ -19,3 +19,6 @@
 [submodule "external/yaml-cpp"]
 	path = external/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "src/lang"]
+	path = src/lang
+	url = git@github.com:kofinder/LynxLang
