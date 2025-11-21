@@ -5,27 +5,22 @@
 namespace LynxTypes {
 
     llvm::Type* ReferenceType::computeLLVMType() const {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
     llvm::Type* ReferenceType::getLLVMPointerType() const {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
     llvm::Value* ReferenceType::getDefaultValue() {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
     llvm::Value* ReferenceType::createInstance(std::string variableName) {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
     llvm::Value* ReferenceType::createValue(LValueType value) const {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
@@ -35,11 +30,11 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    const BaseType* ReferenceType::createWithStatic(bool newIsStatic) const {
+    const BaseType* ReferenceType::createWithStatic(bool) const {
         return nullptr;
     }
 
-    const BaseType* ReferenceType::createWithConst(bool newIsConst) const {
+    const BaseType* ReferenceType::createWithConst(bool) const {
         return nullptr;
     }
 
@@ -51,7 +46,7 @@ namespace LynxTypes {
         return "refrence";
     }
 
-    llvm::DIType* ReferenceType::getDIType(llvm::DIScope* scope) const {
+    llvm::DIType* ReferenceType::getDIType(llvm::DIScope* /*scope*/) const {
         auto& builder = astContext->getDebugBuilder();
 
         return builder.createBasicType(

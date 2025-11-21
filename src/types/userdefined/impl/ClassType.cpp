@@ -101,7 +101,7 @@ namespace LynxTypes {
     llvm::Value* ClassType::createInstance(std::string variableName) {
         auto& builder = astContext->getBuilder();
         llvm::Type* clazzType = this->getLLVMType();
-        auto var = builder.CreateAlloca(clazzType, nullptr, variableName);
+        auto* var = builder.CreateAlloca(clazzType, nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), classType));
             var->setMetadata(lynxDataType, metadata);
@@ -114,13 +114,11 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    const BaseType* ClassType::createWithStatic(bool newIsStatic) const {
-        LOG_INFO("Invoked...");
+    const BaseType* ClassType::createWithStatic(bool) const {
         return nullptr;
     }
 
-    const BaseType* ClassType::createWithConst(bool newIsConst) const {
-        LOG_INFO("Invoked...");
+    const BaseType* ClassType::createWithConst(bool) const {
         return nullptr;
     }
 
@@ -188,33 +186,6 @@ namespace LynxTypes {
             }
         }
         return cachedLowerName;    
-    }
-
-
-    std::string ClassType::getDebugName() const { return className; }
-
-    llvm::DIType* ClassType::getDIType(llvm::DIScope* scope) const {
-        auto& builder = astContext->getDebugBuilder();
-        return builder.createBasicType(
-            getDebugName(),        // "float"
-            getDebugSizeInBits(),  // 32 bits
-            llvm::dwarf::DW_ATE_float
-        );
-    }
-
-    uint64_t ClassType::getDebugSizeInBits() const {
-        LOG_INFO("Invoked...");
-        return 64;
-    }
-
-    uint32_t ClassType::getDebugAlignInBits() const {
-        LOG_INFO("Invoked...");
-        return 32;
-    }
-
-    llvm::DINode::DIFlags ClassType::getDIFlags() const {
-        LOG_INFO("Invoked...");
-        return llvm::DINode::FlagZero;
     }
 
     void ClassType::registerLLVMType(llvm::StructType* structType) {
@@ -630,6 +601,15 @@ namespace LynxTypes {
         auto* newGV = new llvm::GlobalVariable(*module, vtableType, true, extType, nullptr, vtableName);
         return newGV;
     }
+    
+
+    const BaseType* ClassType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
+    const BaseType* ClassType::createWithConst(bool /*newIsConst*/) const { return nullptr; }
+
+    llvm::DIType* ClassType::getDIType(llvm::DIScope* /*scope*/) const { return nullptr;  }
+    uint64_t ClassType::getDebugSizeInBits() const { return DEFAULT_ALIGN_BITS; }
+    uint32_t ClassType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
+    llvm::DINode::DIFlags ClassType::getDIFlags() const { return llvm::DINode::FlagZero; }
 
     std::unique_ptr<BaseType> ClassType::clone() const {
         using namespace Cloned;

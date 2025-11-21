@@ -121,6 +121,6 @@ tidy: configure
 # =============================
 clean:
 	@echo "🧹 Cleaning up..."
-	@sh tools/sh_clean.sh
+	@sh tools/build-cleanup.sh
 
 .PHONY: all create configure build install validate execute cli debug trace clean syntax format tidy

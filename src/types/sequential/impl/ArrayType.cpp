@@ -127,7 +127,7 @@ namespace LynxTypes {
     llvm::Value* ArrayType::createInstance(std::string variableName) {
         auto& builder = astContext->getBuilder();
         llvm::Type* llvmType = computeLLVMType();
-        auto var = builder.CreateAlloca(llvmType, nullptr, variableName); 
+        auto* var = builder.CreateAlloca(llvmType, nullptr, variableName); 
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::arrayType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -136,19 +136,16 @@ namespace LynxTypes {
     }
 
     llvm::Type* ArrayType::getLLVMPointerType() const {
-        LOG_INFO("Invoked...");
         auto* arrayType = computeLLVMType();
         return llvm::PointerType::get(arrayType->getContext(), 0);
     }
 
     llvm::Value* ArrayType::getDefaultValue() {
-        LOG_INFO("Invoked...");
         llvm::Type* llvmArrayType = computeLLVMType();
         return llvm::ConstantAggregateZero::get(llvmArrayType);
     }
 
     llvm::Value* ArrayType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        LOG_INFO("Invoked...");
         auto& builder = astContext->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
@@ -252,56 +249,12 @@ namespace LynxTypes {
             elementType->equals(otherArray->elementType);
     }
 
-    const BaseType* ArrayType::createWithStatic(bool newIsStatic) const {
-        auto clone = std::make_shared<ArrayType>(astContext);
-        clone->setElementType(elementType);
-        clone->createWithStatic(newIsStatic);
-        clone->createWithConst(isConst());
-        return clone.get();
-    }
+    const BaseType* ArrayType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
+    const BaseType* ArrayType::createWithConst(bool /*newIsConst*/) const { return nullptr; }
 
-    const BaseType* ArrayType::createWithConst(bool newIsConst) const {
-        auto clone = std::make_shared<ArrayType>(astContext);
-        clone->setElementType(elementType);
-        clone->setConst(newIsConst);
-        clone->setStatic(isStatic());
-        return clone.get();
-    }
-
-    std::string ArrayType::getDebugName() const {
-        return "array[" + std::to_string(numElements) + "] of " + elementType->getDebugName();
-    }
-
-    llvm::DIType* ArrayType::getDIType(llvm::DIScope* scope) const {
-        auto& diBuilder = astContext->getDebugBuilder();
-        auto* elementDIType = elementType->getDIType(scope);
-        
-        uint64_t elemSizeBits = elementType->getDebugSizeInBits();
-        uint32_t alignBits = elementType->getDebugAlignInBits();
-        uint64_t arraySizeBits = elemSizeBits * numElements;
-    
-        llvm::DINodeArray subscriptArray = diBuilder.getOrCreateArray({
-            diBuilder.getOrCreateSubrange(0, numElements)
-        });
-
-        return diBuilder.createArrayType(
-            arraySizeBits,
-            alignBits,
-            elementDIType,
-            subscriptArray
-        );
-    }
-
-    uint64_t ArrayType::getDebugSizeInBits() const  {
-        return elementType->getDebugSizeInBits() * numElements;
-    }
-
-    uint32_t ArrayType::getDebugAlignInBits() const {
-        return elementType->getDebugAlignInBits();
-    }
-
-    llvm::DINode::DIFlags ArrayType::getDIFlags() const {
-        return llvm::DINode::FlagZero;
-    }
+    llvm::DIType* ArrayType::getDIType(llvm::DIScope* /*scope*/) const { return nullptr;  }
+    uint64_t ArrayType::getDebugSizeInBits() const { return DEFAULT_ALIGN_BITS; }
+    uint32_t ArrayType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
+    llvm::DINode::DIFlags ArrayType::getDIFlags() const { return llvm::DINode::FlagZero; }
 
 }

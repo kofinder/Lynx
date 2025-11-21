@@ -51,6 +51,8 @@ namespace LynxTypes {
     using namespace LynxContext;
     using namespace LynxConstants;
     using namespace MetadataTypeConstants;
+
+    constexpr uint32_t DEFAULT_ALIGN_BITS = 0;
     
     class BaseType {
 
@@ -64,7 +66,9 @@ namespace LynxTypes {
 
             mutable llvm::Type* cachedLLVMType = nullptr;
 
-            mutable TypeMethodResolver* resolver;
+            mutable TypeMethodResolver* resolver = nullptr;  // NOLINT(cppcoreguidelines-owning-memory)
+
+            // mutable TypeMethodResolver* resolver; // NOLINT(cppcoreguidelines-owning-memory)
 
         protected:
 
@@ -93,7 +97,18 @@ namespace LynxTypes {
              * @param newIsStatic Whether the new type should be static-qualified.
              * @return Pointer to a new BaseType instance with the requested static qualifier.
             */
-            virtual const BaseType* createWithStatic(bool newIsStatic) const { return this; }
+            virtual const BaseType* createWithStatic(bool) const { return this; }
+
+            /**
+             * @brief Checks whether the given LLVM value pointer is valid (non-null).
+             * 
+             * This is a small helper to safely verify that an `llvm::Value*` is not null
+             * before performing operations on it, helping to avoid null-pointer dereferences.
+             * 
+             * @param v The LLVM value pointer to check.
+             * @return true if the pointer is non-null, false otherwise.
+            */
+            inline bool isValid(llvm::Value* v) noexcept { return v != nullptr; }
 
         public:
 

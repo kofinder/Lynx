@@ -163,7 +163,7 @@ namespace LynxTypes {
             unsigned getVirtualMethodIndex(const std::string& methodName) const;
             std::string resolveMethodCall(MethodKind kind, const std::string& mangledName, const std::vector<llvm::Type*>& argTypes) const;
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "interface"; }
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
             uint64_t getDebugSizeInBits() const override;
             uint32_t getDebugAlignInBits() const override;

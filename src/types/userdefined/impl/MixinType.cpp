@@ -43,7 +43,7 @@ namespace LynxTypes {
             llvm::Type* ty = nullptr;
             if (auto dateField = TypeCasting::castType<DateTimeType>(field->getType())) {
                 ty = dateField->getLLVMPointerType();
-            }  else if (auto fileField = TypeCasting::castType<FileType>(field->getType())) {
+            }  else if (auto fileField = TypeCasting::castType<MixinType>(field->getType())) {
                 ty = fileField->getLLVMPointerType();
             }  else if (auto clsField = TypeCasting::castType<ClassType>(field->getType())) {
                 ty = clsField->getLLVMPointerType();
@@ -75,7 +75,7 @@ namespace LynxTypes {
     llvm::Value* MixinType::createInstance(std::string variableName) {
         auto& builder = astContext->getBuilder();
         auto llvmType = computeLLVMType();
-        auto var = builder.CreateAlloca(llvmType, nullptr, variableName);
+        auto* var = builder.CreateAlloca(llvmType, nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), interfaceType));
             var->setMetadata(lynxDataType, metadata);
@@ -166,38 +166,12 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    const BaseType* MixinType::createWithStatic(bool newIsStatic) const {
-        return this;
-    }
-
-    const BaseType* MixinType::createWithConst(bool newIsConst) const {
-        return this;
-    }
-
     bool MixinType::equals(const BaseType* other) const {
         if (auto* iface = dynamic_cast<const MixinType*>(other)) {
             return this->mixinName == iface->mixinName;
         }
         return false;
     }
-
-    std::string MixinType::getDebugName() const { return qualifiedName(); }
-
-    llvm::DIType* MixinType::getDIType(llvm::DIScope* scope) const {
-        return nullptr;
-    }
-
-    uint64_t MixinType::getDebugSizeInBits() const {
-        return 64; 
-    }
-
-    uint32_t MixinType::getDebugAlignInBits() const {
-        return 8;
-    }
-
-    llvm::DINode::DIFlags MixinType::getDIFlags() const {
-        return llvm::DINode::FlagZero;
-    } 
 
     void MixinType::registerLLVMType(llvm::StructType* structType) {
         if (!structType) return;
@@ -287,6 +261,14 @@ namespace LynxTypes {
     std::string MixinType::resolveMethodCall(MethodKind kind, const std::string& mangledName, const std::vector<llvm::Type*>& argTypes) const {
         return mangledName;
     }
+
+    const BaseType* MixinType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
+    const BaseType* MixinType::createWithConst(bool /*newIsConst*/) const { return nullptr; }
+
+    llvm::DIType* MixinType::getDIType(llvm::DIScope* /*scope*/) const { return nullptr;  }
+    uint64_t MixinType::getDebugSizeInBits() const { return DEFAULT_ALIGN_BITS; }
+    uint32_t MixinType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
+    llvm::DINode::DIFlags MixinType::getDIFlags() const { return llvm::DINode::FlagZero; }
 
 
     std::unique_ptr<BaseType> MixinType::clone() const {

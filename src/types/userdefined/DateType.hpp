@@ -80,7 +80,7 @@ namespace LynxTypes {
 
             inline DataType getTypeTag() const override { return DataType::DATE; }
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "Date"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 

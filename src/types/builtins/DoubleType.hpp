@@ -43,7 +43,7 @@ namespace LynxTypes {
 
             inline DataType getTypeTag() const override { return DataType::DOUBLE; }
             
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "double"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 

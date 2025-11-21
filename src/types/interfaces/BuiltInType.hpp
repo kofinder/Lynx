@@ -29,7 +29,13 @@
 
 namespace LynxTypes {
 
+    constexpr unsigned SHORT_BIT_WIDTH  = 16;
+    constexpr unsigned INT_BIT_WIDTH   = 32;
+    constexpr unsigned LONG_BIT_WIDTH  = 64;
+
+
     class BuiltInType : public BaseType {
+
 
         public: 
 

@@ -28,7 +28,6 @@ namespace LynxTypes {
     }    
     
     llvm::Type* VectorType::getLLVMPointerType() const {
-        LOG_INFO("Invoked...");
         return computeLLVMType();
     }
 
@@ -38,10 +37,9 @@ namespace LynxTypes {
     }
 
     llvm::Value* VectorType::createInstance(std::string variableName) {
-        LOG_INFO("Invoked...");
         llvm::Type* vectorType = this->computeLLVMType();
         auto& builder = astContext->getBuilder();        
-        auto var = builder.CreateAlloca(vectorType, nullptr, variableName);
+        auto* var = builder.CreateAlloca(vectorType, nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::vectorType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -51,7 +49,6 @@ namespace LynxTypes {
     }
 
     llvm::Value* VectorType::createValue(std::vector<llvm::Value*> values) const {
-        LOG_INFO("Invoked...");
 
         llvm::Type* elemType = elementType->getLLVMType();
         llvm::Type* computedType = computeLLVMType();
@@ -102,22 +99,6 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    const BaseType* VectorType::createWithStatic(bool newIsStatic) const {
-        auto clone = std::make_shared<VectorType>(astContext);
-        clone->setElementType(elementType);
-        clone->setStatic(newIsStatic);
-        clone->setConst(isConst());
-        return clone.get();
-    }
-
-    const BaseType* VectorType::createWithConst(bool newIsConst) const {
-        auto clone = std::make_shared<VectorType>(astContext);
-        clone->setElementType(elementType);
-        clone->setConst(newIsConst);
-        clone->setStatic(isStatic());
-        return clone.get();
-    }
-
     bool VectorType::equals(const BaseType* other) const {
         return false;
     }
@@ -139,25 +120,13 @@ namespace LynxTypes {
         std::unordered_set<const BaseType*> visited;
         return getSafeStructName(visited);    
     }
+
+    const BaseType* VectorType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
+    const BaseType* VectorType::createWithConst(bool /*newIsConst*/) const { return nullptr; }
+
+    llvm::DIType* VectorType::getDIType(llvm::DIScope* /*scope*/) const { return nullptr;  }
+    uint64_t VectorType::getDebugSizeInBits() const { return DEFAULT_ALIGN_BITS; }
+    uint32_t VectorType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
+    llvm::DINode::DIFlags VectorType::getDIFlags() const { return llvm::DINode::FlagZero; }
     
-
-    std::string VectorType::getDebugName() const {
-        return "vector<" + elementType->getDebugName() + ">";
-    }
-
-    llvm::DIType* VectorType::getDIType(llvm::DIScope* scope) const {
-        return elementType->getDIType(scope);
-    }
-
-    uint64_t VectorType::getDebugSizeInBits() const {
-        return elementType->getDebugSizeInBits() * 4; 
-    }
-
-    uint32_t VectorType::getDebugAlignInBits() const {
-        return elementType->getDebugAlignInBits();
-    }
-
-    llvm::DINode::DIFlags VectorType::getDIFlags() const {
-        return llvm::DINode::FlagZero;
-    }
 }

@@ -43,6 +43,10 @@ Checks:
   - '-readability-magic-numbers'                    # Too noisy for game/GUI codebases
   - '-readability-convert-member-functions-to-static'  # Annoying for OOP
   - '-readability-identifier-naming'                # Disable because it conflicts with identifier-length
+  - '-readability-braces-around-statements'
+  - '-readability-implicit-bool-conversion'
+  - '-hicpp-braces-around-statements'
+
 
   # --------------------------------------------
   # Portability
@@ -58,8 +62,7 @@ Checks:
 
   # Additional useful rule
   - 'readability-non-const-parameter'                 # catch accidental pass-by-non-const
-  - 'clang-diagnostic-unused-parameter'
-
+  
 
 # Treat all Core Guidelines violations as errors (makes code safety consistent)
 WarningsAsErrors: 'cppcoreguidelines-*'
@@ -71,7 +74,7 @@ HeaderFilterRegex: '^src/.*'
 FormatStyle: file
 
 # Don’t analyze system headers
-SystemHeaders: false
+SystemHeaders: true
 
 # Additional include path (useful if you have an external/ folder)
 ExtraArgs: ["-isystem", "${PROJECT_SOURCE_DIR}/external"]

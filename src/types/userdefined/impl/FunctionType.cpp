@@ -7,27 +7,23 @@ using namespace LynxContext;
 namespace LynxTypes {
 
     llvm::Type* FunctionType::computeLLVMType() const {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
     llvm::Type* FunctionType::getLLVMPointerType() const {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
     llvm::Value* FunctionType::getDefaultValue() {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
     llvm::Value* FunctionType::createInstance(std::string variableName) {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
  
     llvm::Value* FunctionType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        if (!lhs || !rhs) {
+        if (!isValid(lhs) || !isValid(rhs)) {
             LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
             return nullptr;
         }
@@ -36,63 +32,20 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    const BaseType* FunctionType::createWithStatic(bool newIsStatic) const {
-        auto clone = std::make_shared<FunctionType>(astContext);
-        clone->createWithStatic(newIsStatic);
-        clone->createWithConst(isConst());
-        return clone.get();
-    }
-
-    const BaseType* FunctionType::createWithConst(bool newIsConst) const {
-        auto clone = std::make_shared<FunctionType>(astContext);
-        clone->setConst(newIsConst);
-        clone->setStatic(isStatic());
-        return clone.get();
-    }
-    
     bool FunctionType::equals(const BaseType* other) const {
         auto* otherInteger = dynamic_cast<const FunctionType*>(other);
         if (!otherInteger) return false;
         return this->isConst() == otherInteger->isConst() &&
                this->isStatic() == otherInteger->isStatic();
     }
-    
 
-    std::string FunctionType::getDebugName() const {
-        LOG_INFO("Invoked...");
-        return isConst() ? "const int" : "int";
-    }
 
-    llvm::DIType* FunctionType::getDIType(llvm::DIScope* scope) const {
-        LOG_INFO("Invoked...");
-        auto& builder = astContext->getDebugBuilder();
+    const BaseType* FunctionType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
+    const BaseType* FunctionType::createWithConst(bool /*newIsConst*/) const { return nullptr; }
 
-        return builder.createBasicType(
-            getDebugName(),        // "int"
-            getDebugSizeInBits(),  // 32 bits
-            llvm::dwarf::DW_ATE_signed
-        );
-    }
-
-    uint64_t FunctionType::getDebugSizeInBits() const {
-        LOG_INFO("Invoked...");
-        return 32; // 32-bit signed integer
-    }
-
-    uint32_t FunctionType::getDebugAlignInBits() const {
-        LOG_INFO("Invoked...");
-        return 32; // Common alignment for 32-bit integers
-    }
-    
-    llvm::DINode::DIFlags FunctionType::getDIFlags() const {
-        LOG_INFO("Invoked...");
-        llvm::DINode::DIFlags flags = llvm::DINode::FlagZero;
-    
-        if (isStatic()) {
-            flags |= llvm::DINode::FlagStaticMember;
-        }
-    
-        return flags;
-    }
+    llvm::DIType* FunctionType::getDIType(llvm::DIScope* /*scope*/) const { return nullptr;  }
+    uint64_t FunctionType::getDebugSizeInBits() const { return DEFAULT_ALIGN_BITS; }
+    uint32_t FunctionType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
+    llvm::DINode::DIFlags FunctionType::getDIFlags() const { return llvm::DINode::FlagZero; }
     
 }

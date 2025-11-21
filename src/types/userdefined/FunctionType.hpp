@@ -42,7 +42,7 @@ namespace LynxTypes {
 
             inline DataType getTypeTag() const override { return DataType::BOOLEAN; }
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "Function"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 

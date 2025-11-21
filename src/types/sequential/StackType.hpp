@@ -70,7 +70,7 @@ namespace LynxTypes {
 
             bool equals(const BaseType* other) const override;
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "stack"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 

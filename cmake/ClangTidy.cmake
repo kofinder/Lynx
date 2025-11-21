@@ -8,7 +8,6 @@ function(enable_clang_tidy_for_target target_name)
         else()
             message(STATUS "✅ Clang-Tidy enabled: ${CLANG_TIDY_EXE}")
         endif()
-        message(STATUS "Clang-Tidy ENABLED for target: ${target_name}")
     endif()
 
     if(ENABLE_CLANG_TIDY AND CLANG_TIDY_EXE)

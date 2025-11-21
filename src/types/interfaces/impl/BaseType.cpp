@@ -5,18 +5,16 @@
 namespace LynxTypes {
 
     llvm::Type* BaseType::getLLVMType() const {
+        
         if (cachedLLVMType != nullptr) return cachedLLVMType;
     
         auto& context = astContext->getLLVMContext();
     
-        // Assign placeholder to avoid recursion
         cachedLLVMType = llvm::StructType::create(context, "incomplete.llvm.type");
     
         llvm::Type* finalType = computeLLVMType();
 
-        if (!finalType) {
-            return cachedLLVMType;
-        }    
+        if (!finalType) return cachedLLVMType;
 
         if (finalType != cachedLLVMType) cachedLLVMType = finalType;
 
@@ -28,7 +26,7 @@ namespace LynxTypes {
         return emptyRegistry;
     }   
 
-    llvm::Value* BaseType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+    llvm::Value* BaseType::emitMethodCall(llvm::Value* /*instance*/, llvm::Value* /*instance*/, const std::string& /*instance*/, const std::vector<llvm::Value*>& /*instance*/) {
         return nullptr;
     }
 

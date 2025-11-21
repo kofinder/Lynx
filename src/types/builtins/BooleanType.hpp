@@ -68,13 +68,13 @@ namespace LynxTypes {
 
             std::unique_ptr<BaseType> clone() const override { return std::make_unique<BooleanType>(*this); }
 
-            llvm::Value* convertBooleanToString(llvm::Value* value);
+            const llvm::Value* convertBooleanToString(llvm::Value* value);
 
             inline DataType getTypeTag() const override { return DataType::BOOLEAN; }
 
             bool equals(const BaseType* other) const override;
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "bool"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 

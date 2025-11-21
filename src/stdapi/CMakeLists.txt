@@ -9,8 +9,6 @@ if(NOT GC_LIBRARY)
     message(FATAL_ERROR "Boehm GC library not found. Please install libgc (with -fPIC if static).")
 endif()
 
-message(STATUS "Boehm GC Library: ${GC_LIBRARY}")
-
 # ------------------------------------------
 # Source files
 # ------------------------------------------

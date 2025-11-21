@@ -39,6 +39,7 @@ namespace LynxSystem::utils {
 
     using namespace LynxTypes;
 
+
     /**
      * @brief Concept to ensure that a type can be validated through TypeChecker.
      *
@@ -151,12 +152,8 @@ namespace LynxSystem::utils {
         printfArgs.push_back(formatString);
 
         if(TypeChecker::is<BooleanType>(llvmType)) {
-            auto* booleanAsString = builder.CreateSelect(
-                expressionValue, 
-                builder.CreateGlobalString("true"),
-                builder.CreateGlobalString("false")
-            );
-            printfArgs.push_back(booleanAsString);
+            // auto boolType = TypeCasting::castType<BooleanType>(llvmType);
+            // printfArgs.push_back(boolType->convertBooleanToString());
         } else if(TypeChecker::is<FloatType>(llvmType)) {
             auto* floatPromotion = builder.CreateFPExt(expressionValue, builder.getDoubleTy(), "promotedFloat");
             printfArgs.push_back(floatPromotion);

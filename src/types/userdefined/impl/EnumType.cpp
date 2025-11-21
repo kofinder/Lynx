@@ -8,7 +8,6 @@ namespace LynxTypes {
     using namespace LynxContext;
 
     llvm::Type* EnumType::computeLLVMType() const {
-        LOG_INFO("Invoked...");
     
         using namespace TypeUtils;
         if (cachedType) return cachedType;
@@ -74,7 +73,6 @@ namespace LynxTypes {
     }
 
     llvm::Type* EnumType::getLLVMPointerType() const {
-        LOG_INFO("Invoked...");
         if (cachedPointerType) return cachedPointerType;
         cachedPointerType = llvm::PointerType::get(computeLLVMType()->getContext(), 0);
         return cachedPointerType;
@@ -82,7 +80,6 @@ namespace LynxTypes {
     }
 
     llvm::Value* EnumType::getDefaultValue() {
-        LOG_INFO("Invoked...");
         auto* type = computeLLVMType();
         auto& ctx = astContext->getLLVMContext();
         auto* structType = llvm::cast<llvm::StructType>(type);
@@ -100,10 +97,9 @@ namespace LynxTypes {
     }
 
     llvm::Value* EnumType::createInstance(std::string variableName) {
-        LOG_INFO("Invoked...");
         auto& builder = astContext->getBuilder();
         llvm::Type* enumType = computeLLVMType();
-        auto var = builder.CreateAlloca(enumType, nullptr, variableName);
+        auto* var = builder.CreateAlloca(enumType, nullptr, variableName);
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::structureEnumType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -112,7 +108,6 @@ namespace LynxTypes {
     }
 
     llvm::Value* EnumType::assignTo(llvm::Value* syntaxAlloca, llvm::Value* valuePtr) {
-        LOG_INFO("Invoked...");
         auto& builder = astContext->getBuilder();
         auto& context = astContext->getLLVMContext();
         auto* module  = astContext->getModule();
@@ -144,19 +139,8 @@ namespace LynxTypes {
     // std::unique_ptr<TypeMethodResolver> EnumType::getOrCreateResolver() const {
     //     return std::make_unique<EnumMethodResolver>();
     // }
-
-    const BaseType* EnumType::createWithStatic(bool newIsStatic) const {
-        LOG_INFO("Invoked...");
-        return nullptr;
-    }
-
-    const BaseType* EnumType::createWithConst(bool newIsConst) const {
-        LOG_INFO("Invoked...");
-        return nullptr;
-    }
     
     bool EnumType::equals(const BaseType* other) const {
-        LOG_INFO("Invoked...");
         return dynamic_cast<const EnumType*>(other) != nullptr;
     }
     
@@ -165,35 +149,6 @@ namespace LynxTypes {
             cachedFullName = "enum." + enumName;
         }
         return cachedFullName;            
-    }
-
-    std::string EnumType::getDebugName() const {
-        return qualifiedName();
-    }
-
-    llvm::DIType* EnumType::getDIType(llvm::DIScope* scope) const {
-        LOG_INFO("Invoked...");
-        auto& builder = astContext->getDebugBuilder();
-        return builder.createBasicType(
-            getDebugName(),            // "Enum"
-            getDebugSizeInBits(),      // 32 bits
-            llvm::dwarf::DW_ATE_signed // Signed integer representation
-        );
-    }
-
-    uint64_t EnumType::getDebugSizeInBits() const {
-        LOG_INFO("Invoked...");
-        return 32;
-    }
-
-    uint32_t EnumType::getDebugAlignInBits() const {
-        LOG_INFO("Invoked...");
-        return 32;
-    }
-
-    llvm::DINode::DIFlags EnumType::getDIFlags() const {
-        LOG_INFO("Invoked...");
-        return llvm::DINode::FlagZero;
     }
 
     void EnumType::addMember(const std::string& name, EnumMember member) {
@@ -208,6 +163,15 @@ namespace LynxTypes {
         return std::nullopt;
     }
 
+
+    const BaseType* EnumType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
+    const BaseType* EnumType::createWithConst(bool /*newIsConst*/) const { return nullptr; }
+
+    llvm::DIType* EnumType::getDIType(llvm::DIScope* /*scope*/) const { return nullptr;  }
+    uint64_t EnumType::getDebugSizeInBits() const { return DEFAULT_ALIGN_BITS; }
+    uint32_t EnumType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
+    llvm::DINode::DIFlags EnumType::getDIFlags() const { return llvm::DINode::FlagZero; }
+    
     std::unique_ptr<BaseType> EnumType::clone() const {
         auto cloned = std::make_unique<EnumType>(astContext, enumName);
         for (const auto& [key, member] : members) {

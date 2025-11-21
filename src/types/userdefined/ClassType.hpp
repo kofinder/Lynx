@@ -251,7 +251,7 @@ namespace LynxTypes {
 
 
             // FOR DEBUGGING
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "class"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 

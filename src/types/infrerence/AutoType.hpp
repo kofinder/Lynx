@@ -82,7 +82,7 @@ namespace LynxTypes {
 
             bool canAccept(const BaseType* other) const override;
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "auto"; }
 
             std::unique_ptr<BaseType> clone() const override { return std::make_unique<AutoType>(*this); }
 

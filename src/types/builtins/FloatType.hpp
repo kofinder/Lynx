@@ -71,7 +71,7 @@ namespace LynxTypes {
 
             inline DataType getTypeTag() const override { return DataType::FLOAT; }
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "float"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 

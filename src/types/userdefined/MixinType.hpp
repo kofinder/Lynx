@@ -154,7 +154,7 @@ namespace LynxTypes {
             const std::vector<std::string>& getFlattenedMethodOrder() const { return flattenedMethodOrder; }
             const MethodType* getFlattenedMethod(const std::string& sig) const;
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "mixin"; }
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
             uint64_t getDebugSizeInBits() const override;
             uint32_t getDebugAlignInBits() const override;

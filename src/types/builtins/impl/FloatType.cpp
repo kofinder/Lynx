@@ -6,28 +6,24 @@
 namespace LynxTypes {
 
     llvm::Type* FloatType::computeLLVMType() const {
-        LOG_INFO("Invoked...");
         return llvm::Type::getFloatTy(astContext->getLLVMContext());
     }
 
     llvm::Type* FloatType::getLLVMPointerType() const {
-        LOG_INFO("Invoked...");
         auto* floatTy = llvm::Type::getFloatTy(astContext->getLLVMContext());
         auto* floatPtr = llvm::PointerType::get(floatTy->getContext(), 0); 
         return floatPtr;
     }
 
     llvm::Value* FloatType::getDefaultValue() {
-        LOG_INFO("Invoked...");
-        LValueType LValueType = 0.0f;
-        return this->createValue(LValueType);
+        const LValueType value = 0.0F;
+        return createValue(value);
     }
 
     llvm::Value* FloatType::createInstance(std::string variableName) {
-        LOG_INFO("Invoked...");
         auto& builder = astContext->getBuilder();
-        llvm::Type* floatType = this->getLLVMType();
-        auto var = builder.CreateAlloca(floatType, nullptr, variableName);
+        llvm::Type* floatType = getLLVMType();
+        auto* var = builder.CreateAlloca(floatType, nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::floatType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -37,10 +33,9 @@ namespace LynxTypes {
     }
 
     llvm::Value* FloatType::createValue(LValueType value) const {
-        LOG_INFO("Invoked...");
         if(std::holds_alternative<float>(value)) {
             auto& context = astContext->getLLVMContext();
-            float floatValue = std::get<float>(value);
+            const float floatValue = std::get<float>(value);
             return llvm::ConstantFP::get(context, llvm::APFloat(floatValue));
         } 
         LOG_ERROR("Unsupported value type");
@@ -48,11 +43,11 @@ namespace LynxTypes {
     }
 
     llvm::Value* FloatType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        LOG_INFO("Invoked...");
-        if (!lhs || !rhs) {
+        if (!isValid(lhs) || !isValid(rhs)) {
             LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
             return nullptr;
         }
+    
         auto& builder = astContext->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
@@ -67,48 +62,15 @@ namespace LynxTypes {
         return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
     }
 
-    const BaseType* FloatType::createWithStatic(bool newIsStatic) const {
-        LOG_INFO("Invoked...");
-        return nullptr;
-    }
-
-    const BaseType* FloatType::createWithConst(bool newIsConst) const {
-        LOG_INFO("Invoked...");
-        return nullptr;
-    }
-
     bool FloatType::equals(const BaseType* other) const {
-        LOG_INFO("Invoked...");
         return dynamic_cast<const FloatType*>(other) != nullptr;
     }
 
-    std::string FloatType::getDebugName() const {
-        LOG_INFO("Invoked...");
-        return "float";
-    }
+    const BaseType* FloatType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
+    const BaseType* FloatType::createWithConst(bool /*newIsConst*/) const { return nullptr; }
 
-    llvm::DIType* FloatType::getDIType(llvm::DIScope* scope) const {
-        LOG_INFO("Invoked...");
-        auto& builder = astContext->getDebugBuilder();
-        return builder.createBasicType(
-            getDebugName(),        // "float"
-            getDebugSizeInBits(),  // 32 bits
-            llvm::dwarf::DW_ATE_float
-        );
-    }
-
-    uint64_t FloatType::getDebugSizeInBits() const {
-        LOG_INFO("Invoked...");
-        return 32; // 32-bit IEEE 754 float
-    }
-
-    uint32_t FloatType::getDebugAlignInBits() const {
-        LOG_INFO("Invoked...");
-        return 32; // Alignment typically matches the size for primitive types
-    }
-
-    llvm::DINode::DIFlags FloatType::getDIFlags() const {
-        LOG_INFO("Invoked...");
-        return llvm::DINode::FlagZero;
-    }
+    llvm::DIType* FloatType::getDIType(llvm::DIScope* /*scope*/) const { return nullptr;  }
+    uint64_t FloatType::getDebugSizeInBits() const { return DEFAULT_ALIGN_BITS; }
+    uint32_t FloatType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
+    llvm::DINode::DIFlags FloatType::getDIFlags() const { return llvm::DINode::FlagZero; }
 }

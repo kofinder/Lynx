@@ -58,13 +58,20 @@ namespace LynxLogger {
 
     inline std::shared_ptr<spdlog::logger> getLogger(const std::string& name) noexcept {  
         return LogManager::instance().getLogger(name);  
-    }  
-
+    } 
+    
     #define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)  
-    #define LOG_DEBUG(msg, ...) LynxLogger::Logger()->debug("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)  
-    #define LOG_INFO(msg, ...) LynxLogger::Logger()->info("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)
-    #define LOG_WARN(msg, ...) LynxLogger::Logger()->warn("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)  
-    #define LOG_ERROR(msg, ...) LynxLogger::Logger()->error("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)  
+    #if defined(__clang_analyzer__)
+        #define LOG_DEBUG(msg, ...) (void)0
+        #define LOG_INFO(msg, ...)  (void)0
+        #define LOG_WARN(msg, ...)  (void)0
+        #define LOG_ERROR(msg, ...) (void)0
+    #else
+        #define LOG_DEBUG(msg, ...) LynxLogger::Logger()->debug("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)
+        #define LOG_INFO(msg, ...)  LynxLogger::Logger()->info("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)
+        #define LOG_WARN(msg, ...)  LynxLogger::Logger()->warn("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)
+        #define LOG_ERROR(msg, ...) LynxLogger::Logger()->error("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)
+    #endif
 }
 
 #endif

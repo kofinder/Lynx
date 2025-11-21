@@ -58,7 +58,7 @@ namespace LynxTypes {
     llvm::Value* InterfaceType::createInstance(std::string variableName) {
         auto& builder = astContext->getBuilder();
         auto llvmType = computeLLVMType();
-        auto var = builder.CreateAlloca(llvmType, nullptr, variableName);
+        auto* var = builder.CreateAlloca(llvmType, nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), interfaceType));
             var->setMetadata(lynxDataType, metadata);
@@ -174,38 +174,12 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    const BaseType* InterfaceType::createWithStatic(bool newIsStatic) const {
-        return this;
-    }
-
-    const BaseType* InterfaceType::createWithConst(bool newIsConst) const {
-        return this;
-    }
-
     bool InterfaceType::equals(const BaseType* other) const {
         if (auto* iface = dynamic_cast<const InterfaceType*>(other)) {
             return this->interfaceName == iface->interfaceName;
         }
         return false;
     }
-
-    std::string InterfaceType::getDebugName() const { return qualifiedName(); }
-
-    llvm::DIType* InterfaceType::getDIType(llvm::DIScope* scope) const {
-        return nullptr;
-    }
-
-    uint64_t InterfaceType::getDebugSizeInBits() const {
-        return 64; 
-    }
-
-    uint32_t InterfaceType::getDebugAlignInBits() const {
-        return 8;
-    }
-
-    llvm::DINode::DIFlags InterfaceType::getDIFlags() const {
-        return llvm::DINode::FlagZero;
-    } 
 
     void InterfaceType::registerLLVMType(llvm::StructType* structType) {
         if (!structType) return;
@@ -313,6 +287,15 @@ namespace LynxTypes {
     std::string InterfaceType::resolveMethodCall(MethodKind kind, const std::string& mangledName, const std::vector<llvm::Type*>& argTypes) const {
         return mangledName;
     }
+
+
+    const BaseType* InterfaceType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
+    const BaseType* InterfaceType::createWithConst(bool /*newIsConst*/) const { return nullptr; }
+
+    llvm::DIType* InterfaceType::getDIType(llvm::DIScope* /*scope*/) const { return nullptr;  }
+    uint64_t InterfaceType::getDebugSizeInBits() const { return DEFAULT_ALIGN_BITS; }
+    uint32_t InterfaceType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
+    llvm::DINode::DIFlags InterfaceType::getDIFlags() const { return llvm::DINode::FlagZero; }
 
     std::unique_ptr<BaseType> LynxTypes::InterfaceType::clone() const {
         using namespace Cloned;

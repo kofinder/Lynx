@@ -5,22 +5,18 @@
 namespace LynxTypes {
 
     llvm::Type* PointerType::computeLLVMType() const {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
     llvm::Type* PointerType::getLLVMPointerType() const {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
     llvm::Value* PointerType::getDefaultValue() {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
     llvm::Value* PointerType::createInstance(std::string variableName) {
-        LOG_INFO("Invoked...");
         return nullptr;
     }
 
@@ -31,7 +27,7 @@ namespace LynxTypes {
 
     llvm::Value* PointerType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
         // Ensure that both lhs and rhs are valid before proceeding with the assignment
-        if (!lhs || !rhs) {
+        if (!isValid(lhs) || !isValid(rhs)) {
             LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
             return nullptr;
         }
@@ -40,11 +36,11 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    const BaseType* PointerType::createWithStatic(bool newIsStatic) const {
+    const BaseType* PointerType::createWithStatic(bool) const {
         return nullptr;
     }
 
-    const BaseType* PointerType::createWithConst(bool newIsConst) const {
+    const BaseType* PointerType::createWithConst(bool) const {
         return nullptr;
     }
 
@@ -56,7 +52,7 @@ namespace LynxTypes {
         return "pointer";
     }
 
-    llvm::DIType* PointerType::getDIType(llvm::DIScope* scope) const {
+    llvm::DIType* PointerType::getDIType(llvm::DIScope* /*scope*/) const {
         auto& builder = astContext->getDebugBuilder();
 
         return builder.createBasicType(

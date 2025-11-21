@@ -97,7 +97,7 @@ namespace LynxTypes {
 
             inline DataType getTypeTag() const override { return DataType::ENUM; }
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "enum"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 
