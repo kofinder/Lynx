@@ -60,20 +60,10 @@ namespace LynxTypes {
 
             llvm::Value* createInstance(std::string variableName) override;
 
-            llvm::Value* getField(std::string fieldName, llvm::Value* instance);
+            llvm::Value* getField(const std::string& fieldName, llvm::Value* instance);
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
             
-            // void accept(TypeVisitor& visitor) override;
-
-            // TypeMethodResolver* getOrCreateResolver() const  override;
-
-            // const std::unordered_map<std::string_view, int>& getMethodRegistry() const override;
-
-            // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
-
-            // llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
-
             std::unique_ptr<BaseType> clone() const override { return std::make_unique<DateType>(*this); }
 
             bool equals(const BaseType* other) const override;

@@ -88,7 +88,7 @@ namespace LynxTypes {
             mutable std::unordered_map<llvm::Value*, llvm::Value*> vtableCache;
             mutable std::unordered_map<llvm::Value*, llvm::Value*> vtableLoadCache;
 
-            static inline std::unordered_map<const llvm::StructType*, InterfaceType*> llvmTypeToClass;
+            static inline std::unordered_map<const llvm::StructType*, const InterfaceType*> llvmTypeToClass;
 
         protected:
 
@@ -113,16 +113,6 @@ namespace LynxTypes {
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
-            // void accept(TypeVisitor& visitor) override;
-
-            // TypeMethodResolver* getOrCreateResolver() const  override;
-
-            // const std::unordered_map<std::string_view, int>& getMethodRegistry() const override;
-
-            // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
-
-            // llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
-
             std::unique_ptr<BaseType> clone() const override;
             
             bool equals(const BaseType* other) const override;
@@ -137,8 +127,8 @@ namespace LynxTypes {
             const std::string& originalNameLower() const;
             const std::string& originalName() const { return interfaceName; }
 
-            void registerLLVMType(llvm::StructType* llvmStruct);
-            static InterfaceType* fromLLVMType(const llvm::Type* type);
+            void registerLLVMType(llvm::StructType* structTy) const;
+            static const InterfaceType* fromLLVMType(const llvm::Type* type);
 
             bool hasMethod(const std::string& mangleName) const;
             void addMethod(const std::string& mangleName, std::unique_ptr<MethodType> method);
@@ -153,7 +143,7 @@ namespace LynxTypes {
             inline const std::unordered_map<std::string, std::unique_ptr<FieldType>>& getFields() const { return fields; }
             inline const std::vector<const InterfaceType*>& getParents() const { return parentInterfaces; }
 
-            void buildVTable(VTableType vType);
+            void buildVTable(const VTableType& vType);
             llvm::GlobalVariable* getVTableGlobal() const;
             unsigned methodIndex(const std::string& name) const;
             llvm::GlobalVariable* getOrCreateOrVTableGlobal() const;

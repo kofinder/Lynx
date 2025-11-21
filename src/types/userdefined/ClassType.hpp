@@ -96,7 +96,7 @@ namespace LynxTypes {
 
             mutable std::unordered_map<llvm::Value*, llvm::Value*> vtableCache;
             mutable std::unordered_map<llvm::Value*, llvm::Value*> vtableLoadCache;
-            static inline std::unordered_map<const llvm::StructType*, ClassType*> llvmTypeToClass;
+            static inline std::unordered_map<const llvm::StructType*, const ClassType*> llvmTypeToClass;
 
         protected:
 
@@ -150,16 +150,6 @@ namespace LynxTypes {
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
-            // void accept(TypeVisitor& visitor) override;
-
-            // TypeMethodResolver* getOrCreateResolver() const  override;
-
-            // const std::unordered_map<std::string_view, int>& getMethodRegistry() const override;
-
-            // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
-
-            // llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
-
             std::unique_ptr<BaseType> clone() const override;
 
             bool equals(const BaseType* other) const override;
@@ -170,8 +160,8 @@ namespace LynxTypes {
             const std::string& originalNameLower() const;
             const std::string& originalName() const { return className; }
 
-            void registerLLVMType(llvm::StructType* llvmStruct);
-            static ClassType* fromLLVMType(const llvm::Type* type);
+            void registerLLVMType(llvm::StructType* structTy) const;
+            static const ClassType* fromLLVMType(const llvm::Type* type);
 
             // ---------------------
             // Constructor Handling

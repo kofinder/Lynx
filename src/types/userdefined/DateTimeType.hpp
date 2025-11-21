@@ -27,8 +27,7 @@
  *
  * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
- */
-
+*/
 
 #ifndef LYNX_DATE_TIME_TYPE_HPP
 #define LYNX_DATE_TIME_TYPE_HPP
@@ -77,7 +76,7 @@ namespace LynxTypes {
 
             bool equals(const BaseType* other) const override;
 
-            llvm::Value* getField(std::string fieldName, llvm::Value* instance);
+            llvm::Value* getField(const std::string& fieldName, llvm::Value* instance);
 
             inline DataType getTypeTag() const override { return DataType::DATETIME; }
 

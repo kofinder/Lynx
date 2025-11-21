@@ -68,7 +68,7 @@ namespace LynxTypes {
             
             std::unordered_map<std::string, unsigned> methodNameToIndex;
 
-            static inline std::unordered_map<const llvm::StructType*, MixinType*> llvmTypeToClass;
+            static inline std::unordered_map<const llvm::StructType*, const MixinType*> llvmTypeToClass;
 
             // Flattened members after semantic analysis
             std::vector<std::unique_ptr<FieldType>> flattenedFields;
@@ -101,16 +101,6 @@ namespace LynxTypes {
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
-            // void accept(TypeVisitor& visitor) override;
-
-            // TypeMethodResolver* getOrCreateResolver() const  override;
-
-            // const std::unordered_map<std::string_view, int>& getMethodRegistry() const override;
-
-            // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
-
-            // llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
-
             std::unique_ptr<BaseType> clone() const override;
             
             bool equals(const BaseType* other) const override;
@@ -121,8 +111,8 @@ namespace LynxTypes {
             const std::string& originalNameLower() const;
             const std::string& originalName() const { return mixinName; }
 
-            void registerLLVMType(llvm::StructType* llvmStruct);
-            static MixinType* fromLLVMType(const llvm::Type* type);
+            void registerLLVMType(llvm::StructType* structTy) const;
+            const static MixinType* fromLLVMType(const llvm::Type* type);
 
             bool hasParentMixins() const { return !parentMixins.empty(); }
             void addParentMixin(const MixinType* mixin);

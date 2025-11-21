@@ -103,7 +103,7 @@ namespace LynxTypes {
             return "vec_unknown_" + std::to_string(numElements);
         }
     
-        if (const auto nested = dynamic_cast<const VectorType*>(elementType)) {
+        if (auto nested = dynamic_cast<const VectorType*>(elementType)) {
             return "vec_nested_" + std::to_string(numElements) + "_of_" + nested->getSafeStructName(visited);
         }
     

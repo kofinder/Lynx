@@ -8,7 +8,18 @@
 using namespace LynxContext;
 using namespace LynxLogger;
 
-namespace LynxTypes {
+namespace LynxTypes { 
+    
+    enum class DateTimeFieldIndex : std::uint8_t {
+        Year = 0,
+        Month,
+        Day,
+        Hour,
+        Minute,
+        Second,
+        Millisecond,
+        TimezoneOffset
+    };    
 
     llvm::StructType* DateTimeType::cachedType = nullptr;
 
@@ -16,7 +27,7 @@ namespace LynxTypes {
         if (!cachedType) {
             auto& context = astContext->getLLVMContext();
             cachedType = llvm::StructType::create(context, MetadataTypeConstants::structureDateTimeType);
-            std::vector<llvm::Type*> members = {
+            const std::vector<llvm::Type*> members = {
                 llvm::Type::getInt32Ty(context), // year
                 llvm::Type::getInt32Ty(context), // month
                 llvm::Type::getInt32Ty(context), // day
@@ -28,7 +39,6 @@ namespace LynxTypes {
             };
             cachedType->setBody(members);
         }
-    
         return cachedType;
     }
 
@@ -39,17 +49,6 @@ namespace LynxTypes {
     llvm::Value* DateTimeType::getDefaultValue() {
         return llvm::Constant::getNullValue(computeLLVMType());
     }
-
-    // void DateTimeType::accept(TypeVisitor& visitor) { 
-    //     LOG_INFO("Invoked...");
-    //     visitor.visit(*this); 
-    // }
-
-    // std::unique_ptr<TypeMethodResolver> DateTimeType::getOrCreateResolver() const {
-    //     LOG_INFO("Invoked...");
-    //     return std::make_unique<DateTimeMethodResolver>();
-    // }
-
 
     llvm::Value* DateTimeType::createInstance(std::string variableName) {
         auto& builder = astContext->getBuilder();
@@ -63,30 +62,31 @@ namespace LynxTypes {
     }
 
     llvm::Value* DateTimeType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        if (!isValid(lhs) || !isValid(rhs)) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }
-
         auto& builder = astContext->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
 
-    llvm::Value* DateTimeType::getField(std::string fieldName, llvm::Value* instance) {
-        auto& builder = astContext->getBuilder();
-
-        static std::unordered_map<std::string, unsigned> fieldIndex = {
-            {"year", 0}, {"month", 1}, {"day", 2}, {"hour", 3},
-            {"minute", 4}, {"second", 5}, {"millisecond", 6}, {"timezoneOffset", 7}
+    llvm::Value* DateTimeType::getField(const std::string& fieldName, llvm::Value* instance) {
+        static const std::unordered_map<std::string, DateTimeFieldIndex> fieldIndex = {
+            {"year", DateTimeFieldIndex::Year},
+            {"month", DateTimeFieldIndex::Month},
+            {"day", DateTimeFieldIndex::Day},
+            {"hour", DateTimeFieldIndex::Hour},
+            {"minute", DateTimeFieldIndex::Minute},
+            {"second", DateTimeFieldIndex::Second},
+            {"millisecond", DateTimeFieldIndex::Millisecond},
+            {"timezoneOffset", DateTimeFieldIndex::TimezoneOffset}
         };
     
-        auto it = fieldIndex.find(fieldName);
-        if (it == fieldIndex.end()) {
+        auto iter = fieldIndex.find(fieldName);
+        if (iter == fieldIndex.end()) {
             LOG_ERROR("Unknown field name in DateTimeType: ", fieldName);
             return nullptr;
-        }
-    
-        llvm::Value* gep = builder.CreateStructGEP(computeLLVMType(), instance, it->second);
+        }    
+        
+        auto& builder = astContext->getBuilder();
+        const auto index = static_cast<unsigned>(iter->second);
+        auto* gep = builder.CreateStructGEP(computeLLVMType(), instance, index);
         return builder.CreateLoad(llvm::Type::getInt32Ty(astContext->getLLVMContext()), gep);
     }
 

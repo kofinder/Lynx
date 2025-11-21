@@ -13,10 +13,11 @@ namespace LynxTypes {
             auto& context = astContext->getLLVMContext();
             cachedType = llvm::StructType::create(context, MetadataTypeConstants::fileType);
             
-            std::vector<llvm::Type*> members = {
+            const std::vector<llvm::Type*> members = {
                 llvm::PointerType::get(llvm::Type::getInt8Ty(context)->getContext(), 0), // file path (char*)
                 llvm::PointerType::get(llvm::Type::getInt8Ty(context)->getContext(), 0)  // file handle (void*)
             };
+            
             cachedType->setBody(members, false);
         }
 
@@ -39,16 +40,10 @@ namespace LynxTypes {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::fileType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
         }  
-        
         return var;
     }
 
     llvm::Value* FileType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        if (!isValid(lhs) || !isValid(rhs)) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }
-
         auto& builder = astContext->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }

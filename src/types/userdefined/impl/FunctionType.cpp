@@ -6,39 +6,24 @@ using namespace LynxContext;
 
 namespace LynxTypes {
 
-    llvm::Type* FunctionType::computeLLVMType() const {
-        return nullptr;
-    }
+    llvm::Type* FunctionType::computeLLVMType() const { return nullptr; }
 
-    llvm::Type* FunctionType::getLLVMPointerType() const {
-        return nullptr;
-    }
+    llvm::Type* FunctionType::getLLVMPointerType() const { return nullptr; }
 
-    llvm::Value* FunctionType::getDefaultValue() {
-        return nullptr;
-    }
+    llvm::Value* FunctionType::getDefaultValue() { return nullptr; }
 
-    llvm::Value* FunctionType::createInstance(std::string variableName) {
-        return nullptr;
-    }
+    llvm::Value* FunctionType::createInstance(std::string /*variableName*/) { return nullptr; }
  
     llvm::Value* FunctionType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        if (!isValid(lhs) || !isValid(rhs)) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }
-
         auto& builder = astContext->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
 
     bool FunctionType::equals(const BaseType* other) const {
-        auto* otherInteger = dynamic_cast<const FunctionType*>(other);
+        const auto* otherInteger = dynamic_cast<const FunctionType*>(other);
         if (!otherInteger) return false;
-        return this->isConst() == otherInteger->isConst() &&
-               this->isStatic() == otherInteger->isStatic();
+        return this->isConst() == otherInteger->isConst() && this->isStatic() == otherInteger->isStatic();
     }
-
 
     const BaseType* FunctionType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
     const BaseType* FunctionType::createWithConst(bool /*newIsConst*/) const { return nullptr; }

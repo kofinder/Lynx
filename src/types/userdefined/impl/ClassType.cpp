@@ -1,5 +1,3 @@
-
-
 #include <algorithm>
 #include "tmpl/TypeCaster.hpp"
 #include "tmpl/CloneType.hpp"
@@ -20,73 +18,87 @@ namespace LynxTypes {
     using namespace TypeUtils;
     using namespace DFSUtils;
 
+    // NOLINTNEXTLINE(misc-no-recursion)
     llvm::Type* ClassType::computeLLVMType() const {
 
         if (cachedType) return cachedType;
-
-        std::string name = qualifiedName();
+    
         auto& context = astContext->getLLVMContext();
-
-        // Step 1: get or create opaque struct
+    
+        // Step 1: get or create the Opaque struct
+        const auto name = qualifiedName();
         auto* structType = getOrCreateStruct(context, name);
         cachedType = structType;
-
-        // Step 2: Early cache pointer to this struct (for forward references)
-        const_cast<ClassType*>(this)->registerLLVMType(structType);
-
-        unsigned index = 0;
+    
+        // Step 2: register early for forward references (not a const-cast anymore)
+        registerLLVMType(structType);
+    
+        std::size_t index = 0;
         fieldNameToIndex.clear();
         std::vector<llvm::Type*> members;
-
-        // Step 3: vtable pointer if needed
+    
+        // Step 3: VTable pointer
         if (hasBaseClass() || !getAllVirtualParentMethods().empty()) {
-            auto llvmPtrType = llvm::PointerType::get(llvm::PointerType::get(llvm::Type::getInt8Ty(context)->getContext(), 0)->getContext(), 0);
-            members.push_back(llvmPtrType); index++;
+            auto* i8Ty = llvm::Type::getInt8Ty(context);
+            auto* i8PtrTy = llvm::PointerType::get(i8Ty->getContext(), 0);
+            auto* vtablePtrTy = llvm::PointerType::get(i8PtrTy->getContext(), 0);
+            members.push_back(vtablePtrTy);
+            ++index;
         }
-
-        // 4. Base class members
+    
+        // Step 4: Base class members
         if (hasBaseClass()) {
-            auto* structType = llvm::cast<llvm::StructType>(parentClass->computeLLVMType());
-            for (auto* elem : structType->elements()) {
-                members.push_back(elem); index++;
+            auto* parentStructType =
+                llvm::cast<llvm::StructType>(parentClass->computeLLVMType());
+            for (auto* elem : parentStructType->elements()) {
+                members.push_back(elem);
+                ++index;
             }
         }
-
-        // Step 4: Base interfaces
-        if (hasInterfaces()) {
-            for (const auto& iface : interfaces) {
-                members.push_back(iface->getLLVMPointerType()); index++;
-            }
+    
+        // Step 5: Interfaces
+        for (const auto& iface : interfaces) {
+            members.push_back(iface->getLLVMPointerType());
+            ++index;
         }
-
-        // step 5. Base Mixin
-        if(hasMixins()) {
-            for(const auto& mixin: mixins) {
-                members.push_back(mixin->getLLVMType()); index++;
-            }
+    
+        // Step 6: Mixins
+        for (const auto& mixin : mixins) {
+            members.push_back(mixin->getLLVMType());
+            ++index;
         }
-
-        // Step 6: own fields
-        for (const auto& [name, field] : fields) {
-            llvm::Type* ty = nullptr;
-            if (auto dateField = TypeCasting::castType<DateTimeType>(field->getType())) {
-                ty = dateField->getLLVMPointerType();
-            }  else if (auto fileField = TypeCasting::castType<FileType>(field->getType())) {
-                ty = fileField->getLLVMPointerType();
-            }  else if (auto clsField = TypeCasting::castType<ClassType>(field->getType())) {
-                ty = clsField->getLLVMPointerType();
-            }  else if (auto ifaceField = TypeCasting::castType<InterfaceType>(field->getType())) {
-                ty = ifaceField->getLLVMPointerType();
-            }   else {
-                ty = field->getType()->getLLVMType();
+    
+        // Step 7: Own fields
+        for (const auto& fieldEntry : fields) {
+            const auto& fieldName = fieldEntry.first;
+            const auto& field = fieldEntry.second;
+    
+            const BaseType* fieldType = field->getType();
+            if (!fieldType) continue;
+    
+            llvm::Type* fieldLLVMType = nullptr;
+            if (const auto* dateField = TypeCasting::castType<DateTimeType>(fieldType)) {
+                fieldLLVMType = dateField->getLLVMPointerType();
+            } else if (const auto* fileField = TypeCasting::castType<FileType>(fieldType)) {
+                fieldLLVMType = fileField->getLLVMPointerType();
+            } else if (const auto* classField = TypeCasting::castType<ClassType>(fieldType)) {
+                fieldLLVMType = classField->getLLVMPointerType();
+            } else if (const auto* ifaceField = TypeCasting::castType<InterfaceType>(fieldType)) {
+                fieldLLVMType = ifaceField->getLLVMPointerType();
+            } else {
+                fieldLLVMType = fieldType->getLLVMType();
             }
-        
-            members.push_back(ty);
-            fieldNameToIndex[name] = index++;
+    
+            if (!fieldLLVMType) {
+                fieldLLVMType = llvm::PointerType::get(llvm::Type::getInt8Ty(context)->getContext(), 0);
+            }
+    
+            members.push_back(fieldLLVMType);
+            fieldNameToIndex[fieldName] = index++;
         }
-
+    
         setStructBodySafe(structType, members);
-
+    
         return cachedType;
     }
     
@@ -115,8 +127,8 @@ namespace LynxTypes {
     }
 
     bool ClassType::equals(const BaseType* other) const {
-        if (auto* otherClass = dynamic_cast<const ClassType*>(other)) {
-            return className== otherClass->className;
+        if (const auto* otherClass = dynamic_cast<const ClassType*>(other)) {
+            return className == otherClass->className;
         }
         return false;
     }
@@ -133,29 +145,17 @@ namespace LynxTypes {
         return false;
     }
 
-    // std::unique_ptr<TypeMethodResolver> ClassType::getOrCreateResolver() const {
-    //     return std::make_unique<ClassMethodResolver>();
-    // }
-
-
     bool ClassType::implementsInterface(const InterfaceType* iface) const {
         if (iface == nullptr) return false;
 
-        // Direct implementation check
-        for (const auto& up : interfaces) {
-            if (up.get() == iface) {
-                return true;
-            }
+        for (const auto& clz : interfaces) {
+            if (clz.get() == iface) return true;
         }
 
-        // Inherited implementations via base classes
         const ClassType* cur = parentClass;
         while (cur) {
-            // Access the vector from the parent; compare pointer identity
-            for (const auto& up : cur->interfaces) {
-                if (up.get() == iface) {
-                    return true;
-                }
+            for (const auto& clf : cur->interfaces) {
+                if (clf.get() == iface) return true;
             }
             cur = cur->parentClass;
         }
@@ -164,36 +164,33 @@ namespace LynxTypes {
     }
 
     const std::string& ClassType::qualifiedName() const { 
-        if (cachedFullName.empty()) {
-            cachedFullName = "class." + className;
-        }
+        if (cachedFullName.empty()) cachedFullName = "class." + className;
         return cachedFullName;            
     }
 
     const std::string& ClassType::originalNameLower() const {
         if (cachedLowerName.empty()) {
             cachedLowerName.reserve(className.size());
-            for (char c : className) {
-                cachedLowerName += std::tolower(static_cast<unsigned char>(c));
+            for (unsigned char c : className) {
+                cachedLowerName += static_cast<char>(std::tolower(c));
             }
         }
-        return cachedLowerName;    
-    }
+        return cachedLowerName;
+    }    
 
-    void ClassType::registerLLVMType(llvm::StructType* structType) {
+    void ClassType::registerLLVMType(llvm::StructType* structType) const {
         if (!structType) return;
         llvmTypeToClass[structType] = this;
     }
 
-    ClassType* ClassType::fromLLVMType(const llvm::Type* type) {
+    const ClassType* ClassType::fromLLVMType(const llvm::Type* type) {
         if (!type) return nullptr;
         // if (auto ptrType = llvm::dyn_cast<llvm::PointerType>(type)) {
         //     type = ptrType->getPointerElementType();
         // }
-
-        if (auto structType = llvm::dyn_cast<llvm::StructType>(type)) {
-            auto it = llvmTypeToClass.find(structType);
-            if (it != llvmTypeToClass.end())  return it->second;
+        if (const auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
+            auto itr = llvmTypeToClass.find(structType);
+            if (itr != llvmTypeToClass.end())  return itr->second;
         }
 
         return nullptr;
@@ -204,34 +201,26 @@ namespace LynxTypes {
     }
 
     const ConstructorType* ClassType::getConstructor(const std::string& mangledName) const {
-        auto it = ctors.find(mangledName);
-        if (it != ctors.end()) {
-            return it->second.get();
-        }
+        auto itr = ctors.find(mangledName);
+        if (itr != ctors.end()) return itr->second.get();
         return nullptr;
     }
 
     std::string ClassType::resolveMethodCall(MethodKind kind, const std::string& mangledName, const std::vector<llvm::Type*>& argTypes) const {
 
         if (kind == MethodKind::CONSTRUCTOR) {
-            if (auto ctor = getConstructor(mangledName)) return mangledName;
+            if (const auto* ctor = getConstructor(mangledName)) return mangledName;
         } else {
-            if (auto method = getMethod(mangledName)) return mangledName;
+            if (const auto* method = getMethod(mangledName)) return mangledName;
         }
 
         auto viable = findViableCandidates(kind, argTypes);
 
         if (viable.empty()) throw std::runtime_error("No matching method found for class '" + className + "'");
 
-        auto best = std::max_element(viable.begin(), viable.end(), [](const Candidate& a, const Candidate& b) {
-            return a.score < b.score;
-        });
-
-
-        std::vector<llvm::Type*> arguments;
-        arguments.clear();
-        
-        return best->mangled;
+        const auto bestIterator = std::ranges::max_element(viable, {}, &Candidate::score);
+    
+        return bestIterator->mangled;
     }
 
     const std::vector<Candidate> ClassType::findViableCandidates(MethodKind kind, const std::vector<llvm::Type*>& argTypes) const {
@@ -246,10 +235,8 @@ namespace LynxTypes {
         viable.reserve(items.size());
         for (const auto& [mangledName, item] : items) {
             const auto& params = item->getParameterTypes();
-            int64_t score = scoreParameters(params, argTypes);
-            if (score >= 0) {
-                viable.push_back({ mangledName, score });
-            }
+            const int64_t score = scoreParameters(params, argTypes);
+            if (score >= 0) viable.push_back({ mangledName, score });
         }
         return viable;        
     }
@@ -262,7 +249,7 @@ namespace LynxTypes {
         for (size_t i = 0; i < params.size(); ++i) {
 
             BaseType* expectedType = params[i].get();
-            BaseType* actualType = convertLLVMTypeToBaseType(argTypes[i], *astContext);
+            const auto* actualType = convertLLVMTypeToBaseType(argTypes[i], *astContext);
 
             if (!expectedType || !actualType) return -1;
 
@@ -310,9 +297,9 @@ namespace LynxTypes {
     }
     
     const MethodType* ClassType::getMethod(const std::string& mangleName) const {
-        auto it = methods.find(mangleName);
-        if (it != methods.end()) {
-            return it->second.get();
+        auto itr = methods.find(mangleName);
+        if (itr != methods.end()) {
+            return itr->second.get();
         }
         return nullptr;
     }
@@ -330,64 +317,52 @@ namespace LynxTypes {
     }
 
     const FieldType* ClassType::getField(const std::string& name) const {
-        auto it = fields.find(name);
-        if (it != fields.end()) {
-            return it->second.get();
+        auto itr = fields.find(name);
+        if (itr != fields.end()) {
+            return itr->second.get();
         }
         return nullptr;
     }
 
     unsigned ClassType::getFieldIndex(const std::string& fieldName) const {
-        auto it = fieldNameToIndex.find(fieldName);
-        if (it == fieldNameToIndex.end()) {
+        auto itr = fieldNameToIndex.find(fieldName);
+        if (itr == fieldNameToIndex.end()) {
             throw std::runtime_error("Field not found: " + fieldName);
         }
-        return it->second;
+        return itr->second;
     } 
-
-    bool ClassType::hasImplements(const InterfaceType* iface) const {
-        return std::any_of(
-            interfaces.begin(),
-            interfaces.end(),
-            [iface](const std::unique_ptr<InterfaceType>& impl) { return impl.get() == iface; }
-        );
-    }
-
-    bool ClassType::hasImplements(const std::string& ifaceName) const {
-        return std::any_of(
-            interfaces.begin(),
-            interfaces.end(),
-            [&ifaceName](const std::unique_ptr<InterfaceType>& impl) {
-                return impl->originalName() == ifaceName;
-            }
-        );
-    }
 
     void ClassType::addInterface(std::unique_ptr<InterfaceType> iface) {
         if (!iface) return;
         if (!hasImplements(iface->originalName())) {
-            interfaces.push_back(std::move(iface)); // ✅ Move it
+            interfaces.push_back(std::move(iface)); // ✅ Move itr
         }    
     }
 
+    bool ClassType::hasImplements(const InterfaceType* iface) const {
+        return std::ranges::any_of(interfaces, [iface](const auto& impl) {
+            return impl.get() == iface;
+        });
+    }
+    
+    bool ClassType::hasImplements(const std::string& ifaceName) const {
+        return std::ranges::any_of(interfaces, [&ifaceName](const auto& impl) {
+            return impl->originalName() == ifaceName;
+        });
+    }
+    
     bool ClassType::usesMixin(const MixinType* mixin) const {
-        return std::any_of(
-            mixins.begin(),
-            mixins.end(),
-            [mixin](const std::unique_ptr<MixinType>& impl) { return impl.get() == mixin; }
-        );
+        return std::ranges::any_of(mixins, [mixin](const auto& impl) {
+            return impl.get() == mixin;
+        });
     }
-
+    
     bool ClassType::usesMixin(const std::string& mixinName) const {
-        return std::any_of(
-            mixins.begin(),
-            mixins.end(),
-            [&mixinName](const std::unique_ptr<MixinType>& impl) {
-                return impl->originalName() == mixinName;
-            }
-        );
+        return std::ranges::any_of(mixins, [&mixinName](const auto& impl) {
+            return impl->originalName() == mixinName;
+        });
     }
-
+    
     void ClassType::addMixin(std::unique_ptr<MixinType> mixin) {
         if (!mixin) return;
         if (!usesMixin(mixin->originalName())) {
@@ -403,7 +378,6 @@ namespace LynxTypes {
     }
 
     const std::vector<MixinOwner> ClassType::getAllMixinMethods() {
-    
         // 1. Topological sort over mixins + parent mixins
         std::unordered_map<const MixinType*, VisitState> state;
         std::vector<const MixinType*> orderedMixins;
@@ -414,17 +388,16 @@ namespace LynxTypes {
         // 2. Flatten methods with left-to-right override resolution
         std::vector<MixinOwner> mixinOwners;
         for (const auto* mixin : orderedMixins) {
-            auto it = std::find_if(
+            auto itr = std::find_if(
                 mixinOwners.begin(),
                 mixinOwners.end(),
                 [&](const MixinOwner& owner) { return owner.mixinName == mixin->originalNameLower(); }
             );
-            if (it != mixinOwners.end())  continue; // skip duplicate mixin
+            if (itr != mixinOwners.end())  continue; // skip duplicate mixin
 
             MixinOwner owner;
             owner.mixinName = mixin->originalNameLower();
             owner.mixinOffset = getMixinOffset(*mixin);
-
             for (const auto& [name, methodPtr] : mixin->getMethods()) {
                 owner.methodMap[name] = methodPtr.get();
             }
@@ -489,17 +462,17 @@ namespace LynxTypes {
     }
 
     bool ClassType::isVirtualFunction(const std::string& name) const {
-        auto it = methods.find(name);
-        if (it == methods.end()) return false;
-        return it->second->isVirtual();    
+        auto itr = methods.find(name);
+        if (itr == methods.end()) return false;
+        return itr->second->isVirtual();    
     }
 
     unsigned ClassType::getVirtualMethodIndex(const std::string& methodName) const {
-        auto it = methodNameToIndex.find(methodName);
-        if (it == methodNameToIndex.end()) {
+        auto itr = methodNameToIndex.find(methodName);
+        if (itr == methodNameToIndex.end()) {
             throw std::runtime_error("Method not found in vtable: " + methodName);
         }
-        return it->second;      
+        return itr->second;      
     }
 
     void ClassType::buildVTable(VTableType vType) { 
@@ -511,31 +484,20 @@ namespace LynxTypes {
     }
 
     void ClassType::bindVTable(llvm::Value* objValue) {
-        assert(objValue && "objValue cannot be null");
-
         auto* vGlobal = getOrCreateOrVTableGlobal();
-        if (!vGlobal) {
-            LOG_ERROR("VTable global could not be created for class: {}", vtableName);
-            return;
-        }
-    
+        if (!vGlobal)  return;    
         auto& builder = astContext->getBuilder();
         auto* vtablePtrPtr = getVTablePtrPtr(objValue);
         builder.CreateStore(vGlobal, vtablePtrPtr); 
     }
 
     llvm::Value* ClassType::getVTablePtrPtr(llvm::Value* objValue) const {
-        assert(objValue && "objValue cannot be null");
-
-        auto it = vtableCache.find(objValue);
-        if (it != vtableCache.end()) return it->second;
+        auto itr = vtableCache.find(objValue);
+        if (itr != vtableCache.end()) return itr->second;
 
         auto& builder = astContext->getBuilder();
         auto* type = computeLLVMType();
-        auto* structType = llvm::dyn_cast<llvm::StructType>(type);
-        assert(structType && "Expected a StructType");
-        assert(structType->getNumElements() > 0 && "Struct type must have at least one element for vtable");
-    
+        auto* structType = llvm::dyn_cast<llvm::StructType>(type);    
         auto* vtablePtrPtr = builder.CreateStructGEP(structType, objValue, 0, llvm::Twine(originalNameLower() + "_vtable_ptr_ptr"));   
         
         vtableCache[objValue] = vtablePtrPtr;
@@ -543,10 +505,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* ClassType::loadVTablePtr(llvm::Value* objValue) const {
-        assert(objValue && "objValue cannot be null");
-
-        auto it = vtableLoadCache.find(objValue);
-        if (it != vtableLoadCache.end()) return it->second;
+        auto itr = vtableLoadCache.find(objValue);
+        if (itr != vtableLoadCache.end()) return itr->second;
     
         auto& builder = astContext->getBuilder();
         auto* vtablePtrPtr = getVTablePtrPtr(objValue);
@@ -554,12 +514,10 @@ namespace LynxTypes {
 
         auto* vtablePtr = builder.CreateLoad(vtablePtrType, vtablePtrPtr, llvm::Twine(originalNameLower() + + "_vtable"));
         vtableLoadCache[objValue] = vtablePtr;
-
         return vtablePtr;
     }
 
     llvm::Value* ClassType::loadVirtualMethodPtr(llvm::Value* vtablePtr, const std::string& fnName) const {
-        assert(vtablePtr && "vtablePtr cannot be null");
         auto& builder = astContext->getBuilder();
         unsigned methodIndex = getVirtualMethodIndex(fnName);
         auto* methodPtrPtr = builder.CreateStructGEP(vtableType, vtablePtr, methodIndex, llvm::Twine(fnName + "_ptr_ptr"));
@@ -568,20 +526,11 @@ namespace LynxTypes {
     }
 
     llvm::GlobalVariable* ClassType::getOrCreateOrVTableGlobal() const {
-        std::cout << "[class] ===>" << className << " [vtableName]  ===>" << vtableName << std::endl;
-
         auto* module = astContext->getModule();
         if (auto* existingGV = module->getGlobalVariable(vtableName, true)) return existingGV;
     
-        if (!vtableGlobal) {
-            LOG_ERROR("VTable type not initialized for class: {}", className);
-            return nullptr;
-        }
-        
-        if (vtableName.empty()) {
-            LOG_ERROR("VTable '{}' does not declare virtual methods; skipping vtable", className);
-            return nullptr;
-        }    
+        if (!vtableGlobal) return nullptr;
+        if (vtableName.empty()) return nullptr;
 
         // llvm::errs() << "vtableType = ";
         // vtableType->print(llvm::errs());
@@ -594,7 +543,6 @@ namespace LynxTypes {
         return newGV;
     }
     
-
     const BaseType* ClassType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
     const BaseType* ClassType::createWithConst(bool /*newIsConst*/) const { return nullptr; }
 

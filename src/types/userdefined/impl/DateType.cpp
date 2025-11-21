@@ -1,18 +1,16 @@
 #include "userdefined/DateType.hpp"
 #include <context/AstContext.hpp>
 
-using namespace LynxContext;
 
 namespace LynxTypes {
 
     llvm::StructType* DateType::cachedType = nullptr;
 
     llvm::Type* DateType::computeLLVMType() const {
-
         if (!cachedType) {
             auto& context = astContext->getLLVMContext();
             cachedType = llvm::StructType::create(context, MetadataTypeConstants::structureDateType);
-            std::vector<llvm::Type*> members = {
+            const std::vector<llvm::Type*> members = {
                 llvm::Type::getInt32Ty(context), // year
                 llvm::Type::getInt32Ty(context), // month
                 llvm::Type::getInt32Ty(context), // day
@@ -46,6 +44,33 @@ namespace LynxTypes {
         return var;
     }
 
+    llvm::Value* DateType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
+        auto& builder = astContext->getBuilder();
+        return builder.CreateStore(rhs, lhs);
+    }
+
+    llvm::Value* DateType::getField(const std::string& fieldName, llvm::Value* instance) {
+        auto& context = astContext->getLLVMContext();
+        auto& builder = astContext->getBuilder();
+        llvm::Function* func = nullptr;
+        return builder.CreateCall(func, { instance });    
+    }
+
+    bool DateType::equals(const BaseType* other) const {
+        return dynamic_cast<const DateType*>(other) != nullptr;
+    }
+    
+    const BaseType* DateType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
+    const BaseType* DateType::createWithConst(bool /*newIsConst*/) const { return nullptr; }
+
+    llvm::DIType* DateType::getDIType(llvm::DIScope* /*scope*/) const { return nullptr;  }
+    uint64_t DateType::getDebugSizeInBits() const { return DEFAULT_ALIGN_BITS; }
+    uint32_t DateType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
+    llvm::DINode::DIFlags DateType::getDIFlags() const { return llvm::DINode::FlagZero; }
+}
+
+
+
     // llvm::Value* DateType::createValue(LValueType value) const {
     //     LOG_INFO("Invoked...");
         
@@ -72,33 +97,3 @@ namespace LynxTypes {
 
     // }
 
-
-    llvm::Value* DateType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        if (!isValid(lhs) || !isValid(rhs)) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }
-
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
-    }
-
-    llvm::Value* DateType::getField(std::string fieldName, llvm::Value* instance) {
-        auto& context = astContext->getLLVMContext();
-        auto& builder = astContext->getBuilder();
-        llvm::Function* func = nullptr;
-        return builder.CreateCall(func, { instance });    
-    }
-
-    bool DateType::equals(const BaseType* other) const {
-        return dynamic_cast<const DateType*>(other) != nullptr;
-    }
-    
-    const BaseType* DateType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
-    const BaseType* DateType::createWithConst(bool /*newIsConst*/) const { return nullptr; }
-
-    llvm::DIType* DateType::getDIType(llvm::DIScope* /*scope*/) const { return nullptr;  }
-    uint64_t DateType::getDebugSizeInBits() const { return DEFAULT_ALIGN_BITS; }
-    uint32_t DateType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
-    llvm::DINode::DIFlags DateType::getDIFlags() const { return llvm::DINode::FlagZero; }
-}

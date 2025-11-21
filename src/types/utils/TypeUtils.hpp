@@ -43,7 +43,7 @@ namespace LynxTypes::TypeUtils {
         }
     } 
     
-    inline BaseType* convertLLVMTypeToBaseType(llvm::Type* llvmType, AstContext& context) {
+    inline const BaseType* convertLLVMTypeToBaseType(llvm::Type* llvmType, AstContext& context) {
         if(auto clazzType = ClassType::fromLLVMType(llvmType)) { 
             return clazzType;
         } else if(auto ifaceType = InterfaceType::fromLLVMType(llvmType)) {
