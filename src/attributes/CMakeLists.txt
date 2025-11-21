@@ -18,3 +18,5 @@ target_include_directories(LynxFunctionAttr PUBLIC
 
 target_link_libraries(LynxFunctionAttr PUBLIC LynxLogger)
 
+message(STATUS "✅ LynxFunctionAttr module configured successfully! ")
+

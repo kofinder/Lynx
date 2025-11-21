@@ -29,3 +29,5 @@ target_link_libraries(LynxCLI PUBLIC
     LynxLogger
     LynxProgramConfig
 )
+
+message(STATUS "✅ LynxCLI module configured successfully! ")

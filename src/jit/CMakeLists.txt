@@ -16,3 +16,6 @@ add_library(LynxJIT STATIC ${JIT_LIB_HEADER_SOURCES} ${JIT_LIB_IMMPL_SOURCES})
 target_link_libraries(LynxJIT PRIVATE LynxLogger)
 
 target_include_directories(LynxJIT PUBLIC ${LIBRARY_INCLUDES})
+
+message(STATUS "✅ LynxJIT module configured successfully! ")
+

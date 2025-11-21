@@ -33,4 +33,4 @@ target_link_libraries(LynxRuntime PRIVATE
 
 set_target_properties(LynxRuntime PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-message(STATUS "✅ LynxRuntime module configured")
+message(STATUS "✅ LynxRuntime module configured successfully!")

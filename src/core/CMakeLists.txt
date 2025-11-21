@@ -53,4 +53,5 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${CORE_SOURCES} ${CORE_HEADE
 
 target_link_libraries(LynxCore PRIVATE ${GC_LIBRARY})
 
-message(STATUS "Lynx Core module configured successfully")
+message(STATUS "✅ LynxCore module configured successfully! ")
+

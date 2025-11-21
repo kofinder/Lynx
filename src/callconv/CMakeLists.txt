@@ -42,5 +42,4 @@ target_include_directories(LynxCallConv PUBLIC
   ${CMAKE_BINARY_DIR}/configured_files/include
 )
 
-
-
+message(STATUS "✅ LynxCallConv module configured successfully! ")

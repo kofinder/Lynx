@@ -20,7 +20,7 @@ int Lynx::loadSources() {
     processor->load(config.buildDir, config.entrySource, config.sourceFolders);
     processor->parseSources();
 
-    int exitCode = processor->getExitCode();
+    const int exitCode = processor->getExitCode();
     if (exitCode != 0) {
         std::cerr << "[Lynx] Source parsing failed with exit code: " << exitCode << "\n";
     }
@@ -40,8 +40,8 @@ void Lynx::analyzeSource() {
 
     semanticAnalyzer = std::make_unique<SemanticAnalyzer>();
     driver = std::move(processor->getDriver());
-    auto& analyzerNodes = driver->getAllAnalyzerNodes();
-    for (auto node : *analyzerNodes) {
+    const auto& analyzerNodes = driver->getAllAnalyzerNodes();
+    for (auto* node : *analyzerNodes) {
         semanticAnalyzer->analyzeASTParallel(node);
     }
 }
@@ -150,7 +150,7 @@ int Lynx::executeJIT() {
     excutor->initialize(std::move(finalModule));
 
     // Execute the entry function (e.g., main) and capture the result
-    int result = excutor->execute();
+   const int result = excutor->execute();
 
     // Report any memory leaks tracked by the memory manager
    coreManager->getMemoryManager().reportLeaks();

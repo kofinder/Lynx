@@ -36,7 +36,7 @@ llvm_map_components_to_libnames(LLVM_LIBS
 
 target_link_libraries(LynxLTO PRIVATE ${LLVM_LIBS})
 
-# target_compile_options(LynxLTO PRIVATE ${LLVM_CXX_FLAGS})
+message(STATUS "✅ LynxLTO module configured successfully! ")
 
 
 

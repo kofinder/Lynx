@@ -12,13 +12,7 @@
  * - Convenient macros for debug, info, warning, and error messages.
  * - Automatic source file, line number, and function tagging in logs.
  * - Uses spdlog for efficient and thread-safe logging.
- *
- * **Logging Macros:**
- * - `LOG_DEBUG(msg, ...)`
- * - `LOG_INFO(msg, ...)`
- * - `LOG_WARN(msg, ...)`
- * - `LOG_ERROR(msg, ...)`
- *
+ * 
  * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
@@ -26,16 +20,16 @@
 #ifndef LYNX_LOGGER_HPP
 #define LYNX_LOGGER_HPP
 
-#include "strings.h"
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
-#include <string>
-#include <spdlog/async.h>
-#include <spdlog/spdlog.h>
+#include <cstddef> 
+#include <memory>
+#include <string> 
+#include <spdlog/async.h> 
+#include <spdlog/spdlog.h> 
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
-
 
 namespace LynxLogger {
 

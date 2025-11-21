@@ -12,3 +12,5 @@ set(LIBRARY_INCLUDES "./" "${CMAKE_BINARY_DIR}/configured_files/include")
 add_library(LynxExceptions STATIC ${LIB_EXCEPTIONS_SOURCES} ${LIB_EXCEPTIONS_HEADERS})
 
 target_include_directories(LynxExceptions PUBLIC ${LIBRARY_INCLUDES})
+
+message(STATUS "✅ LynxExceptions module configured successfully! ")

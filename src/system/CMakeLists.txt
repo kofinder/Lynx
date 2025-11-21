@@ -29,6 +29,6 @@ target_link_libraries(LynxSystem PUBLIC
     LynxTypes
 )
 
-message(STATUS "✅ LynxSystem module configured ")
+message(STATUS "✅ LynxSystem module configured successfully! ")
 
 

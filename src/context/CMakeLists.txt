@@ -27,3 +27,5 @@ target_link_libraries(LynxContext PRIVATE
     LynxLogger 
     LynxConstants
 )
+
+message(STATUS "✅ LynxContext module configured successfully! ")

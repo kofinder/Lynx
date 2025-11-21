@@ -1,6 +1,5 @@
-# ClangTidy.cmake
-# Controls enabling/disabling clang-tidy via a CMake option.
 function(enable_clang_tidy_for_target target_name)
+
     find_program(CLANG_TIDY_EXE NAMES clang-tidy)
 
     if(ENABLE_CLANG_TIDY)
@@ -9,35 +8,13 @@ function(enable_clang_tidy_for_target target_name)
         else()
             message(STATUS "✅ Clang-Tidy enabled: ${CLANG_TIDY_EXE}")
         endif()
+        message(STATUS "Clang-Tidy ENABLED for target: ${target_name}")
     endif()
 
     if(ENABLE_CLANG_TIDY AND CLANG_TIDY_EXE)
-        set_target_properties(${target_name} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-p=${CMAKE_BINARY_DIR};--extra-arg=-std=c++23")
+        message(STATUS "✅ Enabling clang-tidy for target ${target_name}: ${CLANG_TIDY_EXE}")
+        set(CLANG_TIDY_CMD ${CLANG_TIDY_EXE} -p=${CMAKE_BINARY_DIR} --config-file=${CMAKE_SOURCE_DIR}/.clang-tidy --extra-arg=-std=c++23)
+        set_target_properties(${target_name} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_CMD}")
     endif()
+
 endfunction()
-
-
-
-
-# option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis" OFF)
-# function(enable_clang_tidy_for_target target_name)
-#     if(ENABLE_CLANG_TIDY)
-#         find_program(CLANG_TIDY_EXECUTABLE NAMES clang-tidy)
-
-#         if(NOT CLANG_TIDY_EXECUTABLE)
-#             message(FATAL_ERROR "ENABLE_CLANG_TIDY=ON but clang-tidy not found")
-#         endif()
-
-#         set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-p=${CMAKE_BINARY_DIR};--extra-arg=-std=c++23")
-
-#         set_target_properties(${target_name} PROPERTIES
-#             CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE};--format-style=file"
-#         )
-
-#         message(STATUS "Clang-Tidy ENABLED for target: ${target_name}")
-#     else()
-#         message(STATUS "Clang-Tidy DISABLED for target: ${target_name}")
-#     endif()
-# endfunction()
-
-

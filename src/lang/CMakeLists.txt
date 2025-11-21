@@ -77,6 +77,4 @@ target_link_libraries(LynxLang PRIVATE
     LynxAst
 )
 
-# Optional: Print debug information to the console.
-message(STATUS "FLEX_OUTPUTS: ${FLEX_LynxScanner_OUTPUTS}")  # Display Flex outputs for debugging.
-message(STATUS "BISON_OUTPUTS: ${BISON_LynxParser_OUTPUTS}")   # Display Bison outputs for debugging.
+message(STATUS "✅ LynxLang module configured ")

@@ -43,7 +43,7 @@ add_compile_options(-frtti -fexceptions)
 # ==========================
 set(LYNX_MODULES
     lang constants exceptions logger context types ast mangler
-    jit config codegen linker ui attributes callconv
+    jit config codegen linker attributes callconv
     analyzer lto core platform runtime collections
     errors cli system stdapi
 )
@@ -51,6 +51,7 @@ set(LYNX_MODULES
 foreach(module IN LISTS LYNX_MODULES)
     add_subdirectory(${module})
 endforeach()
+
 
 # ==========================
 # === Main executable
@@ -91,7 +92,6 @@ target_link_libraries(${LYNX_EXECUTABLE} PUBLIC
     LynxJIT 
     LynxProgramConfig
     LynxCLI 
-    LynxUI
     LynxCodegen 
     LynxLinker 
     LynxFunctionAttr 

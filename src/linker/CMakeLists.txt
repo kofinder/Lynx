@@ -10,5 +10,5 @@ target_link_libraries(LynxLinker PRIVATE LynxLogger)
 
 target_include_directories(LynxLinker PUBLIC ${LIBRARY_INCLUDES})
 
-
+message(STATUS "✅ LynxLinker module configured successfully! ")
 
