@@ -47,6 +47,16 @@ namespace LynxTypes {
             const BaseType* createWithStatic(bool newIsStatic) const override;
 
             const BaseType* createWithConst(bool newIsConst) const override;
+
+        private:
+
+            llvm::Value* createConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const;
+
+            llvm::Value* createNonConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const;
+
+            llvm::Value* getElementPointer(llvm::Value* arrayAlloca, int index) const;
+            
+            llvm::Value* getElementPointer(llvm::Value* arrayAlloca, int outerIndex, int innerIndex) const;
             
         public:
 
@@ -60,9 +70,6 @@ namespace LynxTypes {
 
             llvm::Value* createValue(std::vector<llvm::Value*> values) const override;
 
-            llvm::Value* getElementPointer(llvm::Value* arrayAlloca, int index) const;
-            
-            llvm::Value* getElementPointer(llvm::Value* arrayAlloca, int outerIndex, int innerIndex) const;
 
             std::unique_ptr<BaseType> clone() const override { return std::make_unique<ArrayType>(*this); }
 

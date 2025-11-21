@@ -31,6 +31,10 @@
 
 namespace LynxTypes {
 
+    constexpr int kSmallVectorInitialSize = 8;
+    constexpr int vectorDefaultAlignSize = 32;
+
+
     class SequentialType : public CollectionType {
 
         public:

@@ -114,14 +114,6 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    const BaseType* ClassType::createWithStatic(bool) const {
-        return nullptr;
-    }
-
-    const BaseType* ClassType::createWithConst(bool) const {
-        return nullptr;
-    }
-
     bool ClassType::equals(const BaseType* other) const {
         if (auto* otherClass = dynamic_cast<const ClassType*>(other)) {
             return className== otherClass->className;

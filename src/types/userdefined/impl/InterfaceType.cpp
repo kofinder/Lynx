@@ -77,10 +77,6 @@ namespace LynxTypes {
         return false;    
     }
 
-    // std::unique_ptr<TypeMethodResolver> InterfaceType::getOrCreateResolver() const {
-    //     return std::make_unique<InterfaceMethodResolver>();
-    // }
-
     const std::string& InterfaceType::qualifiedName() const { 
         if (cachedFullName.empty()) {
             cachedFullName = "class." + interfaceName;
@@ -287,7 +283,6 @@ namespace LynxTypes {
     std::string InterfaceType::resolveMethodCall(MethodKind kind, const std::string& mangledName, const std::vector<llvm::Type*>& argTypes) const {
         return mangledName;
     }
-
 
     const BaseType* InterfaceType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
     const BaseType* InterfaceType::createWithConst(bool /*newIsConst*/) const { return nullptr; }

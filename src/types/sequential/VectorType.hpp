@@ -52,6 +52,13 @@ namespace LynxTypes {
 
             std::string getSafeStructName(std::unordered_set<const BaseType*>& visited) const;
 
+        private:
+        
+            llvm::Value* createConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const;
+
+            llvm::Value* createNonConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const;
+
+
         public:
 
             explicit VectorType(AstContext* context) : SequentialType(context) {}

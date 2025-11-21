@@ -27,12 +27,12 @@ namespace LynxTypes {
         return inferredType->createValue(value);
     }
 
-    llvm::Value* AutoType::createValue(std::vector<llvm::Value*> values) const {
+    llvm::Value* AutoType::createValue(std::vector<llvm::Value*> /*values*/) const {
         astContext->reportError(makeRuntimeError("AutoType createValue(T, V) doesn't support this createValue signature."));
         return nullptr;    
     }  
     
-    llvm::Value* AutoType::createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> pairs) const {
+    llvm::Value* AutoType::createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*pairs*/) const {
         astContext->reportError(makeRuntimeError("AutoType createValue(T, K, V) doesn't support this createValue signature."));
         return nullptr;    
     }    
@@ -48,18 +48,14 @@ namespace LynxTypes {
     }
 
     bool AutoType::equals(const BaseType* other) const {
-        if (auto* otherAuto = dynamic_cast<const AutoType*>(other)) {
-            if (isInferred() && otherAuto->isInferred()) {
-                return inferredType->equals(otherAuto->inferredType);
-            }
+        if (const auto* otherAuto = dynamic_cast<const AutoType*>(other)) {
+            if (isInferred() && otherAuto->isInferred()) return inferredType->equals(otherAuto->inferredType);
             return !isInferred() && !otherAuto->isInferred();
         }
         return false;
     }
 
-    bool AutoType::canAccept(const BaseType* other) const {
-        return equals(other);
-    }
+    bool AutoType::canAccept(const BaseType* other) const { return equals(other); }
 
     const BaseType* AutoType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
     const BaseType* AutoType::createWithConst(bool /*newIsConst*/) const { return nullptr; }

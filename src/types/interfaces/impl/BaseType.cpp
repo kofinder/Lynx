@@ -35,7 +35,7 @@ namespace LynxTypes {
     }
 
     BaseType::~BaseType() {
-        if(resolver) delete resolver;
+        delete resolver;
         resolver = nullptr;        
     };
 }
