@@ -69,17 +69,17 @@ namespace LynxTypes::TypeChecker {
 
     template <>
     inline bool is<ShortType>(llvm::Type* type) {
-        return type && type->isIntegerTy(16);
+        return type && type->isIntegerTy(BIT_WIDTH_SHORT);
     }
 
     template <>
     inline bool is<IntegerType>(llvm::Type* type) {
-        return type && type->isIntegerTy(32);
+        return type && type->isIntegerTy(BIT_WIDTH_INT);
     }
 
     template <>
     inline bool is<LongType>(llvm::Type* type) {
-        return type && type->isIntegerTy(64);
+        return type && type->isIntegerTy(BIT_WIDTH_LONG);
     }
 
     template <>
@@ -191,11 +191,9 @@ namespace LynxTypes::TypeChecker {
     inline bool is<EnumType>(llvm::Type* type) {
         if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
 
-            // std::cout << "struct type ===========>:" << structType->getName().str() << "\";
-
             if (!structType || !structType->hasName()) return false;
 
-            std::string name = structType->getName().str();
+            const auto name = structType->getName().str();
         
             constexpr std::string_view prefix = "enum.";
             if (name.compare(0, prefix.size(), prefix) != 0) return false;
@@ -206,10 +204,9 @@ namespace LynxTypes::TypeChecker {
                 return false;
             }
             
-            llvm::Type* first = structType->getElementType(0);
-            llvm::Type* second = structType->getElementType(1);
-        
-            if (!first->isIntegerTy(64)) return false;
+            const auto* first = structType->getElementType(0);
+            const auto* second = structType->getElementType(1);
+            if (!first->isIntegerTy(BIT_WIDTH_LONG)) return false;
 
             if (auto* secondStruct = llvm::dyn_cast<llvm::StructType>(second)) {
                 if (secondStruct->getNumElements() != 3) return false;
@@ -221,8 +218,8 @@ namespace LynxTypes::TypeChecker {
                 // With opaque pointers, you cannot check the pointee type.
                 bool validSecondStruct =
                     intType->isPointerTy() &&  // opaque pointer
-                    charType->isIntegerTy(8) &&
-                    stringType->isIntegerTy(64);
+                    charType->isIntegerTy(BIT_WIDTH_BYTE) &&
+                    stringType->isIntegerTy(BIT_WIDTH_LONG);
             
                 return validSecondStruct;
             }

@@ -91,6 +91,10 @@ namespace LynxTypes {
             void visit(StringType& type) override { dispatch(type); } 
 
             ~TypeMethodCallVisitor() override = default;
+            TypeMethodCallVisitor(const TypeMethodCallVisitor&) = delete;
+            TypeMethodCallVisitor& operator=(const TypeMethodCallVisitor&) = delete;
+            TypeMethodCallVisitor(TypeMethodCallVisitor&&) = delete;
+            TypeMethodCallVisitor& operator=(TypeMethodCallVisitor&&) = delete;        
     };
 }
 

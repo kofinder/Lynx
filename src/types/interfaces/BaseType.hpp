@@ -115,7 +115,7 @@ namespace LynxTypes {
              * @brief Constructor initializing the AST context.
              * @param context Pointer to the AstContext associated with this type.
             */
-            BaseType(AstContext* context) : astContext(context), cachedLLVMType(nullptr), resolver(nullptr) {}
+            BaseType(AstContext* context) : astContext(context) {}
             
             virtual ~BaseType();
 

@@ -16,8 +16,8 @@ namespace LynxLogger {
 
     LogManager::LogManager() noexcept {  
         spdlog::init_thread_pool(kAsyncQueueSize, kAsyncThreads);
-       logger = spdlog::stdout_color_mt(k_main_logger); 
-       logger->set_pattern("%^[%Y-%m-%d %H:%M:%S] %n: %v%$");
+        logger = spdlog::stdout_color_mt(k_main_logger); 
+        logger->set_pattern("%^[%Y-%m-%d %H:%M:%S] %n: %v%$");
     }  
 
     LogManager::~LogManager() noexcept {  spdlog::drop_all(); }  

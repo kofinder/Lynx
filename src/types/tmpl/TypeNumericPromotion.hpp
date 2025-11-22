@@ -46,7 +46,7 @@ namespace LynxTypes::TypePromotion {
     template<NumericType T>
     constexpr int typeRank() noexcept {
         if constexpr (std::same_as<T, ByteType>)         return RANK_ONE;
-        else if constexpr (std::same_as<T, ShortType>)   return RANK_ONE;
+        else if constexpr (std::same_as<T, ShortType>)   return RANK_TWO;
         else if constexpr (std::same_as<T, CharType>)    return RANK_THREE;
         else if constexpr (std::same_as<T, IntegerType>) return RANK_FOUR;
         else if constexpr (std::same_as<T, LongType>)    return RANK_FIVE;
@@ -92,8 +92,8 @@ namespace LynxTypes::TypePromotion {
         llvm::Type* lhsType = lhs->getType();
         llvm::Type* rhsType = rhs->getType();
 
-        int lhsRank = getNumericRank(lhsType);
-        int rhsRank = getNumericRank(rhsType);
+        const int lhsRank = getNumericRank(lhsType);
+        const int rhsRank = getNumericRank(rhsType);
 
         llvm::Type* targetType = (lhsRank >= rhsRank) ? lhsType : rhsType;
 
@@ -120,7 +120,7 @@ namespace LynxTypes::TypePromotion {
     // ==========================
     inline llvm::Value* matchConstantType(llvm::IRBuilder<>& /*builder*/, llvm::Value* value, llvm::Type* targetType) noexcept {
         if (llvm::isa<llvm::ConstantInt>(value) && targetType->isFloatingPointTy()) {
-            auto cii = llvm::cast<llvm::ConstantInt>(value);
+            auto* cii = llvm::cast<llvm::ConstantInt>(value);
             return llvm::ConstantFP::get(targetType, cii->getSExtValue());
         }
         return value;

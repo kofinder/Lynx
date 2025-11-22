@@ -47,7 +47,13 @@ namespace LynxLogger {
 
         private: 
 
-            LogManager() noexcept;  
+            LogManager() noexcept;
+
+            // Delete copy/move to enforce singleton
+            LogManager(const LogManager&) = delete;
+            LogManager(LogManager&&) noexcept = delete;
+            LogManager& operator=(const LogManager&) = delete;
+            LogManager& operator=(LogManager&&) noexcept = delete;
 
             std::shared_ptr<spdlog::logger> logger;  
     };  
@@ -75,3 +81,26 @@ namespace LynxLogger {
 }
 
 #endif
+
+
+
+    // template<typename... Args>
+    // inline void LOG_DEBUG(const char* msg, Args&&... args) noexcept {
+    //     LynxLogger::Logger()->debug("[{}:{} {}] " + std::string(msg), FILE_NAME, __LINE__, __FUNCTION__, std::forward<Args>(args)...);
+    // }
+
+    // template<typename... Args>
+    // inline void LOG_INFO(const char* msg, Args&&... args) noexcept {
+    //     LynxLogger::Logger()->info("[{}:{} {}] " + std::string(msg), FILE_NAME, __LINE__, __FUNCTION__, std::forward<Args>(args)...);
+    // }
+
+    // template<typename... Args>
+    // inline void LOG_WARN(const char* msg, Args&&... args) noexcept {
+    //     LynxLogger::Logger()->warn("[{}:{} {}] " + std::string(msg), FILE_NAME, __LINE__, __FUNCTION__, std::forward<Args>(args)...);
+    // }
+
+    // template<typename... Args>
+    // inline void LOG_ERROR(const char* msg, Args&&... args) noexcept {
+    //     LynxLogger::Logger()->error("[{}:{} {}] " + std::string(msg), FILE_NAME, __LINE__, __FUNCTION__, std::forward<Args>(args)...);
+    // }
+

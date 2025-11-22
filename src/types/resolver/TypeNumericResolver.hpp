@@ -98,7 +98,7 @@ namespace LynxTypes {
                 return DerivedT::resolveInstanceMethod(ctx, instance, instancePtr, method, args);
             }
 
-            ~TypeNumericResolver() noexcept = default;
+            ~TypeNumericResolver() noexcept override = default;
             TypeNumericResolver(const TypeNumericResolver&) = delete;
             TypeNumericResolver& operator=(const TypeNumericResolver&) = delete;
             TypeNumericResolver(TypeNumericResolver&&) = delete;

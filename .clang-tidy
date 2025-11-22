@@ -46,6 +46,7 @@ Checks:
   - '-readability-braces-around-statements'
   - '-readability-implicit-bool-conversion'
   - '-hicpp-braces-around-statements'
+  - '-readability-use-concise-preprocessor-directives'
 
   # --------------------------------------------
   # Portability
@@ -66,7 +67,8 @@ Checks:
 WarningsAsErrors: 'cppcoreguidelines-*'
 
 # Only analyze headers in src/ (instead of system or external libs)
-HeaderFilterRegex: '^src/(types/logger/exceptions)/'
+# HeaderFilterRegex: '^src/(types/logger/exceptions)/'
+HeaderFilterRegex: '^src/'
 
 # Use clang-format config from your .clang-format file
 FormatStyle: file
@@ -75,7 +77,9 @@ FormatStyle: file
 SystemHeaders: false
 
 # Additional include path (useful if you have an external/ folder)
-ExtraArgs: ["-isystem", "${PROJECT_SOURCE_DIR}/external"]
+# ExtraArgs: ["-isystem", "external/"]
+ExtraArgs: ["-isystem/home/jovian/Workspaces/finderbar/Lynx/external"]
+
 
 # ===============================================
 # Per-check configuration

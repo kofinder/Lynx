@@ -27,19 +27,9 @@ namespace LynxTypes::helper {
     }
 
     inline llvm::Value* intToFloat(llvm::IRBuilder<>& builder, llvm::Value* value) noexcept {
-        const auto* type = value->getType();
-    
-        if (type->isFloatingPointTy()) return value;
-    
-        llvm::Type* floatTy = nullptr;
-        if (type->isIntegerTy(BIT_WIDTH_LONG)) {
-            floatTy = builder.getDoubleTy();
-        } else if (type->isIntegerTy(BIT_WIDTH_INT) || type->isIntegerTy(BIT_WIDTH_SHORT)) {
-            floatTy = builder.getFloatTy();
-        } else {
-            floatTy = builder.getFloatTy();
-        }
-    
+        const auto* valueType = value->getType();
+        if (valueType->isFloatingPointTy()) return value;
+        llvm::Type* floatTy = valueType->isIntegerTy(BIT_WIDTH_LONG) ? builder.getDoubleTy() : builder.getFloatTy();
         return builder.CreateSIToFP(value, floatTy);
     }
 
@@ -90,7 +80,7 @@ namespace LynxTypes::helper {
         llvm::Value* rhsVal = promoted.rhs;
     
         if (promoted.isFloating) {
-            llvm::Type* type = promoted.commonType;
+            const llvm::Type* type = promoted.commonType;
             llvm::Type* intTy = nullptr;
             if (type->isFloatTy()) {
                 intTy = builder.getInt32Ty();
@@ -131,7 +121,7 @@ namespace LynxTypes::helper {
                 case CompareOp::Ge: result = builder.CreateFCmpOGE(lhsVal, rhsVal, llvm::Twine("cmp.ge")); break;
             }
         } else {
-            bool isUnsigned = lhsVal->getType()->isIntegerTy() && !lhsVal->getType()->isIntegerTy(1);
+            const bool isUnsigned = lhsVal->getType()->isIntegerTy() && !lhsVal->getType()->isIntegerTy(1);
             switch (opr) {
                 case CompareOp::Eq: result = builder.CreateICmpEQ(lhsVal, rhsVal, llvm::Twine("cmp.eq")); break;
                 case CompareOp::Ne: result = builder.CreateICmpNE(lhsVal, rhsVal, llvm::Twine("cmp.ne")); break;
@@ -173,8 +163,8 @@ namespace LynxTypes::helper {
         auto& builder = stg.ctx.getBuilder();
         auto* module = stg.ctx.getModule();
 
-        auto* fn = callOfIntrinsic(module, instId, lhs->getType());
-        auto* result = builder.CreateCall(fn, {lhs, rhs});
+        auto* func = callOfIntrinsic(module, instId, lhs->getType());
+        auto* result = builder.CreateCall(func, {lhs, rhs});
         builder.CreateStore(result, lhsPtr);
         return result;
     }
@@ -240,8 +230,8 @@ namespace LynxTypes::helper {
         const unsigned scaleBits = defaultFloatScaleBits;
         const double scale = double(1ULL << scaleBits);
         auto* scaleConst = llvm::ConstantFP::get(lhsTy, scale);
-        auto* fn = callOfIntrinsic(mod, instId, lhsTy);
-        return builder.CreateCall(fn, { lhs, lhs, scaleConst });
+        auto* func = callOfIntrinsic(mod, instId, lhsTy);
+        return builder.CreateCall(func, { lhs, lhs, scaleConst });
     }
 
     inline llvm::Value* callOfOverflowIntrinsic(const StrategyContext& stg, llvm::Intrinsic::ID instId) {
@@ -275,7 +265,7 @@ namespace LynxTypes::helper {
 
     inline llvm::Value* intToFloat(const StrategyContext& stgCtx, llvm::Value* val, bool isSigned) noexcept {
         auto& builder = stgCtx.ctx.getBuilder();
-        llvm::Type* floatTy = val->getType()->isIntegerTy(64)
+        llvm::Type* floatTy = val->getType()->isIntegerTy(BIT_WIDTH_LONG)
                                 ? builder.getDoubleTy()
                                 : builder.getFloatTy();
 

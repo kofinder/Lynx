@@ -40,7 +40,7 @@ namespace LynxExceptions {
 
             [[nodiscard]] auto getMessage() const -> std::string override {
                 std::ostringstream oss;
-                oss << "Error: " << message << " at line " << lineNumber;
+                oss << "Error: " << BaseException::getMessage() << " at line " << lineNumber;
                 return oss.str();            
             }  
     };  
