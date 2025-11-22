@@ -55,13 +55,13 @@ namespace LynxTypes {
                 const auto* obj = dynamic_cast<const BuiltInType*>(other);
                 if (!obj) return false;
                 switch (other->getTypeTag()) {
-                    case DataType::BYTE:    return true;
-                    case DataType::SHORT:   return true;
-                    case DataType::INT:     return true;
-                    case DataType::LONG:    return true;
-                    case DataType::FLOAT:   return true;
-                    case DataType::DOUBLE:  return true;
-                    case DataType::CHAR:    return true;
+                    case DataType::BYTE:
+                    case DataType::SHORT:
+                    case DataType::INT:
+                    case DataType::LONG:
+                    case DataType::FLOAT:
+                    case DataType::DOUBLE:
+                    case DataType::CHAR:
                     case DataType::STRING:  return true;
                     default: return false;
                 }

@@ -42,7 +42,7 @@ namespace LynxTypes {
     template<typename DerivedT, typename LLVMType>
     class TypeNumericResolver : public TypeMethodResolver {
 
-        protected:
+        private:
 
             const BinaryStrategy* arithmetic;
             const BitwiseStrategy* bitwise;
@@ -98,7 +98,11 @@ namespace LynxTypes {
                 return DerivedT::resolveInstanceMethod(ctx, instance, instancePtr, method, args);
             }
 
-            virtual ~TypeNumericResolver() noexcept = default;
+            ~TypeNumericResolver() noexcept = default;
+            TypeNumericResolver(const TypeNumericResolver&) = delete;
+            TypeNumericResolver& operator=(const TypeNumericResolver&) = delete;
+            TypeNumericResolver(TypeNumericResolver&&) = delete;
+            TypeNumericResolver& operator=(TypeNumericResolver&&) = delete;
     };
 
 }

@@ -68,10 +68,10 @@ namespace LynxTypes {
             auto* type = val->getType();
             auto& builder = stg.ctx.getBuilder();
 
-            const auto* zero = llvm::ConstantInt::get(type, 0);
-            const auto* isNeg = builder.CreateICmpSLT(val, zero);
-            const auto* negVal = builder.CreateNeg(val);
-            const auto* result = builder.CreateSelect(isNeg, negVal, val);
+            auto* zero = llvm::ConstantInt::get(type, 0);
+            auto* isNeg = builder.CreateICmpSLT(val, zero);
+            auto* negVal = builder.CreateNeg(val);
+            auto* result = builder.CreateSelect(isNeg, negVal, val);
 
             builder.CreateStore(result, stg.instancePtr);
             return result;
@@ -80,7 +80,7 @@ namespace LynxTypes {
         [[nodiscard]] llvm::Value* negate(const StrategyContext& stg) const noexcept override {
             llvm::Value* val = stg.instance;
             auto& builder = stg.ctx.getBuilder();
-            const auto* negVal = builder.CreateNeg(val);
+            auto* negVal = builder.CreateNeg(val);
             builder.CreateStore(negVal, stg.instancePtr);
             return negVal;
         }
@@ -90,14 +90,14 @@ namespace LynxTypes {
             auto* type = val->getType();
             auto& builder = stg.ctx.getBuilder();
 
-            const auto* zero = llvm::ConstantInt::get(type, 0);
-            const auto* one = llvm::ConstantInt::get(type, 1);
-            const auto* negOne = llvm::ConstantInt::get(type, -1);
+            auto* zero = llvm::ConstantInt::get(type, 0);
+            auto* one = llvm::ConstantInt::get(type, 1);
+            auto* negOne = llvm::ConstantInt::get(type, -1);
 
-            const auto* isPos = builder.CreateICmpSGT(val, zero);
-            const auto* isNeg = builder.CreateICmpSLT(val, zero);
-            const auto* select = builder.CreateSelect(isPos, one, zero);
-            const auto* result = builder.CreateSelect(isNeg, negOne, select);
+            auto* isPos = builder.CreateICmpSGT(val, zero);
+            auto* isNeg = builder.CreateICmpSLT(val, zero);
+            auto* select = builder.CreateSelect(isPos, one, zero);
+            auto* result = builder.CreateSelect(isNeg, negOne, select);
 
             builder.CreateStore(result, stg.instancePtr);
             return result;
@@ -110,7 +110,7 @@ namespace LynxTypes {
             auto* maxVal = stg.args[1];
             auto& builder = stg.ctx.getBuilder();
 
-            const auto* result = builder.CreateSelect(
+            auto* result = builder.CreateSelect(
                 builder.CreateICmpSLT(val, minVal), minVal,
                 builder.CreateSelect(builder.CreateICmpSGT(val, maxVal), maxVal, val)
             );
@@ -124,10 +124,10 @@ namespace LynxTypes {
             auto* type = val->getType();
             auto& builder = stg.ctx.getBuilder();
 
-            const auto* two = llvm::ConstantInt::get(type, 2);
-            const auto* zero = llvm::ConstantInt::get(type, 0);
-            const auto* rem = builder.CreateURem(val, two);
-            const auto* result = builder.CreateICmpEQ(rem, zero);
+            auto* two = llvm::ConstantInt::get(type, 2);
+            auto* zero = llvm::ConstantInt::get(type, 0);
+            auto* rem = builder.CreateURem(val, two);
+            auto* result = builder.CreateICmpEQ(rem, zero);
 
             return result;
         }
@@ -137,10 +137,10 @@ namespace LynxTypes {
             auto* type = val->getType();
             auto& builder = stg.ctx.getBuilder();
 
-            const auto* two = llvm::ConstantInt::get(type, 2);
-            const auto* zero = llvm::ConstantInt::get(type, 0);
-            const auto* rem = builder.CreateURem(val, two);
-            const auto* result = builder.CreateICmpNE(rem, zero);
+            auto* two = llvm::ConstantInt::get(type, 2);
+            auto* zero = llvm::ConstantInt::get(type, 0);
+            auto* rem = builder.CreateURem(val, two);
+            auto* result = builder.CreateICmpNE(rem, zero);
 
             return result;
         }
@@ -157,10 +157,10 @@ namespace LynxTypes {
             auto* type = val->getType();
             auto& builder = stg.ctx.getBuilder();
 
-            const auto* zero = llvm::ConstantFP::get(type, 0.0);
-            const auto* negVal = builder.CreateFNeg(val);
-            const auto* isNeg = builder.CreateFCmpOLT(val, zero);
-            const auto* result = builder.CreateSelect(isNeg, negVal, val);
+            auto* zero = llvm::ConstantFP::get(type, 0.0);
+            auto* negVal = builder.CreateFNeg(val);
+            auto* isNeg = builder.CreateFCmpOLT(val, zero);
+            auto* result = builder.CreateSelect(isNeg, negVal, val);
 
             builder.CreateStore(result, stg.instancePtr);
             return result;
@@ -179,14 +179,14 @@ namespace LynxTypes {
             auto* type = val->getType();
             auto& builder = stg.ctx.getBuilder();
 
-            const auto* zero = llvm::ConstantFP::get(type, 0.0);
-            const auto* one = llvm::ConstantFP::get(type, 1.0);
-            const auto* negOne = llvm::ConstantFP::get(type, -1.0);
+            auto* zero = llvm::ConstantFP::get(type, 0.0);
+            auto* one = llvm::ConstantFP::get(type, 1.0);
+            auto* negOne = llvm::ConstantFP::get(type, -1.0);
 
-            const auto* isPos = builder.CreateFCmpOGT(val, zero);
-            const auto* isNeg = builder.CreateFCmpOLT(val, zero);
-            const auto* select = builder.CreateSelect(isPos, one, zero);
-            const auto* result = builder.CreateSelect(isNeg, negOne, select);
+            auto* isPos = builder.CreateFCmpOGT(val, zero);
+            auto* isNeg = builder.CreateFCmpOLT(val, zero);
+            auto* select = builder.CreateSelect(isPos, one, zero);
+            auto* result = builder.CreateSelect(isNeg, negOne, select);
 
             builder.CreateStore(result, stg.instancePtr);
             return result;
@@ -199,7 +199,7 @@ namespace LynxTypes {
             auto* maxVal = stg.args[1];
             auto& builder = stg.ctx.getBuilder();
 
-            const auto* result = builder.CreateSelect(
+            auto* result = builder.CreateSelect(
                 builder.CreateFCmpOLT(val, minVal), minVal,
                 builder.CreateSelect(builder.CreateFCmpOGT(val, maxVal), maxVal, val)
             );
@@ -213,10 +213,10 @@ namespace LynxTypes {
             auto* type = val->getType();
             auto& builder = stg.ctx.getBuilder();
 
-            const auto* two = llvm::ConstantFP::get(type, 2.0);
-            const auto* zero = llvm::ConstantFP::get(type, 0.0);
-            const auto* rem = builder.CreateFRem(val, two);
-            const auto* result = builder.CreateFCmpUEQ(rem, zero);
+            auto* two = llvm::ConstantFP::get(type, 2.0);
+            auto* zero = llvm::ConstantFP::get(type, 0.0);
+            auto* rem = builder.CreateFRem(val, two);
+            auto* result = builder.CreateFCmpUEQ(rem, zero);
 
             return result;
         }
@@ -226,10 +226,10 @@ namespace LynxTypes {
             auto* type = val->getType();
             auto& builder = stg.ctx.getBuilder();
 
-            const auto* two = llvm::ConstantFP::get(type, 2.0);
-            const auto* zero = llvm::ConstantFP::get(type, 0.0);
-            const auto* rem = builder.CreateFRem(val, two);
-            const auto* result = builder.CreateFCmpUNE(rem, zero);
+            auto* two = llvm::ConstantFP::get(type, 2.0);
+            auto* zero = llvm::ConstantFP::get(type, 0.0);
+            auto* rem = builder.CreateFRem(val, two);
+            auto* result = builder.CreateFCmpUNE(rem, zero);
 
             return result;
         }

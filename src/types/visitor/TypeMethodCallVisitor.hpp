@@ -49,18 +49,15 @@ namespace LynxTypes {
             std::string methodName;
             llvm::Value* instance = nullptr;
             llvm::Value* instancePtr = nullptr;
-            const std::vector<llvm::Value*>& argValuesRef;
-        
-        public:
-
             llvm::Value* result = nullptr;
-
+            std::vector<llvm::Value*> argValues;
+        
         private:
 
             template<typename T>
             void dispatch(T& type) {
                 if constexpr (MethodCapable<T>) {
-                    result = codegenMethod(type, instance, instancePtr, methodName, argValuesRef);
+                    result = codegenMethod(type, instance, instancePtr, methodName, argValues);
                 } else {
                     std::cerr << "This type has no static method support \n";
                     result = nullptr;
@@ -71,15 +68,17 @@ namespace LynxTypes {
 
             TypeMethodCallVisitor(
                 const std::string& name, 
-                const std::vector<llvm::Value*>& argValues
-            ): methodName(std::move(name)), argValuesRef(std::move(argValues)) {}
+                std::vector<llvm::Value*> args
+            ) : methodName(name), argValues(std::move(args)) {}
 
             TypeMethodCallVisitor(
                 std::string name, 
-                llvm::Value* inst,
-                llvm::Value* instPtr,
-                const std::vector<llvm::Value*>& argValues
-            ) : methodName(std::move(name)), instance(inst), instancePtr(instPtr), argValuesRef(argValues) {}    
+                llvm::Value* inst, 
+                llvm::Value* instPtr, 
+                std::vector<llvm::Value*> args
+            ) : methodName(std::move(name)), instance(inst), instancePtr(instPtr), argValues(std::move(args)) {}
+
+            [[nodiscard]] llvm::Value* getResult() const noexcept { return result; }
 
             void visit(ByteType& type) override { dispatch(type); }
             void visit(ShortType& type) override { dispatch(type); }

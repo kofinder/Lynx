@@ -1,10 +1,12 @@
 #include <types/sequential/ArrayType.hpp>
 #include <context/AstContext.hpp>
-
-using namespace LynxContext;
-using namespace LynxTypes;
+#include <constants/MagicNumericConstants.hpp>
 
 namespace LynxTypes {
+
+    using namespace LynxContext;
+    using namespace LynxTypes;
+    using namespace LynxConstants;
 
     llvm::Type* ArrayType::computeLLVMType() const {
 
@@ -40,7 +42,7 @@ namespace LynxTypes {
          auto* arrayTy = llvm::cast<llvm::ArrayType>(structTy->getElementType(0)); 
          auto* innerTy = arrayTy->getElementType(); 
          if (auto* innerStruct = llvm::dyn_cast<llvm::StructType>(innerTy)) {
-            llvm::SmallVector<llvm::Constant*, kSmallVectorInitialSize> constElems; 
+            llvm::SmallVector<llvm::Constant*, SMALL_VECTOR_INITIAL_SIZE> constElems; 
             for (auto* val : values) { 
                 constElems.push_back(llvm::cast<llvm::Constant>(val)); 
             } 
@@ -48,7 +50,7 @@ namespace LynxTypes {
             return llvm::ConstantStruct::get(structTy, constArray); 
         } 
 
-        llvm::SmallVector<llvm::Constant*, kSmallVectorInitialSize> constElems; 
+        llvm::SmallVector<llvm::Constant*, SMALL_VECTOR_INITIAL_SIZE> constElems; 
         for (auto* val : values) { 
             constElems.push_back(llvm::cast<llvm::Constant>(val));
         } 

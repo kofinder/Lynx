@@ -64,13 +64,14 @@ namespace LynxAst {
     
         TypeMethodCallVisitor visitor(funcName, resolvedVar.value, resolvedVar.reference, argValues);
         baseType->accept(visitor);
+        auto* result = visitor.getResult();
 
-        if (!visitor.result) {
+        if (!result) {
             std::string msg = "Runtime Error: Failed to execute method '" + funcName + "' on instance '" + varName + "' of type '" + typeName + "'.";
             throw std::runtime_error(msg);
         }
 
-        return visitor.result;    
+        return result;    
     }
 
     std::unique_ptr<Node> QualifiedFunctionCallNode::clone() const {

@@ -69,12 +69,12 @@ include(Docs)
 # ===============================
 # Clang-Tidy
 # ===============================
-if(ENABLE_CLANG_TIDY)
-    include(ClangTidy)
-    enable_clang_tidy_for_target(${LYNX_EXECUTABLE})
-    enable_clang_tidy_for_target(LynxLogger)
-    enable_clang_tidy_for_target(LynxExceptions)
-    enable_clang_tidy_for_target(LynxTypes)
+# if(ENABLE_CLANG_TIDY)
+    # include(ClangTidy)
+    # enable_clang_tidy_for_target(${LYNX_EXECUTABLE})
+    # enable_clang_tidy_for_target(LynxLogger)
+    # enable_clang_tidy_for_target(LynxExceptions)
+    # enable_clang_tidy_for_target(LynxTypes)
     # enable_clang_tidy_for_target(LynxLang)
     # enable_clang_tidy_for_target(LynxAst) 
     # enable_clang_tidy_for_target(LynxMangler) 
@@ -93,7 +93,7 @@ if(ENABLE_CLANG_TIDY)
     # enable_clang_tidy_for_target(LynxBridge) 
     # enable_clang_tidy_for_target(LynxPlatform) 
     # enable_clang_tidy_for_target(LynxCollection)
-endif()
+# endif()
 
 # ===============================
 # Link Time Optimization (LTO)

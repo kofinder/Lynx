@@ -2,8 +2,11 @@
 #include "visitor/TypeVisitor.hpp"
 #include "resolver/TypeMethodResolver.hpp"
 #include "resolver/methods/LongMethodResolver.hpp"
+#include <constants/MagicNumericConstants.hpp>
 
 namespace LynxTypes {
+
+    using namespace LynxConstants;
 
     llvm::Type* LongType::computeLLVMType() const {
         return llvm::Type::getInt64Ty(astContext->getLLVMContext());
@@ -34,7 +37,7 @@ namespace LynxTypes {
         if(std::holds_alternative<long>(value)) {
             auto& context = astContext->getLLVMContext();
             const long longValue = std::get<long>(value);
-            return llvm::ConstantInt::get(context, llvm::APInt(LONG_BIT_WIDTH, longValue));
+            return llvm::ConstantInt::get(context, llvm::APInt(BIT_WIDTH_LONG, longValue));
         }
 
         LOG_ERROR("Unsupported value type");

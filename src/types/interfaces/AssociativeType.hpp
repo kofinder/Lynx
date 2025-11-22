@@ -69,10 +69,10 @@ namespace LynxTypes {
 
             bool canAccept(const BaseType* other) const override {
                 if (equals(other)) return true;
-                auto o = dynamic_cast<const AssociativeType*>(other);
-                if (!o) return false;
+                const auto* obj = dynamic_cast<const AssociativeType*>(other);
+                if (!obj) return false;
                 switch (other->getTypeTag()) {
-                    case DataType::MAP:    return true;
+                    case DataType::MAP:
                     case DataType::DICT:   return true;
                     default: return false;
                 }
@@ -123,7 +123,7 @@ namespace LynxTypes {
              * @param callback Function to invoke for each key-value pair.
              * @throws Runtime error if not implemented in derived class.
             */
-            virtual void forEachKeyValue(const KeyValueCallback& /*unused*/) override {
+            void forEachKeyValue(const KeyValueCallback& /*unused*/) override {
                 astContext->reportError(makeRuntimeError("forEachKeyValue must be implemented by derived AssociativeType"));
             }
     };

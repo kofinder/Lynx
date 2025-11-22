@@ -18,6 +18,13 @@ namespace LynxConstants {
     constexpr unsigned BIT_WIDTH_LONG  = 64;  // 64-bit integer
 
     // ---------------------------
+    // Vector sizes and alignment
+    // ---------------------------
+    constexpr int SMALL_VECTOR_INITIAL_SIZE = 8;
+    constexpr int VECTOR_DEFAULT_ALIGN_SIZE = 32;
+
+
+    // ---------------------------
     // Numeric type promotion ranks
     // ---------------------------
     constexpr int RANK_ZERO   = 0;

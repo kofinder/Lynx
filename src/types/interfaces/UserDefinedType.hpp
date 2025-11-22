@@ -63,12 +63,12 @@ namespace LynxTypes {
                 const auto* obj = dynamic_cast<const UserDefinedType*>(other);
                 if (!obj) return false;
                 switch (other->getTypeTag()) {
-                    case DataType::CLAZZ:    return true;
-                    case DataType::INTERFACE:   return true;
-                    case DataType::DATE:   return true;
-                    case DataType::DATETIME:   return true;
-                    case DataType::ENUM:   return true;
-                    case DataType::FILE:   return true;
+                    case DataType::CLAZZ:
+                    case DataType::INTERFACE:
+                    case DataType::DATE:
+                    case DataType::DATETIME:
+                    case DataType::ENUM:
+                    case DataType::FILE:
                     case DataType::FUNCTION:   return true;
                     default: return false;
                 }

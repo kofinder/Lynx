@@ -31,7 +31,7 @@ namespace LynxTypes {
 
             explicit EnumMember(const std::string& enumName, char enumValue) : name(enumName), value(enumValue) {}
 
-            explicit EnumMember(const std::string& enumName, const std::string& enumValue) : name(enumName), value(enumValue) {}
+            explicit EnumMember(const EnumName& enumName, const EnumValue& enumValue) : name(enumName.name), value(enumValue.value) {}
     
             [[nodiscard]] bool hasValue() const {return !std::holds_alternative<std::monostate>(value); }
     
@@ -44,6 +44,8 @@ namespace LynxTypes {
             [[nodiscard]] int getIndex() const { return index; }
 
             [[nodiscard]] const std::string& getName() const { return name; }
+
+            void setIndex(int idx) { index = idx; }
             
             [[nodiscard]] const AllowType& getValue() const { return value; }
     };

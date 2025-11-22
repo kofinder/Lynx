@@ -3,8 +3,11 @@
 #include "visitor/TypeVisitor.hpp"
 #include "resolver/TypeMethodResolver.hpp"
 #include "resolver/methods/IntMethodResolver.hpp"
+#include <constants/MagicNumericConstants.hpp>
 
 namespace LynxTypes {
+
+    using namespace LynxConstants;
 
     llvm::Type* IntegerType::computeLLVMType() const {
         return llvm::Type::getInt32Ty(astContext->getLLVMContext());
@@ -37,7 +40,7 @@ namespace LynxTypes {
         if(std::holds_alternative<int>(value)) {
             auto& context = astContext->getLLVMContext();
             const int intValue = std::get<int>(value); 
-            return llvm::ConstantInt::get(context, llvm::APInt(INT_BIT_WIDTH, intValue));
+            return llvm::ConstantInt::get(context, llvm::APInt(BIT_WIDTH_INT, intValue));
         }
 
         LOG_ERROR("Unsupported value type");

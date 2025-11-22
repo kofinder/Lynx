@@ -38,27 +38,27 @@ namespace LynxTypes {
         if (!expectedType || !actualType)
             return -1;
 
-        int64_t sc = 0;
+        int64_t score = 0;
 
-        sc = scoreExactMatch(expectedType, actualType);
-        if (sc > 0) return sc;
+        score = scoreExactMatch(expectedType, actualType);
+        if (score > 0) return score;
 
-        sc = scoreImplicitConversion(expectedType, actualType);
-        if (sc > 0) return sc;
+        score = scoreImplicitConversion(expectedType, actualType);
+        if (score > 0) return score;
 
         if (const auto* expectedClass = TypeCasting::castType<const ClassType>(expectedType)) {
-            sc = scoreClassHierarchy(expectedClass, actualType);
-            if (sc > 0) return sc;
+            score = scoreClassHierarchy(expectedClass, actualType);
+            if (score > 0) return score;
         }
 
         if (const auto* expectedIface = TypeCasting::castType<const InterfaceType>(expectedType)) {
-            sc = scoreInterfaceConv(expectedIface, actualType);
-            if (sc > 0) return sc;
+            score = scoreInterfaceConv(expectedIface, actualType);
+            if (score > 0) return score;
         }
 
         if (const auto* expectedMixin = TypeCasting::castType<const MixinType>(expectedType)) {
-            sc = scoreMixinConv(expectedMixin, actualType);
-            if (sc > 0) return sc;
+            score = scoreMixinConv(expectedMixin, actualType);
+            if (score > 0) return score;
         }
 
         return 0;

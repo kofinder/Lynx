@@ -110,7 +110,7 @@ namespace LynxTypes {
 
             const std::unordered_map<std::string, EnumMember>& getAllMembers() const { return members; }
 
-            void registerGlobalConstant(const std::string& memberName, llvm::GlobalVariable* gv) const;
+            void registerGlobalConstant(const std::string& memberName, llvm::GlobalVariable* gov) const;
                 
             std::unique_ptr<BaseType> clone() const override;
     };

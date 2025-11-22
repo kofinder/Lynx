@@ -2,8 +2,12 @@
 #include "visitor/TypeVisitor.hpp"
 #include "resolver/TypeMethodResolver.hpp"
 #include "resolver/methods/ShortMethodResolver.hpp"
+#include <constants/MagicNumericConstants.hpp>
 
 namespace LynxTypes {
+
+    using namespace LynxConstants;
+
 
     llvm::Type* ShortType::computeLLVMType() const {
         return llvm::Type::getInt16Ty(astContext->getLLVMContext());
@@ -36,7 +40,7 @@ namespace LynxTypes {
         if(std::holds_alternative<short>(value)) {
             auto& context = astContext->getLLVMContext();
             const short shortValue = std::get<short>(value);
-            return llvm::ConstantInt::get(context, llvm::APInt(SHORT_BIT_WIDTH, shortValue));
+            return llvm::ConstantInt::get(context, llvm::APInt(BIT_WIDTH_SHORT, shortValue));
         }
 
         LOG_ERROR("Unsupported value type!");

@@ -1,7 +1,10 @@
 #include "sequential/VectorType.hpp"
 #include <context/AstContext.hpp>
+#include <constants/MagicNumericConstants.hpp>
 
 namespace LynxTypes {
+
+    using namespace LynxConstants;
 
     llvm::Type* VectorType::computeLLVMType() const {
         llvm::Type* elemLLVMType = elementType->getLLVMType();
@@ -39,12 +42,12 @@ namespace LynxTypes {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::vectorType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
         }
-        var->setAlignment(llvm::Align(vectorDefaultAlignSize));
+        var->setAlignment(llvm::Align(VECTOR_DEFAULT_ALIGN_SIZE));
         return var;
     }
 
     llvm::Value* VectorType::createConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const {
-        llvm::SmallVector<llvm::Constant*, kSmallVectorInitialSize> consts;
+        llvm::SmallVector<llvm::Constant*, VECTOR_DEFAULT_ALIGN_SIZE> consts;
         for (auto* val : values) {
             if (auto* elem = llvm::dyn_cast<llvm::Constant>(val)) {
                 consts.push_back(elem);

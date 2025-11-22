@@ -31,10 +31,6 @@
 
 namespace LynxTypes {
 
-    constexpr int kSmallVectorInitialSize = 8;
-    constexpr int vectorDefaultAlignSize = 32;
-
-
     class SequentialType : public CollectionType {
 
         public:
@@ -87,12 +83,12 @@ namespace LynxTypes {
                 const auto* obj = dynamic_cast<const SequentialType*>(other);
                 if (!obj) return false;
                 switch (other->getTypeTag()) {
-                    case DataType::ARRAY:    return true;
-                    case DataType::LIST:   return true;
-                    case DataType::SET:   return true;
-                    case DataType::VECTOR:   return true;
-                    case DataType::QUEUE:   return true;
-                    case DataType::STACK:   return true;
+                    case DataType::ARRAY:
+                    case DataType::LIST:
+                    case DataType::SET:
+                    case DataType::VECTOR:
+                    case DataType::QUEUE:
+                    case DataType::STACK: return true;
                     default: return false;
                 }
 

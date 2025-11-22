@@ -10,6 +10,7 @@
 #include <llvm/IR/IntrinsicsX86.h>
 #include "tmpl/TypeNumericPromotion.hpp"
 #include "TypeStrategyContext.hpp"
+#include <constants/MagicNumericConstants.hpp>
 #include <constants/metadata/MetadataTypeConstants.hpp>
 
 namespace LynxTypes::helper {
@@ -26,14 +27,14 @@ namespace LynxTypes::helper {
     }
 
     inline llvm::Value* intToFloat(llvm::IRBuilder<>& builder, llvm::Value* value) noexcept {
-        llvm::Type* type = value->getType();
+        const auto* type = value->getType();
     
         if (type->isFloatingPointTy()) return value;
     
         llvm::Type* floatTy = nullptr;
-        if (type->isIntegerTy(64)) {
+        if (type->isIntegerTy(BIT_WIDTH_LONG)) {
             floatTy = builder.getDoubleTy();
-        } else if (type->isIntegerTy(32) || type->isIntegerTy(16)) {
+        } else if (type->isIntegerTy(BIT_WIDTH_INT) || type->isIntegerTy(BIT_WIDTH_SHORT)) {
             floatTy = builder.getFloatTy();
         } else {
             floatTy = builder.getFloatTy();
@@ -213,8 +214,8 @@ namespace LynxTypes::helper {
     inline llvm::Value* callOfFixedPointIntrinsic(
         const StrategyContext& stg,
         llvm::Intrinsic::ID instId,
-        unsigned defaultIntScaleBits = 8,
-        unsigned defaultFloatScaleBits = 16) noexcept
+        unsigned defaultIntScaleBits = BIT_WIDTH_BYTE,
+        unsigned defaultFloatScaleBits = BIT_WIDTH_SHORT) noexcept
     {
         auto& builder = stg.ctx.getBuilder();
         auto* mod = stg.ctx.getModule();
@@ -225,8 +226,8 @@ namespace LynxTypes::helper {
         // Integer fixed-point intrinsic path
         // -------------------------------------------------------------------------
         if (!lhsTy->isFloatingPointTy()) {
-            unsigned bitWidth = lhsTy->getIntegerBitWidth();
-            unsigned scaleBits = defaultIntScaleBits;
+            const unsigned bitWidth = lhsTy->getIntegerBitWidth();
+            const unsigned scaleBits = defaultIntScaleBits;
             if (scaleBits > bitWidth) llvm::report_fatal_error("scaleBits too large for integer operand width");
             auto* scaleConst = llvm::ConstantInt::get(lhsTy, llvm::APInt(bitWidth, scaleBits));
             auto* fn = callOfIntrinsic(mod, instId, lhsTy);
@@ -236,8 +237,8 @@ namespace LynxTypes::helper {
         // -------------------------------------------------------------------------
         // Floating-point emulated fixed-point
         // -------------------------------------------------------------------------
-        unsigned scaleBits = defaultFloatScaleBits;
-        double scale = double(1ULL << scaleBits);
+        const unsigned scaleBits = defaultFloatScaleBits;
+        const double scale = double(1ULL << scaleBits);
         auto* scaleConst = llvm::ConstantFP::get(lhsTy, scale);
         auto* fn = callOfIntrinsic(mod, instId, lhsTy);
         return builder.CreateCall(fn, { lhs, lhs, scaleConst });
@@ -251,10 +252,10 @@ namespace LynxTypes::helper {
         auto* rhs = stg.args[0];
 
         auto* func = callOfIntrinsic(mod, instId, lhs->getType());
-        auto* ov = builder.CreateCall(func, { lhs, rhs }, llvm::Twine("inst.overflow"));
+        auto* ovf = builder.CreateCall(func, { lhs, rhs }, llvm::Twine("inst.overflow"));
 
-        auto* result = builder.CreateExtractValue(ov, 0, "result"); // integer
-        auto* status = builder.CreateExtractValue(ov, 1, "status"); // boolean
+        auto* result = builder.CreateExtractValue(ovf, 0, "result"); // integer
+        // auto* status = builder.CreateExtractValue(ovf, 1, "status"); // boolean
 
         return result;
     }

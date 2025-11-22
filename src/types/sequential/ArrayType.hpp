@@ -75,7 +75,7 @@ namespace LynxTypes {
 
             const BaseType* getElementType() const override { return elementType; }
 
-            const size_t getNumElements() const { return numElements; }
+            size_t getNumElements() const { return numElements; }
 
             void setElementType(BaseType* eleType) override { elementType = eleType; }
 

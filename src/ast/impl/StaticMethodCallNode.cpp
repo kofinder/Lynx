@@ -38,13 +38,14 @@ namespace LynxAst {
     
         TypeMethodCallVisitor visitor(methodName, argValues);
         baseType->accept(visitor);
+        auto* result = visitor.getResult();
 
-        if (!visitor.result) {
+        if (!result) {
             std::string msg = "Runtime Error: Failed to execute method '" + methodName  + "' of type '" + typeName + "'.";
             throw std::runtime_error(msg);
         }
 
-        return visitor.result;
+        return result;
     }
 
     std::unique_ptr<Node> StaticMethodCallNode::clone() const  {

@@ -40,15 +40,15 @@ namespace LynxAst {
                     val = nextAutoValue;
                 }
                 member = EnumMember(memberName, val);
-                member.index = val;
+                member.setIndex(val);
                 nextAutoValue = val + 1;
             } else if (std::holds_alternative<char>(value)) {
                 member = EnumMember(memberName, std::get<char>(value));
-                member.index = nextAutoValue;
+                member.setIndex(nextAutoValue);
                 nextAutoValue++;
             } else if (std::holds_alternative<std::string>(value)) {
-                member = EnumMember(memberName, std::get<std::string>(value));
-                member.index = nextAutoValue;
+                member = EnumMember(EnumName{memberName}, EnumValue{std::get<std::string>(value)});
+                member.setIndex(nextAutoValue);
                 nextAutoValue++;
             } else {
                 std::cerr << "Unsupported enum value type...." << std::endl;
@@ -70,8 +70,8 @@ namespace LynxAst {
         llvm::Constant* stringPayload = llvm::ConstantPointerNull::get(llvm::PointerType::get(context, 0));
 
         if(member.isCharValue()) {
-            std::cerr << name << "::" << "is char value ::" << member.index << "\n";
-            intPayload = llvm::ConstantInt::get(llvm::Type::getInt64Ty(context), member.index);
+            std::cerr << name << "::" << "is char value ::" << member.getIndex() << "\n";
+            intPayload = llvm::ConstantInt::get(llvm::Type::getInt64Ty(context), member.getIndex());
 
             charPayload = llvm::ConstantInt::get(llvm::Type::getInt8Ty(context), static_cast<uint8_t>(std::get<char>(member.getValue())));
 
@@ -81,8 +81,8 @@ namespace LynxAst {
         }
 
         if(member.isStringValue()) {
-            std::cerr << name << "::" << "is string value ::" << member.index << "\n";
-            intPayload = llvm::ConstantInt::get(llvm::Type::getInt64Ty(context), member.index);
+            std::cerr << name << "::" << "is string value ::" << member.getIndex() << "\n";
+            intPayload = llvm::ConstantInt::get(llvm::Type::getInt64Ty(context), member.getIndex());
 
             char firstChar = !name.empty() ? static_cast<char>(std::toupper(name[0])) : 'X';
             charPayload = llvm::ConstantInt::get(llvm::Type::getInt8Ty(context), static_cast<uint8_t>(firstChar));
@@ -93,7 +93,7 @@ namespace LynxAst {
         }
 
         if(member.isIntValue()) {
-            std::cerr << name << "::" << "is int value ::" << member.index << "\n";
+            std::cerr << name << "::" << "is int value ::" << member.getIndex() << "\n";
             intPayload = llvm::ConstantInt::get(llvm::Type::getInt64Ty(context), std::get<int>(member.getValue()));
 
             char firstChar = !name.empty() ? static_cast<char>(std::toupper(name[0])) : 'X';
