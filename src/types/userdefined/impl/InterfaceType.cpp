@@ -183,7 +183,7 @@ namespace LynxTypes {
     }
 
     void InterfaceType::buildVTable(const VTableType& vType) {
-        auto [name, gvtable, structType, mapIdx] = std::move(vType);
+        auto [name, gvtable, structType, mapIdx] = vType;
         vtableName = name;
         vtableGlobal = gvtable; 
         vtableType = structType; 
@@ -254,14 +254,14 @@ namespace LynxTypes {
     uint32_t InterfaceType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
     llvm::DINode::DIFlags InterfaceType::getDIFlags() const { return llvm::DINode::FlagZero; }
 
+
     std::unique_ptr<BaseType> LynxTypes::InterfaceType::clone() const {
         using namespace Cloned;
         auto cloned = std::make_unique<InterfaceType>(astContext, interfaceName);
         cloned->vtableType = vtableType;
-        cloneMapContainer(fields, [&cloned](const auto& name, auto&& field) { cloned->addField(name, std::move(field)); });
-        cloneMapContainer(methods, [&cloned](const auto& name, auto&& method) { cloned->addMethod(name, std::move(method)); });
+        cloneMapContainer(fields, [&cloned](const auto& name, auto&& field) { cloned->addField(name, std::forward<decltype(field)>(field)); });
+        cloneMapContainer(methods, [&cloned](const auto& name, auto&& method) { cloned->addMethod(name, std::forward<decltype(method)>(method)); });
         cloneVectorShallow(parentInterfaces, [&cloned](auto* parent) { cloned->addParentInterface(parent); });
-
         return cloned;
     }
 }

@@ -109,9 +109,9 @@ format:
 tidy: configure
 	@echo "🧹 Running clang-tidy across project..."
 	@if [ -x "$(RUN_CLANG_TIDY_SCRIPT)" ]; then \
-		$(RUN_CLANG_TIDY_SCRIPT) $(TIDY_THREADS) -header-filter='^src/'; \
+		$(RUN_CLANG_TIDY_SCRIPT) $(TIDY_THREADS) -header-filter='^src/'; -system-headers; \
 	else \
-		$(CLANG_TIDY) $(SRC_FILES) -p $(BUILD_DIR) -header-filter='^src/'; \
+		$(CLANG_TIDY) $(SRC_FILES) -p $(BUILD_DIR) -header-filter='^src/'; -system-headers; \
 	fi
 	@echo "✅ Clang-tidy analysis done."
 

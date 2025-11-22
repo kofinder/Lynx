@@ -13,13 +13,17 @@ if [[ ! -f "${BUILD_DIR}/compile_commands.json" ]]; then
   exit 1
 fi
 
+# HeaderFilterRegex to only scan your three modules
+HEADER_FILTER='^src/(types|logger|exceptions)/'
+
 # prefer the run-clang-tidy.py helper if available
 if command -v run-clang-tidy.py >/dev/null 2>&1; then
   echo "Using run-clang-tidy.py (parallel)"
-  run-clang-tidy.py -p "${BUILD_DIR}" -j "${THREADS}" --exclude "external/*"
+  run-clang-tidy.py -p "${BUILD_DIR}" -j "${THREADS}" --header-filter="${HEADER_FILTER}" --exclude "external/*"
 else
   echo "run-clang-tidy.py not found — falling back to parallel clang-tidy via xargs"
-  # Accept common source extensions; headers will be examined when referenced from TU
-  find "${ROOT_DIR}/src/analyzer" -name '*.cpp' -o -name '*.cxx' -o -name '*.cc' -o -name '*.hpp' | \
-    xargs -n1 -P"${THREADS}" -I{} clang-tidy {} -p "${BUILD_DIR}" --extra-arg=-std=c++23 --header-filter='^(src/analyzer)' || true
+  # Only scan your module files
+  find "${ROOT_DIR}/src/types" "${ROOT_DIR}/src/logger" "${ROOT_DIR}/src/exceptions" \
+    -name '*.cpp' -o -name '*.cxx' -o -name '*.cc' -o -name '*.hpp' | \
+    xargs -n1 -P"${THREADS}" -I{} clang-tidy {} -p "${BUILD_DIR}" --extra-arg=-std=c++23 --header-filter="${HEADER_FILTER}" -system-headers || true
 fi

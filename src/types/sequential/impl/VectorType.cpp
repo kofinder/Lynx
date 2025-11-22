@@ -93,17 +93,15 @@ namespace LynxTypes {
         return otherVector && numElements == otherVector->numElements && elementType->equals(otherVector->elementType);
     }
 
+    // NOLINTNEXTLINE(misc-no-recursion)
     std::string VectorType::getSafeStructName(std::unordered_set<const BaseType*>& visited) const {
-        if (visited.find(this) != visited.end()) {
-            return "vec_recursive";
-        }
+        if (visited.contains(this)) return "vec_recursive";
+        
         visited.insert(this);
     
-        if (!elementType) {
-            return "vec_unknown_" + std::to_string(numElements);
-        }
+        if (!elementType) return "vec_unknown_" + std::to_string(numElements);
     
-        if (auto nested = dynamic_cast<const VectorType*>(elementType)) {
+        if (const auto* nested = dynamic_cast<const VectorType*>(elementType)) {
             return "vec_nested_" + std::to_string(numElements) + "_of_" + nested->getSafeStructName(visited);
         }
     
@@ -122,62 +120,4 @@ namespace LynxTypes {
     uint64_t VectorType::getDebugSizeInBits() const { return DEFAULT_ALIGN_BITS; }
     uint32_t VectorType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
     llvm::DINode::DIFlags VectorType::getDIFlags() const { return llvm::DINode::FlagZero; }
-    
 }
-
-
-
-
-
-// std::string VectorType::getSafeStructName(std::unordered_set<const BaseType*>& visited) const {
-//     if (visited.find(this) != visited.end()) {
-//         return "vec_recursive";
-//     }
-//     visited.insert(this);
-
-//     if (auto nested = dynamic_cast<const VectorType*>(elementType)) {
-//         return "vec_nested_" + std::to_string(numElements) + "_of_" + nested->getSafeStructName(visited);
-//     }
-//     return "vec_of_" + elementType->getDebugName() + "_" + std::to_string(numElements);
-// }
-
-// llvm::Value* VectorType::createValue(std::vector<llvm::Value*> values) const {
-
-//     llvm::Type* elemType = elementType->getLLVMType();
-//     llvm::Type* computedType = computeLLVMType();
-
-//     if (values.empty())  return llvm::UndefValue::get(computedType);
-
-//     const bool allConstants = std::ranges::all_of(values, [](llvm::Value* value) {
-//         return llvm::isa<llvm::Constant>(value);
-//     });
-
-//     if (auto* vecTy = llvm::dyn_cast<llvm::VectorType>(computedType)) {
-//         if (allConstants) {
-//             llvm::SmallVector<llvm::Constant*, 8> constants;
-//             for (llvm::Value* v : values) {
-//                 constants.push_back(llvm::cast<llvm::Constant>(v));
-//             }
-//             return llvm::ConstantVector::get(constants);
-//         } else {
-//             llvm::Value* vec = llvm::UndefValue::get(vecTy);
-//             auto& builder = astContext->getBuilder();
-//             for (unsigned i = 0; i < values.size(); ++i) {
-//                 vec = builder.CreateInsertElement(vec, values[i], builder.getInt32(i));
-//             }
-//             return vec;
-//         }
-//     }
-
-//     if (auto* structTy = llvm::dyn_cast<llvm::StructType>(computedType)) {
-//         if (!allConstants)  return nullptr;
-//         llvm::SmallVector<llvm::Constant*, 8> nestedConstants;
-//         for (llvm::Value* val : values) {
-//             nestedConstants.push_back(llvm::cast<llvm::Constant>(val));
-//         }
-//         return llvm::ConstantStruct::get(structTy, nestedConstants);
-//     }
-
-//     LOG_ERROR("Unhandled LLVM type in VectorType::createValue()");
-//     return nullptr;
-// }

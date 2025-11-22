@@ -4,6 +4,7 @@
 #include "utils/TypeUtils.hpp"
 #include "utils/DFSUtils.hpp"
 #include "userdefined/ClassType.hpp"
+#include "helper/TypeScoring.hpp"
 #include <context/VirtualTable.hpp>
 #include <context/AstContext.hpp>
 #include <constants/LinkageType.hpp>
@@ -76,7 +77,7 @@ namespace LynxTypes {
             const BaseType* fieldType = field->getType();
             if (!fieldType) continue;
     
-            llvm::Type* fieldLLVMType = nullptr;
+            llvm::Type* fieldLLVMType = nullptr; // NOLINT(misc-const-correctness)
             if (const auto* dateField = TypeCasting::castType<DateTimeType>(fieldType)) {
                 fieldLLVMType = dateField->getLLVMPointerType();
             } else if (const auto* fileField = TypeCasting::castType<FileType>(fieldType)) {
@@ -86,11 +87,7 @@ namespace LynxTypes {
             } else if (const auto* ifaceField = TypeCasting::castType<InterfaceType>(fieldType)) {
                 fieldLLVMType = ifaceField->getLLVMPointerType();
             } else {
-                fieldLLVMType = fieldType->getLLVMType();
-            }
-    
-            if (!fieldLLVMType) {
-                fieldLLVMType = llvm::PointerType::get(llvm::Type::getInt8Ty(context)->getContext(), 0);
+                fieldLLVMType = field->getType()->getLLVMType();
             }
     
             members.push_back(fieldLLVMType);
@@ -171,8 +168,8 @@ namespace LynxTypes {
     const std::string& ClassType::originalNameLower() const {
         if (cachedLowerName.empty()) {
             cachedLowerName.reserve(className.size());
-            for (unsigned char c : className) {
-                cachedLowerName += static_cast<char>(std::tolower(c));
+            for (const unsigned char name : className) {
+                cachedLowerName += static_cast<char>(std::tolower(name));
             }
         }
         return cachedLowerName;
@@ -185,14 +182,10 @@ namespace LynxTypes {
 
     const ClassType* ClassType::fromLLVMType(const llvm::Type* type) {
         if (!type) return nullptr;
-        // if (auto ptrType = llvm::dyn_cast<llvm::PointerType>(type)) {
-        //     type = ptrType->getPointerElementType();
-        // }
         if (const auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
             auto itr = llvmTypeToClass.find(structType);
             if (itr != llvmTypeToClass.end())  return itr->second;
         }
-
         return nullptr;
     }
 
@@ -223,7 +216,7 @@ namespace LynxTypes {
         return bestIterator->mangled;
     }
 
-    const std::vector<Candidate> ClassType::findViableCandidates(MethodKind kind, const std::vector<llvm::Type*>& argTypes) const {
+    std::vector<Candidate> ClassType::findViableCandidates(MethodKind kind, const std::vector<llvm::Type*>& argTypes) const {
         return (kind == MethodKind::CONSTRUCTOR)
         ? findViableCandidatesImpl(ctors, argTypes)
         : findViableCandidatesImpl(methods, argTypes);
@@ -241,78 +234,45 @@ namespace LynxTypes {
         return viable;        
     }
 
+    int64_t ClassType::scoreParameters(
+        const std::vector<std::unique_ptr<BaseType>>& params,
+        const std::vector<llvm::Type*>& argTypes
+    ) const {
+        if (params.size() != argTypes.size()) return -1;
 
-    int64_t ClassType::scoreParameters(const std::vector<std::unique_ptr<BaseType>>& params, const std::vector<llvm::Type*>& argTypes) const {
-        if (params.size() != argTypes.size()) return -1; // not viable
-
-        int64_t score = 0;
+        int64_t totalScore = 0;
         for (size_t i = 0; i < params.size(); ++i) {
-
-            BaseType* expectedType = params[i].get();
-            const auto* actualType = convertLLVMTypeToBaseType(argTypes[i], *astContext);
-
-            if (!expectedType || !actualType) return -1;
-
-            // === 1. Exact match ===
-            if (expectedType->equals(actualType)) { score += 10; continue; }
-
-            // === 2. Implicit conversion ===
-            if (expectedType->canAccept(actualType)) { score += 5; continue; }
-
-            // === 3. Class → Base class conversion ===
-            if (auto* expectedClass = TypeCasting::castType<const ClassType>(expectedType)) {
-                if (auto* actualClass = TypeCasting::castType<const ClassType>(actualType)) {
-                    if (actualClass->isSubclassOf(expectedClass)) { score += 30; continue; }
-                }
-            }
-
-            // === 4. Class → Interface conversion ===
-            if (auto* expectedIface = TypeCasting::castType<const InterfaceType>(expectedType)) {
-                if (auto* actualClass = TypeCasting::castType<const ClassType>(actualType)) {
-                    if (actualClass->implementsInterface(expectedIface)) { score += 30; continue; }
-                }
-            }
-
-            // === 5. Class → Mixin conversion ===
-            if (auto* expectedMixin = TypeCasting::castType<const MixinType>(expectedType)) {
-                if (auto* actualClass = TypeCasting::castType<const ClassType>(actualType)) {
-                    if (actualClass->usesMixin(expectedMixin)) { score += 30; continue; }
-                }
-            }
+            BaseType* expected = params[i].get();
+            const BaseType* actual = convertLLVMTypeToBaseType(argTypes[i], *astContext);
+            const int64_t score = scoreSingleParameter(expected, actual);
+            if (score < 0) return -1;
+            totalScore += score;
         }
 
-        return score;
+        return totalScore;
     }
 
     bool ClassType::hasMethod(const std::string& mangleName) const {
-        return methods.find(mangleName) != methods.end();
+        return methods.contains(mangleName);
     }
 
     void ClassType::addMethod(const std::string& mangleName, std::unique_ptr<MethodType> method) {
-        if (methods.find(mangleName) != methods.end()) {
-            std::cerr << "Warning: Method '" << mangleName << "' already exists in interface '" << mangleName << "'\n";
-            return;
-        }
+        if (!methods.contains(mangleName)) return;
         methods[mangleName] = std::move(method);
     }
     
     const MethodType* ClassType::getMethod(const std::string& mangleName) const {
         auto itr = methods.find(mangleName);
-        if (itr != methods.end()) {
-            return itr->second.get();
-        }
+        if (itr != methods.end()) return itr->second.get();
         return nullptr;
     }
 
     bool ClassType::hasField(const std::string& name) const {
-        return fields.find(name) != fields.end();
+        return fields.contains(name);
     }
 
     void ClassType::addField(const std::string& name, std::unique_ptr<FieldType> field) {
-        if (fields.find(name) != fields.end()) {
-            std::cerr << "Warning: Field '" << name << "' already exists in interface '" << className << "'\n";
-            return;
-        }
+        if (fields.contains(name)) return;
         fields[name] = std::move(field);
     }
 
@@ -371,67 +331,92 @@ namespace LynxTypes {
     }
 
     int ClassType::getMixinOffset(const MixinType& mixin) const {
-        for (unsigned i = 0; i < mixins.size(); ++i) {
+        for (int i = 0; i < mixins.size(); ++i) {
             if (mixins[i]->originalName() == mixin.originalName()) return i;
         }
         throw std::runtime_error("Mixin '" + mixin.originalName() + "' not found in class " + className);
     }
 
-    const std::vector<MixinOwner> ClassType::getAllMixinMethods() {
-        // 1. Topological sort over mixins + parent mixins
-        std::unordered_map<const MixinType*, VisitState> state;
+    std::vector<MixinOwner> ClassType::getAllMixinMethods() {
+        // 1. Topological sort of mixins + all their parents
+        std::unordered_map<const MixinType*, VisitState> visitState;
         std::vector<const MixinType*> orderedMixins;
     
-        for (const auto& mixin : mixins) topoDFS(mixin.get(), state, orderedMixins);
-        std::reverse(orderedMixins.begin(), orderedMixins.end());
-    
-        // 2. Flatten methods with left-to-right override resolution
-        std::vector<MixinOwner> mixinOwners;
-        for (const auto* mixin : orderedMixins) {
-            auto itr = std::find_if(
-                mixinOwners.begin(),
-                mixinOwners.end(),
-                [&](const MixinOwner& owner) { return owner.mixinName == mixin->originalNameLower(); }
-            );
-            if (itr != mixinOwners.end())  continue; // skip duplicate mixin
-
-            MixinOwner owner;
-            owner.mixinName = mixin->originalNameLower();
-            owner.mixinOffset = getMixinOffset(*mixin);
-            for (const auto& [name, methodPtr] : mixin->getMethods()) {
-                owner.methodMap[name] = methodPtr.get();
-            }
-
-            if (!owner.methodMap.empty()) mixinOwners.push_back(std::move(owner));
+        for (const auto& mixinPtr : mixins) {
+            topoDFS(mixinPtr.get(), visitState, orderedMixins);
         }
-
-       // 3. Keep only the *final* owners for each method
-        std::unordered_map<std::string, bool> seen;
+    
+        std::ranges::reverse(orderedMixins);
+    
+        // 2. Flatten immediate method owners (dedupe mixins by original name)
+        std::vector<MixinOwner> mixinOwners;
+        mixinOwners.reserve(orderedMixins.size());
+    
+        for (const auto* mixin : orderedMixins) {
+            const auto mixinKey = mixin->originalNameLower();
+    
+            // skip duplicates
+            if (std::ranges::any_of(mixinOwners, [&](const MixinOwner& owner) {
+                return owner.mixinName == mixinKey;
+            })) {
+                continue;
+            }
+    
+            MixinOwner owner;
+            owner.mixinName = mixinKey;
+            owner.mixinOffset = getMixinOffset(*mixin);
+    
+            for (const auto& [methodName, methodPtr] : mixin->getMethods()) {
+                owner.methodMap[methodName] = methodPtr.get();
+            }
+    
+            if (!owner.methodMap.empty()) {
+                mixinOwners.push_back(std::move(owner));
+            }
+        }
+    
+        // 3. Keep only final owners for each unique method signature
+        std::unordered_set<std::string> seenSignatures;
         std::vector<MixinOwner> finalOwners;
         std::vector<const MethodType*> resolved;
-        for(const auto owner: mixinOwners) {
+    
+        for (const auto& owner : mixinOwners) {            // ← fixed: reference, no copy
             MixinOwner filtered;
             filtered.mixinName = owner.mixinName;
             filtered.mixinOffset = owner.mixinOffset;
-            for (const auto& [name, method] : owner.methodMap) {
-                auto mangledName = Mangle::get(ManglerKind::MEMBER_FUNCTION, method->getName(), method->getParameterRawTypes());
-                if (seen.insert({mangledName, true}).second) {
-                    filtered.methodMap[name] = method;
+    
+            for (const auto& [methodName, method] : owner.methodMap) {
+                const std::string signature =
+                    Mangle::get(ManglerKind::MEMBER_FUNCTION,
+                                method->getName(),
+                                method->getParameterRawTypes());
+    
+                if (seenSignatures.insert(signature).second) {
+                    filtered.methodMap[methodName] = method;
                     resolved.push_back(method);
                 }
-                if (!filtered.methodMap.empty()) finalOwners.push_back(std::move(filtered));
+            }
+    
+            if (!filtered.methodMap.empty()) {
+                finalOwners.push_back(std::move(filtered));
             }
         }
-
-        // 4. Inject mixn methods into the class
-        for (const auto& method : resolved) {
-            auto mangleName = Mangle::get(ManglerKind::MEMBER_FUNCTION, className, method->getName(), method->getParameterRawTypes());
-            addMethod(mangleName, method->clone()); // copy method
+    
+        // 4. Inject resolved mixin methods into the class
+        for (const MethodType* method : resolved) {
+            const std::string mangled =
+                Mangle::get(ManglerKind::MEMBER_FUNCTION,
+                            className,
+                            method->getName(),
+                            method->getParameterRawTypes());
+    
+            addMethod(mangled, method->clone());
         }
-        
-        std::reverse(finalOwners.begin(), finalOwners.end());
+    
+        std::ranges::reverse(finalOwners);
         return finalOwners;
     }
+    
 
     std::vector<std::unique_ptr<MethodType>> ClassType::getAllVirtualParentMethods() const {
         std::vector<std::unique_ptr<MethodType>> result;
@@ -447,7 +432,7 @@ namespace LynxTypes {
         return result;
     }    
 
-    const std::vector<std::string> ClassType::getAllVirtualParentMethodsNames() const {
+    std::vector<std::string> ClassType::getAllVirtualParentMethodsNames() const {
         std::vector<std::string> result;
         const ClassType* current = parentClass;
         while (current) {
@@ -475,7 +460,7 @@ namespace LynxTypes {
         return itr->second;      
     }
 
-    void ClassType::buildVTable(VTableType vType) { 
+    void ClassType::buildVTable(const VTableType& vType) { 
         auto [name, gvtable, structType, mapIdx] = vType;
         vtableName = name;
         vtableGlobal = gvtable; 
@@ -519,7 +504,7 @@ namespace LynxTypes {
 
     llvm::Value* ClassType::loadVirtualMethodPtr(llvm::Value* vtablePtr, const std::string& fnName) const {
         auto& builder = astContext->getBuilder();
-        unsigned methodIndex = getVirtualMethodIndex(fnName);
+        const unsigned methodIndex = getVirtualMethodIndex(fnName);
         auto* methodPtrPtr = builder.CreateStructGEP(vtableType, vtablePtr, methodIndex, llvm::Twine(fnName + "_ptr_ptr"));
         auto* methodPrtTy = llvm::PointerType::get(methodPtrPtr->getContext(), 0);
         return builder.CreateLoad(methodPrtTy, methodPtrPtr, llvm::Twine(fnName + "_ptr"));
@@ -555,9 +540,54 @@ namespace LynxTypes {
         using namespace Cloned;
         auto cloned = std::make_unique<ClassType>(astContext, className);
         cloned->parentClass = parentClass;
-        cloneMapContainer(methods, [&cloned](const auto& name, auto&& method) { cloned->methods[name] = std::move(method);});
-        cloneMapContainer(fields, [&cloned](const auto& name, auto&& field) { cloned->fields[name] = std::move(field); });
-        cloneVectorContainer(interfaces, [&cloned](auto&& iface) { cloned->interfaces.push_back(std::move(iface)); });
+        cloneMapContainer(methods, [&cloned](const auto& name, auto&& method) { cloned->methods[name] = std::forward<decltype(method)>(method); });
+        cloneMapContainer(fields, [&cloned](const auto& name, auto&& field) { cloned->fields[name] = std::forward<decltype(field)>(field); });
+        cloneVectorContainer(interfaces, [&cloned](auto&& iface) { cloned->interfaces.push_back(std::forward<decltype(iface)>(iface)); });
         return cloned;
     }
 }
+
+
+
+
+// int64_t ClassType::scoreParameters(const std::vector<std::unique_ptr<BaseType>>& params, const std::vector<llvm::Type*>& argTypes) const {
+//     if (params.size() != argTypes.size()) return -1; // not viable
+
+//     int64_t score = 0;
+//     for (size_t i = 0; i < params.size(); ++i) {
+
+//         BaseType* expectedType = params[i].get();
+//         const auto* actualType = convertLLVMTypeToBaseType(argTypes[i], *astContext);
+
+//         if (!expectedType || !actualType) return -1;
+
+//         // === 1. Exact match ===
+//         if (expectedType->equals(actualType)) { score += 10; continue; }
+
+//         // === 2. Implicit conversion ===
+//         if (expectedType->canAccept(actualType)) { score += 5; continue; }
+
+//         // === 3. Class → Base class conversion ===
+//         if (auto* expectedClass = TypeCasting::castType<const ClassType>(expectedType)) {
+//             if (auto* actualClass = TypeCasting::castType<const ClassType>(actualType)) {
+//                 if (actualClass->isSubclassOf(expectedClass)) { score += 30; continue; }
+//             }
+//         }
+
+//         // === 4. Class → Interface conversion ===
+//         if (auto* expectedIface = TypeCasting::castType<const InterfaceType>(expectedType)) {
+//             if (auto* actualClass = TypeCasting::castType<const ClassType>(actualType)) {
+//                 if (actualClass->implementsInterface(expectedIface)) { score += 30; continue; }
+//             }
+//         }
+
+//         // === 5. Class → Mixin conversion ===
+//         if (auto* expectedMixin = TypeCasting::castType<const MixinType>(expectedType)) {
+//             if (auto* actualClass = TypeCasting::castType<const ClassType>(actualType)) {
+//                 if (actualClass->usesMixin(expectedMixin)) { score += 30; continue; }
+//             }
+//         }
+//     }
+
+//     return score;
+// }

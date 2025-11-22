@@ -12,6 +12,7 @@ namespace LynxTypes {
     using namespace DFSUtils;
     using namespace LynxAst;
 
+    // NOLINTNEXTLINE(misc-no-recursion)
     llvm::Type* MixinType::computeLLVMType() const {
         using namespace TypeUtils;
     
@@ -21,8 +22,8 @@ namespace LynxTypes {
         auto& llvmContext = astContext->getLLVMContext();
     
         // Step 1: get or create an opaque struct for this mixin
-        const auto ifaceName = qualifiedName();
-        auto* structType = getOrCreateStruct(llvmContext, ifaceName);
+        const auto mixinNameQualified = qualifiedName();
+        auto* structType = getOrCreateStruct(llvmContext, mixinNameQualified);
     
         // Register early so recursive/circular references won't break
         registerLLVMType(structType);
@@ -38,27 +39,24 @@ namespace LynxTypes {
             fieldNameToIndex[parent->mixinName] = index++;
         }
 
-        // Add this mixin's own flattened fields
         for (const auto& [name, field] : fields) {
-            llvm::Type* ty = nullptr;
+            llvm::Type* fieldLLVMType = nullptr; // NOLINT(misc-const-correctness)
             if (const auto* dateField = TypeCasting::castType<DateTimeType>(field->getType())) {
-                ty = dateField->getLLVMPointerType();
+                fieldLLVMType = dateField->getLLVMPointerType();
             }  else if (const auto* fileField = TypeCasting::castType<MixinType>(field->getType())) {
-                ty = fileField->getLLVMPointerType();
+                fieldLLVMType = fileField->getLLVMPointerType();
             }  else if (const auto* clsField = TypeCasting::castType<ClassType>(field->getType())) {
-                ty = clsField->getLLVMPointerType();
+                fieldLLVMType = clsField->getLLVMPointerType();
             }  else if (const auto* ifaceField = TypeCasting::castType<InterfaceType>(field->getType())) {
-                ty = ifaceField->getLLVMPointerType();
+                fieldLLVMType = ifaceField->getLLVMPointerType();
             }   else {
-                ty = field->getType()->getLLVMType();
+                fieldLLVMType = field->getType()->getLLVMType();
             }
-            members.push_back(ty);
+            members.push_back(fieldLLVMType);
             fieldNameToIndex[name] = index++;
         }
     
-        // Step 4: finalize the struct body
         setStructBodySafe(structType, members);
-    
         return cachedType;
     }    
 
@@ -73,7 +71,7 @@ namespace LynxTypes {
 
     llvm::Value* MixinType::createInstance(std::string variableName) {
         auto& builder = astContext->getBuilder();
-        auto llvmType = computeLLVMType();
+        auto* llvmType = computeLLVMType();
         auto* var = builder.CreateAlloca(llvmType, nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), interfaceType));
@@ -100,11 +98,11 @@ namespace LynxTypes {
     const std::string& MixinType::originalNameLower() const {
         if (cachedLowerName.empty()) {
             cachedLowerName.reserve(mixinName.size());
-            for (char c : mixinName) {
-                cachedLowerName += std::tolower(static_cast<unsigned char>(c));
+            for (const unsigned char name : mixinName) {
+                cachedLowerName += static_cast<char>(std::tolower(name));
             }
         }
-        return cachedLowerName;    
+        return cachedLowerName;
     }
 
     void MixinType::addParentMixin(const MixinType* mixin) {
@@ -113,7 +111,7 @@ namespace LynxTypes {
     }
 
     void MixinType::addMethod(const std::string& mangleName, std::unique_ptr<MethodType> method) {
-        if (methods.find(mangleName) != methods.end()) return;
+        if (!methods.contains(mangleName)) return;
         methods[mangleName] = std::move(method);
     }
 
@@ -128,7 +126,7 @@ namespace LynxTypes {
     }
 
     void MixinType::addField(const std::string& name, std::unique_ptr<FieldType> field) {
-        if (fields.find(name) != fields.end()) return;
+        if (!fields.contains(name)) return;
         fields[name] = std::move(field);
     }
 
@@ -148,8 +146,8 @@ namespace LynxTypes {
     }
 
     bool MixinType::equals(const BaseType* other) const {
-        if (auto* iface = dynamic_cast<const MixinType*>(other)) {
-            return this->mixinName == iface->mixinName;
+        if (const auto* mixin = dynamic_cast<const MixinType*>(other)) {
+            return mixinName == mixin->mixinName;
         }
         return false;
     }
@@ -166,7 +164,7 @@ namespace LynxTypes {
         //     type = ptrType->getPointerElementType();
         // }
 
-        if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
+        if (const auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
             auto itr = llvmTypeToClass.find(structType);
             if (itr != llvmTypeToClass.end())  return itr->second;
         }
@@ -182,15 +180,15 @@ namespace LynxTypes {
 
     void MixinType::setFlattenedFields(const std::unordered_map<std::string, FieldType*>& fieldsMap) {
         flattenedFields.clear();
-        for (const auto& kv : fieldsMap) {
-            flattenedFields.push_back(std::unique_ptr<FieldType>(kv.second->clone().release()));
+        for (const auto& map : fieldsMap) {
+            flattenedFields.push_back(std::unique_ptr<FieldType>(map.second->clone().release()));
         }
     }
 
     void MixinType::setFlattenedMethods(const std::unordered_map<std::string, MethodType*>& methodsMap, const std::vector<std::string>& methodOrder) {
         flattenedMethods.clear();
-        for (const auto& kv : methodsMap) {
-            flattenedMethods[kv.first] = std::unique_ptr<MethodType>(kv.second->clone().release());
+        for (const auto& map : methodsMap) {
+            flattenedMethods[map.first] = std::unique_ptr<MethodType>(map.second->clone().release());
         }
         flattenedMethodOrder = methodOrder; // optional: preserve order for LLVM struct
     }
@@ -200,7 +198,7 @@ namespace LynxTypes {
         return itr != flattenedMethods.end() ? itr->second.get() : nullptr;
     }
 
-    llvm::Value* MixinType::resolveSuperInstanceForMethod(const std::string& methodName, llvm::Value* thisPtr, std::vector<llvm::Type*> argTypes) const {
+    llvm::Value* MixinType::resolveSuperInstanceForMethod(const std::string& methodName, llvm::Value* thisPtr, const std::vector<llvm::Type*>& argTypes) const {
         if(!hasParentMixins()) return nullptr;
 
          std::unordered_map<const MixinType*, VisitState> state;
@@ -216,7 +214,7 @@ namespace LynxTypes {
             auto itr = fieldNameToIndex.find(parent->originalName());
             if (itr == fieldNameToIndex.end())  return nullptr;
             
-            unsigned fieldIndex = itr->second;
+            const unsigned fieldIndex = itr->second;
             auto& builder = astContext->getBuilder();
             auto* llvmStructType = llvm::cast<llvm::StructType>(computeLLVMType());
             auto* superPtr = builder.CreateStructGEP(llvmStructType, thisPtr, fieldIndex, "super_ptr");
@@ -240,8 +238,8 @@ namespace LynxTypes {
     std::unique_ptr<BaseType> MixinType::clone() const {
         using namespace Cloned;
         auto cloned = std::make_unique<MixinType>(astContext, mixinName);
-        cloneMapContainer(fields, [&cloned](const auto& name, auto&& field) { cloned->addField(name, std::move(field)); });
-        cloneMapContainer(methods, [&cloned](const auto& name, auto&& method) { cloned->addMethod(name, std::move(method)); });
+        cloneMapContainer(fields, [&cloned](const auto& name, auto&& field) { cloned->addField(name, std::forward<decltype(field)>(field)); });
+        cloneMapContainer(methods, [&cloned](const auto& name, auto&& method) { cloned->addMethod(name, std::forward<decltype(method)>(method)); });
         cloneVectorShallow(parentMixins, [&cloned](auto* parent) { cloned->addParentMixin(parent); });
         return cloned;
     }

@@ -49,7 +49,7 @@ namespace LynxTypes {
         return builder.CreateStore(rhs, lhs);
     }
 
-    llvm::Value* DateType::getField(const std::string& fieldName, llvm::Value* instance) {
+    llvm::Value* DateType::getField(const std::string& /*fieldName*/, llvm::Value* instance) {
         auto& context = astContext->getLLVMContext();
         auto& builder = astContext->getBuilder();
         llvm::Function* func = nullptr;
@@ -68,32 +68,3 @@ namespace LynxTypes {
     uint32_t DateType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
     llvm::DINode::DIFlags DateType::getDIFlags() const { return llvm::DINode::FlagZero; }
 }
-
-
-
-    // llvm::Value* DateType::createValue(LValueType value) const {
-    //     LOG_INFO("Invoked...");
-        
-
-    //     auto& builder = astContext->getBuilder();
-    //     auto& context = astContext->getLLVMContext();
-    
-    //     const Date& date = std::get<Date>(value);
-    //     auto* structType = llvm::cast<llvm::StructType>(computeLLVMType());
-
-    //     llvm::Constant* constant = llvm::ConstantStruct::get(
-    //         structType,
-    //         {
-    //             llvm::ConstantInt::get(context, llvm::APInt(32, date.year)),
-    //             llvm::ConstantInt::get(context, llvm::APInt(32, date.month)),
-    //             llvm::ConstantInt::get(context, llvm::APInt(32, date.day)),
-    //             llvm::ConstantInt::get(context, llvm::APInt(32, 0)), // hour
-    //             llvm::ConstantInt::get(context, llvm::APInt(32, 0)), // minute
-    //             llvm::ConstantInt::get(context, llvm::APInt(32, 0)), // second
-    //             llvm::ConstantInt::get(context, llvm::APInt(32, 0))  // millisecond
-    //         });
-
-    //     return constant;
-
-    // }
-

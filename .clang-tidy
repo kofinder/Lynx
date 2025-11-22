@@ -47,7 +47,6 @@ Checks:
   - '-readability-implicit-bool-conversion'
   - '-hicpp-braces-around-statements'
 
-
   # --------------------------------------------
   # Portability
   # --------------------------------------------
@@ -62,13 +61,12 @@ Checks:
 
   # Additional useful rule
   - 'readability-non-const-parameter'                 # catch accidental pass-by-non-const
-  
 
 # Treat all Core Guidelines violations as errors (makes code safety consistent)
 WarningsAsErrors: 'cppcoreguidelines-*'
 
 # Only analyze headers in src/ (instead of system or external libs)
-HeaderFilterRegex: '^src/.*'
+HeaderFilterRegex: '^src/(types/logger/exceptions)/'
 
 # Use clang-format config from your .clang-format file
 FormatStyle: file
@@ -78,7 +76,6 @@ SystemHeaders: true
 
 # Additional include path (useful if you have an external/ folder)
 ExtraArgs: ["-isystem", "${PROJECT_SOURCE_DIR}/external"]
-
 
 # ===============================================
 # Per-check configuration

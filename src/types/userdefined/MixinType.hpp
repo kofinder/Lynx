@@ -131,7 +131,7 @@ namespace LynxTypes {
             inline const std::vector<const MixinType*>& getParents() const { return parentMixins; }
 
             // Returns a pointer to the super mixin instance that implements a specific method
-            llvm::Value* resolveSuperInstanceForMethod(const std::string& methodName, llvm::Value* thisPtr, std::vector<llvm::Type*> argumentTypes) const;
+            llvm::Value* resolveSuperInstanceForMethod(const std::string& methodName, llvm::Value* thisPtr, const std::vector<llvm::Type*>& argTypes) const;
             llvm::Value* resolveSuperInstanceForField(const std::string& fieldName) const;
             std::string resolveMethodCall(MethodKind kind, const std::string& mangledName, const std::vector<llvm::Type*>& argTypes) const;
 
