@@ -69,7 +69,7 @@ namespace LynxTypes {
 
             bool equals(const BaseType* other) const override;
 
-            inline DataType getTypeTag() const override { return DataType::INT; }
+            DataType getTypeTag() const override { return DataType::INT; }
 
             std::string getDebugName() const override { return "int"; }
 
@@ -81,7 +81,8 @@ namespace LynxTypes {
 
             llvm::DINode::DIFlags getDIFlags() const override;
 
-            ~IntegerType() override {}
+            ~IntegerType() override = default;
+            
     };
 }
 #endif 

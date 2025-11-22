@@ -121,7 +121,7 @@ namespace LynxTypes {
 
             void addParentInterface(const InterfaceType* iface);
 
-            inline DataType getTypeTag() const override { return DataType::INTERFACE; }
+            DataType getTypeTag() const override { return DataType::INTERFACE; }
 
             const std::string& qualifiedName() const;
             const std::string& originalNameLower() const;
@@ -134,14 +134,14 @@ namespace LynxTypes {
             void addMethod(const std::string& mangleName, std::unique_ptr<MethodType> method);
             const MethodType* getMethod(const std::string& mangleName) const;
             std::vector<std::string> getMethodOrder() const;
-            inline const std::unordered_map<std::string, std::unique_ptr<MethodType>>& getMethods() const { return methods; }
+            const std::unordered_map<std::string, std::unique_ptr<MethodType>>& getMethods() const { return methods; }
 
             bool hasField(const std::string& name) const;
             void addField(const std::string& name, std::unique_ptr<FieldType> field);
             const FieldType* getField(const std::string& name) const;
-            inline const std::unordered_map<std::string, unsigned>& getFieldNameToIndexMap() const { return fieldNameToIndex;} 
-            inline const std::unordered_map<std::string, std::unique_ptr<FieldType>>& getFields() const { return fields; }
-            inline const std::vector<const InterfaceType*>& getParents() const { return parentInterfaces; }
+            const std::unordered_map<std::string, unsigned>& getFieldNameToIndexMap() const { return fieldNameToIndex;} 
+            const std::unordered_map<std::string, std::unique_ptr<FieldType>>& getFields() const { return fields; }
+            const std::vector<const InterfaceType*>& getParents() const { return parentInterfaces; }
 
             void buildVTable(const VTableType& vType);
             llvm::GlobalVariable* getVTableGlobal() const;

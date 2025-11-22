@@ -54,17 +54,17 @@ namespace LynxTypes {
             /**
              * @brief Returns false since collections are not built-in scalar types.
             */
-            inline bool isCollectionType() const noexcept override { return true; }
+            bool isCollectionType() const noexcept override { return true; }
         
             /**
              * @brief Returns true if this collection is associative (key-value based).
              */
-            virtual inline bool isAssociative() const noexcept { return false; }
+            virtual bool isAssociative() const noexcept { return false; }
 
             /**
              * @brief Returns true if this collection is sequential (ordered list).
             */
-            virtual inline bool isSequential() const noexcept { return false; }
+            virtual bool isSequential() const noexcept { return false; }
                 
             /**
              * @brief Returns true if the collection has a fixed size (e.g. fixed-length array).
@@ -119,15 +119,13 @@ namespace LynxTypes {
 
             virtual const BaseType* getValueType() const = 0;
 
-            virtual std::unique_ptr<BaseType> clone() const override = 0;
-
             /**
              * @brief Returns the element at the specified index (for sequential collections).
              * @param index LLVM value representing the index.
              * @return LLVM value of the element.
              * @throws Runtime error if not supported by this collection type.
             */
-            virtual llvm::Value* getElementAt(llvm::Value* index) {
+            virtual llvm::Value* getElementAt(llvm::Value* /*unused*/) {
                 astContext->reportError(makeRuntimeError("getElementAt not supported for this collection type"));
                 return nullptr;
             }
@@ -138,7 +136,7 @@ namespace LynxTypes {
              * @return LLVM value of the associated element.
              * @throws Runtime error if not supported by this collection type.
             */
-            virtual llvm::Value* getValueForKey(llvm::Value* key) {
+            virtual llvm::Value* getValueForKey(llvm::Value* /*unused*/) {
                 astContext->reportError(makeRuntimeError("getValueForKey not supported for this collection type"));
                 return nullptr;
             }
@@ -149,7 +147,7 @@ namespace LynxTypes {
              * @return LLVM value indicating success or result.
              * @throws Runtime error if not supported by this collection type.
             */
-            virtual llvm::Value* insertElement(llvm::Value* element) {
+            virtual llvm::Value* insertElement(llvm::Value* /*unused*/) {
                 astContext->reportError(makeRuntimeError("insertElement not supported for this collection type"));
                 return nullptr;
             }
@@ -161,7 +159,7 @@ namespace LynxTypes {
              * @return LLVM value indicating success or result.
              * @throws Runtime error if not supported by this collection type.
             */
-            virtual llvm::Value* insertElement(llvm::Value* key, llvm::Value* value) {
+            virtual llvm::Value* insertElement(llvm::Value* /*unused*/, llvm::Value* /*unused*/) {
                 astContext->reportError(makeRuntimeError("insertElement not supported for this collection type"));
                 return nullptr;
             }
@@ -179,15 +177,14 @@ namespace LynxTypes {
              * @param callback Function to be called for each element.
              * @throws Runtime error if not supported by this collection type.
             */
-            virtual void forEachElement(const ElementCallback& callback) {
+            virtual void forEachElement(const ElementCallback& /*unused*/) {
                 astContext->reportError(makeRuntimeError("forEachElement not supported for this collection type"));
             }
 
             bool canAccept(const BaseType* other) const override {
                 if (equals(other)) return true;
-                auto o = dynamic_cast<const CollectionType*>(other);
-                if (!o) return false;
-
+                const auto* obj = dynamic_cast<const CollectionType*>(other);
+                if (!obj) return false;
                 return false;
             }
 
@@ -196,7 +193,7 @@ namespace LynxTypes {
              * @param callback Function to be called for each key-value pair.
              * @throws Runtime error if not supported by this collection type.
             */
-            virtual void forEachKeyValue(const KeyValueCallback& callback) {
+            virtual void forEachKeyValue(const KeyValueCallback& /*unused*/) {
                 astContext->reportError(makeRuntimeError("forEachKeyValue must be implemented by derived AssociativeType"));
             }  
 

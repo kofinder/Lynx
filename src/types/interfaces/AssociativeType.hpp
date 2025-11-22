@@ -47,9 +47,9 @@ namespace LynxTypes {
             /**
              * @brief Returns true as this collection is associative by definition.
             */
-            inline bool isAssociative() const noexcept override { return true; }
+            bool isAssociative() const noexcept override { return true; }
 
-            inline bool supportsKeyLookup() const noexcept override { return true; }
+            bool supportsKeyLookup() const noexcept override { return true; }
 
             /**
              * @brief Creates an LLVM value from a generic LValueType variant.
@@ -61,7 +61,7 @@ namespace LynxTypes {
              * 
              * @note This default implementation throws a runtime error and must be overridden by the appropriate type.
             */
-            llvm::Value* createValue(LValueType value) const override {
+            llvm::Value* createValue(LValueType /*unused*/) const override {
                 astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));
                 return nullptr;
             }
@@ -89,7 +89,7 @@ namespace LynxTypes {
              * 
              * @note This default implementation throws a runtime error, and should be overridden by supported types.
             */
-            llvm::Value* createValue(std::vector<llvm::Value*> values) const override {
+            llvm::Value* createValue(std::vector<llvm::Value*> /*unused*/) const override {
                 astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));
                 return nullptr;
             }
@@ -100,7 +100,7 @@ namespace LynxTypes {
              * @return LLVM value of the associated value.
              * @throws Runtime error if not implemented in derived class.
             */
-            llvm::Value* getValueForKey(llvm::Value* key) override {
+            llvm::Value* getValueForKey(llvm::Value* /*unused*/) override {
                 astContext->reportError(makeRuntimeError("getValueForKey must be implemented by derived AssociativeType"));
                 return nullptr;
             }
@@ -112,7 +112,7 @@ namespace LynxTypes {
              * @return LLVM value indicating success or result.
              * @throws Runtime error if not implemented in derived class.
             */
-            llvm::Value* insertElement(llvm::Value* key, llvm::Value* value) override {
+            llvm::Value* insertElement(llvm::Value* /*unused*/, llvm::Value* /*unused*/) override {
                 astContext->reportError(makeRuntimeError("insertElement with key+value must be implemented by derived AssociativeType"));
                 return nullptr;
             }
@@ -122,16 +122,8 @@ namespace LynxTypes {
              * @param callback Function to invoke for each key-value pair.
              * @throws Runtime error if not implemented in derived class.
             */
-            virtual void forEachKeyValue(const KeyValueCallback& callback) override {
+            virtual void forEachKeyValue(const KeyValueCallback& /*unused*/) override {
                 astContext->reportError(makeRuntimeError("forEachKeyValue must be implemented by derived AssociativeType"));
-            }
-
-            /**
-             * @brief Remove all key-value pairs from the collection.
-             * @throws Runtime error if not implemented in derived class.
-            */
-            virtual void clear() override {
-                astContext->reportError(makeRuntimeError("clear must be implemented by derived AssociativeType"));
             }
 
             ~AssociativeType() override = default;

@@ -62,14 +62,13 @@ namespace LynxTypes {
 
             explicit ArrayType(AstContext* context) : SequentialType(context) {}
             
-            inline bool isIndexable() const noexcept override { return true; }
+            bool isIndexable() const noexcept override { return true; }
 
-            inline DataType getTypeTag() const override { return DataType::ARRAY; }
+            DataType getTypeTag() const override { return DataType::ARRAY; }
 
             llvm::Value* createInstance(std::string variableName) override;
 
             llvm::Value* createValue(std::vector<llvm::Value*> values) const override;
-
 
             std::unique_ptr<BaseType> clone() const override { return std::make_unique<ArrayType>(*this); }
 

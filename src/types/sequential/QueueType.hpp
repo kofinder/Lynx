@@ -51,7 +51,7 @@ namespace LynxTypes {
 
             explicit QueueType(AstContext* context) : SequentialType(context) {}
 
-            inline DataType getTypeTag() const override { return DataType::QUEUE; }
+            DataType getTypeTag() const override { return DataType::QUEUE; }
 
             llvm::Value* createInstance(std::string variableName) override;
 

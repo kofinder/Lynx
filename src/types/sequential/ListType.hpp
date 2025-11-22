@@ -50,9 +50,9 @@ namespace LynxTypes {
 
             explicit ListType(AstContext* context) : SequentialType(context) {}
 
-            inline bool isIndexable() const noexcept override { return true; }
+            bool isIndexable() const noexcept override { return true; }
 
-            inline DataType getTypeTag() const override { return DataType::LIST; }
+            DataType getTypeTag() const override { return DataType::LIST; }
 
             llvm::Value* createInstance(std::string variableName) override;
 

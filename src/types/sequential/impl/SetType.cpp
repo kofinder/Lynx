@@ -15,10 +15,6 @@ namespace LynxTypes {
     llvm::Value* SetType::createValue(std::vector<llvm::Value*> /*values*/) const { return nullptr; }  
     
     llvm::Value* SetType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        if (!isValid(lhs) || !isValid(rhs)) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }
         auto& builder = astContext->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }

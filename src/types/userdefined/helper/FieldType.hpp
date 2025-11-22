@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LYNX_FIELD_TYPE_HELPER_HPP
+#define LYNX_FIELD_TYPE_HELPER_HPP
 
 #include <string>
 #include <types/interfaces/BaseType.hpp>
@@ -37,15 +38,15 @@ namespace LynxTypes {
                 type(std::move(fieldType)), index(idx), 
                 is_const(_isConst), is_static(_isStatic) {}
 
-            inline const std::string& getName() const { return name; }
+            [[nodiscard]] const std::string& getName() const { return name; }
 
-            inline BaseType* getType() const { return type.get(); }
+            [[nodiscard]] BaseType* getType() const { return type.get(); }
         
-            inline bool getIsConst() const { return is_static; }
+            [[nodiscard]] bool getIsConst() const { return is_static; }
         
-            inline bool getIsStatic() const { return is_static; }
+            [[nodiscard]] bool getIsStatic() const { return is_static; }
 
-            inline AccessModifierType getAccessType() { return accessType; }
+            [[nodiscard]] AccessModifierType getAccessType() { return accessType; }
         
             std::unique_ptr<FieldType> clone() const {
                 return std::make_unique<FieldType>(
@@ -59,3 +60,5 @@ namespace LynxTypes {
 
     };
 }
+
+#endif

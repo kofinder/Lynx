@@ -70,7 +70,7 @@ namespace LynxTypes {
 
             const llvm::Value* convertBooleanToString(llvm::Value* value);
 
-            inline DataType getTypeTag() const override { return DataType::BOOLEAN; }
+            DataType getTypeTag() const override { return DataType::BOOLEAN; }
 
             bool equals(const BaseType* other) const override;
 

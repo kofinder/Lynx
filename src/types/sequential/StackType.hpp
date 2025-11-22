@@ -50,7 +50,7 @@ namespace LynxTypes {
 
             explicit StackType(AstContext* context) : SequentialType(context) {}
 
-            inline DataType getTypeTag() const override { return DataType::STACK; }
+            DataType getTypeTag() const override { return DataType::STACK; }
 
             llvm::Value* createInstance(std::string variableName) override;
 

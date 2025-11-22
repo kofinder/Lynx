@@ -15,12 +15,6 @@ namespace LynxTypes {
     llvm::Value* QueueType::createValue(std::vector<llvm::Value*> /*values*/) const { return nullptr; }  
 
     llvm::Value* QueueType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        // Ensure that both lhs and rhs are valid before proceeding with the assignment
-        if (!isValid(lhs) || !isValid(rhs)) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }
-        // Perform the store operation: store rhs value into lhs
         auto& builder = astContext->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }

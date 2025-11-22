@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LYNX_TYPE_SCORING_HELPER_HPP
+#define LYNX_TYPE_SCORING_HELPER_HPP
 
 #include "tmpl/TypeCaster.hpp"
 #include <types/interfaces/BaseType.hpp>
@@ -63,3 +64,5 @@ namespace LynxTypes {
         return 0;
     }
 }
+
+#endif

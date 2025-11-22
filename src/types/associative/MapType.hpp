@@ -50,9 +50,9 @@ namespace LynxTypes {
 
             explicit MapType(AstContext* context) : AssociativeType(context) {}
 
-            inline bool isAssociative() const noexcept override { return true; }
+            bool isAssociative() const noexcept override { return true; }
 
-            inline DataType getTypeTag() const override { return DataType::MAP; }
+            DataType getTypeTag() const override { return DataType::MAP; }
 
             llvm::Value* createInstance(std::string variableName) override;
 

@@ -68,15 +68,15 @@ namespace LynxTypes {
 
             llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> pairs) const override;
 
-            inline bool isBuiltInType() const noexcept override { return true; }
+            bool isBuiltInType() const noexcept override { return true; }
 
-            inline DataType getTypeTag() const override { return DataType::AUTO; }
+            DataType getTypeTag() const override { return DataType::AUTO; }
 
-            inline void setInferredType(BaseType* type) { inferredType = type; }
+            void setInferredType(BaseType* type) { inferredType = type; }
             
-            inline BaseType* getInferredType() const { return inferredType; }
+            BaseType* getInferredType() const { return inferredType; }
             
-            inline bool isInferred() const { return inferredType != nullptr; }
+            bool isInferred() const { return inferredType != nullptr; }
                         
             bool equals(const BaseType* other) const override;
 

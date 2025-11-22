@@ -49,7 +49,7 @@ namespace LynxTypes {
             /**
              * @brief Returns true as this collection is sequential by definition.
             */
-            inline bool isSequential() const noexcept override { return true; }
+            bool isSequential() const noexcept override { return true; }
 
             /**
              * @brief Creates an LLVM value from a generic LValueType variant.
@@ -61,7 +61,7 @@ namespace LynxTypes {
              * 
              * @note This default implementation throws a runtime error and must be overridden by the appropriate type.
             */
-            llvm::Value* createValue(LValueType value) const override {
+            llvm::Value* createValue(LValueType /*unused*/) const override {
                 astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));
                 return nullptr;
             }
@@ -76,15 +76,15 @@ namespace LynxTypes {
              * 
              * @note This default implementation throws a runtime error and must be overridden by types supporting key-value construction.
              */
-            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> pairs) const override {
+            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*unused*/) const override {
                 astContext->reportError(makeRuntimeError("createValue (K, V) doesn't support this createValue signature."));
                 return nullptr;
             }
 
             bool canAccept(const BaseType* other) const override {
                 if (equals(other)) return true;
-                auto o = dynamic_cast<const SequentialType*>(other);
-                if (!o) return false;
+                const auto* obj = dynamic_cast<const SequentialType*>(other);
+                if (!obj) return false;
                 switch (other->getTypeTag()) {
                     case DataType::ARRAY:    return true;
                     case DataType::LIST:   return true;
@@ -107,7 +107,7 @@ namespace LynxTypes {
              * 
              * @note This method must be implemented by types derived from AssociativeType.
              */
-            void setValueType(BaseType* elementValue) override {
+            void setValueType(BaseType* /*unused*/) override {
                 astContext->reportError(makeRuntimeError("setValueType must be implemented by derived AssociateType"));
             }
 
@@ -132,7 +132,7 @@ namespace LynxTypes {
              * @return LLVM value of the element at the given index.
              * @throws Runtime error if not implemented in derived class.
             */
-            llvm::Value* getElementAt(llvm::Value* index) override {
+            llvm::Value* getElementAt(llvm::Value* /*unused*/) override {
                 astContext->reportError(makeRuntimeError("getElementAt must be implemented by derived SequentialType"));
                 return nullptr;
             }
@@ -142,19 +142,9 @@ namespace LynxTypes {
              * @param callback Function to invoke for each element.
              * @throws Runtime error if not implemented in derived class.
             */
-            void forEachElement(const ElementCallback& callback) override {
+            void forEachElement(const ElementCallback& /*unused*/) override {
                 astContext->reportError(makeRuntimeError("forEachElement must be implemented by derived SequentialType"));
             }
-
-            /**
-             * @brief Remove all elements from the collection.
-             * @throws Runtime error if not implemented in derived class.
-            */
-            virtual void clear() override {
-                astContext->reportError(makeRuntimeError("clear must be implemented by derived SequentialType"));
-            }
-
-            virtual std::unique_ptr<BaseType> clone() const override = 0;
 
             ~SequentialType() override = default;
     };

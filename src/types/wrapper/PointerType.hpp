@@ -38,7 +38,7 @@ namespace LynxTypes {
 
             explicit PointerType(AstContext* context) : WrapperType(context) {};
 
-            inline DataType getTypeTag() const override { return DataType::POINTER; }
+            DataType getTypeTag() const override { return DataType::POINTER; }
 
             llvm::Value* createInstance(std::string variableName) override;
 

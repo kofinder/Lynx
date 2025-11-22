@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LYNX_VTABLE_TYPE_HELPER_HPP
+#define LYNX_VTABLE_TYPE_HELPER_HPP
 
 #include <string>
 #include <unordered_map>
@@ -20,3 +21,5 @@ namespace LynxTypes {
     };
 
 }
+
+#endif

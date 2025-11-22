@@ -73,12 +73,12 @@ namespace LynxTypes {
     // ============================================================================
     template<FloatStrategyType T>
     struct SaturationStrategyImpl<T> : SaturationStrategy {
-        [[nodiscard]] llvm::Value* saddSat(const StrategyContext&) const noexcept override { llvm::report_fatal_error("Unsupported saturation intrinsic"); }
-        [[nodiscard]] llvm::Value* uaddSat(const StrategyContext&) const noexcept override { llvm::report_fatal_error("Unsupported saturation intrinsic"); }
-        [[nodiscard]] llvm::Value* ssubSat(const StrategyContext&) const noexcept override { llvm::report_fatal_error("Unsupported saturation intrinsic"); }
-        [[nodiscard]] llvm::Value* usubSat(const StrategyContext&) const noexcept override { llvm::report_fatal_error("Unsupported saturation intrinsic"); }
-        [[nodiscard]] llvm::Value* sshlSat(const StrategyContext&) const noexcept override { llvm::report_fatal_error("Unsupported saturation intrinsic"); }
-        [[nodiscard]] llvm::Value* ushLSat(const StrategyContext&) const noexcept override { llvm::report_fatal_error("Unsupported saturation intrinsic"); }
+        [[nodiscard]] llvm::Value* saddSat(const StrategyContext& /*unused*/) const noexcept override { llvm::report_fatal_error("Unsupported saturation intrinsic"); }
+        [[nodiscard]] llvm::Value* uaddSat(const StrategyContext& /*unused*/) const noexcept override { llvm::report_fatal_error("Unsupported saturation intrinsic"); }
+        [[nodiscard]] llvm::Value* ssubSat(const StrategyContext& /*unused*/) const noexcept override { llvm::report_fatal_error("Unsupported saturation intrinsic"); }
+        [[nodiscard]] llvm::Value* usubSat(const StrategyContext& /*unused*/) const noexcept override { llvm::report_fatal_error("Unsupported saturation intrinsic"); }
+        [[nodiscard]] llvm::Value* sshlSat(const StrategyContext& /*unused*/) const noexcept override { llvm::report_fatal_error("Unsupported saturation intrinsic"); }
+        [[nodiscard]] llvm::Value* ushLSat(const StrategyContext& /*unused*/) const noexcept override { llvm::report_fatal_error("Unsupported saturation intrinsic"); }
     };
 
     // ============================================================================

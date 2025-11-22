@@ -40,27 +40,27 @@ namespace LynxTypes {
         
             explicit UserDefinedType(AstContext* context) : BaseType(context) {}
 
-            inline bool isUserDefinedType() const noexcept override { return true; }
+            bool isUserDefinedType() const noexcept override { return true; }
 
-            llvm::Value* createValue(LValueType value) const override {
+            llvm::Value* createValue(LValueType /*unused*/) const override {
                 astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));
                 return nullptr;
             }
 
-            llvm::Value* createValue(std::vector<llvm::Value*> values) const override {
+            llvm::Value* createValue(std::vector<llvm::Value*> /*unused*/) const override {
                 astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));
                 return nullptr;
             }
 
-            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> pairs) const override {
+            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*unused*/) const override {
                 astContext->reportError(makeRuntimeError(" createValue ( K, V) doesn't support this createValue signature."));
                 return nullptr;  
             }
 
             bool canAccept(const BaseType* other) const override {
                 if (equals(other)) return true;
-                auto o = dynamic_cast<const UserDefinedType*>(other);
-                if (!o) return false;
+                const auto* obj = dynamic_cast<const UserDefinedType*>(other);
+                if (!obj) return false;
                 switch (other->getTypeTag()) {
                     case DataType::CLAZZ:    return true;
                     case DataType::INTERFACE:   return true;
@@ -71,11 +71,8 @@ namespace LynxTypes {
                     case DataType::FUNCTION:   return true;
                     default: return false;
                 }
-
                 return false;
             }
-
-            virtual std::unique_ptr<BaseType> clone() const override = 0;
     
             virtual ~UserDefinedType() override = default;
     };

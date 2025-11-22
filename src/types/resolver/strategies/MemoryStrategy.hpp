@@ -56,10 +56,10 @@ namespace LynxTypes {
     // ============================================================================
     template<IntStrategyType T>
     struct MemoryStrategyImpl<T> : MemoryStrategy {
-        [[nodiscard]] llvm::Value* memcpy(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* memmove(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* memset(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* memsetPattern(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memcpy(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memmove(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memset(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memsetPattern(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
     };
 
     // ============================================================================
@@ -67,10 +67,10 @@ namespace LynxTypes {
     // ============================================================================
     template<FloatStrategyType T>
     struct MemoryStrategyImpl<T> : MemoryStrategy {
-        [[nodiscard]] llvm::Value* memcpy(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* memmove(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* memset(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* memsetPattern(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memcpy(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memmove(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memset(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memsetPattern(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
     };
 
     // ============================================================================

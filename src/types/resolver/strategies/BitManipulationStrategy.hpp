@@ -83,12 +83,12 @@ namespace LynxTypes {
     // ============================================================================
     template<FloatStrategyType T>
     struct BitManipulationStrategyImpl<T> : BitManipulationStrategy {
-        [[nodiscard]] llvm::Value* popCount(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
-        [[nodiscard]] llvm::Value* countLeadingZeros(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
-        [[nodiscard]] llvm::Value* countTrailingZeros(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
-        [[nodiscard]] llvm::Value* bitReverse(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
-        [[nodiscard]] llvm::Value* rotateLeft(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
-        [[nodiscard]] llvm::Value* rotateRight(const StrategyContext& ctx) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic");}
+        [[nodiscard]] llvm::Value* popCount(const StrategyContext& /*unused*/) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
+        [[nodiscard]] llvm::Value* countLeadingZeros(const StrategyContext& /*unused*/) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
+        [[nodiscard]] llvm::Value* countTrailingZeros(const StrategyContext& /*unused*/) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
+        [[nodiscard]] llvm::Value* bitReverse(const StrategyContext& /*unused*/) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
+        [[nodiscard]] llvm::Value* rotateLeft(const StrategyContext& /*unused*/) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic"); }
+        [[nodiscard]] llvm::Value* rotateRight(const StrategyContext& /*unused*/) const noexcept override { llvm::report_fatal_error("Unsupported bit intrinsic");}
     };
 
     // ============================================================================

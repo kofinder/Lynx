@@ -62,23 +62,13 @@ namespace LynxTypes {
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
             
-            // void accept(TypeVisitor& visitor) override;
-
-            // TypeMethodResolver* getOrCreateResolver() const  override;
-
-            // const std::unordered_map<std::string_view, int>& getMethodRegistry() const override;
-
-            // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
-
-            // llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
-
             std::unique_ptr<BaseType> clone() const override { return std::make_unique<DateTimeType>(*this); }
 
             bool equals(const BaseType* other) const override;
 
             llvm::Value* getField(const std::string& fieldName, llvm::Value* instance);
 
-            inline DataType getTypeTag() const override { return DataType::DATETIME; }
+            DataType getTypeTag() const override { return DataType::DATETIME; }
 
             std::string getDebugName() const override { return "Datetime"; }
 

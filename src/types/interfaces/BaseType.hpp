@@ -97,7 +97,7 @@ namespace LynxTypes {
              * @param newIsStatic Whether the new type should be static-qualified.
              * @return Pointer to a new BaseType instance with the requested static qualifier.
             */
-            virtual const BaseType* createWithStatic(bool) const { return this; }
+            virtual const BaseType* createWithStatic(bool /*unused*/) const { return this; }
 
             /**
              * @brief Checks whether the given LLVM value pointer is valid (non-null).
@@ -108,7 +108,7 @@ namespace LynxTypes {
              * @param v The LLVM value pointer to check.
              * @return true if the pointer is non-null, false otherwise.
             */
-            inline bool isValid(llvm::Value* v) noexcept { return v != nullptr; }
+            bool isValid(llvm::Value* v) noexcept { return v != nullptr; }
 
         public:
 
@@ -128,7 +128,7 @@ namespace LynxTypes {
              * @brief Returns the AST context currently associated with this type.
              * @return Pointer to the AstContext.
             */
-            inline AstContext* getContext() const noexcept { return astContext; }
+            AstContext* getContext() const noexcept { return astContext; }
 
             /**
              * @brief Returns the LLVM type, computing it if not already cached.
@@ -186,7 +186,7 @@ namespace LynxTypes {
              * Checks if the type has been marked as `const`.
              * @return true if the type is const-qualified, false otherwise.
             */
-            inline bool isConst() const noexcept { return constFlag; }
+            bool isConst() const noexcept { return constFlag; }
 
             /**
              * @brief Sets the const qualifier for this type.
@@ -194,71 +194,71 @@ namespace LynxTypes {
              * Marks the type as `const` or removes the const qualification.
              * @param value true to mark the type as const, false to remove const.
             */
-            inline void setConst(bool value) noexcept { constFlag = value; }
+            void setConst(bool value) noexcept { constFlag = value; }
 
            /**
              * @brief Returns whether the type is static-qualified.
              * @return True if the type is marked as static.
             */
-            inline bool isStatic() const noexcept { return staticFlag; }
+            bool isStatic() const noexcept { return staticFlag; }
 
             /**
              * @brief Sets the static qualifier of the type.
              * @param value True to mark the type as static; false otherwise.
             */
-            inline void setStatic(bool value) noexcept { staticFlag = value; }
+            void setStatic(bool value) noexcept { staticFlag = value; }
 
             /**
              * @brief Indicates whether the type supports assignment operations.
              * @return True if the type can be assigned to; false by default.
             */
-            virtual inline bool supportsAssignment() const noexcept { return false; }
+            virtual bool supportsAssignment() const noexcept { return false; }
 
             /**
              * @brief Indicates whether the type supports nullability (e.g., pointers).
              * @return True if the type can be null; false by default.
             */
-            virtual inline bool isNullable() const noexcept { return false; }
+            virtual bool isNullable() const noexcept { return false; }
 
             /**
              * @brief Indicates whether the type supports index-based access (e.g., arrays).
              * @return True if the type is indexable; false by default.
             */
-            virtual inline bool isIndexable() const noexcept { return false; }
+            virtual bool isIndexable() const noexcept { return false; }
 
             /**
              * @brief Indicates whether the type supports key-based lookup (e.g., maps).
              * @return True if the type allows key lookup; false by default.
             */
-            virtual inline bool supportsKeyLookup() const noexcept { return false; }
+            virtual bool supportsKeyLookup() const noexcept { return false; }
         
            /**
              * @brief Returns true if the type is a built-in primitive type (e.g., int, float, bool).
              * 
              * This typically includes types directly supported by the language or runtime.
             */
-            virtual inline bool isBuiltInType() const noexcept { return false; }
+            virtual bool isBuiltInType() const noexcept { return false; }
 
             /**
              * @brief Returns true if the type represents a collection (e.g., array, list, map).
              * 
              * Useful for distinguishing container types from scalar or object types.
             */
-            virtual inline bool isCollectionType() const noexcept { return false; }
+            virtual bool isCollectionType() const noexcept { return false; }
 
             /**
              * @brief Returns true if the type is user-defined (e.g., class, struct, enum).
              * 
              * Indicates types created by the user rather than built-in to the language.
             */
-            virtual inline bool isUserDefinedType() const noexcept { return false; }
+            virtual bool isUserDefinedType() const noexcept { return false; }
 
             /**
              * @brief Returns true if the type is a wrapper around another type (e.g., Option<T>, Ref<T>).
              * 
              * Used for recognizing smart pointers, optional types, or language-level type wrappers.
              */
-            virtual inline bool isWrapperType() const noexcept { return false; }
+            virtual bool isWrapperType() const noexcept { return false; }
 
             /**
              * @brief Returns a tag indicating the specific type category (e.g., IntType, FloatType, VectorType).
@@ -300,7 +300,7 @@ namespace LynxTypes {
              * @brief Creates an LLVM value of this type from an LValueType wrapper.
              * @param lvalueType Encapsulated data value to convert.
             */
-            virtual llvm::Value* createValue(const LValueType value) const = 0;
+            virtual llvm::Value* createValue(LValueType value) const = 0;
 
             /**
              * @brief Creates an LLVM value using an existing LLVM type and value.

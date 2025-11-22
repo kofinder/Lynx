@@ -69,7 +69,7 @@ namespace LynxTypes {
 
             bool equals(const BaseType* other) const override;
 
-            inline DataType getTypeTag() const override { return DataType::LONG; }
+            DataType getTypeTag() const override { return DataType::LONG; }
 
             std::string getDebugName() const override { return "long"; }
 

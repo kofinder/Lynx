@@ -41,24 +41,24 @@ namespace LynxTypes {
 
             explicit BuiltInType(AstContext* astContext) : BaseType(astContext) {}
 
-            inline bool isBuiltInType() const  noexcept override { return true; }
+            bool isBuiltInType() const  noexcept override { return true; }
 
-            inline bool supportsAssignment() const noexcept override { return true; }
+            bool supportsAssignment() const noexcept override { return true; }
 
-            llvm::Value* createValue(std::vector<llvm::Value*> values) const override {
+            llvm::Value* createValue(std::vector<llvm::Value*> /*unused*/) const override {
                 astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));
                 return nullptr;
             }
 
-            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> pairs) const override {
+            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*unused*/) const override {
                 astContext->reportError(makeRuntimeError(" createValue ( K, V) doesn't support this createValue signature."));
                 return nullptr;  
             }
 
             bool canAccept(const BaseType* other) const override {
                 if (equals(other)) return true;
-                auto o = dynamic_cast<const BuiltInType*>(other);
-                if (!o) return false;
+                const auto* obj = dynamic_cast<const BuiltInType*>(other);
+                if (!obj) return false;
                 switch (other->getTypeTag()) {
                     case DataType::BYTE:    return true;
                     case DataType::SHORT:   return true;
@@ -70,11 +70,8 @@ namespace LynxTypes {
                     case DataType::STRING:  return true;
                     default: return false;
                 }
-
                 return false;
             }
-
-            virtual std::unique_ptr<BaseType> clone() const override = 0;
 
             ~BuiltInType() override = default;
     };

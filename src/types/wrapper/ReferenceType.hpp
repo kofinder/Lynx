@@ -39,7 +39,7 @@ namespace LynxTypes {
 
             explicit ReferenceType(AstContext* context) : WrapperType(context) {};
 
-            inline DataType getTypeTag() const override { return DataType::REFERENCE; }
+            DataType getTypeTag() const override { return DataType::REFERENCE; }
 
             llvm::Value* createInstance(std::string variableName) override;
 

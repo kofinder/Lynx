@@ -58,14 +58,13 @@ namespace LynxTypes {
 
             llvm::Value* createNonConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const;
 
-
         public:
 
             explicit VectorType(AstContext* context) : SequentialType(context) {}
 
-            inline bool isIndexable() const noexcept override { return true; }
+            bool isIndexable() const noexcept override { return true; }
 
-            inline DataType getTypeTag() const override { return DataType::VECTOR; }
+            DataType getTypeTag() const override { return DataType::VECTOR; }
 
             llvm::Value* createInstance(std::string variableName) override;
 

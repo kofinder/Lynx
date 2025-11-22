@@ -50,7 +50,7 @@ namespace LynxTypes {
 
             explicit SetType(AstContext* context) : SequentialType(context) {}
 
-            inline DataType getTypeTag() const override { return DataType::SET; }
+            DataType getTypeTag() const override { return DataType::SET; }
 
             llvm::Value* createInstance(std::string variableName) override;
 

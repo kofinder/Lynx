@@ -16,6 +16,7 @@ namespace LynxTypes {
             const BaseType* createWithConst(bool newIsConst) const override;
 
         public:
+        
             explicit FunctionType(AstContext* context) : UserDefinedType(context) {}
 
             llvm::Type* getLLVMPointerType() const override;
@@ -30,7 +31,7 @@ namespace LynxTypes {
 
             bool equals(const BaseType* other) const override;
 
-            inline DataType getTypeTag() const override { return DataType::BOOLEAN; }
+            DataType getTypeTag() const override { return DataType::BOOLEAN; }
 
             std::string getDebugName() const override { return "Function"; }
 

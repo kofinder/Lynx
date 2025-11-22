@@ -35,10 +35,9 @@
 
 namespace LynxTypes {
 
-    struct MethodInfo {
-        bool isStaticMethod = true;
-        size_t paramCount = 0;
-    };
+    struct TypeName { std::string value; };
+    struct MethodName { std::string value; };
+    struct MethodInfo { bool isStaticMethod = true; size_t paramCount = 0; };
 
     class TypeMethodRegistry {
 
@@ -58,24 +57,24 @@ namespace LynxTypes {
                 }
             }
 
-            bool hasMethod(const std::string& typeName, const std::string& methodName) const {
-                auto typeIt = registry.find(typeName);
+            bool hasMethod(const TypeName type, const MethodName method) const {
+                auto typeIt = registry.find(type.value);
                 if (typeIt == registry.end()) return false;
-                return typeIt->second.find(methodName) != typeIt->second.end();
+                return typeIt->second.find(method.value) != typeIt->second.end();
             }    
-
-            bool validateMethodCall(const std::string& typeName, const std::string& methodName, size_t argCount) const {
-                auto typeIt = registry.find(typeName);
+            
+            bool validateMethodCall(const TypeName type, const MethodName method, size_t argCount) const {
+                auto typeIt = registry.find(type.value);
                 if (typeIt == registry.end()) return false;
-                auto methodIt = typeIt->second.find(methodName);
+                auto methodIt = typeIt->second.find(method.value);
                 if (methodIt == typeIt->second.end()) return false;
                 return methodIt->second.paramCount == argCount;
             }
-        
-            size_t getExpectedParamCount(const std::string& typeName, const std::string& methodName) const {
-                auto typeIt = registry.find(typeName);
+            
+            size_t getExpectedParamCount(const TypeName type, const MethodName method) const {
+                auto typeIt = registry.find(type.value);
                 if (typeIt == registry.end()) return 0;
-                auto methodIt = typeIt->second.find(methodName);
+                auto methodIt = typeIt->second.find(method.value);
                 if (methodIt == typeIt->second.end()) return 0;
                 return methodIt->second.paramCount;
             }    

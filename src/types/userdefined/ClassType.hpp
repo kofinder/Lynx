@@ -132,7 +132,7 @@ namespace LynxTypes {
 
             bool equals(const BaseType* other) const override;
 
-            inline DataType getTypeTag() const override { return DataType::CLAZZ; }
+            DataType getTypeTag() const override { return DataType::CLAZZ; }
 
             const std::string& qualifiedName() const;
             const std::string& originalNameLower() const;
@@ -146,7 +146,7 @@ namespace LynxTypes {
             // ---------------------
             void addConstructor(const std::string& mangledName, std::unique_ptr<ConstructorType> ctor);
             const ConstructorType* getConstructor(const std::string& mangledName) const;
-            inline const std::unordered_map<std::string, std::unique_ptr<ConstructorType>>& getConstructors() const { return ctors; }
+            const std::unordered_map<std::string, std::unique_ptr<ConstructorType>>& getConstructors() const { return ctors; }
             
             // ---------------------
             // Method Handling
@@ -154,7 +154,7 @@ namespace LynxTypes {
             bool hasMethod(const std::string& mangleName) const;
             const MethodType* getMethod(const std::string& mangleName) const;
             void addMethod(const std::string& mangleName, std::unique_ptr<MethodType> method);
-            inline const std::unordered_map<std::string, std::unique_ptr<MethodType>>& getMethods() const { return methods; }
+            const std::unordered_map<std::string, std::unique_ptr<MethodType>>& getMethods() const { return methods; }
 
             // ---------------------
             // Fields Handling
@@ -163,8 +163,8 @@ namespace LynxTypes {
             void addField(const std::string& name, std::unique_ptr<FieldType> field);
             const FieldType* getField(const std::string& name) const;
             unsigned getFieldIndex(const std::string& fieldName) const;
-            inline const std::unordered_map<std::string, unsigned>& getFieldNameToIndexMap() const { return fieldNameToIndex;} 
-            inline const std::unordered_map<std::string, std::unique_ptr<FieldType>>& getFields() const { return fields; }
+            const std::unordered_map<std::string, unsigned>& getFieldNameToIndexMap() const { return fieldNameToIndex;} 
+            const std::unordered_map<std::string, std::unique_ptr<FieldType>>& getFields() const { return fields; }
 
             // ---------------------
             // Parent Class Handling
@@ -214,7 +214,6 @@ namespace LynxTypes {
             std::string resolveMethodCall(MethodKind kind, const std::string& mangledName, const std::vector<llvm::Type*>& argTypes) const;
             bool implementsInterface(const InterfaceType* iface) const;
             bool isSubclassOf(const ClassType* base) const;
-
 
             /// ---------------------
             // Debug Handling

@@ -44,18 +44,12 @@ namespace LynxTypes::TypeUtils {
     } 
     
     inline const BaseType* convertLLVMTypeToBaseType(llvm::Type* llvmType, AstContext& context) {
-        if(auto clazzType = ClassType::fromLLVMType(llvmType)) { 
-            return clazzType;
-        } else if(auto ifaceType = InterfaceType::fromLLVMType(llvmType)) {
-            return ifaceType;
-        } else if(auto mixinType = MixinType::fromLLVMType(llvmType)) {
-            return mixinType;
-        } else if(auto enumType = EnumType::fromLLVMType(llvmType)) {
-           return enumType;
-        }  else {
-            auto basePtrType = context.findType("llvmType");
-            return basePtrType.get();
-        }
+        if (const auto clazzType = ClassType::fromLLVMType(llvmType)) return clazzType;
+        if (const auto ifaceType = InterfaceType::fromLLVMType(llvmType)) return ifaceType;
+        if (const auto mixinType = MixinType::fromLLVMType(llvmType)) return mixinType;
+        if (const auto enumType = EnumType::fromLLVMType(llvmType)) return enumType;
+        auto basePtrType = context.findType("llvmType");
+        return basePtrType.get();
     }
 }
 

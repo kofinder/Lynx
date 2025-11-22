@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LYNX_CONSTRUCTOR_TYPE_HELPER_HPP
+#define LYNX_CONSTRUCTOR_TYPE_HELPER_HPP
 
 #include <string>
 #include <types/interfaces/BaseType.hpp>
@@ -20,9 +21,9 @@ namespace LynxTypes {
                 std::vector<std::unique_ptr<BaseType>> params
             ) : mangledName(std::move(funcName)), parameterTypes(std::move(params)) {}
 
-            inline const std::string& getMangledName() const { return mangledName; }
+            [[nodiscard]] const std::string& getMangledName() const { return mangledName; }
         
-            const std::vector<std::unique_ptr<BaseType>>& getParameterTypes() const { return parameterTypes; }
+            [[nodiscard]] const std::vector<std::unique_ptr<BaseType>>& getParameterTypes() const { return parameterTypes; }
     
             std::unique_ptr<ConstructorType> clone() const {
                 std::vector<std::unique_ptr<BaseType>> clonedParams;
@@ -35,3 +36,4 @@ namespace LynxTypes {
     };
     
 }
+#endif
