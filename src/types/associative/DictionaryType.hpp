@@ -49,7 +49,8 @@ namespace LynxTypes {
         public:
 
             explicit DictionaryType(AstContext* context) : AssociativeType(context) {}
-
+            ~DictionaryType() override = default;
+            
             bool isAssociative() const noexcept override { return true; }
 
             DataType getTypeTag() const override { return DataType::MAP; }
@@ -85,8 +86,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~DictionaryType() override = default;
     };
 }
 

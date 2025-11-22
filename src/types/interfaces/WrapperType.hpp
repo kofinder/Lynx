@@ -42,6 +42,7 @@ namespace LynxTypes {
         public: 
 
             explicit WrapperType(AstContext* astContext) : BaseType(astContext) {}
+            ~WrapperType() override = default;
 
             bool isWrapperType() const noexcept override { return true; }
 
@@ -61,8 +62,6 @@ namespace LynxTypes {
                 if (!obj) return false;
                 return false;
             }
-
-            ~WrapperType() override = default;
     };
 }
 

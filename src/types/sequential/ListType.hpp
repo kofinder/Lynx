@@ -49,6 +49,7 @@ namespace LynxTypes {
         public:
 
             explicit ListType(AstContext* context) : SequentialType(context) {}
+            ~ListType() override = default;
 
             bool isIndexable() const noexcept override { return true; }
 
@@ -81,8 +82,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~ListType() override = default;
     };
 }
 

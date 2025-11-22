@@ -47,6 +47,7 @@ namespace LynxTypes {
         public:
         
             explicit BooleanType(AstContext* context) : BuiltInType(context) {}
+            ~BooleanType() override = default;
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -83,8 +84,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~BooleanType() override = default;
     };
 }
 

@@ -25,7 +25,7 @@ namespace LynxTypes {
         
             [[nodiscard]] const std::vector<std::unique_ptr<BaseType>>& getParameterTypes() const { return parameterTypes; }
     
-            std::unique_ptr<ConstructorType> clone() const {
+            [[nodiscard]] std::unique_ptr<ConstructorType> clone() const {
                 std::vector<std::unique_ptr<BaseType>> clonedParams;
                 clonedParams.reserve(parameterTypes.size());
                 for (const auto& param : parameterTypes) {

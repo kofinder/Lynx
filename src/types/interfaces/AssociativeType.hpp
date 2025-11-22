@@ -43,6 +43,7 @@ namespace LynxTypes {
              * @param value Shared pointer to the value type.
              */
             explicit AssociativeType(AstContext* context) : CollectionType(context) {}
+            ~AssociativeType() override = default;
 
             /**
              * @brief Returns true as this collection is associative by definition.
@@ -125,8 +126,6 @@ namespace LynxTypes {
             virtual void forEachKeyValue(const KeyValueCallback& /*unused*/) override {
                 astContext->reportError(makeRuntimeError("forEachKeyValue must be implemented by derived AssociativeType"));
             }
-
-            ~AssociativeType() override = default;
     };
 }
 

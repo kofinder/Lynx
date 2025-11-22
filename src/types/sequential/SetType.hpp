@@ -49,6 +49,7 @@ namespace LynxTypes {
         public:
 
             explicit SetType(AstContext* context) : SequentialType(context) {}
+            ~SetType() override = default;
 
             DataType getTypeTag() const override { return DataType::SET; }
 
@@ -79,8 +80,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~SetType() override = default;
     };
 }
 

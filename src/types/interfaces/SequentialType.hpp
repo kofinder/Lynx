@@ -45,6 +45,7 @@ namespace LynxTypes {
              * @param type Shared pointer to the element type.
             */
             explicit SequentialType(AstContext* context) : CollectionType(context){};
+            ~SequentialType() override = default;
 
             /**
              * @brief Returns true as this collection is sequential by definition.
@@ -145,8 +146,6 @@ namespace LynxTypes {
             void forEachElement(const ElementCallback& /*unused*/) override {
                 astContext->reportError(makeRuntimeError("forEachElement must be implemented by derived SequentialType"));
             }
-
-            ~SequentialType() override = default;
     };
 }
 

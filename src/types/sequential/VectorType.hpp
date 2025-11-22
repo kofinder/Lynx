@@ -61,6 +61,7 @@ namespace LynxTypes {
         public:
 
             explicit VectorType(AstContext* context) : SequentialType(context) {}
+            ~VectorType() override = default;
 
             bool isIndexable() const noexcept override { return true; }
 
@@ -93,8 +94,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~VectorType() override = default;
     };
 }
 

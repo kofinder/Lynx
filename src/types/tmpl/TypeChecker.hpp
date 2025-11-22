@@ -21,7 +21,6 @@
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/Support/raw_ostream.h>
 
-
 #include <types/sequential/ArrayType.hpp>
 #include <types/sequential/VectorType.hpp>
 #include <types/sequential/ListType.hpp>
@@ -52,54 +51,57 @@
 #include <types/wrapper/ReferenceType.hpp>
 #include <types/wrapper/PointerType.hpp>
 #include <types/infrerence/AutoType.hpp>
+#include <constants/MagicNumericConstants.hpp>
 
 namespace LynxTypes::TypeChecker {
 
+    using namespace LynxConstants;
+
     template <typename T>
-    static bool is(llvm::Type* type, llvm::Value* value = nullptr) {
-        return llvm::isa<T>(type, value);
+    static bool is(llvm::Type* type) {
+        return llvm::isa<T>(type);
     }
 
     template <>
-    inline bool is<VoidType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<VoidType>(llvm::Type* type) {
         return type && type->isVoidTy();
     }
 
     template <>
-    inline bool is<ShortType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<ShortType>(llvm::Type* type) {
         return type && type->isIntegerTy(16);
     }
 
     template <>
-    inline bool is<IntegerType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<IntegerType>(llvm::Type* type) {
         return type && type->isIntegerTy(32);
     }
 
     template <>
-    inline bool is<LongType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<LongType>(llvm::Type* type) {
         return type && type->isIntegerTy(64);
     }
 
     template <>
-    inline bool is<FloatType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<FloatType>(llvm::Type* type) {
         return type && type->isFloatTy();
     }
 
     template <>
-    inline bool is<DoubleType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<DoubleType>(llvm::Type* type) {
         return type && type->isDoubleTy();
     }
 
     template <>
-    inline bool is<BooleanType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<BooleanType>(llvm::Type* type) {
         return type && type->isIntegerTy(1);
     }
 
     template <>
-    inline bool is<ByteType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<ByteType>(llvm::Type* type) {
         if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
             if (structType->getNumElements() == 1) {
-                if (structType->getElementType(0)->isIntegerTy(8)) {
+                if (structType->getElementType(0)->isIntegerTy(BIT_WIDTH_BYTE)) {
                     if (structType->getName() == MetadataTypeConstants::structureByteType) {
                         return true;
                     }
@@ -110,10 +112,10 @@ namespace LynxTypes::TypeChecker {
     }
 
     template <>
-    inline bool is<CharType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<CharType>(llvm::Type* type) {
         if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
             if (structType->getNumElements() == 1) {
-                if (structType->getElementType(0)->isIntegerTy(8)) {
+                if (structType->getElementType(0)->isIntegerTy(BIT_WIDTH_BYTE)) {
                     return structType->getName() == MetadataTypeConstants::structureCharType;
                 }
             }
@@ -122,40 +124,40 @@ namespace LynxTypes::TypeChecker {
     }
     
     template <>
-    inline bool is<StringType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<StringType>(llvm::Type* type) {
 
         if (!type) return false;
 
-        if (type->isArrayTy()) return type->getArrayElementType()->isIntegerTy(8);
+        if (type->isArrayTy()) return type->getArrayElementType()->isIntegerTy(BIT_WIDTH_BYTE);
 
-        if (type->isPointerTy() && value) {
+        // if (type->isPointerTy() && value) {
 
-            llvm::Type* pointeeTy = nullptr;
-            if (auto* LI = llvm::dyn_cast<llvm::LoadInst>(value)) {
-                pointeeTy = LI->getType();
-            } else if (auto* GEP = llvm::dyn_cast<llvm::GetElementPtrInst>(value)) {
-                pointeeTy = GEP->getSourceElementType();
-            } else if (auto* AI = dyn_cast<llvm::AllocaInst>(value)) {
-                pointeeTy = AI->getAllocatedType();
-            } else if (auto* GV = dyn_cast<llvm::GlobalVariable>(value)) {
-                pointeeTy = GV->getValueType();
-            }
+        //     llvm::Type* pointeeTy = nullptr;
+        //     if (auto* LI = llvm::dyn_cast<llvm::LoadInst>(value)) {
+        //         pointeeTy = LI->getType();
+        //     } else if (auto* GEP = llvm::dyn_cast<llvm::GetElementPtrInst>(value)) {
+        //         pointeeTy = GEP->getSourceElementType();
+        //     } else if (auto* AI = dyn_cast<llvm::AllocaInst>(value)) {
+        //         pointeeTy = AI->getAllocatedType();
+        //     } else if (auto* GV = dyn_cast<llvm::GlobalVariable>(value)) {
+        //         pointeeTy = GV->getValueType();
+        //     }
 
-            if (pointeeTy) {
-                llvm::errs() << "[Debug] Checking pointeeTy: "; pointeeTy->print(llvm::errs()); llvm::errs() << "\n";
-                if (pointeeTy->isIntegerTy(8)) {
-                    return true;
-                } else if (pointeeTy->isArrayTy() && pointeeTy->getArrayElementType()->isIntegerTy(8)) {
-                    return true;
-                }
-            }    
-        }
+        //     if (pointeeTy) {
+        //         llvm::errs() << "[Debug] Checking pointeeTy: "; pointeeTy->print(llvm::errs()); llvm::errs() << "\n";
+        //         if (pointeeTy->isIntegerTy(8)) {
+        //             return true;
+        //         } else if (pointeeTy->isArrayTy() && pointeeTy->getArrayElementType()->isIntegerTy(8)) {
+        //             return true;
+        //         }
+        //     }    
+        // }
 
         return false;
     }
 
     template <>
-    inline bool is<DateType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<DateType>(llvm::Type* type) {
         if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
             return structType->getName() == MetadataTypeConstants::dateType;
         }
@@ -163,7 +165,7 @@ namespace LynxTypes::TypeChecker {
     }
 
     template <>
-    inline bool is<DateTimeType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<DateTimeType>(llvm::Type* type) {
         // if(auto pointerType = llvm::dyn_cast<llvm::PointerType>(type)) {
         //     if (auto* structType = llvm::dyn_cast<llvm::StructType>(pointerType->getPointerElementType())) {
         //         return structType->getName() == MetadataTypeConstants::structureDateTimeType;
@@ -178,7 +180,7 @@ namespace LynxTypes::TypeChecker {
     }
 
     template <>
-    inline bool is<FileType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<FileType>(llvm::Type* type) {
         if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
             return structType->getName() == MetadataTypeConstants::fileType;
         }
@@ -186,10 +188,10 @@ namespace LynxTypes::TypeChecker {
     }
 
     template <>
-    inline bool is<EnumType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<EnumType>(llvm::Type* type) {
         if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
 
-            std::cout << "struct type ===========>:" << structType->getName().str() << std::endl;
+            // std::cout << "struct type ===========>:" << structType->getName().str() << "\";
 
             if (!structType || !structType->hasName()) return false;
 
@@ -232,7 +234,7 @@ namespace LynxTypes::TypeChecker {
     }
 
     template <>
-    inline bool is<ClassType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<ClassType>(llvm::Type* type) {
         if (auto* structType = llvm::dyn_cast<llvm::StructType>(type)) {
             if (structType->getName() == MetadataTypeConstants::classType) {
                 return true;
@@ -242,57 +244,57 @@ namespace LynxTypes::TypeChecker {
     }
 
     template <>
-    inline bool is<FunctionType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<FunctionType>(llvm::Type* /*unused*/) {
         return false;
     }
 
     template <>
-    inline bool is<ReferenceType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<ReferenceType>(llvm::Type* /*unused*/) {
         return false;
     }
 
     template <>
-    inline bool is<PointerType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<PointerType>(llvm::Type* /*unused*/) {
         return false;
     }
 
     template <>
-    inline bool is<ArrayType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<ArrayType>(llvm::Type* /*unused*/) {
         return false;
     }
 
     template <>
-    inline bool is<ListType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<ListType>(llvm::Type* /*unused*/) {
        return false;
     }
 
     template <>
-    inline bool is<QueueType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<QueueType>(llvm::Type* /*unused*/) {
         return false;
     }
 
     template <>
-    inline bool is<SetType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<SetType>(llvm::Type* /*unused*/) {
         return false;
     }
 
     template <>
-    inline bool is<StackType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<StackType>(llvm::Type* /*unused*/) {
        return false;
     }
 
     template <>
-    inline bool is<VectorType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<VectorType>(llvm::Type* /*unused*/) {
         return false;
     }
 
     template <>
-    inline bool is<MapType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<MapType>(llvm::Type* /*unused*/) {
         return false;
     }
 
     template <>
-    inline bool is<DictionaryType>(llvm::Type* type, llvm::Value* value) {
+    inline bool is<DictionaryType>(llvm::Type* /*unused*/) {
         return false;
     }
 }

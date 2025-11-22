@@ -39,6 +39,7 @@ namespace LynxTypes {
         public:
         
             explicit UserDefinedType(AstContext* context) : BaseType(context) {}
+            ~UserDefinedType() override = default;
 
             bool isUserDefinedType() const noexcept override { return true; }
 
@@ -73,8 +74,6 @@ namespace LynxTypes {
                 }
                 return false;
             }
-    
-            virtual ~UserDefinedType() override = default;
     };
 }
 

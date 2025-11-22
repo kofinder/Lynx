@@ -72,6 +72,7 @@ namespace LynxTypes {
                 AstContext* context, 
                 std::string name
             ) : UserDefinedType(context), enumName(std::move(name)) {}
+            ~EnumType() override = default;
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -112,8 +113,6 @@ namespace LynxTypes {
             void registerGlobalConstant(const std::string& memberName, llvm::GlobalVariable* gv) const;
                 
             std::unique_ptr<BaseType> clone() const override;
-
-            ~EnumType() override = default;
     };
 }
 

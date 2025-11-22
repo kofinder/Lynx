@@ -53,6 +53,7 @@ namespace LynxTypes {
         public:
 
             explicit FileType(AstContext* context) : UserDefinedType(context) {}
+            ~FileType() override = default;
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -77,8 +78,6 @@ namespace LynxTypes {
             llvm::DINode::DIFlags getDIFlags() const override;
 
             std::unique_ptr<BaseType> clone() const override { return std::make_unique<FileType>(*this); }
-
-            ~FileType() override = default;
     };
 }
 #endif 

@@ -48,7 +48,7 @@ namespace LynxTypes {
 
             [[nodiscard]] AccessModifierType getAccessType() { return accessType; }
         
-            std::unique_ptr<FieldType> clone() const {
+            [[nodiscard]] std::unique_ptr<FieldType> clone() const {
                 return std::make_unique<FieldType>(
                     accessType,
                     name, 

@@ -29,17 +29,12 @@
 
 namespace LynxTypes {
 
-    constexpr unsigned SHORT_BIT_WIDTH  = 16;
-    constexpr unsigned INT_BIT_WIDTH   = 32;
-    constexpr unsigned LONG_BIT_WIDTH  = 64;
-
-
     class BuiltInType : public BaseType {
-
 
         public: 
 
             explicit BuiltInType(AstContext* astContext) : BaseType(astContext) {}
+            ~BuiltInType() override = default;
 
             bool isBuiltInType() const  noexcept override { return true; }
 
@@ -72,8 +67,6 @@ namespace LynxTypes {
                 }
                 return false;
             }
-
-            ~BuiltInType() override = default;
     };
     
 }

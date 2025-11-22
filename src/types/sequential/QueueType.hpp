@@ -50,6 +50,7 @@ namespace LynxTypes {
         public:
 
             explicit QueueType(AstContext* context) : SequentialType(context) {}
+            ~QueueType() override = default;
 
             DataType getTypeTag() const override { return DataType::QUEUE; }
 
@@ -80,8 +81,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~QueueType() override = default;
     };
 }
 

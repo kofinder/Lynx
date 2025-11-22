@@ -49,6 +49,7 @@ namespace LynxTypes {
         public:
 
             explicit StackType(AstContext* context) : SequentialType(context) {}
+            ~StackType() override = default;
 
             DataType getTypeTag() const override { return DataType::STACK; }
 
@@ -79,8 +80,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~StackType() override = default;
     };
 }
 

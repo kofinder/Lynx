@@ -53,6 +53,7 @@ namespace LynxTypes {
         public:
         
             explicit DateType(AstContext* context) : UserDefinedType(context) {}
+            ~DateType() override = default;
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -79,8 +80,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~DateType() override = default;
     };
 }
 #endif 

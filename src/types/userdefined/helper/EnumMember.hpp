@@ -6,15 +6,18 @@
 
 namespace LynxTypes {
 
+    struct EnumName { std::string name; };
+    struct EnumValue { std::string value; };
+
     class EnumMember {
 
         public:
 
             using AllowType = std::variant<std::monostate, int, char, std::string>;
 
-            int index = -1;
-
         private:
+
+            int index = -1;
 
             std::string name;
 

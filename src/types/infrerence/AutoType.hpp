@@ -53,6 +53,7 @@ namespace LynxTypes {
         public:
 
             explicit AutoType(AstContext* context) : BaseType(context) {};
+            ~AutoType() override = default;
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -93,8 +94,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~AutoType() override = default;
     };
 
 }

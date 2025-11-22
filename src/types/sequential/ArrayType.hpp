@@ -61,7 +61,8 @@ namespace LynxTypes {
         public:
 
             explicit ArrayType(AstContext* context) : SequentialType(context) {}
-            
+            ~ArrayType() override = default;
+
             bool isIndexable() const noexcept override { return true; }
 
             DataType getTypeTag() const override { return DataType::ARRAY; }
@@ -95,8 +96,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-    
-            ~ArrayType() override = default;
     };
 }
 

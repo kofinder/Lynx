@@ -52,6 +52,7 @@ namespace LynxTypes {
         public:
         
             explicit CharType(AstContext* context) : BuiltInType(context) {}
+            ~CharType() override = default;
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -88,8 +89,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-            
-            ~CharType() override = default;
     };
 }
 

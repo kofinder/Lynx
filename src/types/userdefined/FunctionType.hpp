@@ -18,6 +18,7 @@ namespace LynxTypes {
         public:
         
             explicit FunctionType(AstContext* context) : UserDefinedType(context) {}
+            ~FunctionType() override = default;
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -42,8 +43,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~FunctionType() override = default;
     };
 
 }

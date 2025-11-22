@@ -104,6 +104,7 @@ namespace LynxTypes {
                 AstContext* context, 
                 std::string interfaceName
             ) : UserDefinedType(context), interfaceName(std::move(interfaceName))  {}
+            ~InterfaceType() override = default;
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -158,8 +159,6 @@ namespace LynxTypes {
             uint64_t getDebugSizeInBits() const override;
             uint32_t getDebugAlignInBits() const override;
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~InterfaceType() override = default;
     };
 
 }

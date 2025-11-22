@@ -15,14 +15,17 @@ namespace LynxAst {
         }
     
         auto& registry = astContext->getMethodTypeRegistry();
-        if (!registry.hasMethod(typeName, methodName)) {
+        const TypeName type{typeName};
+        const MethodName method{methodName};
+    
+        if (!registry.hasMethod(type, method)) {
             std::string msg = "Runtime Error: Static method '" + methodName + "' does not exist on type '" + typeName + "'.";
             throw std::runtime_error(msg);
         }
 
-        if (!registry.validateMethodCall(typeName, methodName, arguments->size())) {
+        if (!registry.validateMethodCall(type, method, arguments->size())) {
             std::string msg = "Runtime Error: Static method '" + methodName + "' on type '" + typeName +
-                                "' expects " + std::to_string(registry.getExpectedParamCount(typeName, methodName)) +
+                                "' expects " + std::to_string(registry.getExpectedParamCount(type, method)) +
                                 " arguments, but " + std::to_string(arguments->size()) + " were provided.";
             throw std::runtime_error(msg);
         }

@@ -9,7 +9,7 @@ namespace LynxTypes {
 
     using namespace LynxConstants;
 
-    enum MethodKind { CONSTRUCTOR, METHOD };
+    enum class MethodKind : std::uint8_t { CONSTRUCTOR, METHOD };
 
     struct ResolvedCall { std::vector<llvm::Type*> argTypes; std::string managledName; };
 
@@ -66,14 +66,14 @@ namespace LynxTypes {
 
             [[nodiscard]] AccessModifierType getAccessType() { return accessType; }
 
-            std::vector<BaseType*> getParameterRawTypes() const {
+            [[nodiscard]] std::vector<BaseType*> getParameterRawTypes() const {
                 std::vector<BaseType*> result;
                 result.reserve(parameterTypes.size());
-                for (const auto& p : parameterTypes) result.push_back(p.get());
+                for (const auto& param : parameterTypes) result.push_back(param.get());
                 return result;
             }
 
-            std::unique_ptr<MethodType> clone() const {
+            [[nodiscard]] std::unique_ptr<MethodType> clone() const {
 
                 auto clonePtr = [](const std::unique_ptr<BaseType>& ptr) { return ptr ? ptr->clone() : nullptr; };
                 auto clonedReturnType = clonePtr(returnType);

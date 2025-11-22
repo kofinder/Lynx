@@ -90,6 +90,7 @@ namespace LynxTypes {
                 AstContext* context, 
                 std::string name
             ) : UserDefinedType(context), mixinName(std::move(name))  {}
+            ~MixinType() override = default;
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -149,9 +150,6 @@ namespace LynxTypes {
             uint64_t getDebugSizeInBits() const override;
             uint32_t getDebugAlignInBits() const override;
             llvm::DINode::DIFlags getDIFlags() const override;
-
-
-            ~MixinType() override = default;
     };
 
 }

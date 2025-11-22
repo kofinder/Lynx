@@ -38,6 +38,7 @@ namespace LynxTypes {
         public:
 
             explicit ReferenceType(AstContext* context) : WrapperType(context) {};
+            ~ReferenceType() override = default;
 
             DataType getTypeTag() const override { return DataType::REFERENCE; }
 
@@ -64,8 +65,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~ReferenceType() override = default;
     };
 }
 

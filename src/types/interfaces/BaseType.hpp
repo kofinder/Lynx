@@ -35,6 +35,7 @@
 #include <constants/LValueType.hpp>
 #include <constants/DataType.hpp>
 #include <constants/OperatorType.hpp>
+#include <constants/MagicNumericConstants.hpp>
 #include <constants/metadata/MetadataTypeConstants.hpp>
 
 namespace LynxContext {
@@ -67,8 +68,6 @@ namespace LynxTypes {
             mutable llvm::Type* cachedLLVMType = nullptr;
 
             mutable TypeMethodResolver* resolver = nullptr;  // NOLINT(cppcoreguidelines-owning-memory)
-
-            // mutable TypeMethodResolver* resolver; // NOLINT(cppcoreguidelines-owning-memory)
 
         protected:
 
@@ -117,6 +116,9 @@ namespace LynxTypes {
              * @param context Pointer to the AstContext associated with this type.
             */
             BaseType(AstContext* context) : astContext(context), cachedLLVMType(nullptr), resolver(nullptr) {}
+            
+            virtual ~BaseType();
+
 
             /**
              * @brief Set or update the AST context for this type.
@@ -339,7 +341,7 @@ namespace LynxTypes {
              * @param rhs The value to store.
              * @return Resulting LLVM instruction.
             */
-            virtual llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) = 0;
+            virtual llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) = 0;    
 
             /**
              * @brief Returns the human-readable name of this type for debugging metadata.
@@ -399,9 +401,6 @@ namespace LynxTypes {
              * @return A unique pointer to a new copy of the derived type.
              */
             virtual std::unique_ptr<BaseType> clone() const = 0;
-
-            /// @brief Virtual destructor for proper cleanup of derived types.
-            virtual ~BaseType();
     };
 }
 

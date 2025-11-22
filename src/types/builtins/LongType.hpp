@@ -46,6 +46,7 @@ namespace LynxTypes {
         public:
 
             explicit LongType(AstContext* context) : BuiltInType(context) {}
+            ~LongType() override = default;
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -80,8 +81,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~LongType() override = default;
     };
 }
 

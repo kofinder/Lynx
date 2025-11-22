@@ -50,6 +50,7 @@ namespace LynxTypes {
         public:
 
             explicit CollectionType(AstContext* context) : BaseType(context) {}
+            ~CollectionType() override = default;
 
             /**
              * @brief Returns false since collections are not built-in scalar types.

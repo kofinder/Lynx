@@ -48,7 +48,7 @@ namespace LynxTypes {
         public:
 
             void registerMethod(const std::string& typeName, const std::string_view& methodName, size_t paramCount = 0) {
-                registry[typeName][methodName] = MethodInfo{true, paramCount};
+                registry[typeName][methodName] = MethodInfo{.isStaticMethod = true, .paramCount = paramCount};
             }
 
             void registerMethods(const std::string& typeName, const std::unordered_map<std::string_view, int>& methods) {
@@ -57,13 +57,13 @@ namespace LynxTypes {
                 }
             }
 
-            bool hasMethod(const TypeName type, const MethodName method) const {
+            bool hasMethod(const TypeName& type, const MethodName& method) const {
                 auto typeIt = registry.find(type.value);
                 if (typeIt == registry.end()) return false;
-                return typeIt->second.find(method.value) != typeIt->second.end();
+                return typeIt->second.contains(method.value);
             }    
             
-            bool validateMethodCall(const TypeName type, const MethodName method, size_t argCount) const {
+            bool validateMethodCall(const TypeName& type, const MethodName& method, size_t argCount) const {
                 auto typeIt = registry.find(type.value);
                 if (typeIt == registry.end()) return false;
                 auto methodIt = typeIt->second.find(method.value);
@@ -71,7 +71,7 @@ namespace LynxTypes {
                 return methodIt->second.paramCount == argCount;
             }
             
-            size_t getExpectedParamCount(const TypeName type, const MethodName method) const {
+            size_t getExpectedParamCount(const TypeName& type, const MethodName& method) const {
                 auto typeIt = registry.find(type.value);
                 if (typeIt == registry.end()) return 0;
                 auto methodIt = typeIt->second.find(method.value);

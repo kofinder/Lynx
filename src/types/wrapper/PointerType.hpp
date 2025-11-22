@@ -37,6 +37,7 @@ namespace LynxTypes {
         public:
 
             explicit PointerType(AstContext* context) : WrapperType(context) {};
+            ~PointerType() override = default;
 
             DataType getTypeTag() const override { return DataType::POINTER; }
 
@@ -63,8 +64,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~PointerType() override = default;
     };
 }
 

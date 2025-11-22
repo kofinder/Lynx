@@ -24,8 +24,9 @@
 namespace LynxTypes::DFSUtils {
 
 
-    enum class VisitState { UNVISITED, VISITING, VISITED };
+    enum class VisitState : std::uint8_t { UNVISITED, VISITING, VISITED };
 
+    // NOLINTNEXTLINE(misc-no-recursion)
     inline bool topoDFS(
         const MixinType* mixin,
         std::unordered_map<const MixinType*, VisitState>& state,

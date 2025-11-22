@@ -33,13 +33,13 @@
 namespace LynxTypes {
 
     template<typename T>
-    concept MethodCapable = requires(T& t, llvm::Value* inst, llvm::Value* instPtr, const std::string& name, const std::vector<llvm::Value*>& args) {
-        { t.emitMethodCall(inst, instPtr, name, args) } -> std::convertible_to<llvm::Value*>;
+    concept MethodCapable = requires(T& instance, llvm::Value* inst, llvm::Value* instPtr, const std::string& name, const std::vector<llvm::Value*>& args) {
+        { instance.emitMethodCall(inst, instPtr, name, args) } -> std::convertible_to<llvm::Value*>;
     };
 
     template<MethodCapable T>
-    constexpr llvm::Value* codegenMethod(T& type, llvm::Value* inst, llvm::Value* instPtr, const std::string& methodName, const std::vector<llvm::Value*>& args) noexcept {
-        return type.emitMethodCall(inst, instPtr, methodName, args);
+    constexpr llvm::Value* codegenMethod(T& instance, llvm::Value* inst, llvm::Value* instPtr, const std::string& methodName, const std::vector<llvm::Value*>& args) noexcept {
+        return instance.emitMethodCall(inst, instPtr, methodName, args);
     }
 
 }
