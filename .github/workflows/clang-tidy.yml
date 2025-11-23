@@ -8,6 +8,7 @@ on:
 jobs:
   tidy:
     runs-on: ubuntu-latest
+    
     steps:
       # Checkout the code including submodules
       - name: Checkout code with submodules
