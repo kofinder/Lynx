@@ -15,6 +15,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Install basic utilities before LLVM
+      - name: Install basic utilities
+        run: |
+          sudo apt update
+          sudo apt install -y tar wget curl xz-utils
+          
       # Install LLVM 21 using llvm.sh
       - name: Install LLVM 21
         run: |
