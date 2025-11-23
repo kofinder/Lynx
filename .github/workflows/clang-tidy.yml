@@ -2,6 +2,8 @@ name: clang-tidy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - '**.cpp'
       - '**.hpp'
