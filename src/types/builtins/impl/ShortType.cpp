@@ -59,7 +59,7 @@ namespace LynxTypes {
     TypeMethodResolver* ShortType::getOrCreateResolver() const { return ShortMethodResolver::create(); }
 
     llvm::Value* ShortType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
-        if (!resolver) resolver = getOrCreateResolver();
+        auto* resolver = getOrCreateResolver();
         return resolver->resolveMethod(*getContext(), instance, instancePtr, methodName, args);
     }
 

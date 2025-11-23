@@ -32,14 +32,6 @@ namespace LynxTypes {
         return emptyRegistry;
     }   
 
-    llvm::Value* BaseType::emitMethodCall(llvm::Value* /*instance*/, llvm::Value* /*instance*/, const std::string& /*instance*/, const std::vector<llvm::Value*>& /*instance*/) {
-        return nullptr;
-    }
-
-    void BaseType::setResolver(TypeMethodResolver* newResolver) const { resolver = newResolver; }
-
-    TypeMethodResolver* BaseType::getOrCreateResolver() const { return resolver; }
-
     BaseType::~BaseType() {
         delete resolver;
         resolver = nullptr;        

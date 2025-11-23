@@ -19,7 +19,7 @@ HEADER_FILTER='^src/(types|logger|exceptions)/'
 # prefer the run-clang-tidy.py helper if available
 if command -v run-clang-tidy.py >/dev/null 2>&1; then
   echo "Using run-clang-tidy.py (parallel)"
-  run-clang-tidy.py -p "${BUILD_DIR}" -j "${THREADS}" --header-filter="${HEADER_FILTER}" --exclude "external/*"
+  run-clang-tidy.py -p "${BUILD_DIR}" -j "${THREADS}" --header-filter="${HEADER_FILTER}" -system-headers --exclude "external/*"
 else
   echo "run-clang-tidy.py not found — falling back to parallel clang-tidy via xargs"
   # Only scan your module files

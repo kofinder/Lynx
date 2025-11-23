@@ -19,7 +19,7 @@ namespace LynxTypes {
     concept FloatStrategyType = std::is_floating_point_v<T>;
 
     struct StrategyContext {
-        const AstContext& ctx;
+        const AstContext& ctx; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
         llvm::Value* instance;
         llvm::Value* instancePtr;
         std::vector<llvm::Value*> args;

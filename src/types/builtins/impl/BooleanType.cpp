@@ -53,11 +53,11 @@ namespace LynxTypes {
     }
 
     void BooleanType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
-
+    
     TypeMethodResolver* BooleanType::getOrCreateResolver() const { return nullptr; }
 
     llvm::Value* BooleanType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
-        if (resolver == nullptr) resolver = getOrCreateResolver();
+        auto* resolver = getOrCreateResolver();
         return resolver->resolveMethod(*getContext(), instance, instancePtr, methodName, args);
     }
 

@@ -56,14 +56,16 @@ namespace LynxTypes {
     
     void IntegerType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
-    TypeMethodResolver* IntegerType::getOrCreateResolver() const { return IntMethodResolver::create(); }
-
+    TypeMethodResolver* IntegerType::getOrCreateResolver() const { 
+        if (!getResolver()) setResolver(IntMethodResolver::create());
+        return getResolver();
+    }
+    
     llvm::Value* IntegerType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
-        if (!resolver) resolver = IntMethodResolver::create();
+        auto* resolver = getOrCreateResolver();
         return resolver->resolveMethod(*getContext(), instance, instancePtr, methodName, args);
     }
 
-    
     bool IntegerType::equals(const BaseType* other) const {
         const auto* otherInteger = dynamic_cast<const IntegerType*>(other);
         if (!otherInteger) return false;

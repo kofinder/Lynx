@@ -12,11 +12,51 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install LLVM/clang
+
+      - name: Install LLVM/Clang
         run: |
           sudo apt update
-          sudo apt install -y clang clang-tidy
+          sudo apt install -y wget gnupg lsb-release software-properties-common
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+          sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-21 main"
+          sudo apt update
+          sudo apt install -y clang-21 clang-tidy-21 cmake ninja-build
+          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-21 100
+          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-21 100
+          sudo update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-21 100
+
       - name: Configure
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
       - name: Run clang-tidy
-        run: ./tools/run-clang-tidy.sh 4
+        run: ./tools/run-clang-tidy.sh 4 | tee build/clang-tidy.log
+
+      - name: Upload clang-tidy log
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: clang-tidy-log
+          path: build/clang-tidy.log
+
+# name: clang-tidy
+
+# on:
+#   pull_request:
+#     paths:
+#       - '**.cpp'
+#       - '**.hpp'
+#       - 'src/**'
+
+# jobs:
+#   tidy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Install LLVM/clang
+#         run: |
+#           sudo apt update
+#           sudo apt install -y clang clang-tidy
+#       - name: Configure
+#         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+#       - name: Run clang-tidy
+#         run: ./tools/run-clang-tidy.sh 4

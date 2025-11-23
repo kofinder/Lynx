@@ -59,6 +59,16 @@ namespace LynxTypes {
             bool supportsAssignment() const noexcept override { return true; }
 
             /**
+             * @brief Returns the method resolver for this type, creating it if necessary.
+             *
+             * This is used to lazily initialize and retrieve the TypeMethodResolver
+             * associated with this type for method dispatch or codegen purposes.
+             *
+             * @return Pointer to a TypeMethodResolver instance.
+            */
+            virtual TypeMethodResolver* getOrCreateResolver() const = 0;
+
+            /**
              * @brief Not implemented for this overload; returns nullptr.
             */
             llvm::Value* createValue(std::vector<llvm::Value*> /*unused*/) const override { return nullptr; }

@@ -73,6 +73,8 @@ namespace LynxTypes {
             llvm::Value* createValue(LValueType value) const override;
             
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
+
+            TypeMethodResolver* getOrCreateResolver() const override;
             
             bool equals(const BaseType* other) const override;
 

@@ -66,7 +66,7 @@ namespace LynxLogger {
     } 
     
     #define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)  
-    #if defined(__clang_analyzer__)
+    #if defined(__clang_tidy__)
         #define LOG_DEBUG(msg, ...) (void)0
         #define LOG_INFO(msg, ...)  (void)0
         #define LOG_WARN(msg, ...)  (void)0

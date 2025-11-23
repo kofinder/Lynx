@@ -10,33 +10,33 @@ namespace LynxTypes {
 
     llvm::Type* ArrayType::computeLLVMType() const {
 
-        auto* elementType = getElementType();
-        if(!elementType) return nullptr;
+        auto* elemType = getElementType();
+        if (!elemType) return nullptr;
     
-        auto* elemLLVMType = elementType->getLLVMType();
-        auto numElements = getNumElements();
-        if (!elemLLVMType || numElements <= 0)  return nullptr;
-        
+        auto* elemLLVMType = elemType->getLLVMType();
+        const auto numOfElem = getNumElements();
+        if (!elemLLVMType || numOfElem <= 0) return nullptr;
+    
         auto& context = getLLVMContext();
         if (llvm::isa<llvm::StructType>(elemLLVMType)) {
             auto* innerStruct = llvm::StructType::getTypeByName(context, MetadataTypeConstants::innerArray);
             if (!innerStruct) innerStruct = llvm::StructType::create(context, elemLLVMType, MetadataTypeConstants::innerArray);
     
-            auto* outerArrayTy = llvm::ArrayType::get(innerStruct, numElements);
+            auto* outerArrayTy = llvm::ArrayType::get(innerStruct, numOfElem);
             auto* outerStruct = llvm::StructType::getTypeByName(context, MetadataTypeConstants::outerArray);
-            if (!outerStruct)  outerStruct = llvm::StructType::create(context, outerArrayTy, MetadataTypeConstants::outerArray);
+            if (!outerStruct) outerStruct = llvm::StructType::create(context, outerArrayTy, MetadataTypeConstants::outerArray);
     
-            cachedLLVMType = outerStruct;
-            return cachedLLVMType;
+            setCachedLLVMType(outerStruct);  // ✅ use setter
+            return outerStruct;
         }
     
-        auto* arrayType = llvm::ArrayType::get(elemLLVMType, numElements);
+        auto* arrayType = llvm::ArrayType::get(elemLLVMType, numOfElem);
         auto* arrayStruct = llvm::StructType::getTypeByName(context, MetadataTypeConstants::simpleArray);
         if (!arrayStruct) arrayStruct = llvm::StructType::create(context, arrayType, MetadataTypeConstants::simpleArray);
     
-        cachedLLVMType = arrayStruct;
-        return cachedLLVMType;
-    }
+        setCachedLLVMType(arrayStruct);  // ✅ use setter
+        return arrayStruct;
+    }    
 
     llvm::Value* ArrayType::createConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const {
          auto* arrayTy = llvm::cast<llvm::ArrayType>(structTy->getElementType(0)); 
@@ -60,17 +60,17 @@ namespace LynxTypes {
 
     llvm::Value* ArrayType::createNonConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const {
         auto& builder = getBuilder();
-        auto* undefStruct = llvm::UndefValue::get(structTy); 
-        auto* undefArray = builder.CreateExtractValue(undefStruct, {0}); 
-        for (unsigned i = 0; i < values.size(); ++i) { 
-            undefArray = builder.CreateInsertValue(undefArray, values[i], {i}); 
-        } 
-        return builder.CreateInsertValue(undefStruct, undefArray, {0});
+        auto* arrayTy = llvm::cast<llvm::ArrayType>(structTy->getElementType(0));
+        llvm::Value* array = llvm::UndefValue::get(arrayTy);
+        for (unsigned i = 0; i < values.size(); ++i) {
+            array = builder.CreateInsertValue(array, values[i], { i });
+        }
+        return builder.CreateInsertValue(llvm::UndefValue::get(structTy), array, {0});
     }
 
     llvm::Value* ArrayType::createValue(const std::vector<llvm::Value*> values) const {
         auto* computedType = computeLLVMType();
-        
+        if (!computedType) return nullptr;
         if (values.empty()) return llvm::UndefValue::get(computedType);
     
         const bool allConstants = std::ranges::all_of(values, [](llvm::Value* value) {
@@ -134,8 +134,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* ArrayType::getElementPointer(llvm::Value* arrayAlloca, int outerIndex, int innerIndex) const {
-        auto& builder = getContext()->getBuilder();
-        auto& context = getContext()->getLLVMContext();
+        auto& builder = getBuilder();
+        auto& context = getLLVMContext();
     
         auto* outerStructTy = computeLLVMType();
         if (!llvm::isa<llvm::StructType>(outerStructTy)) return nullptr;
@@ -160,14 +160,13 @@ namespace LynxTypes {
     
         return outerElemPtr;
     }
-    
 
     bool ArrayType::equals(const BaseType* other) const {
         if (other->getTypeTag() != DataType::ARRAY) return false;
         const auto* otherArray = dynamic_cast<const ArrayType*>(other);
-        const size_t numEle =  getNumElements();
+        const auto numOfElem =  getNumElements();
         auto* eleType = getElementType();
-        return otherArray && numEle == otherArray->getNumElements() && eleType->equals(otherArray->getElementType());
+        return otherArray && numOfElem == otherArray->getNumElements() && eleType->equals(otherArray->getElementType());
     }
 
     const BaseType* ArrayType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }

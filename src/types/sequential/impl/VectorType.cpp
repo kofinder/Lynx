@@ -8,28 +8,31 @@ namespace LynxTypes {
 
     llvm::Type* VectorType::computeLLVMType() const {
         auto* elementType = getElementType();
-        if(!elementType) return nullptr;
+        if (!elementType) return nullptr;
     
         auto* elemLLVMType = elementType->getLLVMType();
         auto numElements = getNumElements();
-        if (!elemLLVMType || numElements <= 0)  return nullptr;
-        
+        if (!elemLLVMType || numElements <= 0) return nullptr;
+    
         auto& context = getLLVMContext();
+    
         if (llvm::isa<llvm::VectorType>(elemLLVMType) || llvm::isa<llvm::StructType>(elemLLVMType)) {
             const auto nestedName = getSafeStructName();
             auto* existing = llvm::StructType::getTypeByName(context, nestedName);
             if (existing) {
-                cachedLLVMType = existing;
+                setCachedLLVMType(existing);   // ✅ use setter
                 return existing;
             }
             const std::vector<llvm::Type*> members(numElements, elemLLVMType);
-            cachedLLVMType = llvm::StructType::create(context, members, nestedName);
-            return cachedLLVMType;
+            auto* newStruct = llvm::StructType::create(context, members, nestedName);
+            setCachedLLVMType(newStruct);      // ✅ use setter
+            return newStruct;
         }
-        
+    
         const auto eleSize = llvm::ElementCount::getFixed(numElements);
-        cachedLLVMType = llvm::VectorType::get(elemLLVMType, eleSize);
-        return cachedLLVMType;
+        auto* vectorType = llvm::VectorType::get(elemLLVMType, eleSize);
+        setCachedLLVMType(vectorType);        // ✅ use setter
+        return vectorType;
     }    
     
     llvm::Type* VectorType::getLLVMPointerType() const {

@@ -55,8 +55,7 @@ namespace LynxTypes {
     TypeMethodResolver* FloatType::getOrCreateResolver() const { return FloatMethodResolver::create(); }
 
     llvm::Value* FloatType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
-        LOG_ERROR("Emit Method Call Invocation.");
-        if (!resolver) resolver = getOrCreateResolver();
+        auto* resolver = getOrCreateResolver();
         return resolver->resolveMethod(*getContext(), instance, instancePtr, methodName, args);
     }
 

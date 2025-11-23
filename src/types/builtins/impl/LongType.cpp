@@ -58,7 +58,7 @@ namespace LynxTypes {
     TypeMethodResolver* LongType::getOrCreateResolver() const { return LongMethodResolver::create(); }
 
     llvm::Value* LongType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
-        if (!resolver)  resolver = getOrCreateResolver();
+        auto* resolver = getOrCreateResolver();
         return resolver->resolveMethod(*getContext(), instance, instancePtr, methodName, args);
     }
 

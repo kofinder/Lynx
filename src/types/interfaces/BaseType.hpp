@@ -54,13 +54,11 @@ namespace LynxTypes {
 
         private:
 
+            AstContext* astContext;   
+
             bool constFlag = false;
 
             bool staticFlag = false;
-
-            AstContext* astContext;   
-
-        protected:
 
             mutable llvm::Type* cachedLLVMType = nullptr; // NOLINT(cppcoreguidelines-owning-memory)
             
@@ -75,9 +73,33 @@ namespace LynxTypes {
             virtual llvm::Type* computeLLVMType() const = 0;
 
             /**
+             * @brief Returns the cached LLVM type, if previously computed.
+             * @return Pointer to cached llvm::Type, or nullptr if not set.
+            */
+            llvm::Type* getCachedLLVMType() const { return cachedLLVMType; }
+
+            /**
+             * @brief Sets the cached LLVM type for this object.
+             * @param cacheType Pointer to the llvm::Type to cache.
+            */
+            void setCachedLLVMType(llvm::Type* cacheType) const { cachedLLVMType = cacheType; }
+
+            /**
+             * @brief Creates a method resolver for this type (if it supports methods).
+             * @return A unique pointer to the method resolver, or nullptr if not applicable.
+            */
+            TypeMethodResolver* getResolver() const { return resolver; }
+
+            /**
+            * @brief Sets or replaces the resolver for this type.
+            * @param newResolver Pointer to a resolver to associate with this type.
+            */
+            void setResolver(TypeMethodResolver* newResolver) const { resolver = newResolver; }
+        
+            /**
              * @brief Returns the LLVMContext associated with this type.
              * @return Reference to llvm::LLVMContext.
-             */
+            */
             llvm::LLVMContext& getLLVMContext() const noexcept;
 
             /**
@@ -193,18 +215,6 @@ namespace LynxTypes {
             virtual void accept(TypeVisitor& visitor) {}
 
             /**
-             * @brief Creates a method resolver for this type (if it supports methods).
-             * @return A unique pointer to the method resolver, or nullptr if not applicable.
-            */
-            virtual TypeMethodResolver* getOrCreateResolver() const;
-
-            /**
-             * @brief Sets or replaces the resolver for this type.
-             * @param newResolver Pointer to a resolver to associate with this type.
-             */
-            virtual void setResolver(TypeMethodResolver* newResolver) const;
-
-            /**
              * @brief Returns the registry of instance methods supported by this type.
              *
              * This is the counterpart to the static method registry and defines methods
@@ -233,7 +243,12 @@ namespace LynxTypes {
              * @param args A list of LLVM IR values representing the method arguments.
              * @return An LLVM Value representing the result of the static method call.
             */
-            virtual llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args);
+            virtual llvm::Value* emitMethodCall(
+                llvm::Value* instance, 
+                llvm::Value* instancePtr, 
+                const std::string& methodName, 
+                const std::vector<llvm::Value*>& args
+            ) { return nullptr; }
             
             /**
              * @brief Returns whether the type is const-qualified.

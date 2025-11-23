@@ -67,8 +67,39 @@ add_git_submodule(external/fmt)
 include(Docs)
 
 # ===============================
+# Link Time Optimization (LTO)
+# ===============================
+include(LTO) 
+if(ENABLE_LTO)
+    set(CMAKE_LINKER /usr/local/llvm-21/bin/clang++)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld")
+endif()
+
+# ===============================
+# Sanitizers
+# ===============================
+include(Sanitizers)
+if(ENABLE_SANITIZER_ADDRESS OR ENABLE_SANITIZER_UNDEFINED)
+    add_sanitizer_flags()
+endif()
+
+# ===============================
+# Compiler Warnings
+# ===============================
+include(Warnings)
+if(ENABLE_WARNINGS)
+    target_set_warnings(${LYNX_EXECUTABLE} ${ENABLE_WARNINGS} ${ENABLE_WARNINGS_AS_ERRORS})
+endif()
+
+
+# ===============================
 # Clang-Tidy
 # ===============================
+include(ClangTidy)
+if(ENABLE_CLANG_TIDY)
+    enable_clang_tidy_for_target(${LYNX_EXECUTABLE})
+endif()
+
 # if(ENABLE_CLANG_TIDY)
     # include(ClangTidy)
     # enable_clang_tidy_for_target(${LYNX_EXECUTABLE})
@@ -94,28 +125,3 @@ include(Docs)
     # enable_clang_tidy_for_target(LynxPlatform) 
     # enable_clang_tidy_for_target(LynxCollection)
 # endif()
-
-# ===============================
-# Link Time Optimization (LTO)
-# ===============================
-include(LTO) 
-if(ENABLE_LTO)
-    set(CMAKE_LINKER /usr/local/llvm-21/bin/clang++)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld")
-endif()
-
-# ===============================
-# Sanitizers
-# ===============================
-include(Sanitizers)
-if(ENABLE_SANITIZER_ADDRESS OR ENABLE_SANITIZER_UNDEFINED)
-    add_sanitizer_flags()
-endif()
-
-# ===============================
-# Compiler Warnings
-# ===============================
-include(Warnings)
-if(ENABLE_WARNINGS)
-    target_set_warnings(${LYNX_EXECUTABLE} ${ENABLE_WARNINGS} ${ENABLE_WARNINGS_AS_ERRORS})
-endif()

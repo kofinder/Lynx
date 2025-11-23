@@ -76,8 +76,7 @@ FormatStyle: file
 SystemHeaders: false
 
 # Additional include path (useful if you have an external/ folder)
-ExtraArgs: ["-isystem", "external"]
-
+ExtraArgs: []
 
 # ===============================================
 # Per-check configuration
