@@ -64,7 +64,7 @@ jobs:
       
       # Install Doxygen required libraries
       - name: Install Doxygen
-        run: sudo apt install -y doxygen
+        run: sudo apt install -y doxygen graphviz
 
       # Configure the project with CMake
       - name: Configure project with CMake
