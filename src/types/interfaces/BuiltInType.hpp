@@ -34,7 +34,13 @@ namespace LynxTypes {
         public: 
 
             explicit BuiltInType(AstContext* astContext) : BaseType(astContext) {}
+
+            // Rule of five: allow default destructor, delete others
             ~BuiltInType() override = default;
+            BuiltInType(const BuiltInType&) = delete;
+            BuiltInType& operator=(const BuiltInType&) = delete;
+            BuiltInType(BuiltInType&&) = delete;
+            BuiltInType& operator=(BuiltInType&&) = delete;
 
             bool isBuiltInType() const  noexcept override { return true; }
 

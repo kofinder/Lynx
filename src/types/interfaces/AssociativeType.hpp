@@ -43,7 +43,13 @@ namespace LynxTypes {
              * @param value Shared pointer to the value type.
              */
             explicit AssociativeType(AstContext* context) : CollectionType(context) {}
+            
+            // Rule of five: allow default destructor, delete others
             ~AssociativeType() override = default;
+            AssociativeType(const AssociativeType&) = delete;
+            AssociativeType& operator=(const AssociativeType&) = delete;
+            AssociativeType(AssociativeType&&) = delete;
+            AssociativeType& operator=(AssociativeType&&) = delete;
 
             /**
              * @brief Returns true as this collection is associative by definition.

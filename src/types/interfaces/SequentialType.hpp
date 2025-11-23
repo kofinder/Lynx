@@ -41,7 +41,13 @@ namespace LynxTypes {
              * @param type Shared pointer to the element type.
             */
             explicit SequentialType(AstContext* context) : CollectionType(context){};
+            
+            // Rule of five: allow default destructor, delete others
             ~SequentialType() override = default;
+            SequentialType(const SequentialType&) = delete;
+            SequentialType& operator=(const SequentialType&) = delete;
+            SequentialType(SequentialType&&) = delete;
+            SequentialType& operator=(SequentialType&&) = delete;
 
             /**
              * @brief Returns true as this collection is sequential by definition.

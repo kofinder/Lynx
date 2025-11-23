@@ -38,10 +38,7 @@
 #include <constants/MagicNumericConstants.hpp>
 #include <constants/metadata/MetadataTypeConstants.hpp>
 
-namespace LynxContext {
-    class AstContext;
-}
-
+namespace LynxContext { class AstContext; }
 
 namespace LynxTypes {
 
@@ -55,7 +52,7 @@ namespace LynxTypes {
 
     class BaseType {
 
-        protected:
+        private:
 
             bool constFlag = false;
 
@@ -93,7 +90,7 @@ namespace LynxTypes {
              * @param newIsStatic Whether the new type should be static-qualified.
              * @return Pointer to a new BaseType instance with the requested static qualifier.
             */
-            virtual const BaseType* createWithStatic(bool /*unused*/) const { return this; }
+            virtual const BaseType* createWithStatic(bool newIsStatic) const = 0;
 
             /**
              * @brief Checks whether the given LLVM value pointer is valid (non-null).
@@ -111,9 +108,22 @@ namespace LynxTypes {
             /**
              * @brief Constructor initializing the AST context.
              * @param context Pointer to the AstContext associated with this type.
+             * Use explicit constructor for RAII
             */
             explicit BaseType(AstContext* context) : astContext(context) {}
+
+            // Rule of five: allow default destructor, delete others
             virtual ~BaseType();
+            BaseType(const BaseType&) = delete;
+            BaseType& operator=(const BaseType&) = delete;
+            BaseType(BaseType&&) = delete;
+            BaseType& operator=(BaseType&&) = delete;
+
+             /**
+             * @brief Clones the current type polymorphically.
+             * @return A unique pointer to a new copy of the derived type.
+             */
+            virtual std::unique_ptr<BaseType> clone() const = 0;
 
             /**
              * @brief Set or update the AST context for this type.
@@ -127,6 +137,30 @@ namespace LynxTypes {
             */
             AstContext* getContext() const noexcept { return astContext; }
 
+            /**
+             * @brief Returns true if the type is const-qualified.
+             * @return True if const-qualified, false otherwise.
+            */
+            bool isConstFlag() const noexcept { return constFlag; }
+
+            /**
+             * @brief Sets or clears the const qualifier for this type.
+             * @param val True to mark as const, false to remove const.
+            */
+            void setConstFlag(bool val) noexcept { constFlag = val; }
+        
+            /**
+             * @brief Returns true if the type is static-qualified.
+             * @return True if static-qualified, false otherwise.
+            */
+            bool isStaticFlag() const noexcept { return staticFlag; }
+
+            /**
+             * @brief Sets or clears the static qualifier for this type.
+             * @param val True to mark as static, false to remove static.
+            */
+            void setStaticFlag(bool val) noexcept { staticFlag = val; }
+        
             /**
              * @brief Returns the LLVM type, computing it if not already cached.
             */
@@ -388,12 +422,6 @@ namespace LynxTypes {
              * @return A set of DWARF flags from `llvm::DINode::DIFlags`.
             */
             virtual llvm::DINode::DIFlags getDIFlags() const = 0;
-
-            /**
-             * @brief Clones the current type polymorphically.
-             * @return A unique pointer to a new copy of the derived type.
-             */
-            virtual std::unique_ptr<BaseType> clone() const = 0;
     };
 }
 

@@ -17,7 +17,7 @@
  * - ClassType, InterfaceType, EnumType, DateType, FunctionType
  *
  * **Design Notes:**
- * - Unlike BuiltInType or CollectionType, this represents higher-level, composite user abstractions.
+ * - Unlike UserDefinedType or CollectionType, this represents higher-level, composite user abstractions.
  * - Derived types must implement `clone()` and type-specific LLVM construction logic.
  *
  * @author: Ko Thein (Nathan Mratt)
@@ -39,7 +39,13 @@ namespace LynxTypes {
         public:
         
             explicit UserDefinedType(AstContext* context) : BaseType(context) {}
+            
+            // Rule of five: allow default destructor, delete others
             ~UserDefinedType() override = default;
+            UserDefinedType(const UserDefinedType&) = delete;
+            UserDefinedType& operator=(const UserDefinedType&) = delete;
+            UserDefinedType(UserDefinedType&&) = delete;
+            UserDefinedType& operator=(UserDefinedType&&) = delete;
 
             bool isUserDefinedType() const noexcept override { return true; }
 

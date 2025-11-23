@@ -42,7 +42,13 @@ namespace LynxTypes {
         public: 
 
             explicit WrapperType(AstContext* astContext) : BaseType(astContext) {}
+            
+            // Rule of five: allow default destructor, delete others
             ~WrapperType() override = default;
+            WrapperType(const WrapperType&) = delete;
+            WrapperType& operator=(const WrapperType&) = delete;
+            WrapperType(WrapperType&&) = delete;
+            WrapperType& operator=(WrapperType&&) = delete;
 
             bool isWrapperType() const noexcept override { return true; }
 

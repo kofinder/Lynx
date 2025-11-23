@@ -113,6 +113,8 @@ namespace LynxTypes::helper {
         auto* rhsVal = stg.args[0];
 
         auto& builder = stg.ctx.getBuilder();
+        
+        // NOLINTNEXTLINE(misc-const-correctness)
         llvm::Value* result = nullptr;
         if(isFloating) {
             switch (opr) {
