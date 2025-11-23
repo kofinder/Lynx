@@ -3,17 +3,20 @@ name: clang-tidy
 on:
   push:
     branches:
-      - master  # Trigger workflow on every push to main
+      - master  # Trigger workflow on every push to master
 
 jobs:
   tidy:
     runs-on: ubuntu-latest
     steps:
-      # Checkout the code
-      - name: Checkout code
+      # Checkout the code including submodules
+      - name: Checkout code with submodules
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Cache build and clang-tidy outputs for faster runs
+      # Cache build and clang-tidy outputs
       - name: Cache build and Clang-Tidy
         uses: actions/cache@v3
         with:
@@ -23,22 +26,48 @@ jobs:
           key: clang-tidy-${{ runner.os }}-${{ hashFiles('**/*.cpp', '**/*.hpp') }}
           restore-keys: clang-tidy-${{ runner.os }}-
 
-      # Install LLVM 21 prebuilt binaries
-      - name: Install LLVM 21 via APT
+      # Install required system tools first
+      - name: Install basic build tools
+        run: |
+          sudo apt update
+          sudo apt install -y tar wget curl xz-utils
+
+      # Install LLVM 21 using llvm.sh
+      - name: Install LLVM 21
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh 21
-          export PATH=/usr/lib/llvm-21/bin:$PATH
+
+      # Add LLVM 21 to PATH for all subsequent steps
+      - name: Add LLVM 21 to PATH
+        run: echo "/usr/lib/llvm-21/bin" >> $GITHUB_PATH
+
+      # Verify LLVM installation
+      - name: Verify LLVM 21
+        run: |
           clang --version
           clang-tidy --version
 
-
-      # Install CMake and Ninja
-      - name: Install CMake and Ninja
+      # Install CMake, Ninja, and other required libraries
+      - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y cmake ninja-build
+          sudo apt install -y cmake ninja-build \
+             libedit-dev libcurl4-openssl-dev libffi-dev zlib1g-dev \
+             libxml2-dev libtinfo-dev libzstd-dev \
+             libboost-system-dev libboost-filesystem-dev libboost-program-options-dev \
+             libgc-dev
+
+      # Install Boost required libraries
+      - name: Install Boost
+        run: |
+          sudo apt update
+          sudo apt install -y libboost-system-dev libboost-filesystem-dev libboost-program-options-dev
+      
+      # Install Doxygen required libraries
+      - name: Install Doxygen
+        run: sudo apt install -y doxygen graphviz
 
       # Configure the project with CMake
       - name: Configure project with CMake
@@ -47,7 +76,7 @@ jobs:
       # Run clang-tidy in parallel
       - name: Run clang-tidy (parallel)
         run: |
-          CPU_CORES=$(nproc)  # Get number of available cores
+          CPU_CORES=$(nproc)
           echo "Running clang-tidy on $CPU_CORES cores..."
           ./tools/run-clang-tidy.sh $CPU_CORES | tee build/clang-tidy.log
 
