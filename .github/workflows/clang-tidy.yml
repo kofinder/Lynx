@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Cache build and CMake
+      - name: Cache build and Clang-Tidy
         uses: actions/cache@v3
         with:
           path: |
@@ -23,10 +23,19 @@ jobs:
           key: clang-tidy-${{ runner.os }}-${{ hashFiles('**/*.cpp', '**/*.hpp') }}
           restore-keys: clang-tidy-${{ runner.os }}-
 
-      - name: Install Clang/LLVM
+      - name: Install LLVM 21 prebuilt
+        run: |
+          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-21.0.0/clang+llvm-21.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+          tar -xf clang+llvm-21.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+          sudo cp -r clang+llvm-21.0.0-x86_64-linux-gnu-ubuntu-20.04/* /usr/local/
+          export PATH=/usr/local/bin:$PATH
+          clang --version
+          clang-tidy --version
+
+      - name: Install CMake and Ninja
         run: |
           sudo apt update
-          sudo apt install -y clang clang-tidy cmake ninja-build
+          sudo apt install -y cmake ninja-build
 
       - name: Configure project with CMake
         run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
