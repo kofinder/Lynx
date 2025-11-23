@@ -36,15 +36,11 @@ namespace LynxTypes {
             return llvm::ConstantFP::get(context, llvm::APFloat(doubleValue));
         }
 
-        LOG_ERROR("Unsupported value type!");
+        std::cerr << "Unsupported value type!\n";
         return nullptr;
     }
 
-    llvm::Value* DoubleType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        if (!isValid(lhs) || !isValid(rhs)) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }    
+    llvm::Value* DoubleType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {  
         return getBuilder().CreateStore(rhs, lhs);
     }
 

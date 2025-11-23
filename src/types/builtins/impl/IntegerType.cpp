@@ -41,16 +41,11 @@ namespace LynxTypes {
             return llvm::ConstantInt::get(context, llvm::APInt(BIT_WIDTH_INT, intValue));
         }
 
-        LOG_ERROR("Unsupported value type");
+        std::cerr << "Unsupported value type!\n";
         return nullptr;
     }
  
     llvm::Value* IntegerType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        if (!isValid(lhs) || !isValid(rhs)) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }
-
         return getBuilder().CreateStore(rhs, lhs);
     }
     

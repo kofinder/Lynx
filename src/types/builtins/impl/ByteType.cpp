@@ -46,15 +46,11 @@ namespace LynxTypes {
             return llvm::ConstantStruct::get(structTy, {builder.getInt8(byteValue)});
         }
 
-        LOG_ERROR("Unsupported value type!");
+        std::cerr << "Unsupported value type!\n";
         return nullptr;
     }  
 
     llvm::Value* ByteType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        if (!isValid(lhs) || !isValid(rhs)) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }
         return getBuilder().CreateStore(rhs, lhs);
     }
 

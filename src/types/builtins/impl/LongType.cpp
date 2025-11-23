@@ -39,17 +39,11 @@ namespace LynxTypes {
             return llvm::ConstantInt::get(context, llvm::APInt(BIT_WIDTH_LONG, longValue));
         }
 
-        LOG_ERROR("Unsupported value type");
+        std::cerr << "Unsupported value type!\n";
         return nullptr;
     }
 
     llvm::Value* LongType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        if (!isValid(lhs) || !isValid(rhs)) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }
-
-        // Perform the store operation: store rhs value into lhs
         return getBuilder().CreateStore(rhs, lhs);
     }
     

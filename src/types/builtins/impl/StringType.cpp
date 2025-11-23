@@ -48,10 +48,6 @@ namespace LynxTypes {
     }
 
     llvm::Value* StringType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        if (!isValid(lhs) || !isValid(rhs)) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }
         return getBuilder().CreateStore(rhs, lhs);
     }
 

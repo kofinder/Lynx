@@ -44,12 +44,7 @@ namespace LynxTypes {
     }
 
     llvm::Value* BooleanType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        if (!isValid(lhs) || !isValid(rhs)) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }
-        auto& builder = getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
     void BooleanType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
