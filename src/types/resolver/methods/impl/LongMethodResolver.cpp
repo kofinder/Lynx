@@ -32,7 +32,6 @@ namespace LynxTypes {
         if (auto* value = invokeByName(impl.saturation, method, stgContext)) return value;
         if (auto* value = invokeByName(impl.fixedPoint, method, stgContext)) return value;
 
-        LOG_ERROR("Method not found: ",  method);
         return nullptr;
     }
 

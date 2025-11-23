@@ -121,7 +121,7 @@ namespace LynxTypes::TypePromotion {
     inline llvm::Value* matchConstantType(llvm::IRBuilder<>& /*builder*/, llvm::Value* value, llvm::Type* targetType) noexcept {
         if (llvm::isa<llvm::ConstantInt>(value) && targetType->isFloatingPointTy()) {
             auto* cii = llvm::cast<llvm::ConstantInt>(value);
-            llvm::APFloat apf(static_cast<double>(cii->getSExtValue()));
+            const llvm::APFloat apf(static_cast<double>(cii->getSExtValue()));
             return llvm::ConstantFP::get(targetType, apf);
         }
         return value;

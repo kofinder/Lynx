@@ -21,4 +21,4 @@
 	url = https://github.com/jbeder/yaml-cpp.git
 [submodule "src/lang"]
 	path = src/lang
-	url = git@github.com:kofinder/LynxLang
+	url = https://github.com/kofinder/LynxLang.git

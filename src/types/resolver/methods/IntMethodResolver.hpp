@@ -82,7 +82,9 @@ namespace LynxTypes {
                 Impl() noexcept : Base(&arithmetic, &bitwise, &abs, &minMax, &cmp, &math, &mem, &bitManip, &overflow, &saturation, &fixedPoint) {}
             };
 
-            static TypeMethodResolver* create() { return new Impl(); }         
+            static TypeMethodResolver* create() { 
+                return new Impl(); 
+            }         
     };
 }
 
