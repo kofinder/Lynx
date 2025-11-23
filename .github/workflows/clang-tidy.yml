@@ -8,14 +8,22 @@ on:
 jobs:
   tidy:
     runs-on: ubuntu-latest
-    
+
     steps:
-      # Checkout the code including submodules
-      - name: Checkout code with submodules
+      # Setup SSH for private repo access
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      # Checkout main repo with private submodules
+      - name: Checkout code with submodules via SSH
         uses: actions/checkout@v4
         with:
           submodules: recursive
-          token: ${{ secrets.PRIVATE_REPO_PAT }}
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       # Cache build and clang-tidy outputs
       - name: Cache build and Clang-Tidy
