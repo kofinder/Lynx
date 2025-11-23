@@ -3,19 +3,17 @@ name: clang-tidy
 on:
   push:
     branches:
-      - main
-    paths:
-      - '**.cpp'
-      - '**.hpp'
-      - 'src/**'
+      - main  # Trigger workflow on every push to main
 
 jobs:
   tidy:
     runs-on: ubuntu-latest
     steps:
+      # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Cache build and clang-tidy outputs for faster runs
       - name: Cache build and Clang-Tidy
         uses: actions/cache@v3
         with:
@@ -24,27 +22,35 @@ jobs:
             ~/.cache/clang-tidy
           key: clang-tidy-${{ runner.os }}-${{ hashFiles('**/*.cpp', '**/*.hpp') }}
           restore-keys: clang-tidy-${{ runner.os }}-
-          
+
+      # Install LLVM 21 prebuilt binaries
       - name: Install LLVM 21 prebuilt
         run: |
-          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.6/clang+llvm-21.1.6-x86_64-linux-gnu.tar.xz
-          tar -xf clang+llvm-21.1.6-x86_64-linux-gnu.tar.xz
-          sudo cp -r clang+llvm-21.1.6-x86_64-linux-gnu/* /usr/local/
+          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.6/clang+llvm-21.1.6-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+          tar -xf clang+llvm-21.1.6-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+          sudo cp -r clang+llvm-21.1.6-x86_64-linux-gnu-ubuntu-20.04/* /usr/local/
           export PATH=/usr/local/bin:$PATH
           clang --version
           clang-tidy --version
 
+      # Install CMake and Ninja
       - name: Install CMake and Ninja
         run: |
           sudo apt update
           sudo apt install -y cmake ninja-build
 
+      # Configure the project with CMake
       - name: Configure project with CMake
         run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
-      - name: Run clang-tidy
-        run: ./tools/run-clang-tidy.sh 4 | tee build/clang-tidy.log
+      # Run clang-tidy in parallel
+      - name: Run clang-tidy (parallel)
+        run: |
+          CPU_CORES=$(nproc)  # Get number of available cores
+          echo "Running clang-tidy on $CPU_CORES cores..."
+          ./tools/run-clang-tidy.sh $CPU_CORES | tee build/clang-tidy.log
 
+      # Upload clang-tidy log only if it fails
       - name: Upload clang-tidy log
         if: failure()
         uses: actions/upload-artifact@v4
