@@ -22,12 +22,12 @@ jobs:
             ~/.cache/clang-tidy
           key: clang-tidy-${{ runner.os }}-${{ hashFiles('**/*.cpp', '**/*.hpp') }}
           restore-keys: clang-tidy-${{ runner.os }}-
-
+          
       - name: Install LLVM 21 prebuilt
         run: |
-          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-21.0.0/clang+llvm-21.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
-          tar -xf clang+llvm-21.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
-          sudo cp -r clang+llvm-21.0.0-x86_64-linux-gnu-ubuntu-20.04/* /usr/local/
+          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.6/clang+llvm-21.1.6-x86_64-linux-gnu.tar.xz
+          tar -xf clang+llvm-21.1.6-x86_64-linux-gnu.tar.xz
+          sudo cp -r clang+llvm-21.1.6-x86_64-linux-gnu/* /usr/local/
           export PATH=/usr/local/bin:$PATH
           clang --version
           clang-tidy --version
