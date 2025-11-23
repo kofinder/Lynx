@@ -30,7 +30,7 @@ main:
 	.type	.Lfmt,@object
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .Lfmt:
-	.asciz	"%s %d\n"
+	.asciz	"%p %d\n"
 	.size	.Lfmt, 7
 
 	.section	".note.GNU-stack","",@progbits

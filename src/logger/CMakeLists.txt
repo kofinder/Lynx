@@ -13,3 +13,5 @@ add_library(LynxLogger STATIC ${LIB_LOGGER_SOURCES} ${LIB_LOGGER_HEADERS})
 target_include_directories(LynxLogger PUBLIC ${LIBRARY_INCLUDES})
 
 target_link_libraries(LynxLogger PUBLIC spdlog::spdlog cxxopts::cxxopts)
+
+message(STATUS "✅ LynxLogger module configured successfully! ")

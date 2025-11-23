@@ -56,7 +56,7 @@ namespace LynxTypes {
 
             std::unordered_map<std::string, EnumMember> members;
 
-            static inline std::unordered_map<const llvm::StructType*, EnumType*> llvmTypeToClass;
+            static inline std::unordered_map<const llvm::StructType*, const EnumType*> llvmTypeToClass;
     
         protected:
         
@@ -73,31 +73,36 @@ namespace LynxTypes {
                 std::string name
             ) : UserDefinedType(context), enumName(std::move(name)) {}
 
+            // Public copy constructor, needed for clone()
+            EnumType(const EnumType& other) : UserDefinedType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
+            ~EnumType() override = default;
+            EnumType& operator=(const EnumType&) = delete;
+            EnumType(EnumType&&) = delete;
+            EnumType& operator=(EnumType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override;
+
             llvm::Type* getLLVMPointerType() const override;
 
             llvm::Value* getDefaultValue() override;
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::StructType* createEnumValueUnion(llvm::LLVMContext& context) const;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
             
-            // void accept(TypeVisitor& visitor) override;
-
-            // TypeMethodResolver* getOrCreateResolver() const  override;
-
-            // const std::unordered_map<std::string_view, int>& getMethodRegistry() const override;
-
-            // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
-
-            // llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
-
             bool equals(const BaseType* other) const override;
 
-            inline DataType getTypeTag() const override { return DataType::ENUM; }
+            DataType getTypeTag() const override { return DataType::ENUM; }
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "enum"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 
@@ -110,20 +115,16 @@ namespace LynxTypes {
             const std::string& qualifiedName() const;
             const std::string& originalName() const { return enumName; }
 
-            void registerLLVMType(llvm::StructType* llvmStruct);
-            static EnumType* fromLLVMType(const llvm::Type* type);
+            void registerLLVMType(llvm::StructType* structTy) const;
+            static const EnumType* fromLLVMType(const llvm::Type* type);
 
             std::optional<EnumMember> getMember(const std::string& name) const;
             
-            void addMember(const std::string& name, EnumMember member);
+            void addMember(const std::string& name, const EnumMember& member);
 
             const std::unordered_map<std::string, EnumMember>& getAllMembers() const { return members; }
 
-            void registerGlobalConstant(const std::string& memberName, llvm::GlobalVariable* gv) const;
-                
-            std::unique_ptr<BaseType> clone() const override;
-
-            ~EnumType() override = default;
+            void registerGlobalConstant(const std::string& memberName, llvm::GlobalVariable* gov) const;
     };
 }
 

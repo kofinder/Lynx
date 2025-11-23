@@ -35,12 +35,10 @@
 #include <constants/LValueType.hpp>
 #include <constants/DataType.hpp>
 #include <constants/OperatorType.hpp>
+#include <constants/MagicNumericConstants.hpp>
 #include <constants/metadata/MetadataTypeConstants.hpp>
 
-namespace LynxContext {
-    class AstContext;
-}
-
+namespace LynxContext { class AstContext; }
 
 namespace LynxTypes {
 
@@ -51,20 +49,20 @@ namespace LynxTypes {
     using namespace LynxContext;
     using namespace LynxConstants;
     using namespace MetadataTypeConstants;
-    
+
     class BaseType {
 
-        protected:
+        private:
+
+            AstContext* astContext;   
 
             bool constFlag = false;
 
             bool staticFlag = false;
 
-            AstContext* astContext;   
-
-            mutable llvm::Type* cachedLLVMType = nullptr;
-
-            mutable TypeMethodResolver* resolver;
+            mutable llvm::Type* cachedLLVMType = nullptr; // NOLINT(cppcoreguidelines-owning-memory)
+            
+            mutable TypeMethodResolver* resolver = nullptr;  // NOLINT(cppcoreguidelines-owning-memory)
 
         protected:
 
@@ -74,6 +72,47 @@ namespace LynxTypes {
             */
             virtual llvm::Type* computeLLVMType() const = 0;
 
+            /**
+             * @brief Returns the cached LLVM type, if previously computed.
+             * @return Pointer to cached llvm::Type, or nullptr if not set.
+            */
+            llvm::Type* getCachedLLVMType() const { return cachedLLVMType; }
+
+            /**
+             * @brief Sets the cached LLVM type for this object.
+             * @param cacheType Pointer to the llvm::Type to cache.
+            */
+            void setCachedLLVMType(llvm::Type* cacheType) const { cachedLLVMType = cacheType; }
+
+            /**
+             * @brief Creates a method resolver for this type (if it supports methods).
+             * @return A unique pointer to the method resolver, or nullptr if not applicable.
+            */
+            TypeMethodResolver* getResolver() const { return resolver; }
+
+            /**
+            * @brief Sets or replaces the resolver for this type.
+            * @param newResolver Pointer to a resolver to associate with this type.
+            */
+            void setResolver(TypeMethodResolver* newResolver) const { resolver = newResolver; }
+        
+            /**
+             * @brief Returns the LLVMContext associated with this type.
+             * @return Reference to llvm::LLVMContext.
+            */
+            llvm::LLVMContext& getLLVMContext() const noexcept;
+
+            /**
+             * @brief Returns the IRBuilder associated with the current codegen context.
+             * @return Reference to llvm::IRBuilder<>.
+             */
+            llvm::IRBuilder<>& getBuilder() const noexcept;
+
+            /**
+             * @brief Returns the LLVM Module associated with this type/context.
+             * @return Pointer to llvm::Module.
+             */
+            llvm::Module* getModule() const noexcept;
 
             /**
              * @brief Returns a version of this type with the specified const qualification.
@@ -93,15 +132,40 @@ namespace LynxTypes {
              * @param newIsStatic Whether the new type should be static-qualified.
              * @return Pointer to a new BaseType instance with the requested static qualifier.
             */
-            virtual const BaseType* createWithStatic(bool newIsStatic) const { return this; }
+            virtual const BaseType* createWithStatic(bool newIsStatic) const = 0;
+
+            /**
+             * @brief Checks whether the given LLVM value pointer is valid (non-null).
+             * 
+             * This is a small helper to safely verify that an `llvm::Value*` is not null
+             * before performing operations on it, helping to avoid null-pointer dereferences.
+             * 
+             * @param v The LLVM value pointer to check.
+             * @return true if the pointer is non-null, false otherwise.
+            */
+            bool isValid(llvm::Value* value) noexcept { return value != nullptr; }
 
         public:
 
             /**
              * @brief Constructor initializing the AST context.
              * @param context Pointer to the AstContext associated with this type.
+             * Use explicit constructor for RAII
             */
-            BaseType(AstContext* context) : astContext(context), cachedLLVMType(nullptr), resolver(nullptr) {}
+            explicit BaseType(AstContext* context) : astContext(context) {}
+
+            // Rule of five: allow default destructor, delete others
+            virtual ~BaseType();
+            BaseType(const BaseType&) = delete;
+            BaseType& operator=(const BaseType&) = delete;
+            BaseType(BaseType&&) = delete;
+            BaseType& operator=(BaseType&&) = delete;
+
+             /**
+             * @brief Clones the current type polymorphically.
+             * @return A unique pointer to a new copy of the derived type.
+             */
+            virtual std::unique_ptr<BaseType> clone() const = 0;
 
             /**
              * @brief Set or update the AST context for this type.
@@ -113,26 +177,42 @@ namespace LynxTypes {
              * @brief Returns the AST context currently associated with this type.
              * @return Pointer to the AstContext.
             */
-            inline AstContext* getContext() const noexcept { return astContext; }
+            AstContext* getContext() const noexcept { return astContext; }
 
+            /**
+             * @brief Returns true if the type is const-qualified.
+             * @return True if const-qualified, false otherwise.
+            */
+            bool isConstFlag() const noexcept { return constFlag; }
+
+            /**
+             * @brief Sets or clears the const qualifier for this type.
+             * @param val True to mark as const, false to remove const.
+            */
+            void setConstFlag(bool val) noexcept { constFlag = val; }
+        
+            /**
+             * @brief Returns true if the type is static-qualified.
+             * @return True if static-qualified, false otherwise.
+            */
+            bool isStaticFlag() const noexcept { return staticFlag; }
+
+            /**
+             * @brief Sets or clears the static qualifier for this type.
+             * @param val True to mark as static, false to remove static.
+            */
+            void setStaticFlag(bool val) noexcept { staticFlag = val; }
+        
             /**
              * @brief Returns the LLVM type, computing it if not already cached.
             */
             llvm::Type* getLLVMType() const;
             
-
             /**
              * @brief Accepts a visitor to perform operations on the type.
              * Used in the visitor pattern for type-related traversals and transformations.
             */
             virtual void accept(TypeVisitor& visitor) {}
-
-
-            /**
-             * @brief Creates a method resolver for this type (if it supports methods).
-             * @return A unique pointer to the method resolver, or nullptr if not applicable.
-            */
-            virtual TypeMethodResolver* getOrCreateResolver() const;
 
             /**
              * @brief Returns the registry of instance methods supported by this type.
@@ -163,7 +243,12 @@ namespace LynxTypes {
              * @param args A list of LLVM IR values representing the method arguments.
              * @return An LLVM Value representing the result of the static method call.
             */
-            virtual llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args);
+            virtual llvm::Value* emitMethodCall(
+                llvm::Value* instance, 
+                llvm::Value* instancePtr, 
+                const std::string& methodName, 
+                const std::vector<llvm::Value*>& args
+            );
             
             /**
              * @brief Returns whether the type is const-qualified.
@@ -171,7 +256,7 @@ namespace LynxTypes {
              * Checks if the type has been marked as `const`.
              * @return true if the type is const-qualified, false otherwise.
             */
-            inline bool isConst() const noexcept { return constFlag; }
+            bool isConst() const noexcept { return constFlag; }
 
             /**
              * @brief Sets the const qualifier for this type.
@@ -179,71 +264,71 @@ namespace LynxTypes {
              * Marks the type as `const` or removes the const qualification.
              * @param value true to mark the type as const, false to remove const.
             */
-            inline void setConst(bool value) noexcept { constFlag = value; }
+            void setConst(bool value) noexcept { constFlag = value; }
 
            /**
              * @brief Returns whether the type is static-qualified.
              * @return True if the type is marked as static.
             */
-            inline bool isStatic() const noexcept { return staticFlag; }
+            bool isStatic() const noexcept { return staticFlag; }
 
             /**
              * @brief Sets the static qualifier of the type.
              * @param value True to mark the type as static; false otherwise.
             */
-            inline void setStatic(bool value) noexcept { staticFlag = value; }
+            void setStatic(bool value) noexcept { staticFlag = value; }
 
             /**
              * @brief Indicates whether the type supports assignment operations.
              * @return True if the type can be assigned to; false by default.
             */
-            virtual inline bool supportsAssignment() const noexcept { return false; }
+            virtual bool supportsAssignment() const noexcept { return false; }
 
             /**
              * @brief Indicates whether the type supports nullability (e.g., pointers).
              * @return True if the type can be null; false by default.
             */
-            virtual inline bool isNullable() const noexcept { return false; }
+            virtual bool isNullable() const noexcept { return false; }
 
             /**
              * @brief Indicates whether the type supports index-based access (e.g., arrays).
              * @return True if the type is indexable; false by default.
             */
-            virtual inline bool isIndexable() const noexcept { return false; }
+            virtual bool isIndexable() const noexcept { return false; }
 
             /**
              * @brief Indicates whether the type supports key-based lookup (e.g., maps).
              * @return True if the type allows key lookup; false by default.
             */
-            virtual inline bool supportsKeyLookup() const noexcept { return false; }
+            virtual bool supportsKeyLookup() const noexcept { return false; }
         
            /**
              * @brief Returns true if the type is a built-in primitive type (e.g., int, float, bool).
              * 
              * This typically includes types directly supported by the language or runtime.
             */
-            virtual inline bool isBuiltInType() const noexcept { return false; }
+            virtual bool isBuiltInType() const noexcept { return false; }
 
             /**
              * @brief Returns true if the type represents a collection (e.g., array, list, map).
              * 
              * Useful for distinguishing container types from scalar or object types.
             */
-            virtual inline bool isCollectionType() const noexcept { return false; }
+            virtual bool isCollectionType() const noexcept { return false; }
 
             /**
              * @brief Returns true if the type is user-defined (e.g., class, struct, enum).
              * 
              * Indicates types created by the user rather than built-in to the language.
             */
-            virtual inline bool isUserDefinedType() const noexcept { return false; }
+            virtual bool isUserDefinedType() const noexcept { return false; }
 
             /**
              * @brief Returns true if the type is a wrapper around another type (e.g., Option<T>, Ref<T>).
              * 
              * Used for recognizing smart pointers, optional types, or language-level type wrappers.
              */
-            virtual inline bool isWrapperType() const noexcept { return false; }
+            virtual bool isWrapperType() const noexcept { return false; }
 
             /**
              * @brief Returns a tag indicating the specific type category (e.g., IntType, FloatType, VectorType).
@@ -285,7 +370,7 @@ namespace LynxTypes {
              * @brief Creates an LLVM value of this type from an LValueType wrapper.
              * @param lvalueType Encapsulated data value to convert.
             */
-            virtual llvm::Value* createValue(const LValueType value) const = 0;
+            virtual llvm::Value* createValue(LValueType value) const = 0;
 
             /**
              * @brief Creates an LLVM value using an existing LLVM type and value.
@@ -316,7 +401,7 @@ namespace LynxTypes {
              * @param variableName Name of the variable being created.
              * @return LLVM value representing the instance.
             */
-            virtual llvm::Value* createInstance(const std::string variableName) = 0;
+            virtual llvm::Value* createInstance(const std::string& variableName) = 0;
 
             /**
              * @brief Assigns a right-hand value (rhs) to a left-hand variable (lhs).
@@ -324,7 +409,7 @@ namespace LynxTypes {
              * @param rhs The value to store.
              * @return Resulting LLVM instruction.
             */
-            virtual llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) = 0;
+            virtual llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) = 0;    
 
             /**
              * @brief Returns the human-readable name of this type for debugging metadata.
@@ -378,15 +463,6 @@ namespace LynxTypes {
              * @return A set of DWARF flags from `llvm::DINode::DIFlags`.
             */
             virtual llvm::DINode::DIFlags getDIFlags() const = 0;
-
-            /**
-             * @brief Clones the current type polymorphically.
-             * @return A unique pointer to a new copy of the derived type.
-             */
-            virtual std::unique_ptr<BaseType> clone() const = 0;
-
-            /// @brief Virtual destructor for proper cleanup of derived types.
-            virtual ~BaseType();
     };
 }
 

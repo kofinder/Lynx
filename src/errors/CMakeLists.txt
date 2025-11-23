@@ -29,3 +29,4 @@ target_include_directories(LynxErrors PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
+message(STATUS "✅ LynxErrors module configured successfully! ")

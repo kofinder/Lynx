@@ -52,12 +52,21 @@ namespace LynxTypes {
     // Base Interface
     // ============================================================================
     struct BinaryStrategy {
+        
+        BinaryStrategy() = default;
+
+        // Rule Of Five
+        BinaryStrategy(const BinaryStrategy&) = delete;
+        BinaryStrategy& operator=(const BinaryStrategy&) = delete;
+        BinaryStrategy(BinaryStrategy&&) = delete;
+        BinaryStrategy& operator=(BinaryStrategy&&) = delete;
+        virtual ~BinaryStrategy() noexcept = default;    
+            
         [[nodiscard]] virtual llvm::Value* add(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* sub(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* mul(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* div(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* mod(const StrategyContext&) const noexcept = 0;
-        virtual ~BinaryStrategy() noexcept = default;
     };
 
     // ============================================================================

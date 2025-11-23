@@ -96,7 +96,7 @@ namespace LynxTypes {
 
             mutable std::unordered_map<llvm::Value*, llvm::Value*> vtableCache;
             mutable std::unordered_map<llvm::Value*, llvm::Value*> vtableLoadCache;
-            static inline std::unordered_map<const llvm::StructType*, ClassType*> llvmTypeToClass;
+            static inline std::unordered_map<const llvm::StructType*, const ClassType*> llvmTypeToClass;
 
         protected:
 
@@ -106,79 +106,61 @@ namespace LynxTypes {
 
             const BaseType* createWithConst(bool newIsConst) const override;
 
-            /**
-             * @brief Determines if this class implements a given interface type.
-             * 
-             * Checks whether this class or any of its base classes declares the
-             * specified interface in its list of implemented interfaces.
-             * 
-             * @param iface Pointer to the interface type to check against.
-             * @return true if this class implements @p iface, false otherwise.
-            */
-            bool implementsInterface(const InterfaceType* iface) const;
-
-            /**
-             * @brief Determines if this class is a subclass of the given base class.
-             *
-             * Walk the parent chain to see whether @p base appears as this class's
-             * ancestor. A class is considered a subclass of itself (returns true).
-             *
-             * @param base Pointer to the candidate base class.
-             * @return true if this class inherits (directly or indirectly) from @p base.
-            */
-            bool isSubclassOf(const ClassType* base) const;
-
             template <typename MapT>
             std::vector<Candidate> findViableCandidatesImpl(const MapT& items, const std::vector<llvm::Type*>& argTypes) const;
 
-            const std::vector<Candidate> findViableCandidates(MethodKind kind, const std::vector<llvm::Type*>& argTypes) const;
+            std::vector<Candidate> findViableCandidates(MethodKind kind, const std::vector<llvm::Type*>& argTypes) const;
 
             int64_t scoreParameters(const std::vector<std::unique_ptr<BaseType>>& params, const std::vector<llvm::Type*>& argTypes) const;
 
         public:
-        
+
+            // Use explicit constructor for RAII
             explicit ClassType(
                 AstContext* context, 
                 const std::string& name
             ) : UserDefinedType(context), className(name) {}
+            
+            // Public copy constructor, needed for clone()
+            ClassType(const ClassType& other) : UserDefinedType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
 
+            // Rule of five: allow default destructor, delete others
+            ~ClassType() override = default;
+            ClassType& operator=(const ClassType&) = delete;
+            ClassType(ClassType&&) = delete;
+            ClassType& operator=(ClassType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override;    
+    
             llvm::Type* getLLVMPointerType() const override;
 
             llvm::Value* getDefaultValue() override;
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
-            // void accept(TypeVisitor& visitor) override;
-
-            // TypeMethodResolver* getOrCreateResolver() const  override;
-
-            // const std::unordered_map<std::string_view, int>& getMethodRegistry() const override;
-
-            // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
-
-            // llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
-
-            std::unique_ptr<BaseType> clone() const override;
-
             bool equals(const BaseType* other) const override;
 
-            inline DataType getTypeTag() const override { return DataType::CLAZZ; }
+            DataType getTypeTag() const override { return DataType::CLAZZ; }
 
             const std::string& qualifiedName() const;
             const std::string& originalNameLower() const;
             const std::string& originalName() const { return className; }
 
-            void registerLLVMType(llvm::StructType* llvmStruct);
-            static ClassType* fromLLVMType(const llvm::Type* type);
+            void registerLLVMType(llvm::StructType* structTy) const;
+            static const ClassType* fromLLVMType(const llvm::Type* type);
 
             // ---------------------
             // Constructor Handling
             // ---------------------
             void addConstructor(const std::string& mangledName, std::unique_ptr<ConstructorType> ctor);
             const ConstructorType* getConstructor(const std::string& mangledName) const;
-            inline const std::unordered_map<std::string, std::unique_ptr<ConstructorType>>& getConstructors() const { return ctors; }
+            const std::unordered_map<std::string, std::unique_ptr<ConstructorType>>& getConstructors() const { return ctors; }
             
             // ---------------------
             // Method Handling
@@ -186,7 +168,7 @@ namespace LynxTypes {
             bool hasMethod(const std::string& mangleName) const;
             const MethodType* getMethod(const std::string& mangleName) const;
             void addMethod(const std::string& mangleName, std::unique_ptr<MethodType> method);
-            inline const std::unordered_map<std::string, std::unique_ptr<MethodType>>& getMethods() const { return methods; }
+            const std::unordered_map<std::string, std::unique_ptr<MethodType>>& getMethods() const { return methods; }
 
             // ---------------------
             // Fields Handling
@@ -195,8 +177,8 @@ namespace LynxTypes {
             void addField(const std::string& name, std::unique_ptr<FieldType> field);
             const FieldType* getField(const std::string& name) const;
             unsigned getFieldIndex(const std::string& fieldName) const;
-            inline const std::unordered_map<std::string, unsigned>& getFieldNameToIndexMap() const { return fieldNameToIndex;} 
-            inline const std::unordered_map<std::string, std::unique_ptr<FieldType>>& getFields() const { return fields; }
+            const std::unordered_map<std::string, unsigned>& getFieldNameToIndexMap() const { return fieldNameToIndex;} 
+            const std::unordered_map<std::string, std::unique_ptr<FieldType>>& getFields() const { return fields; }
 
             // ---------------------
             // Parent Class Handling
@@ -205,7 +187,7 @@ namespace LynxTypes {
             void setBaseClass(ClassType* parent) { parentClass = parent; }
             bool hasBaseClass() const { return parentClass != nullptr; }
             std::vector<std::unique_ptr<MethodType>> getAllVirtualParentMethods() const;
-            const std::vector<std::string> getAllVirtualParentMethodsNames() const;
+            std::vector<std::string> getAllVirtualParentMethodsNames() const;
 
             // ---------------------
             // Interface Handling
@@ -214,7 +196,7 @@ namespace LynxTypes {
             bool hasImplements(const std::string& ifaceName) const;
             void addInterface(std::unique_ptr<InterfaceType> iface);
             bool hasInterfaces() const { return !interfaces.empty(); }
-            inline const std::vector<std::unique_ptr<InterfaceType>>& getAllInterfaces() const { return interfaces; }; 
+            const std::vector<std::unique_ptr<InterfaceType>>& getAllInterfaces() const { return interfaces; }; 
             
 
             // ---------------------
@@ -226,43 +208,35 @@ namespace LynxTypes {
             bool hasMixins() const { return !mixins.empty(); }
             int getMixinOffset(const MixinType& mixin) const;
             const std::vector<std::unique_ptr<MixinType>>& getAllMixins() const { return mixins; };  
-            const std::vector<MixinOwner> getAllMixinMethods();
+            std::vector<MixinOwner> getAllMixinMethods();
 
-            /// @brief Initializes the vtable pointer for a given object.
-            /// 
-            /// This method should be called **once per object** (typically in
-            /// the constructor). It stores a pointer to the class's global
-            /// vtable into the first field of the object. Virtual method calls
-            /// then use this vtable pointer for dispatch.
-            ///
-            /// @param objValue The LLVM value representing the object instance.
+            /// ---------------------
+            // Vtable Handling
+            // ---------------------
             void bindVTable(llvm::Value* objValue);
-            void buildVTable(VTableType vType);
+            void buildVTable(const VTableType& vType);
             llvm::GlobalVariable* getOrCreateOrVTableGlobal() const;
-
             bool isVirtualFunction(const std::string& name) const;
             unsigned getVirtualMethodIndex(const std::string& name) const;
             llvm::Value* getVTablePtrPtr(llvm::Value* objValue) const;
             llvm::Value* loadVTablePtr(llvm::Value* objValue) const;
             llvm::Value* loadVirtualMethodPtr(llvm::Value* vtablePtr, const std::string& fnName) const;
 
-            // HELPERS
+            /// ---------------------
+            //  UTILITIES
+            // ---------------------
             std::string resolveMethodCall(MethodKind kind, const std::string& mangledName, const std::vector<llvm::Type*>& argTypes) const;
+            bool implementsInterface(const InterfaceType* iface) const;
+            bool isSubclassOf(const ClassType* base) const;
 
-
-            // FOR DEBUGGING
-            std::string getDebugName() const override;
-
+            /// ---------------------
+            // Debug Handling
+            // ---------------------
+            std::string getDebugName() const override { return "class"; }
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
-
             uint64_t getDebugSizeInBits() const override;
-
             uint32_t getDebugAlignInBits() const override;
-
             llvm::DINode::DIFlags getDIFlags() const override;
-
-
-            ~ClassType() override = default;
     };
 
 }

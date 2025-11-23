@@ -48,23 +48,35 @@ namespace LynxTypes {
 
         public:
 
+            // Use explicit constructor for RAII
             explicit ListType(AstContext* context) : SequentialType(context) {}
 
-            inline bool isIndexable() const noexcept override { return true; }
+            // Public copy constructor, needed for clone()
+            ListType(const ListType& other) : SequentialType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
 
-            inline DataType getTypeTag() const override { return DataType::LIST; }
+            // Rule of five: allow default destructor, delete others
+            ~ListType() override = default;
+            ListType& operator=(const ListType&) = delete;
+            ListType(ListType&&) = delete;
+            ListType& operator=(ListType&&) = delete;
 
-            llvm::Value* createInstance(std::string variableName) override;
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<ListType>(*this);
+            }
+
+            bool isIndexable() const noexcept override { return true; }
+
+            DataType getTypeTag() const override { return DataType::LIST; }
+
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
             llvm::Value* createValue(std::vector<llvm::Value*> values) const override;
-
-            const BaseType* getElementType() const override { return elementType; }
-
-            void setElementType(BaseType* eleType) override { elementType = eleType; }
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<ListType>(*this); }
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -72,7 +84,7 @@ namespace LynxTypes {
 
             bool equals(const BaseType* other) const override;
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "list"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 
@@ -81,8 +93,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~ListType() override = default;
     };
 }
 

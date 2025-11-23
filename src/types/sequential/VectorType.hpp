@@ -52,25 +52,43 @@ namespace LynxTypes {
 
             std::string getSafeStructName(std::unordered_set<const BaseType*>& visited) const;
 
+        private:
+        
+            llvm::Value* createConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const;
+
+            llvm::Value* createNonConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const;
+
         public:
 
+            // Use explicit constructor for RAII
             explicit VectorType(AstContext* context) : SequentialType(context) {}
 
-            inline bool isIndexable() const noexcept override { return true; }
+            // Public copy constructor, needed for clone()
+            VectorType(const VectorType& other) : SequentialType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
 
-            inline DataType getTypeTag() const override { return DataType::VECTOR; }
+            // Rule of five: allow default destructor, delete others
+            ~VectorType() override = default;
+            VectorType& operator=(const VectorType&) = delete;
+            VectorType(VectorType&&) = delete;
+            VectorType& operator=(VectorType&&) = delete;
 
-            llvm::Value* createInstance(std::string variableName) override;
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<VectorType>(*this);
+            }
+
+            bool isIndexable() const noexcept override { return true; }
+
+            DataType getTypeTag() const override { return DataType::VECTOR; }
+
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
             llvm::Value* createValue(std::vector<llvm::Value*> values) const override;
-
-            const BaseType* getElementType() const override { return elementType; }
-
-            void setElementType(BaseType* eleType) override { elementType = eleType; }
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<VectorType>(*this); }
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -78,7 +96,7 @@ namespace LynxTypes {
 
             bool equals(const BaseType* other) const override;
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "vector"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 
@@ -87,8 +105,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~VectorType() override = default;
     };
 }
 

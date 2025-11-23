@@ -29,3 +29,5 @@ target_link_libraries(LynxProgramConfig PUBLIC
     LynxAst
     LynxLang
 )
+
+message(STATUS "✅ LynxProgramConfig module configured successfully! ")

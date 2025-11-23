@@ -45,8 +45,26 @@ namespace LynxTypes {
             const BaseType* createWithConst(bool newIsConst) const override;
 
         public:
-        
+
+            // Use explicit constructor for RAII
             explicit BooleanType(AstContext* context) : BuiltInType(context) {}
+
+            // Public copy constructor, needed for clone()
+            BooleanType(const BooleanType& other) : BuiltInType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
+            ~BooleanType() override = default;
+            BooleanType& operator=(const BooleanType&) = delete;
+            BooleanType(BooleanType&&) = delete;
+            BooleanType& operator=(BooleanType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<BooleanType>(*this);
+            }
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -54,7 +72,7 @@ namespace LynxTypes {
 
             llvm::Value* createValue(LValueType value) const override;
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
@@ -66,15 +84,13 @@ namespace LynxTypes {
 
             llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
 
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<BooleanType>(*this); }
+            const llvm::Value* convertBooleanToString(llvm::Value* value);
 
-            llvm::Value* convertBooleanToString(llvm::Value* value);
-
-            inline DataType getTypeTag() const override { return DataType::BOOLEAN; }
+            DataType getTypeTag() const override { return DataType::BOOLEAN; }
 
             bool equals(const BaseType* other) const override;
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "bool"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 
@@ -83,8 +99,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~BooleanType() override = default;
     };
 }
 

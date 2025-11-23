@@ -44,4 +44,4 @@ target_link_libraries(LynxTypes PRIVATE
     LynxContext 
 )
 
-message(STATUS "[LynxTypes] Library built successfully.")
+message(STATUS "✅ LynxTypes module configured successfully! ")

@@ -14,7 +14,7 @@
  *
  * **Integration Points:**
  * - Used in arithmetic operations, loops, array indexing, and numeric expressions.
- * - Interoperates with `IntegerType`, `ShortType`, and `ByteType` for implicit conversions.
+ * - Interoperates with `IntegerType`, `ShortType`, and `LongType` for implicit conversions.
  * - Default initialization yields zero (`0L`).
  *
  * **LLVM Details:**
@@ -45,13 +45,31 @@ namespace LynxTypes {
             
         public:
 
+            // Use explicit constructor for RAII
             explicit LongType(AstContext* context) : BuiltInType(context) {}
+
+            // Public copy constructor, needed for clone()
+            LongType(const LongType& other) : BuiltInType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
+            ~LongType() override = default;
+            LongType& operator=(const LongType&) = delete;
+            LongType(LongType&&) = delete;
+            LongType& operator=(LongType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<LongType>(*this);
+            }
 
             llvm::Type* getLLVMPointerType() const override;
 
             llvm::Value* getDefaultValue() override;
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* createValue(LValueType value) const override;
             
@@ -65,13 +83,11 @@ namespace LynxTypes {
 
             llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
 
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<LongType>(*this); }
-
             bool equals(const BaseType* other) const override;
 
-            inline DataType getTypeTag() const override { return DataType::LONG; }
+            DataType getTypeTag() const override { return DataType::LONG; }
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "long"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 
@@ -80,8 +96,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~LongType() override = default;
     };
 }
 

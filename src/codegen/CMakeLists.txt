@@ -27,5 +27,4 @@ target_link_libraries(LynxCodegen PRIVATE
 
 target_include_directories(LynxCodegen PUBLIC ${LIBRARY_INCLUDES})
 
-
-
+message(STATUS "✅ LynxCodegen module configured successfully! ")

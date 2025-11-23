@@ -52,35 +52,41 @@ namespace LynxTypes {
 
         public:
         
+            // Use explicit constructor for RAII
             explicit DateType(AstContext* context) : UserDefinedType(context) {}
+
+            // Public copy constructor, needed for clone()
+            DateType(const DateType& other) : UserDefinedType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
+            ~DateType() override = default;
+            DateType& operator=(const DateType&) = delete;
+            DateType(DateType&&) = delete;
+            DateType& operator=(DateType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<DateType>(*this);
+            }
 
             llvm::Type* getLLVMPointerType() const override;
 
             llvm::Value* getDefaultValue() override;
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
-            llvm::Value* getField(std::string fieldName, llvm::Value* instance);
+            llvm::Value* getField(const std::string& fieldName, llvm::Value* instance);
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
             
-            // void accept(TypeVisitor& visitor) override;
-
-            // TypeMethodResolver* getOrCreateResolver() const  override;
-
-            // const std::unordered_map<std::string_view, int>& getMethodRegistry() const override;
-
-            // const std::unordered_map<std::string, int>& getInstanceMethodRegistry() const override;
-
-            // llvm::Value* emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) override;
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<DateType>(*this); }
-
             bool equals(const BaseType* other) const override;
 
-            inline DataType getTypeTag() const override { return DataType::DATE; }
+            DataType getTypeTag() const override { return DataType::DATE; }
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "Date"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 
@@ -89,8 +95,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~DateType() override = default;
     };
 }
 #endif 

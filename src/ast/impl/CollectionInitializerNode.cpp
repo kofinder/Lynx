@@ -50,10 +50,9 @@ namespace LynxAst {
                 }
                 auto* concreteCollection = const_cast<CollectionType*>(baseType);
                 concreteCollection->setElementType(elementType->getInternalType());
-                concreteCollection->setSize(values.size());
+                concreteCollection->setNumElements(values.size());
                 //concreteCollection->createInstance(mangleSequentialName(concreteCollection, values));
 
-                
                 return concreteCollection->createValue(values);
             }
     
@@ -70,8 +69,8 @@ namespace LynxAst {
 
                 auto* concreteCollection = const_cast<CollectionType*>(baseType);
                 concreteCollection->setElementType(keyElementType->getInternalType());
-                concreteCollection->setValueType(valueElementType->getInternalType());
-                concreteCollection->setSize(0);
+                concreteCollection->setElementValue(valueElementType->getInternalType());
+                concreteCollection->setNumElements(0);
                 concreteCollection->createValue(pairs);
                 return concreteCollection->createInstance(mangleAssociativeName(concreteCollection, pairs));
             }

@@ -21,5 +21,7 @@ target_include_directories(LynxPlatform PUBLIC
   ${LIBRARY_INCLUDES}
 )
 
+message(STATUS "✅ LynxPlatform module configured successfully! ")
+
 
 

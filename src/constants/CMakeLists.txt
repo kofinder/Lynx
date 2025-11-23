@@ -5,3 +5,5 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_library(LynxConstants INTERFACE)
 
 target_include_directories(LynxConstants INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+
+message(STATUS "✅ LynxConstants module configured successfully! ")

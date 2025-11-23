@@ -48,27 +48,35 @@ namespace LynxTypes {
 
         public:
 
+            // Use explicit constructor for RAII
             explicit DictionaryType(AstContext* context) : AssociativeType(context) {}
 
-            inline bool isAssociative() const noexcept override { return true; }
+            // Public copy constructor, needed for clone()
+            DictionaryType(const DictionaryType& other) : AssociativeType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
 
-            inline DataType getTypeTag() const override { return DataType::MAP; }
+            // Rule of five: allow default destructor, delete others
+            ~DictionaryType() override = default;
+            DictionaryType& operator=(const DictionaryType&) = delete;
+            DictionaryType(DictionaryType&&) = delete;
+            DictionaryType& operator=(DictionaryType&&) = delete;
 
-            llvm::Value* createInstance(std::string variableName) override;
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<DictionaryType>(*this);
+            }
+            
+            bool isAssociative() const noexcept override { return true; }
+
+            DataType getTypeTag() const override { return DataType::MAP; }
+
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
             llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> paris) const override;
-
-            void setElementType(BaseType* eleType) override { elementType = eleType; }
-
-            const BaseType* getElementType() const override { return elementType; }
-
-            void setValueType(BaseType* value) override { elementValue = value; }
-
-            const BaseType* getValueType() const override { return elementValue; }
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<DictionaryType>(*this);}
         
             llvm::Type* getLLVMPointerType() const override;
 
@@ -76,7 +84,7 @@ namespace LynxTypes {
 
             bool equals(const BaseType* other) const override;
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "dictionary"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 
@@ -85,8 +93,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~DictionaryType() override = default;
     };
 }
 

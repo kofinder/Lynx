@@ -51,6 +51,7 @@ namespace LynxProgramConfig {
             static bool is_initialized;
 
         public:
+        
             std::string rootPath;
             
             std::string buildDir;
@@ -86,7 +87,7 @@ namespace LynxProgramConfig {
              * @param argc Argument count.
              * @param argv Argument vector.
              */
-            static void initialize(int argc, char const *argv[]);
+            void initialize(int argc, char const *argv[]);
 
             /**
              * @brief Returns the main CLI command (e.g., run, build).

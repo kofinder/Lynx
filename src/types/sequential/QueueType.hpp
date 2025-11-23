@@ -49,29 +49,41 @@ namespace LynxTypes {
 
         public:
 
+            // Use explicit constructor for RAII
             explicit QueueType(AstContext* context) : SequentialType(context) {}
 
-            inline DataType getTypeTag() const override { return DataType::QUEUE; }
+            // Public copy constructor, needed for clone()
+            QueueType(const QueueType& other) : SequentialType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
 
-            llvm::Value* createInstance(std::string variableName) override;
+            // Rule of five: allow default destructor, delete others
+            ~QueueType() override = default;
+            QueueType& operator=(const QueueType&) = delete;
+            QueueType(QueueType&&) = delete;
+            QueueType& operator=(QueueType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<QueueType>(*this);
+            }
+
+            DataType getTypeTag() const override { return DataType::QUEUE; }
+
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
             llvm::Value* createValue(std::vector<llvm::Value*> values) const override;
             
-            const BaseType* getElementType() const override { return elementType; }
-
-            void setElementType(BaseType* eleType) override { elementType = eleType; }
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<QueueType>(*this); }
-
             llvm::Type* getLLVMPointerType() const override;
 
             llvm::Value* getDefaultValue() override;
 
             bool equals(const BaseType* other) const override;
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "queue"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 
@@ -80,8 +92,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~QueueType() override = default;
     };
 }
 

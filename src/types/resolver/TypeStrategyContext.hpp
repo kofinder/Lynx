@@ -10,20 +10,6 @@ namespace LynxTypes {
 
     using LynxContext::AstContext;
 
-
-    // // =========================
-    // // Concepts for Numeric Types
-    // // =========================
-    // template<typename T>
-    // concept Numeric = std::is_arithmetic_v<T>; 
-
-    // template<typename T>
-    // concept Integer = std::is_integral_v<T>;
-
-    // template<typename T>
-    // concept Floating = std::is_floating_point_v<T>;
-
-
     // Integer concept (excludes bool)
     template<typename T>
     concept IntStrategyType = std::is_integral_v<T> && !std::is_same_v<T, bool>;
@@ -33,10 +19,10 @@ namespace LynxTypes {
     concept FloatStrategyType = std::is_floating_point_v<T>;
 
     struct StrategyContext {
-        const AstContext& ctx;
+        const AstContext& ctx; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
         llvm::Value* instance;
         llvm::Value* instancePtr;
-        const std::vector<llvm::Value*>& args;
+        std::vector<llvm::Value*> args;
     };
 }
 

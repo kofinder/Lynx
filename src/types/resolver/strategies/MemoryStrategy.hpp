@@ -37,11 +37,20 @@ namespace LynxTypes {
     // Base Interface
     // ============================================================================
     struct MemoryStrategy {
+
+        MemoryStrategy() = default;
+    
+        // Rule of Fives
+        MemoryStrategy(const MemoryStrategy&) = delete;
+        MemoryStrategy& operator=(const MemoryStrategy&) = delete;
+        MemoryStrategy(MemoryStrategy&&) = delete;
+        MemoryStrategy& operator=(MemoryStrategy&&) = delete;
+        virtual ~MemoryStrategy() noexcept = default; 
+            
         [[nodiscard]] virtual llvm::Value* memcpy(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* memmove(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* memset(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* memsetPattern(const StrategyContext&) const noexcept = 0;
-        virtual ~MemoryStrategy() noexcept = default;
     };
 
 
@@ -56,10 +65,10 @@ namespace LynxTypes {
     // ============================================================================
     template<IntStrategyType T>
     struct MemoryStrategyImpl<T> : MemoryStrategy {
-        [[nodiscard]] llvm::Value* memcpy(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* memmove(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* memset(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* memsetPattern(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memcpy(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memmove(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memset(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memsetPattern(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
     };
 
     // ============================================================================
@@ -67,10 +76,10 @@ namespace LynxTypes {
     // ============================================================================
     template<FloatStrategyType T>
     struct MemoryStrategyImpl<T> : MemoryStrategy {
-        [[nodiscard]] llvm::Value* memcpy(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* memmove(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* memset(const StrategyContext&) const noexcept override { return nullptr; }
-        [[nodiscard]] llvm::Value* memsetPattern(const StrategyContext&) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memcpy(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memmove(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memset(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
+        [[nodiscard]] llvm::Value* memsetPattern(const StrategyContext& /*unused*/) const noexcept override { return nullptr; }
     };
 
     // ============================================================================

@@ -18,7 +18,8 @@
  * @date: November 2, 2024
 */
 
-#pragma once
+#ifndef LYNX_BASE_EXCEPTIONS_HPP
+#define LYNX_BASE_EXCEPTIONS_HPP
 
 #include <string>  
 #include <stdexcept> 
@@ -28,7 +29,7 @@ namespace LynxExceptions{
 
     class BaseException {  
 
-        protected:  
+        private:  
 
             std::string message;
 
@@ -36,9 +37,17 @@ namespace LynxExceptions{
 
             explicit BaseException(const std::string& exceptionMessage) : message(exceptionMessage) {}  
 
+            // Rule of Five compliance
+            BaseException(const BaseException&) = default;
+            BaseException(BaseException&&) noexcept = default;
+            BaseException& operator=(const BaseException&) = default;
+            BaseException& operator=(BaseException&&) noexcept = default;
+
             [[nodiscard]] virtual std::string getMessage() const { return message; }  
 
             virtual ~BaseException() = default;  
     };  
 
 }
+
+#endif

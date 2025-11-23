@@ -47,30 +47,46 @@ namespace LynxTypes {
             const BaseType* createWithStatic(bool newIsStatic) const override;
 
             const BaseType* createWithConst(bool newIsConst) const override;
-            
-        public:
 
-            explicit ArrayType(AstContext* context) : SequentialType(context) {}
-            
-            inline bool isIndexable() const noexcept override { return true; }
+        private:
 
-            inline DataType getTypeTag() const override { return DataType::ARRAY; }
+            llvm::Value* createConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const;
 
-            llvm::Value* createInstance(std::string variableName) override;
-
-            llvm::Value* createValue(std::vector<llvm::Value*> values) const override;
+            llvm::Value* createNonConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const;
 
             llvm::Value* getElementPointer(llvm::Value* arrayAlloca, int index) const;
             
             llvm::Value* getElementPointer(llvm::Value* arrayAlloca, int outerIndex, int innerIndex) const;
+            
+        public:
 
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<ArrayType>(*this); }
+            // Use explicit constructor for RAII
+            explicit ArrayType(AstContext* context) : SequentialType(context) {}
 
-            const BaseType* getElementType() const override { return elementType; }
+            // Public copy constructor, needed for clone()
+            ArrayType(const ArrayType& other) : SequentialType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
 
-            const size_t getNumElements() const { return numElements; }
+            // Rule of five: allow default destructor, delete others
+            ~ArrayType() override = default;
+            ArrayType& operator=(const ArrayType&) = delete;
+            ArrayType(ArrayType&&) = delete;
+            ArrayType& operator=(ArrayType&&) = delete;
 
-            void setElementType(BaseType* eleType) override { elementType = eleType; }
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<ArrayType>(*this);
+            }
+
+            bool isIndexable() const noexcept override { return true; }
+
+            DataType getTypeTag() const override { return DataType::ARRAY; }
+
+            llvm::Value* createInstance(const std::string& variableName) override;
+
+            llvm::Value* createValue(std::vector<llvm::Value*> values) const override;
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -80,7 +96,7 @@ namespace LynxTypes {
 
             bool equals(const BaseType* other) const override;
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "vector"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 
@@ -89,8 +105,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-    
-            ~ArrayType() override = default;
     };
 }
 

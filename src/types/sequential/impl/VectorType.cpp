@@ -1,163 +1,138 @@
 #include "sequential/VectorType.hpp"
 #include <context/AstContext.hpp>
+#include <constants/MagicNumericConstants.hpp>
 
 namespace LynxTypes {
 
-    llvm::Type* VectorType::computeLLVMType() const {
-        llvm::Type* elemLLVMType = elementType->getLLVMType();
-        if (!elemLLVMType) {
-            LOG_ERROR("Element type is null.");
-            return nullptr;
-        }
+    using namespace LynxConstants;
 
+    llvm::Type* VectorType::computeLLVMType() const {
+        auto* elementType = getElementType();
+        if (!elementType) return nullptr;
+    
+        auto* elemLLVMType = elementType->getLLVMType();
+        auto numElements = getNumElements();
+        if (!elemLLVMType || numElements <= 0) return nullptr;
+    
+        auto& context = getLLVMContext();
+    
         if (llvm::isa<llvm::VectorType>(elemLLVMType) || llvm::isa<llvm::StructType>(elemLLVMType)) {
-            std::string nestedName = getSafeStructName();
-            llvm::StructType* existing = llvm::StructType::getTypeByName(astContext->getLLVMContext(), nestedName);
+            const auto nestedName = getSafeStructName();
+            auto* existing = llvm::StructType::getTypeByName(context, nestedName);
             if (existing) {
-                cachedLLVMType = existing;
+                setCachedLLVMType(existing);   // ✅ use setter
                 return existing;
             }
-            std::vector<llvm::Type*> members(numElements, elemLLVMType);
-            cachedLLVMType = llvm::StructType::create(astContext->getLLVMContext(), members, nestedName);
-            return cachedLLVMType;
+            const std::vector<llvm::Type*> members(numElements, elemLLVMType);
+            auto* newStruct = llvm::StructType::create(context, members, nestedName);
+            setCachedLLVMType(newStruct);      // ✅ use setter
+            return newStruct;
         }
-        
-        llvm::ElementCount ec = llvm::ElementCount::getFixed(numElements);
-        cachedLLVMType = llvm::VectorType::get(elemLLVMType, ec);
-        return cachedLLVMType;
+    
+        const auto eleSize = llvm::ElementCount::getFixed(numElements);
+        auto* vectorType = llvm::VectorType::get(elemLLVMType, eleSize);
+        setCachedLLVMType(vectorType);        // ✅ use setter
+        return vectorType;
     }    
     
     llvm::Type* VectorType::getLLVMPointerType() const {
-        LOG_INFO("Invoked...");
         return computeLLVMType();
     }
 
     llvm::Value* VectorType::getDefaultValue() {
-        llvm::Type* vecType = computeLLVMType();
-        return llvm::Constant::getNullValue(vecType);    
+        return llvm::Constant::getNullValue(computeLLVMType());    
     }
 
-    llvm::Value* VectorType::createInstance(std::string variableName) {
-        LOG_INFO("Invoked...");
-        llvm::Type* vectorType = this->computeLLVMType();
-        auto& builder = astContext->getBuilder();        
-        auto var = builder.CreateAlloca(vectorType, nullptr, variableName);
+    llvm::Value* VectorType::createInstance(const std::string& variableName) {
+        auto& builder = getBuilder();        
+        auto* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::vectorType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
         }
-        var->setAlignment(llvm::Align(32));
+        var->setAlignment(llvm::Align(VECTOR_DEFAULT_ALIGN_SIZE));
         return var;
     }
 
-    llvm::Value* VectorType::createValue(std::vector<llvm::Value*> values) const {
-        LOG_INFO("Invoked...");
-
-        llvm::Type* elemType = elementType->getLLVMType();
-        llvm::Type* computedType = computeLLVMType();
-    
-        if (values.empty()) {
-            return llvm::UndefValue::get(computedType);
+    llvm::Value* VectorType::createConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const {
+        llvm::SmallVector<llvm::Constant*, VECTOR_DEFAULT_ALIGN_SIZE> consts;
+        for (auto* val : values) {
+            if (auto* elem = llvm::dyn_cast<llvm::Constant>(val)) {
+                consts.push_back(elem);
+            } else {
+                return llvm::UndefValue::get(structTy);
+            }
         }
+        return llvm::ConstantStruct::get(structTy, consts);
+    }
     
-        bool allConstant = std::all_of(values.begin(), values.end(), [](llvm::Value* v) {
-            return llvm::isa<llvm::Constant>(v);
+    llvm::Value* VectorType::createNonConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const {
+        auto& builder = getBuilder();
+        llvm::Value* aggregate = llvm::UndefValue::get(structTy);
+        for (unsigned i = 0; i < values.size(); ++i) {
+            aggregate = builder.CreateInsertValue(aggregate, values[i], {i});
+        }
+        return aggregate;
+    }
+    
+
+    llvm::Value* VectorType::createValue(const std::vector<llvm::Value*> values) const {
+        auto* computedType = computeLLVMType();
+        if (!computedType) return nullptr;
+        if (values.empty()) return llvm::UndefValue::get(computedType);
+    
+        const bool allConstants = std::ranges::all_of(values, [](llvm::Value* value) {
+            return llvm::isa<llvm::Constant>(value);
         });
     
-        if (auto* vecTy = llvm::dyn_cast<llvm::VectorType>(computedType)) {
-            if (allConstant) {
-                llvm::SmallVector<llvm::Constant*, 8> constants;
-                for (llvm::Value* v : values) {
-                    constants.push_back(llvm::cast<llvm::Constant>(v));
-                }
-                return llvm::ConstantVector::get(constants);
-            } else {
-                llvm::Value* vec = llvm::UndefValue::get(vecTy);
-                auto& builder = astContext->getBuilder();
-                for (unsigned i = 0; i < values.size(); ++i) {
-                    vec = builder.CreateInsertElement(vec, values[i], builder.getInt32(i));
-                }
-                return vec;
-            }
+        if (auto* outerStruct = llvm::dyn_cast<llvm::StructType>(computedType)) {
+            if (allConstants) return createConstantStructValue(outerStruct, values);
+            return createNonConstantStructValue(outerStruct, values);
         }
     
-        if (auto* structTy = llvm::dyn_cast<llvm::StructType>(computedType)) {
-            if (!allConstant) {
-                LOG_ERROR("Nested vector init must be constant");
-                return nullptr;
-            }
-            llvm::SmallVector<llvm::Constant*, 8> nestedConstants;
-            for (llvm::Value* val : values) {
-                nestedConstants.push_back(llvm::cast<llvm::Constant>(val));
-            }
-            return llvm::ConstantStruct::get(structTy, nestedConstants);
-        }
-    
-        LOG_ERROR("Unhandled LLVM type in VectorType::createValue()");
-        return nullptr;
+        return llvm::UndefValue::get(computedType);
     }
     
     llvm::Value* VectorType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
-    }
-
-    const BaseType* VectorType::createWithStatic(bool newIsStatic) const {
-        auto clone = std::make_shared<VectorType>(astContext);
-        clone->setElementType(elementType);
-        clone->setStatic(newIsStatic);
-        clone->setConst(isConst());
-        return clone.get();
-    }
-
-    const BaseType* VectorType::createWithConst(bool newIsConst) const {
-        auto clone = std::make_shared<VectorType>(astContext);
-        clone->setElementType(elementType);
-        clone->setConst(newIsConst);
-        clone->setStatic(isStatic());
-        return clone.get();
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
     bool VectorType::equals(const BaseType* other) const {
-        return false;
+        if (other->getTypeTag() != DataType::VECTOR) return false;
+        const auto* otherVector = dynamic_cast<const VectorType*>(other);
+        auto eleSize = getNumElements();
+        auto* eleType = getElementType();
+        return otherVector && eleSize == otherVector->getNumElements() && eleType->equals(otherVector->getElementType());
     }
 
+    // NOLINTNEXTLINE(misc-no-recursion)
     std::string VectorType::getSafeStructName(std::unordered_set<const BaseType*>& visited) const {
-        if (visited.find(this) != visited.end()) {
-            return "vec_recursive";
-        }
+        if (visited.contains(this)) return "vec_recursive";
+        
         visited.insert(this);
     
-        if (auto nested = dynamic_cast<const VectorType*>(elementType)) {
-            return "vec_nested_" + std::to_string(numElements) + "_of_" + nested->getSafeStructName(visited);
-        }
-        return "vec_of_" + elementType->getDebugName() + "_" + std::to_string(numElements);
-    }
+        auto eleSize = getNumElements();
+        auto* eleType = getElementType();
+
+        if (!eleType) return "vec_unknown_" + std::to_string(eleSize);
     
+        if (const auto* nested = dynamic_cast<const VectorType*>(eleType)) {
+            return "vec_nested_" + std::to_string(eleSize) + "_of_" + nested->getSafeStructName(visited);
+        }
+    
+        return "vec_of_" + eleType->getDebugName() + "_" + std::to_string(eleSize);
+    }
 
     std::string VectorType::getSafeStructName() const {
         std::unordered_set<const BaseType*> visited;
         return getSafeStructName(visited);    
     }
-    
 
-    std::string VectorType::getDebugName() const {
-        return "vector<" + elementType->getDebugName() + ">";
-    }
+    const BaseType* VectorType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
+    const BaseType* VectorType::createWithConst(bool /*newIsConst*/) const { return nullptr; }
 
-    llvm::DIType* VectorType::getDIType(llvm::DIScope* scope) const {
-        return elementType->getDIType(scope);
-    }
-
-    uint64_t VectorType::getDebugSizeInBits() const {
-        return elementType->getDebugSizeInBits() * 4; 
-    }
-
-    uint32_t VectorType::getDebugAlignInBits() const {
-        return elementType->getDebugAlignInBits();
-    }
-
-    llvm::DINode::DIFlags VectorType::getDIFlags() const {
-        return llvm::DINode::FlagZero;
-    }
+    llvm::DIType* VectorType::getDIType(llvm::DIScope* /*scope*/) const { return nullptr;  }
+    uint64_t VectorType::getDebugSizeInBits() const { return DEFAULT_ALIGN_BITS; }
+    uint32_t VectorType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
+    llvm::DINode::DIFlags VectorType::getDIFlags() const { return llvm::DINode::FlagZero; }
 }

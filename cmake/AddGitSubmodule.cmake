@@ -8,7 +8,7 @@ function(add_git_submodule dir)
     endif()
 
     if(EXISTS ${CMAKE_SOURCE_DIR}/${dir}/CMakeLists.txt)
-        message("Adding: ${dir}/CMakeLists.txt")
+        #message("Adding: ${dir}/CMakeLists.txt")
         add_subdirectory(${dir})
     else()
         message("Could not add: ${dir}/CMakeLists.txt")

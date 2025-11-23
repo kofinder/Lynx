@@ -48,29 +48,41 @@ namespace LynxTypes {
 
         public:
 
+            // Use explicit constructor for RAII
             explicit StackType(AstContext* context) : SequentialType(context) {}
 
-            inline DataType getTypeTag() const override { return DataType::STACK; }
+            // Public copy constructor, needed for clone()
+            StackType(const StackType& other) : SequentialType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
 
-            llvm::Value* createInstance(std::string variableName) override;
+            // Rule of five: allow default destructor, delete others
+            ~StackType() override = default;
+            StackType& operator=(const StackType&) = delete;
+            StackType(StackType&&) = delete;
+            StackType& operator=(StackType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<StackType>(*this);
+            }
+
+            DataType getTypeTag() const override { return DataType::STACK; }
+
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
             llvm::Value* createValue(std::vector<llvm::Value*> values) const override;
             
-            const BaseType* getElementType() const override { return elementType; }
-
-            void setElementType(BaseType* eleType) override { elementType = eleType; }
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<StackType>(*this); }
-
             llvm::Type* getLLVMPointerType() const override;
 
             llvm::Value* getDefaultValue() override;
 
             bool equals(const BaseType* other) const override;
 
-            std::string getDebugName() const override;
+            std::string getDebugName() const override { return "stack"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 
@@ -79,8 +91,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~StackType() override = default;
     };
 }
 

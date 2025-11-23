@@ -57,12 +57,13 @@
 #include <types/wrapper/ReferenceType.hpp>
 #include <types/wrapper/PointerType.hpp>
 #include <types/infrerence/AutoType.hpp>
-
-
-using namespace LynxConstants;
-using namespace LynxContext;
+#include <constants/MagicNumericConstants.hpp>
 
 namespace LynxTypes::TypeCasting {
+
+    using namespace LynxConstants;
+    using namespace LynxContext;
+
 
     /**
      * @brief Casts a BaseType pointer to a derived type T.
@@ -121,243 +122,243 @@ namespace LynxTypes::TypeCasting {
     }
 
     template <>
-    inline const AutoType* castType<AutoType>(const BaseType* type) {
-        if(!type) {
-            std::cerr << "Base Type is null, doububle check please!" << std::endl;
+    inline const AutoType* castType<AutoType>(const BaseType* base) {
+        if(!base) {
+            std::cerr << "Base Type is null, doububle check please!";
             return nullptr;
         }
-        return static_cast<const AutoType*>(type);
+        return dynamic_cast<const AutoType*>(base);
     }
 
     template <>
-    inline const ByteType* castType<ByteType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::BYTE) {
-            return static_cast<const ByteType*>(type);
+    inline const ByteType* castType<ByteType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::BYTE) {
+            return dynamic_cast<const ByteType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const ShortType* castType<ShortType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::SHORT) {
-            return static_cast<const ShortType*>(type);
+    inline const ShortType* castType<ShortType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::SHORT) {
+            return dynamic_cast<const ShortType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const IntegerType* castType<IntegerType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::INT) {
-            return static_cast<const IntegerType*>(type);
+    inline const IntegerType* castType<IntegerType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::INT) {
+            return dynamic_cast<const IntegerType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const LongType* castType<LongType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::LONG) {
-            return static_cast<const LongType*>(type);
+    inline const LongType* castType<LongType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::LONG) {
+            return dynamic_cast<const LongType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const FloatType* castType<FloatType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::FLOAT) {
-            return static_cast<const FloatType*>(type);
+    inline const FloatType* castType<FloatType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::FLOAT) {
+            return dynamic_cast<const FloatType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const DoubleType* castType<DoubleType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::DOUBLE) {
-            return static_cast<const DoubleType*>(type);
+    inline const DoubleType* castType<DoubleType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::DOUBLE) {
+            return dynamic_cast<const DoubleType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const CharType* castType<CharType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::CHAR) {
-            return static_cast<const CharType*>(type);
+    inline const CharType* castType<CharType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::CHAR) {
+            return dynamic_cast<const CharType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const BooleanType* castType<BooleanType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::BOOLEAN) {
-            return static_cast<const BooleanType*>(type);
+    inline const BooleanType* castType<BooleanType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::BOOLEAN) {
+            return dynamic_cast<const BooleanType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const StringType* castType<StringType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::STRING) {
-            return static_cast<const StringType*>(type);
+    inline const StringType* castType<StringType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::STRING) {
+            return dynamic_cast<const StringType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const VoidType* castType<VoidType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::VOID) {
-            return static_cast<const VoidType*>(type);
+    inline const VoidType* castType<VoidType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::VOID) {
+            return dynamic_cast<const VoidType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const DateType* castType<DateType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::DATE) {
-            return static_cast<const DateType*>(type);
+    inline const DateType* castType<DateType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::DATE) {
+            return dynamic_cast<const DateType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const DateTimeType* castType<DateTimeType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::DATETIME) {
-            return static_cast<const DateTimeType*>(type);
+    inline const DateTimeType* castType<DateTimeType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::DATETIME) {
+            return dynamic_cast<const DateTimeType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const FileType* castType<FileType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::FILE) {
-            return static_cast<const FileType*>(type);
+    inline const FileType* castType<FileType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::FILE) {
+            return dynamic_cast<const FileType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const EnumType* castType<EnumType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::ENUM) {
-            return static_cast<const EnumType*>(type);
+    inline const EnumType* castType<EnumType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::ENUM) {
+            return dynamic_cast<const EnumType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const ClassType* castType<ClassType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::CLAZZ) {
-            return static_cast<const ClassType*>(type);
+    inline const ClassType* castType<ClassType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::CLAZZ) {
+            return dynamic_cast<const ClassType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const InterfaceType* castType<InterfaceType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::INTERFACE) {
-            return static_cast<const InterfaceType*>(type);
+    inline const InterfaceType* castType<InterfaceType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::INTERFACE) {
+            return dynamic_cast<const InterfaceType*>(base);
         }
         return nullptr;
     }
 
     
     template <>
-    inline const MixinType* castType<MixinType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::MIXIN) {
-            return static_cast<const MixinType*>(type);
+    inline const MixinType* castType<MixinType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::MIXIN) {
+            return dynamic_cast<const MixinType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const FunctionType* castType<FunctionType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::FUNCTION) {
-            return static_cast<const FunctionType*>(type);
+    inline const FunctionType* castType<FunctionType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::FUNCTION) {
+            return dynamic_cast<const FunctionType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const ReferenceType* castType<ReferenceType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::REFERENCE) {
-            return static_cast<const ReferenceType*>(type);
+    inline const ReferenceType* castType<ReferenceType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::REFERENCE) {
+            return dynamic_cast<const ReferenceType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const PointerType* castType<PointerType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::POINTER) {
-            return static_cast<const PointerType*>(type);
+    inline const PointerType* castType<PointerType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::POINTER) {
+            return dynamic_cast<const PointerType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const ArrayType* castType<ArrayType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::ARRAY) {
-            return static_cast<const ArrayType*>(type);
+    inline const ArrayType* castType<ArrayType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::ARRAY) {
+            return dynamic_cast<const ArrayType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const ListType* castType<ListType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::LIST) {
-            return static_cast<const ListType*>(type);
+    inline const ListType* castType<ListType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::LIST) {
+            return dynamic_cast<const ListType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const QueueType* castType<QueueType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::QUEUE) {
-            return static_cast<const QueueType*>(type);
+    inline const QueueType* castType<QueueType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::QUEUE) {
+            return dynamic_cast<const QueueType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const SetType* castType<SetType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::SET) {
-            return static_cast<const SetType*>(type);
+    inline const SetType* castType<SetType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::SET) {
+            return dynamic_cast<const SetType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const StackType* castType<StackType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::STACK) {
-            return static_cast<const StackType*>(type);
+    inline const StackType* castType<StackType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::STACK) {
+            return dynamic_cast<const StackType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const VectorType* castType<VectorType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::VECTOR) {
-            return static_cast<const VectorType*>(type);
+    inline const VectorType* castType<VectorType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::VECTOR) {
+            return dynamic_cast<const VectorType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const MapType* castType<MapType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::VECTOR) {
-            return static_cast<const MapType*>(type);
+    inline const MapType* castType<MapType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::VECTOR) {
+            return dynamic_cast<const MapType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const DictionaryType* castType<DictionaryType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::VECTOR) {
-            return static_cast<const DictionaryType*>(type);
+    inline const DictionaryType* castType<DictionaryType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::VECTOR) {
+            return dynamic_cast<const DictionaryType*>(base);
         }
         return nullptr;
     }
 
     template <>
-    inline const CollectionType* castType<CollectionType>(const BaseType* type) {
-        if (type && type->getTypeTag() == DataType::COLLECTION) {
-            return static_cast<const CollectionType*>(type);
+    inline const CollectionType* castType<CollectionType>(const BaseType* base) {
+        if (base && base->getTypeTag() == DataType::COLLECTION) {
+            return dynamic_cast<const CollectionType*>(base);
         }
         return nullptr;
     }

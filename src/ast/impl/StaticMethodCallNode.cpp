@@ -15,14 +15,17 @@ namespace LynxAst {
         }
     
         auto& registry = astContext->getMethodTypeRegistry();
-        if (!registry.hasMethod(typeName, methodName)) {
+        const TypeName type{typeName};
+        const MethodName method{methodName};
+    
+        if (!registry.hasMethod(type, method)) {
             std::string msg = "Runtime Error: Static method '" + methodName + "' does not exist on type '" + typeName + "'.";
             throw std::runtime_error(msg);
         }
 
-        if (!registry.validateMethodCall(typeName, methodName, arguments->size())) {
+        if (!registry.validateMethodCall(type, method, arguments->size())) {
             std::string msg = "Runtime Error: Static method '" + methodName + "' on type '" + typeName +
-                                "' expects " + std::to_string(registry.getExpectedParamCount(typeName, methodName)) +
+                                "' expects " + std::to_string(registry.getExpectedParamCount(type, method)) +
                                 " arguments, but " + std::to_string(arguments->size()) + " were provided.";
             throw std::runtime_error(msg);
         }
@@ -33,15 +36,19 @@ namespace LynxAst {
             argValues.push_back(arg->generateCode(astContext->createContext()));
         }
     
-        TypeMethodCallVisitor visitor(methodName, argValues);
+        auto visitor = TypeMethodCallVisitor::Builder()
+                    .nameOf(methodName)
+                    .arguments(argValues)
+                    .build();
         baseType->accept(visitor);
+        auto* result = visitor.getResult();
 
-        if (!visitor.result) {
+        if (!result) {
             std::string msg = "Runtime Error: Failed to execute method '" + methodName  + "' of type '" + typeName + "'.";
             throw std::runtime_error(msg);
         }
 
-        return visitor.result;
+        return result;
     }
 
     std::unique_ptr<Node> StaticMethodCallNode::clone() const  {

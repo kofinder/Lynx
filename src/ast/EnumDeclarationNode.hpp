@@ -65,7 +65,7 @@ namespace LynxAst {
             llvm::Value* generateCode(std::shared_ptr<AstContext> astContext) override;
 
             const std::string getEnumName() const { return enumName; }
-
+    
             void addMember(const std::string& name, const std::variant<int, char, std::string>& value);
 
             [[nodiscard]] inline std::vector<std::pair<std::string, std::variant<int, char, std::string>>> getMembers() const noexcept { return members; }

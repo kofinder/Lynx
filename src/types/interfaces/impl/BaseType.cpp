@@ -5,39 +5,44 @@
 namespace LynxTypes {
 
     llvm::Type* BaseType::getLLVMType() const {
+        
         if (cachedLLVMType != nullptr) return cachedLLVMType;
     
         auto& context = astContext->getLLVMContext();
     
-        // Assign placeholder to avoid recursion
         cachedLLVMType = llvm::StructType::create(context, "incomplete.llvm.type");
     
         llvm::Type* finalType = computeLLVMType();
 
-        if (!finalType) {
-            return cachedLLVMType;
-        }    
+        if (!finalType) return cachedLLVMType;
 
         if (finalType != cachedLLVMType) cachedLLVMType = finalType;
 
         return cachedLLVMType;
     }
+
+    llvm::LLVMContext& BaseType::getLLVMContext() const noexcept { return astContext->getLLVMContext(); }
+
+    llvm::IRBuilder<>& BaseType::getBuilder() const noexcept { return astContext->getBuilder(); }
+
+    llvm::Module* BaseType::getModule() const noexcept { return astContext->getModule(); }
     
     const std::unordered_map<std::string_view, int>& BaseType::getMethodRegistry() const {
         static const std::unordered_map<std::string_view, int> emptyRegistry;
         return emptyRegistry;
     }   
 
-    llvm::Value* BaseType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
+    llvm::Value* BaseType::emitMethodCall(
+        llvm::Value* /*instance*/, 
+        llvm::Value* /*instance*/, 
+        const std::string& /*instance*/, 
+        const std::vector<llvm::Value*>& /*instance*/
+    ) {
         return nullptr;
     }
-
-    TypeMethodResolver* BaseType::getOrCreateResolver() const {
-        return nullptr;
-    }
-
+    
     BaseType::~BaseType() {
-        if(resolver) delete resolver;
+        delete resolver;
         resolver = nullptr;        
     };
 }

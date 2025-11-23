@@ -35,8 +35,8 @@ message(STATUS "📚 Doc Tag: ${LYNX_DOC_REPO_TAG}")
 # Options
 # ===============================
 option(ENABLE_TESTING "Enable Unit Testing" OFF)
-option(ENABLE_LTO "Enable LTO optimizations" OFF)
-option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis" OFF)
+option(ENABLE_LTO "Enable LTO optimizations" ON)
+option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis" ON)
 option(ENABLE_WARNINGS "Enable warnings" OFF)
 option(ENABLE_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
 option(ENABLE_SANITIZER_ADDRESS "Enable Address Sanitizer" OFF)
@@ -60,28 +60,17 @@ add_git_submodule(external/cxxopts)
 add_git_submodule(external/yaml-cpp)
 add_git_submodule(external/spdlog)
 add_git_submodule(external/fmt)
-add_git_submodule(external/skia)
 
 # ===============================
 # Optional Integrations
 # ===============================
-include(FindSkia)
 include(Docs)
-
-# ===============================
-# Clang-Tidy
-# ===============================
-
-if(ENABLE_CLANG_TIDY)
-    include(ClangTidy)
-    enable_clang_tidy_for_target(${LYNX_EXECUTABLE})
-endif()
 
 # ===============================
 # Link Time Optimization (LTO)
 # ===============================
+include(LTO) 
 if(ENABLE_LTO)
-    include(LTO) 
     set(CMAKE_LINKER /usr/local/llvm-21/bin/clang++)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld")
 endif()
@@ -89,25 +78,50 @@ endif()
 # ===============================
 # Sanitizers
 # ===============================
+include(Sanitizers)
 if(ENABLE_SANITIZER_ADDRESS OR ENABLE_SANITIZER_UNDEFINED)
-    include(Sanitizers)
     add_sanitizer_flags()
 endif()
 
 # ===============================
 # Compiler Warnings
 # ===============================
+include(Warnings)
 if(ENABLE_WARNINGS)
-    include(Warnings)
     target_set_warnings(${LYNX_EXECUTABLE} ${ENABLE_WARNINGS} ${ENABLE_WARNINGS_AS_ERRORS})
 endif()
 
+
 # ===============================
-# UI Support
+# Clang-Tidy
 # ===============================
-if(ENABLE_UI)
-    # target_compile_definitions(${LYNX_EXECUTABLE} PRIVATE ENABLE_UI=1)
-    # target_link_libraries(${LYNX_EXECUTABLE} ui_parser)
-else()
-    # target_compile_definitions(${LYNX_EXECUTABLE} PRIVATE ENABLE_UI=0)
+include(ClangTidy)
+if(ENABLE_CLANG_TIDY)
+    enable_clang_tidy_for_target(${LYNX_EXECUTABLE})
 endif()
+
+# if(ENABLE_CLANG_TIDY)
+    # include(ClangTidy)
+    # enable_clang_tidy_for_target(${LYNX_EXECUTABLE})
+    # enable_clang_tidy_for_target(LynxLogger)
+    # enable_clang_tidy_for_target(LynxExceptions)
+    # enable_clang_tidy_for_target(LynxTypes)
+    # enable_clang_tidy_for_target(LynxLang)
+    # enable_clang_tidy_for_target(LynxAst) 
+    # enable_clang_tidy_for_target(LynxMangler) 
+    # enable_clang_tidy_for_target(LynxJIT) 
+    # enable_clang_tidy_for_target(LynxProgramConfig)
+    # enable_clang_tidy_for_target(LynxCLI) 
+    # enable_clang_tidy_for_target(LynxCodegen) 
+    # enable_clang_tidy_for_target(LynxLinker) 
+    # enable_clang_tidy_for_target(LynxFunctionAttr) 
+    # enable_clang_tidy_for_target(LynxCallConv)
+    # enable_clang_tidy_for_target(LynxAnalyzer) 
+    # enable_clang_tidy_for_target(LynxLTO) 
+    # enable_clang_tidy_for_target(LynxCore) 
+    # enable_clang_tidy_for_target(LynxRuntime)
+    # enable_clang_tidy_for_target(LynxErrors)
+    # enable_clang_tidy_for_target(LynxBridge) 
+    # enable_clang_tidy_for_target(LynxPlatform) 
+    # enable_clang_tidy_for_target(LynxCollection)
+# endif()

@@ -24,19 +24,20 @@
 namespace LynxTypes::DFSUtils {
 
 
-    enum class VisitState { UNVISITED, VISITING, VISITED };
+    enum class VisitState : std::uint8_t { UNVISITED, VISITING, VISITED };
 
+    // NOLINTNEXTLINE(misc-no-recursion)
     inline bool topoDFS(
         const MixinType* mixin,
         std::unordered_map<const MixinType*, VisitState>& state,
         std::vector<const MixinType*>& order
     ) {
-        auto it = state.find(mixin);
-        if (it != state.end()) {
-            if (it->second == VisitState::VISITING) {
+        auto itr = state.find(mixin);
+        if (itr != state.end()) {
+            if (itr->second == VisitState::VISITING) {
                 throw std::runtime_error("Cycle detected in mixins: " + mixin->originalName());
             }
-            if (it->second == VisitState::VISITED) return false;
+            if (itr->second == VisitState::VISITED) return false;
         }
 
         state[mixin] = VisitState::VISITING;

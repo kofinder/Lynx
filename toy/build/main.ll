@@ -4,8 +4,8 @@ target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:
 target triple = "x86_64-unknown-linux-gnu"
 
 @lynx.string.constant = private constant [21 x i8] c"binary_expression : \00"
-@fmt = private unnamed_addr constant [7 x i8] c"%s %d\0A\00", align 1
-@fmt.1 = private unnamed_addr constant [4 x i8] c"%s\0A\00", align 1
+@fmt = private unnamed_addr constant [7 x i8] c"%p %d\0A\00", align 1
+@fmt.1 = private unnamed_addr constant [4 x i8] c"%p\0A\00", align 1
 @fmt.2 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
 
 ; Function Attrs: alwaysinline

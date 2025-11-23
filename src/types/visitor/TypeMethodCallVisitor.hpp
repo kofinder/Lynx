@@ -42,6 +42,8 @@
 
 namespace LynxTypes {
 
+    struct InstancePair { llvm::Value* value{nullptr}; llvm::Value* ptr{nullptr}; };
+
     struct TypeMethodCallVisitor : public TypeVisitor {
 
         private:
@@ -49,18 +51,23 @@ namespace LynxTypes {
             std::string methodName;
             llvm::Value* instance = nullptr;
             llvm::Value* instancePtr = nullptr;
-            const std::vector<llvm::Value*>& argValuesRef;
-        
-        public:
-
             llvm::Value* result = nullptr;
-
+            std::vector<llvm::Value*> argValues;
+        
         private:
+
+            friend struct Builder; // allow builder access
+
+            TypeMethodCallVisitor(
+                std::string name, 
+                InstancePair instPair,
+                std::vector<llvm::Value*> args
+            ) noexcept : methodName(std::move(name)), instance(instPair.value), instancePtr(instPair.ptr), argValues(std::move(args)) {}
 
             template<typename T>
             void dispatch(T& type) {
                 if constexpr (MethodCapable<T>) {
-                    result = codegenMethod(type, instance, instancePtr, methodName, argValuesRef);
+                    result = codegenMethod(type, instance, instancePtr, methodName, argValues);
                 } else {
                     std::cerr << "This type has no static method support \n";
                     result = nullptr;
@@ -69,17 +76,24 @@ namespace LynxTypes {
 
         public:
 
-            TypeMethodCallVisitor(
-                const std::string& name, 
-                const std::vector<llvm::Value*>& argValues
-            ): methodName(std::move(name)), argValuesRef(std::move(argValues)) {}
+            struct Builder {
+                std::string name;
+                llvm::Value* inst = nullptr;
+                llvm::Value* instPtr = nullptr;
+                std::vector<llvm::Value*> args;
+            
+                Builder& nameOf(const std::string& _name) { name = _name; return *this; }
+                Builder& instance(llvm::Value* _inst) { inst = _inst; return *this; }
+                Builder& instancePtr(llvm::Value* _instPtr) { instPtr = _instPtr; return *this; }
+                Builder& arguments(std::vector<llvm::Value*> _args) { args = std::move(_args); return *this; }
+            
+                TypeMethodCallVisitor build() {
+                    const InstancePair instPair { .value = inst, .ptr = instPtr };
+                    return { name, instPair, args };
+                }
+            };
 
-            TypeMethodCallVisitor(
-                std::string name, 
-                llvm::Value* inst,
-                llvm::Value* instPtr,
-                const std::vector<llvm::Value*>& argValues
-            ) : methodName(std::move(name)), instance(inst), instancePtr(instPtr), argValuesRef(argValues) {}    
+            [[nodiscard]] llvm::Value* getResult() const noexcept { return result; }
 
             void visit(ByteType& type) override { dispatch(type); }
             void visit(ShortType& type) override { dispatch(type); }
@@ -92,6 +106,10 @@ namespace LynxTypes {
             void visit(StringType& type) override { dispatch(type); } 
 
             ~TypeMethodCallVisitor() override = default;
+            TypeMethodCallVisitor(const TypeMethodCallVisitor&) = delete;
+            TypeMethodCallVisitor& operator=(const TypeMethodCallVisitor&) = delete;
+            TypeMethodCallVisitor(TypeMethodCallVisitor&&) = delete;
+            TypeMethodCallVisitor& operator=(TypeMethodCallVisitor&&) = delete;        
     };
 }
 

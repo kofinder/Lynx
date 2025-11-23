@@ -1,4 +1,9 @@
-#include "Logger.hpp"  
+#include "Logger.hpp"
+
+namespace {
+    constexpr std::size_t kAsyncQueueSize = 8192;
+    constexpr std::size_t kAsyncThreads = 1;
+}
 
 namespace LynxLogger {
 
@@ -10,9 +15,9 @@ namespace LynxLogger {
     }  
 
     LogManager::LogManager() noexcept {  
-        spdlog::init_thread_pool(8192, 1); // Example for async logging  
-       logger = spdlog::stdout_color_mt(k_main_logger); // Console logger  
-       logger->set_pattern("%^[%Y-%m-%d %H:%M:%S] %n: %v%$"); // Custom log format  
+        spdlog::init_thread_pool(kAsyncQueueSize, kAsyncThreads);
+        logger = spdlog::stdout_color_mt(k_main_logger); 
+        logger->set_pattern("%^[%Y-%m-%d %H:%M:%S] %n: %v%$");
     }  
 
     LogManager::~LogManager() noexcept {  spdlog::drop_all(); }  

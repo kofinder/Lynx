@@ -6,27 +6,22 @@
 namespace LynxTypes {
 
     llvm::Type* BooleanType::computeLLVMType() const {
-        LOG_INFO("Invoked...");
-        return llvm::Type::getInt1Ty(astContext->getLLVMContext());
+        return llvm::Type::getInt1Ty(getLLVMContext());
     }
 
     llvm::Type* BooleanType::getLLVMPointerType() const {
-        LOG_INFO("Invoked...");
-        auto* boolTy = llvm::Type::getInt1Ty(astContext->getLLVMContext());
+        auto* boolTy = llvm::Type::getInt1Ty(getLLVMContext());
         return llvm::PointerType::get(boolTy->getContext(), 0);
     }
 
     llvm::Value* BooleanType::getDefaultValue() {
-        LOG_INFO("Invoked...");
-        LValueType LValueType = false;
-        return this->createValue(LValueType);
+        const LValueType value = false;
+        return createValue(value);
     }
 
-    llvm::Value* BooleanType::createInstance(std::string variableName) {
-        LOG_INFO("Invoked...");
-        auto& builder = astContext->getBuilder();
-        llvm::Type* booType = this->getLLVMType();
-        auto var = builder.CreateAlloca(booType, nullptr, variableName);
+    llvm::Value* BooleanType::createInstance(const std::string& variableName) {
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName);
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::booleanType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -34,88 +29,42 @@ namespace LynxTypes {
         return var;
     }
 
-    llvm::Value* BooleanType::convertBooleanToString(llvm::Value* value) {
-        LOG_INFO("Invoked...");
-        auto& builder = astContext->getBuilder();
-        // Directly use the boolean (i1) to select the string value.
-        llvm::Value* booleanAsString = builder.CreateSelect(
-            value,  // Boolean condition (i1)
-            builder.CreateGlobalString("true"),  // If true
-            builder.CreateGlobalString("false")  // If false
-        );
-        
+    const llvm::Value* BooleanType::convertBooleanToString(llvm::Value* value) {
+        auto& builder = getBuilder();
+        const auto* booleanAsString = builder.CreateSelect(value, builder.CreateGlobalString("true"), builder.CreateGlobalString("false"));
         return booleanAsString;
     }
 
     llvm::Value* BooleanType::createValue(LValueType value) const {
-        LOG_ERROR("Invoked...");
         if(std::holds_alternative<bool>(value)) {
-            bool boolValue = std::get<bool>(value);
-            return llvm::ConstantInt::get(astContext->getLLVMContext(), llvm::APInt(1, boolValue));
+            const bool boolValue = std::get<bool>(value);
+            return llvm::ConstantInt::get(getLLVMContext(), llvm::APInt(1, static_cast<uint64_t>(boolValue)));
         }
-        LOG_ERROR("BooleanType: Unsupported value type!");
         return nullptr;
     }
 
     llvm::Value* BooleanType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        LOG_INFO("Invoked...");
-        if (!lhs || !rhs) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
     void BooleanType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
-
-    TypeMethodResolver* BooleanType::getOrCreateResolver() const { 
-        if (!resolver) resolver = new BoolMethodResolver();
-        return resolver;
-    }
+    
+    TypeMethodResolver* BooleanType::getOrCreateResolver() const { return nullptr; }
 
     llvm::Value* BooleanType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
-        LOG_ERROR("Emit Method Call Invocation.");
-        if (!resolver) resolver = getOrCreateResolver();
-        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
-    }
-
-    const BaseType* BooleanType::createWithStatic(bool newIsStatic) const {
-        return nullptr;
-    }
-
-    const BaseType* BooleanType::createWithConst(bool newIsConst) const {
-        return nullptr;
+        auto* resolver = getOrCreateResolver();
+        return resolver->resolveMethod(*getContext(), instance, instancePtr, methodName, args);
     }
 
     bool BooleanType::equals(const BaseType* other) const {
         return dynamic_cast<const BooleanType*>(other) != nullptr;
     }
 
-    std::string BooleanType::getDebugName() const { 
-        LOG_INFO("Invoked...");
-        return "bool"; 
-    }
+    const BaseType* BooleanType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
+    const BaseType* BooleanType::createWithConst(bool /*newIsConst*/) const { return nullptr; }
 
-    llvm::DIType* BooleanType::getDIType(llvm::DIScope* scope) const {
-        LOG_INFO("Invoked...");
-        auto& builder = astContext->getDebugBuilder();
-        return builder.createBasicType("bool", 1, llvm::dwarf::DW_ATE_boolean);
-    }
-
-    uint64_t BooleanType::getDebugSizeInBits() const {
-        LOG_INFO("Invoked...");
-        return 1;
-    }
-
-    uint32_t BooleanType::getDebugAlignInBits() const {
-        LOG_INFO("Invoked...");
-        return 1;
-    }
-
-    llvm::DINode::DIFlags BooleanType::getDIFlags() const {
-        LOG_INFO("Invoked...");
-        return llvm::DINode::FlagZero;
-    }
-
+    llvm::DIType* BooleanType::getDIType(llvm::DIScope* /*scope*/) const { return nullptr;  }
+    uint64_t BooleanType::getDebugSizeInBits() const { return DEFAULT_ALIGN_BITS; }
+    uint32_t BooleanType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
+    llvm::DINode::DIFlags BooleanType::getDIFlags() const { return llvm::DINode::FlagZero; }
 }

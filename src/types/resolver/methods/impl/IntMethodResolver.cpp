@@ -4,18 +4,6 @@
 
 namespace LynxTypes {
 
-    llvm::Value* IntMethodResolver::resolveTypeMethod(
-        const AstContext& ctx,
-        const std::string& method, 
-        const std::vector<llvm::Value*>& args
-    ) noexcept {
-        LOG_ERROR("Invoked...................");
-        // if (auto it = staticMethod.find(method); it != staticMethod.end()) {
-        //     return it->second(ctx.getLLVMContext());
-        // }
-        return nullptr;
-    }
-
     llvm::Value* IntMethodResolver::resolveInstanceMethod(
         const AstContext& ctx,
         llvm::Value* instance,
@@ -23,10 +11,15 @@ namespace LynxTypes {
         const std::string& method, 
         const std::vector<llvm::Value*>& args
     ) noexcept {
-        LOG_ERROR("Invoked...................");
 
-        Impl impl;
-        StrategyContext stgContext { ctx, instance, instancePtr, args };
+        const Impl impl;
+        const StrategyContext stgContext {     
+            .ctx = ctx,
+            .instance = instance,
+            .instancePtr = instancePtr,
+            .args = args
+         };
+        
         if (auto* value = invokeByName(impl.arithmetic, method, stgContext)) return value;
         if (auto* value = invokeByName(impl.bitwise, method, stgContext)) return value;
         if (auto* value = invokeByName(impl.abs, method, stgContext)) return value;
@@ -43,20 +36,15 @@ namespace LynxTypes {
         return nullptr;
     }
 
-    llvm::Value* IntMethodResolver::convertToString(const AstContext& ctx, llvm::Value* instance) noexcept {
-        LOG_ERROR("Invoked...................");
-        return nullptr;
-    }
+    llvm::Value* IntMethodResolver::resolveTypeMethod(
+        const AstContext& /*ctx*/,
+        const std::string& /*method*/, 
+        const std::vector<llvm::Value*>& /*args*/
+    ) noexcept { return nullptr; }
+    llvm::Value* IntMethodResolver::convertToString(const AstContext& /*ctx*/, llvm::Value* /*instance*/) noexcept { return nullptr; }
+    llvm::Value* IntMethodResolver::performClone(const AstContext& /*ctx*/, llvm::Value* /*instance*/) noexcept { return nullptr; }
+    llvm::Value* IntMethodResolver::performTypeCast(const AstContext& /*ctx*/, llvm::Value* /*instance*/, llvm::Type* /*llvmType*/) noexcept { return nullptr; }
 
-    llvm::Value* IntMethodResolver::performClone(const AstContext& ctx, llvm::Value* instance) noexcept {
-        LOG_ERROR("Invoked...................");
-        return nullptr;
-    }
-
-    llvm::Value* IntMethodResolver::performTypeCast(const AstContext& ctx, llvm::Value* instance, llvm::Type* targetType) noexcept {
-        LOG_ERROR("Invoked...................");
-        return nullptr;
-    }
 }
 
 

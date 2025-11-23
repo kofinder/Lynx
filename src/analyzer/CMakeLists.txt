@@ -85,4 +85,4 @@ target_link_libraries(LynxAnalyzer PUBLIC
 # =========================================
 # Message for clarity
 # =========================================
-message(STATUS "✅ LynxAnalyzer module configured")
+message(STATUS "✅ LynxAnalyzer module configured successfully!")

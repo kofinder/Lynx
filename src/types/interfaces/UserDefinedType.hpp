@@ -17,7 +17,7 @@
  * - ClassType, InterfaceType, EnumType, DateType, FunctionType
  *
  * **Design Notes:**
- * - Unlike BuiltInType or CollectionType, this represents higher-level, composite user abstractions.
+ * - Unlike UserDefinedType or CollectionType, this represents higher-level, composite user abstractions.
  * - Derived types must implement `clone()` and type-specific LLVM construction logic.
  *
  * @author: Ko Thein (Nathan Mratt)
@@ -38,46 +38,67 @@ namespace LynxTypes {
 
         public:
         
+            /**
+             * @brief Constructs a UserDefinedType with the given AST context.
+             * @param context Pointer to the AST context.
+            */
             explicit UserDefinedType(AstContext* context) : BaseType(context) {}
+            
+            // Rule of five: allow default destructor, delete others
+            ~UserDefinedType() override = default;
+            UserDefinedType(const UserDefinedType&) = delete;
+            UserDefinedType& operator=(const UserDefinedType&) = delete;
+            UserDefinedType(UserDefinedType&&) = delete;
+            UserDefinedType& operator=(UserDefinedType&&) = delete;
 
-            inline bool isUserDefinedType() const noexcept override { return true; }
+            /**
+             * @brief Indicates that this is a user-defined type.
+             * @return Always true.
+            */
+            bool isUserDefinedType() const noexcept override { return true; }
 
-            llvm::Value* createValue(LValueType value) const override {
-                astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));
-                return nullptr;
-            }
+            /**
+             * @brief Not implemented; returns nullptr.
+            */
+            llvm::Value* createValue(LValueType /*unused*/) const override { return nullptr; }
 
-            llvm::Value* createValue(std::vector<llvm::Value*> values) const override {
-                astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));
-                return nullptr;
-            }
+            /**
+             * @brief Not implemented; returns nullptr.
+            */
+            llvm::Value* createValue(std::vector<llvm::Value*> /*unused*/) const override { return nullptr; }
 
-            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> pairs) const override {
-                astContext->reportError(makeRuntimeError(" createValue ( K, V) doesn't support this createValue signature."));
-                return nullptr;  
-            }
+            /**
+             * @brief Not implemented; returns nullptr.
+            */
+            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*unused*/) const override { return nullptr;  }
 
+            /**
+             * @brief Determines if this user-defined type can accept another type.
+             *
+             * Checks for equality first. Then, if the other type is also a UserDefinedType,
+             * verifies that its type tag matches recognized user-defined types.
+             *
+             * @param other Pointer to another BaseType to check compatibility with.
+             * @return True if the type can be accepted, false otherwise.
+            */
             bool canAccept(const BaseType* other) const override {
                 if (equals(other)) return true;
-                auto o = dynamic_cast<const UserDefinedType*>(other);
-                if (!o) return false;
+                const auto* obj = dynamic_cast<const UserDefinedType*>(other);
+                if (!obj) return false;
                 switch (other->getTypeTag()) {
-                    case DataType::CLAZZ:    return true;
-                    case DataType::INTERFACE:   return true;
-                    case DataType::DATE:   return true;
-                    case DataType::DATETIME:   return true;
-                    case DataType::ENUM:   return true;
-                    case DataType::FILE:   return true;
-                    case DataType::FUNCTION:   return true;
-                    default: return false;
+                    case DataType::CLAZZ:
+                    case DataType::INTERFACE:
+                    case DataType::DATE:
+                    case DataType::DATETIME:
+                    case DataType::ENUM:
+                    case DataType::FILE:
+                    case DataType::FUNCTION:   
+                        return true;
+                    default: 
+                        return false;
                 }
-
                 return false;
             }
-
-            virtual std::unique_ptr<BaseType> clone() const override = 0;
-    
-            virtual ~UserDefinedType() override = default;
     };
 }
 

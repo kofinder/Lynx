@@ -36,16 +36,27 @@ namespace LynxTypes {
     
     struct TypeMethodResolver {
 
-        virtual llvm::Value* resolveMethod(
-            const AstContext& ctx,
-            llvm::Value* instance,
-            llvm::Value* instancePtr,
-            const std::string& method, 
-            const std::vector<llvm::Value*>& args
-        ) noexcept = 0;
+        public:
 
-        virtual ~TypeMethodResolver() noexcept = default;
-        
+            virtual llvm::Value* resolveMethod(
+                const AstContext& ctx,
+                llvm::Value* instance,
+                llvm::Value* instancePtr,
+                const std::string& method, 
+                const std::vector<llvm::Value*>& args
+            ) noexcept = 0;
+
+            virtual ~TypeMethodResolver() noexcept = default;
+
+            // Rule of Five compliance
+            TypeMethodResolver(const TypeMethodResolver&) = delete;
+            TypeMethodResolver& operator=(const TypeMethodResolver&) = delete;
+            TypeMethodResolver(TypeMethodResolver&&) = delete;
+            TypeMethodResolver& operator=(TypeMethodResolver&&) = delete;
+
+        protected:
+
+            TypeMethodResolver() = default;  // allow construction by derived classes
     };
 
 }

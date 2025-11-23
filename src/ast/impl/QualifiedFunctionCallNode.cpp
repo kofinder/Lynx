@@ -40,14 +40,18 @@ namespace LynxAst {
 
         const std::string typeName = dataTypeToString(baseType->getTypeTag());
         auto& registry = astContext->getMethodTypeRegistry();
-        if (!registry.hasMethod(typeName, funcName)) {
+
+        const TypeName type{typeName};
+        const MethodName method{funcName};
+    
+        if (!registry.hasMethod(type, method)) {
             std::string msg = "Runtime Error: Instance method '" + funcName + "' does not exist on type '" + typeName + "'.";
             throw std::runtime_error(msg);
         }
 
-        if (!registry.validateMethodCall(typeName, funcName, arguments->size())) {
+        if (!registry.validateMethodCall(type, method, arguments->size())) {
             std::string msg = "Runtime Error: Instance method '" + funcName + "' on type '" + typeName +
-                                "' expects " + std::to_string(registry.getExpectedParamCount(typeName, funcName)) +
+                                "' expects " + std::to_string(registry.getExpectedParamCount(type, method)) +
                                 " arguments, but " + std::to_string(arguments->size()) + " were provided.";
             throw std::runtime_error(msg);
         }
@@ -58,15 +62,22 @@ namespace LynxAst {
             argValues.push_back(arg->generateCode(astContext->createContext()));
         }
     
-        TypeMethodCallVisitor visitor(funcName, resolvedVar.value, resolvedVar.reference, argValues);
-        baseType->accept(visitor);
+        auto visitor = TypeMethodCallVisitor::Builder()
+                    .nameOf(funcName)
+                    .instance(resolvedVar.value)
+                    .instancePtr(resolvedVar.reference)
+                    .arguments(argValues)
+                    .build();
 
-        if (!visitor.result) {
+        baseType->accept(visitor);
+        auto* result = visitor.getResult();
+
+        if (!result) {
             std::string msg = "Runtime Error: Failed to execute method '" + funcName + "' on instance '" + varName + "' of type '" + typeName + "'.";
             throw std::runtime_error(msg);
         }
 
-        return visitor.result;    
+        return result;    
     }
 
     std::unique_ptr<Node> QualifiedFunctionCallNode::clone() const {

@@ -12,13 +12,7 @@
  * - Convenient macros for debug, info, warning, and error messages.
  * - Automatic source file, line number, and function tagging in logs.
  * - Uses spdlog for efficient and thread-safe logging.
- *
- * **Logging Macros:**
- * - `LOG_DEBUG(msg, ...)`
- * - `LOG_INFO(msg, ...)`
- * - `LOG_WARN(msg, ...)`
- * - `LOG_ERROR(msg, ...)`
- *
+ * 
  * @author: Ko Thein (Nathan Mratt)
  * @date: November 2, 2024
 */
@@ -26,16 +20,16 @@
 #ifndef LYNX_LOGGER_HPP
 #define LYNX_LOGGER_HPP
 
-#include "strings.h"
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
-#include <string>
-#include <spdlog/async.h>
-#include <spdlog/spdlog.h>
+#include <cstddef> 
+#include <memory>
+#include <string> 
+#include <spdlog/async.h> 
+#include <spdlog/spdlog.h> 
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
-
 
 namespace LynxLogger {
 
@@ -45,6 +39,12 @@ namespace LynxLogger {
         
             ~LogManager() noexcept;  
 
+            // Rule of Five compliance
+            LogManager(const LogManager&) = delete;
+            LogManager(LogManager&&) noexcept = delete;
+            LogManager& operator=(const LogManager&) = delete;
+            LogManager& operator=(LogManager&&) noexcept = delete;
+
             static LogManager& instance() noexcept;  
 
             std::shared_ptr<spdlog::logger> getGlobalLogger() noexcept;  
@@ -53,8 +53,7 @@ namespace LynxLogger {
 
         private: 
 
-            LogManager() noexcept;  
-
+            LogManager() noexcept;
             std::shared_ptr<spdlog::logger> logger;  
     };  
 
@@ -64,13 +63,43 @@ namespace LynxLogger {
 
     inline std::shared_ptr<spdlog::logger> getLogger(const std::string& name) noexcept {  
         return LogManager::instance().getLogger(name);  
-    }  
-
+    } 
+    
     #define FILE_NAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)  
-    #define LOG_DEBUG(msg, ...) LynxLogger::Logger()->debug("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)  
-    #define LOG_INFO(msg, ...) LynxLogger::Logger()->info("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)
-    #define LOG_WARN(msg, ...) LynxLogger::Logger()->warn("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)  
-    #define LOG_ERROR(msg, ...) LynxLogger::Logger()->error("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)  
+    #if defined(__clang_tidy__)
+        #define LOG_DEBUG(msg, ...) (void)0
+        #define LOG_INFO(msg, ...)  (void)0
+        #define LOG_WARN(msg, ...)  (void)0
+        #define LOG_ERROR(msg, ...) (void)0
+    #else
+        #define LOG_DEBUG(msg, ...) LynxLogger::Logger()->debug("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)
+        #define LOG_INFO(msg, ...)  LynxLogger::Logger()->info("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)
+        #define LOG_WARN(msg, ...)  LynxLogger::Logger()->warn("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)
+        #define LOG_ERROR(msg, ...) LynxLogger::Logger()->error("[{}:{} {}] " msg, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__)
+    #endif
 }
 
 #endif
+
+
+
+    // template<typename... Args>
+    // inline void LOG_DEBUG(const char* msg, Args&&... args) noexcept {
+    //     LynxLogger::Logger()->debug("[{}:{} {}] " + std::string(msg), FILE_NAME, __LINE__, __FUNCTION__, std::forward<Args>(args)...);
+    // }
+
+    // template<typename... Args>
+    // inline void LOG_INFO(const char* msg, Args&&... args) noexcept {
+    //     LynxLogger::Logger()->info("[{}:{} {}] " + std::string(msg), FILE_NAME, __LINE__, __FUNCTION__, std::forward<Args>(args)...);
+    // }
+
+    // template<typename... Args>
+    // inline void LOG_WARN(const char* msg, Args&&... args) noexcept {
+    //     LynxLogger::Logger()->warn("[{}:{} {}] " + std::string(msg), FILE_NAME, __LINE__, __FUNCTION__, std::forward<Args>(args)...);
+    // }
+
+    // template<typename... Args>
+    // inline void LOG_ERROR(const char* msg, Args&&... args) noexcept {
+    //     LynxLogger::Logger()->error("[{}:{} {}] " + std::string(msg), FILE_NAME, __LINE__, __FUNCTION__, std::forward<Args>(args)...);
+    // }
+

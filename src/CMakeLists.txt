@@ -43,7 +43,7 @@ add_compile_options(-frtti -fexceptions)
 # ==========================
 set(LYNX_MODULES
     lang constants exceptions logger context types ast mangler
-    jit config codegen linker ui attributes callconv
+    jit config codegen linker attributes callconv
     analyzer lto core platform runtime collections
     errors cli system stdapi
 )
@@ -51,6 +51,7 @@ set(LYNX_MODULES
 foreach(module IN LISTS LYNX_MODULES)
     add_subdirectory(${module})
 endforeach()
+
 
 # ==========================
 # === Main executable
@@ -91,7 +92,6 @@ target_link_libraries(${LYNX_EXECUTABLE} PUBLIC
     LynxJIT 
     LynxProgramConfig
     LynxCLI 
-    LynxUI
     LynxCodegen 
     LynxLinker 
     LynxFunctionAttr 
@@ -122,7 +122,28 @@ set(LSP_SOURCES
 )
 
 add_executable(LynxLSPServer ${LSP_SOURCES})
-target_include_directories(LynxLSPServer PRIVATE src/lang ${ZSTD_INCLUDE_DIRS})
+
+# Add external headers as system includes for Lynx library
+target_include_directories(${LYNX_EXECUTABLE} SYSTEM PRIVATE
+    ${PROJECT_SOURCE_DIR}/external/catch2/src
+    ${PROJECT_SOURCE_DIR}/external/cxxopts/include
+    ${PROJECT_SOURCE_DIR}/external/fmt/include
+    ${PROJECT_SOURCE_DIR}/external/json/include
+    ${PROJECT_SOURCE_DIR}/external/spdlog/include
+    ${PROJECT_SOURCE_DIR}/external/yaml-cpp/include
+)
+
+# Add same external headers for LSP server target
+target_include_directories(LynxLSPServer SYSTEM PRIVATE
+    ${PROJECT_SOURCE_DIR}/src/lang
+    ${PROJECT_SOURCE_DIR}/external/catch2/src
+    ${PROJECT_SOURCE_DIR}/external/cxxopts/include
+    ${PROJECT_SOURCE_DIR}/external/fmt/include
+    ${PROJECT_SOURCE_DIR}/external/json/include
+    ${PROJECT_SOURCE_DIR}/external/spdlog/include
+    ${PROJECT_SOURCE_DIR}/external/yaml-cpp/include
+    ${ZSTD_INCLUDE_DIRS}
+)
 
 target_link_libraries(LynxLSPServer PRIVATE
     LynxLogger LynxExceptions LynxConstants LynxContext LynxTypes
@@ -134,6 +155,8 @@ target_link_libraries(LynxLSPServer PRIVATE
     Boost::system Boost::filesystem Boost::program_options
     ${ZSTD_LIBRARIES}
 )
+
+# target_include_directories(LynxLSPServer PRIVATE src/lang ${ZSTD_INCLUDE_DIRS})
 
 # ==========================
 # === Compiler settings (C++20)

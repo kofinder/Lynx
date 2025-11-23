@@ -29,3 +29,5 @@ add_library(LynxMangler STATIC
 target_include_directories(LynxMangler PUBLIC ${LIBRARY_INCLUDES})
 
 target_link_libraries(LynxMangler PRIVATE LynxLogger LynxConstants LynxTypes LynxAst)
+
+message(STATUS "✅ LynxMangler module configured successfully! ")

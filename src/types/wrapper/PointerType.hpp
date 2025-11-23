@@ -36,17 +36,33 @@ namespace LynxTypes {
 
         public:
 
-            explicit PointerType(AstContext* context) : WrapperType(context) {};
+            // Use explicit constructor for RAII
+            explicit PointerType(AstContext* context) : WrapperType(context) {}
 
-            inline DataType getTypeTag() const override { return DataType::POINTER; }
+            // Public copy constructor, needed for clone()
+            PointerType(const PointerType& other) : WrapperType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
 
-            llvm::Value* createInstance(std::string variableName) override;
+            // Rule of five: allow default destructor, delete others
+            ~PointerType() override = default;
+            PointerType& operator=(const PointerType&) = delete;
+            PointerType(PointerType&&) = delete;
+            PointerType& operator=(PointerType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<PointerType>(*this);
+            }
+
+            DataType getTypeTag() const override { return DataType::POINTER; }
+
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
             llvm::Value* createValue(LValueType value) const override;
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<PointerType>(*this); }
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -63,8 +79,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~PointerType() override = default;
     };
 }
 

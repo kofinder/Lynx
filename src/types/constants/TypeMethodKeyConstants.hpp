@@ -194,32 +194,6 @@ namespace LynxTypes {
 
 
 
-
-    
-// // -----------------------------
-// // Numeric method keys
-// // -----------------------------
-// inline constexpr std::string_view  absKey = "abs";
-// inline constexpr std::string_view negateKey = "negate";
-// inline constexpr std::string_view signKey = "sign";
-// inline constexpr std::string_view clampKey = "clamp";
-// inline constexpr std::string_view isEvenKey = "isEven";
-// inline constexpr std::string_view isOddKey = "isOdd";
-// inline constexpr std::string_view fromStringKey = "fromString";
-// inline constexpr std::string_view zeroKey = "zero";
-// inline constexpr std::string_view oneKey = "one";
-// inline constexpr std::string_view maxKey = "max";
-// inline constexpr std::string_view minKey = "min";
-// inline constexpr std::string_view isPositiveKey = "isPositive";
-// inline constexpr std::string_view isNegativeKey = "isNegative";
-// inline constexpr std::string_view bitCountKey = "bitCount";
-// inline constexpr std::string_view leadingZerosKey = "leadingZeros";
-// inline constexpr std::string_view trailingZerosKey = "trailingZeros";
-// inline constexpr std::string_view ceilKey = "ceil";
-// inline constexpr std::string_view floorKey = "floor";
-// inline constexpr std::string_view roundKey = "round";
-// inline constexpr std::string_view truncKey = "trunc";
-
 // // -----------------------------
 // // String method keys
 // // -----------------------------

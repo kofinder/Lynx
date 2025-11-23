@@ -1,59 +1,104 @@
-# .clang-tidy — modern C++ (C++23) recommended baseline
-# - Intention: strong safety checks + modernization + performance + readability
-# - Tweak the Checks list to enable/disable specific checks for your codebase.
+# ===============================================
+# Modern C++23 clang-tidy baseline
+# Goal: High signal / low noise
+# - Strong correctness + static analysis
+# - Useful modernization
+# - Good readability checks without naming-style spam
+# - Performance checks enabled
+# ===============================================
 
 Checks:
-  - '-*'                               # disable all checks first
-    # Core analyzers
-  - 'clang-analyzer-*'                 # static analyzer checks
-  - 'clang-diagnostic-*'               # compiler diagnostics
+  - '-*'                                # Start with everything disabled: explicit > implicit
 
-    # Code correctness
-  - 'bugprone-*'                       # common bug patterns
-  - 'cppcoreguidelines-*'              # C++ Core Guidelines
-  - 'cppcoreguidelines-*'
-  - 'hicpp-*'                           # High Integrity C++ guidelines
+  # --------------------------------------------
+  # Core analyzers (ALWAYS useful, never noisy)
+  # --------------------------------------------
+  - 'clang-analyzer-*'                  # Static analyzer (memory leaks, null deref, etc.)
+  - 'clang-diagnostic-*'                # compiler warnings surfaced in clang-tidy
 
-  - 'modernize-*'                           # modern C++ usage suggestions
-  - '-modernize-use-trailing-return-type'   # ❌ Not useful for OOP projects
-  - '-modernize-pass-by-value'              # ❌ Too aggressive, noisy
+  # --------------------------------------------
+  # Correctness / Safety
+  # --------------------------------------------
+  - 'bugprone-*'                        # common C++ pitfalls
+  - 'cppcoreguidelines-*'               # C++ Core Guidelines (strong baseline)
+  - 'hicpp-*'                           # High Integrity C++ (subset overlaps cppcoreguidelines)
 
-    # Performance
-  - 'performance-*'                    # performance-related checks
+  # --------------------------------------------
+  # Modern C++
+  # --------------------------------------------
+  - 'modernize-*'                       # auto, smart pointers, range-based loops, etc.
+  - '-modernize-use-trailing-return-type'   # Too verbose for most codebases
+  - '-modernize-pass-by-value'               # Noisy for constructors; often misleading
 
-    # Readability
-  - 'readability-*'                             # readability improvements
-  - '-readability-redundant-access-specifiers'  # optional disable
-  - '-readability-magic-numbers'                # optional disable (very noisy)
+  # --------------------------------------------
+  # Performance
+  # --------------------------------------------
+  - 'performance-*'                     # Avoid unnecessary copies, expensive ops, etc.
 
-  - 'portability-*'                    # portability issues
+  # --------------------------------------------
+  # Readability checks
+  # --------------------------------------------
+  - 'readability-*'
+  - '-readability-redundant-access-specifiers'      # class Pubic: public: public: noise
+  - '-readability-magic-numbers'                    # Too noisy for game/GUI codebases
+  - '-readability-convert-member-functions-to-static'  # Annoying for OOP
+  - '-readability-identifier-naming'                # Disable because it conflicts with identifier-length
+  - '-readability-braces-around-statements'
+  - '-readability-implicit-bool-conversion'
+  - '-hicpp-braces-around-statements'
 
-    # Misc cleanups
-  - 'misc-*'                                        # miscellaneous checks
-  - '-misc-non-private-member-variables-in-classes' # disable, unrealistic for many designs
+  # --------------------------------------------
+  # Portability
+  # --------------------------------------------
+  - 'portability-*'
 
-    # Extra checks you explicitly wanted
-  - 'readability-non-const-parameter' # catch non-const parameters
-  - 'misc-const-correctness'           # const-correctness issues
-  - 'misc-use-anonymous-namespace'    # prefer anonymous namespaces for internal linkage
-  - 'google-explicit-constructor'      # Google style: explicit constructors
+  # --------------------------------------------
+  # Misc
+  # --------------------------------------------
+  - 'misc-*'
+  - '-misc-non-private-member-variables-in-classes'   # Unrealistic for engine/UI code
+  - '-misc-include-cleaner'                           # Disable global include-cleaner noise
 
-WarningsAsErrors: 'cppcoreguidelines-*' # treat all cppcoreguidelines warnings as errors
+  # Additional useful rule
+  - 'readability-non-const-parameter'                 # catch accidental pass-by-non-const
 
-HeaderFilterRegex: '^src/.*'          # only analyze headers under src/ or include/  
+# Treat all Core Guidelines violations as errors (makes code safety consistent)
+WarningsAsErrors: 'cppcoreguidelines-*'
 
-FormatStyle: file                       # use clang-format settings from file
+# Only analyze headers in src/ (instead of system or external libs)
+# HeaderFilterRegex: '^src/(types/logger/exceptions)/'
+HeaderFilterRegex: '^src/'
 
-SystemHeaders: false                    # Exclude system headers from analysis; only process project source files
+# Use clang-format config from your .clang-format file
+FormatStyle: file
 
-ExtraArgs: ["-isystem", "/home/jovian/Workspaces/finderbar/Lynx/external"]
+# Don’t analyze system headers
+SystemHeaders: false
 
+# Additional include path (useful if you have an external/ folder)
+ExtraArgs: []
+
+# ===============================================
+# Per-check configuration
+# ===============================================
 CheckOptions:
+
+  # ---------- Include Cleaner (reduced noise) ----------
+  - key: misc-include-cleaner.FileNameRegex
+    value: '.*\.(hpp|inl)$'        # Only inspect headers
+  - key: misc-include-cleaner.AllowIndirectIncludes
+    value: 'true'
+
+  # ---------- Identifier Length (this is what fixes 'ms' warning) ----------
+  - key: readability-identifier-length.MinimumLength
+    value: '2'                     # Allow 2-char names (ms, dt, ok, id, x, y, z, etc.)
+
+  # ---------- modernize-use-auto tuning ----------
   - key: modernize-use-auto.MinTypeNameLength
-    value: '5'                          # use 'auto' for types with name length >= 5
+    value: '5'                     # Use auto only when type name >= 5 chars
   - key: modernize-use-auto.IncludeStyle
-    value: 'llvm'                        # style of #include when adding auto
+    value: 'llvm'                  # Consistent with LLVM include style
+
+  # ---------- vararg warnings ----------
   - key: cppcoreguidelines-pro-type-vararg.WarnOnVararg
-    value: '1'                          # warn on usage of varargs
-  # - key: readability-identifier-naming.VariableCase
-  #   value: 'lower_case'                 # require lower_case variable names
+    value: '1'                     # Enable vararg warnings (safer)

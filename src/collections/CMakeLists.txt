@@ -50,5 +50,4 @@ target_link_libraries(LynxCollection PRIVATE LynxLogger)
 
 target_include_directories(LynxCollection PUBLIC ${LIBRARY_INCLUDES} )
 
-
-
+message(STATUS "✅ LynxCollection module configured successfully! ")

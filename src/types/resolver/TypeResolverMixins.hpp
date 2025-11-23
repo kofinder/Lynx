@@ -28,17 +28,17 @@ namespace LynxTypes {
     using LynxContext::AstContext;
 
     template<typename T>
-    concept ToStringCapable = requires(T t, const AstContext& ctx, llvm::Value* val) {
+    concept ToStringCapable = requires(T instance, const AstContext& ctx, llvm::Value* val) {
         { T::convertToString(ctx, val) } -> std::same_as<llvm::Value*>;
     };
 
     template<typename T>
-    concept CloneCapable = requires(T t, const AstContext& ctx, llvm::Value* val) {
+    concept CloneCapable = requires(T instance, const AstContext& ctx, llvm::Value* val) {
         { T::performClone(ctx, val) } -> std::same_as<llvm::Value*>;
     };
 
     template<typename T>
-    concept TypeCastCapable = requires(T t, const AstContext& ctx, llvm::Value* val, llvm::Type* type) {
+    concept TypeCastCapable = requires(T instance, const AstContext& ctx, llvm::Value* val, llvm::Type* type) {
         { T::performTypeCast(ctx, val, type) } -> std::same_as<llvm::Value*>;
     };
 
@@ -58,7 +58,7 @@ namespace LynxTypes {
 
     template<TypeCastCapable DerivedT>
     struct TypeCastMixin {
-        [[nodiscard]] llvm::Value* typeCast(const AstContext& ctx, llvm::Value* instance, llvm::Type* targetType) const noexcept {
+        [[nodiscard]] llvm::Value* typeCast(const AstContext& ctx, llvm::Value* instance, llvm::Type* /*targetType*/) const noexcept {
             return DerivedT::performTypeCast(ctx, instance);
         }
     };

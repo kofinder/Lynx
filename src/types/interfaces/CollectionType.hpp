@@ -33,14 +33,14 @@ namespace LynxTypes {
 
     class CollectionType : public BaseType {
 
-        protected:
+        private:
 
             size_t numElements = 0;
 
-            BaseType* elementType;
-
-            BaseType* elementValue;            
-
+            BaseType* elementType = nullptr;
+            
+            BaseType* elementValue = nullptr;
+              
         public:
 
             using ElementCallback = std::function<void(llvm::Value*)>;
@@ -49,35 +49,83 @@ namespace LynxTypes {
 
         public:
 
+            // Use explicit constructor for RAII
             explicit CollectionType(AstContext* context) : BaseType(context) {}
+            
+            // Rule of five: allow default destructor, delete others
+            ~CollectionType() override = default;
+            CollectionType(const CollectionType&) = delete;
+            CollectionType& operator=(const CollectionType&) = delete;
+            CollectionType(CollectionType&&) = delete;
+            CollectionType& operator=(CollectionType&&) = delete;
 
             /**
              * @brief Returns false since collections are not built-in scalar types.
             */
-            inline bool isCollectionType() const noexcept override { return true; }
+            bool isCollectionType() const noexcept override { return true; }
         
             /**
              * @brief Returns true if this collection is associative (key-value based).
              */
-            virtual inline bool isAssociative() const noexcept { return false; }
+            virtual bool isAssociative() const noexcept { return false; }
 
             /**
              * @brief Returns true if this collection is sequential (ordered list).
             */
-            virtual inline bool isSequential() const noexcept { return false; }
+            virtual bool isSequential() const noexcept { return false; }
                 
             /**
              * @brief Returns true if the collection has a fixed size (e.g. fixed-length array).
             */
             virtual bool hasFixedSize() const noexcept { return false; }
 
-            /**
-             * @brief Returns the current number of elements in the collection.
-             * @return Size as number of elements, or 0 if undefined.
+           /**
+             * @brief Sets the type of elements stored in the collection.
+             * @param type Pointer to a BaseType representing the element type.
             */
-            virtual size_t getSize() const { return 0; } 
+            void setElementType(BaseType* type) { elementType = type; }
 
-            inline void setSize(size_t eleSize) { numElements = eleSize; }
+            /**
+             * @brief Returns the type of elements stored in the collection.
+             * @return Pointer to the element type.
+            */
+            BaseType* getElementType() const { return elementType; }
+        
+            /**
+             * @brief Sets the default/prototype element value.
+             * @param value Pointer to a BaseType representing the prototype element value.
+            */
+            void setElementValue(BaseType* value) { elementValue = value; }
+
+            /**
+             * @brief Returns the default/prototype element value.
+             * @return Pointer to the element value.
+            */
+            BaseType* getElementValue() const { return elementValue; }
+        
+            /**
+             * @brief Sets the number of elements currently in the collection.
+             * @param count Number of elements.
+            */
+            void setNumElements(size_t count) { numElements = count; }
+
+            /**
+             * @brief Returns the number of elements currently in the collection.
+             * @return Number of elements.
+            */
+            size_t getNumElements() const { return numElements; }
+
+            /**
+             * @brief Checks whether this collection type can accept another type.
+             * @param other Pointer to another BaseType.
+             * @return True if the other type is compatible with this collection.
+            */
+            bool canAccept(const BaseType* other) const override {
+                if (equals(other)) return true;
+                const auto* obj = dynamic_cast<const CollectionType*>(other);
+                if (!obj) return false;
+                return false;
+            }
 
             /**
              * @brief Returns the capacity (max elements before resize needed) if applicable.
@@ -111,26 +159,13 @@ namespace LynxTypes {
             */
             virtual bool isUnique() const { return false; }
 
-            virtual void setElementType(BaseType* elementType) = 0;
-
-            virtual const BaseType* getElementType() const = 0;
-
-            virtual void setValueType(BaseType* elementValue) = 0;
-
-            virtual const BaseType* getValueType() const = 0;
-
-            virtual std::unique_ptr<BaseType> clone() const override = 0;
-
             /**
              * @brief Returns the element at the specified index (for sequential collections).
              * @param index LLVM value representing the index.
              * @return LLVM value of the element.
              * @throws Runtime error if not supported by this collection type.
             */
-            virtual llvm::Value* getElementAt(llvm::Value* index) {
-                astContext->reportError(makeRuntimeError("getElementAt not supported for this collection type"));
-                return nullptr;
-            }
+            virtual llvm::Value* getElementAt(llvm::Value* /*unused*/) { return nullptr; }
 
             /**
              * @brief Returns the value associated with a key (for associative collections).
@@ -138,10 +173,7 @@ namespace LynxTypes {
              * @return LLVM value of the associated element.
              * @throws Runtime error if not supported by this collection type.
             */
-            virtual llvm::Value* getValueForKey(llvm::Value* key) {
-                astContext->reportError(makeRuntimeError("getValueForKey not supported for this collection type"));
-                return nullptr;
-            }
+            virtual llvm::Value* getValueForKey(llvm::Value* /*unused*/) { return nullptr; }
 
             /**
              * @brief Inserts an element into the collection (for sequential collections).
@@ -149,10 +181,7 @@ namespace LynxTypes {
              * @return LLVM value indicating success or result.
              * @throws Runtime error if not supported by this collection type.
             */
-            virtual llvm::Value* insertElement(llvm::Value* element) {
-                astContext->reportError(makeRuntimeError("insertElement not supported for this collection type"));
-                return nullptr;
-            }
+            virtual llvm::Value* insertElement(llvm::Value* /*unused*/) { return nullptr; }
 
             /**
              * @brief Inserts a key-value pair into the collection (for associative collections).
@@ -161,45 +190,27 @@ namespace LynxTypes {
              * @return LLVM value indicating success or result.
              * @throws Runtime error if not supported by this collection type.
             */
-            virtual llvm::Value* insertElement(llvm::Value* key, llvm::Value* value) {
-                astContext->reportError(makeRuntimeError("insertElement not supported for this collection type"));
-                return nullptr;
-            }
+            virtual llvm::Value* insertElement(llvm::Value* /*unused*/, llvm::Value* /*unused*/) { return nullptr; }
 
             /**
              * @brief Clears all elements from the collection.
              * @throws Runtime error if not supported by this collection type.
             */
-            virtual void clear() {
-                astContext->reportError(makeRuntimeError("clear not supported for this collection type"));
-            }
+            virtual void clear() {}
 
             /**
              * @brief Iterates over all elements, invoking the provided callback (for sequential collections).
              * @param callback Function to be called for each element.
              * @throws Runtime error if not supported by this collection type.
             */
-            virtual void forEachElement(const ElementCallback& callback) {
-                astContext->reportError(makeRuntimeError("forEachElement not supported for this collection type"));
-            }
-
-            bool canAccept(const BaseType* other) const override {
-                if (equals(other)) return true;
-                auto o = dynamic_cast<const CollectionType*>(other);
-                if (!o) return false;
-
-                return false;
-            }
+            virtual void forEachElement(const ElementCallback& /*unused*/) {}
 
             /**
              * @brief Iterates over all key-value pairs, invoking the provided callback (for associative collections).
              * @param callback Function to be called for each key-value pair.
              * @throws Runtime error if not supported by this collection type.
             */
-            virtual void forEachKeyValue(const KeyValueCallback& callback) {
-                astContext->reportError(makeRuntimeError("forEachKeyValue must be implemented by derived AssociativeType"));
-            }  
-
+            virtual void forEachKeyValue(const KeyValueCallback& /*unused*/) {}  
     };
 }
 

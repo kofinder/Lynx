@@ -5,10 +5,6 @@ if(NOT GC_LIBRARY)
     message(FATAL_ERROR "Boehm GC library not found. Please install libgc or rebuild with -fPIC.")
 endif()
 
-message(STATUS "Found Boehm GC library: ${GC_LIBRARY}")
-message(STATUS "LLVM_LIBS: ${LLVM_LIBS}")
-
-# Include directories
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/bindings
@@ -53,4 +49,5 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${CORE_SOURCES} ${CORE_HEADE
 
 target_link_libraries(LynxCore PRIVATE ${GC_LIBRARY})
 
-message(STATUS "Lynx Core module configured successfully")
+message(STATUS "✅ LynxCore module configured successfully! ")
+

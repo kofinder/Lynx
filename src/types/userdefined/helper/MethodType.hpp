@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LYNX_METHOD_TYPE_HELPER_HPP
+#define LYNX_METHOD_TYPE_HELPER_HPP
 
 #include <string>
 #include <types/interfaces/BaseType.hpp>
@@ -8,7 +9,7 @@ namespace LynxTypes {
 
     using namespace LynxConstants;
 
-    enum MethodKind { CONSTRUCTOR, METHOD };
+    enum class MethodKind : std::uint8_t { CONSTRUCTOR, METHOD };
 
     struct ResolvedCall { std::vector<llvm::Type*> argTypes; std::string managledName; };
 
@@ -49,30 +50,30 @@ namespace LynxTypes {
                 parameterTypes(std::move(params)), index(idx),
                 is_abstract(_isAbstract), is_static(_isStatic), is_virtual(_isVirtual) {}
 
-            const std::string& getName() const { return name; }
+            [[nodiscard]] const std::string& getName() const { return name; }
 
-            std::string getMethodSignature() { return "methodSig"; }
+            [[nodiscard]] std::string getMethodSignature() const { return "methodSig"; }
 
-            const BaseType* getReturnType() const { return returnType.get(); }
+            [[nodiscard]] const BaseType* getReturnType() const { return returnType.get(); }
         
-            const std::vector<std::unique_ptr<BaseType>>& getParameterTypes() const { return parameterTypes; }
+            [[nodiscard]] const std::vector<std::unique_ptr<BaseType>>& getParameterTypes() const { return parameterTypes; }
+        
+            [[nodiscard]] bool isAbstract() const { return is_abstract; }
 
-            std::vector<BaseType*> getParameterRawTypes() const {
+            [[nodiscard]] bool isStatic() const { return is_static; }
+
+            [[nodiscard]] bool isVirtual() const { return is_virtual; }
+
+            [[nodiscard]] AccessModifierType getAccessType() { return accessType; }
+
+            [[nodiscard]] std::vector<BaseType*> getParameterRawTypes() const {
                 std::vector<BaseType*> result;
                 result.reserve(parameterTypes.size());
-                for (const auto& p : parameterTypes) result.push_back(p.get());
+                for (const auto& param : parameterTypes) result.push_back(param.get());
                 return result;
             }
-        
-            const bool isAbstract() const { return is_abstract; }
 
-            const bool isStatic() const { return is_static; }
-
-            const bool isVirtual() const { return is_virtual; }
-
-            const AccessModifierType getAccessType() { return accessType; }
-
-            std::unique_ptr<MethodType> clone() const {
+            [[nodiscard]] std::unique_ptr<MethodType> clone() const {
 
                 auto clonePtr = [](const std::unique_ptr<BaseType>& ptr) { return ptr ? ptr->clone() : nullptr; };
                 auto clonedReturnType = clonePtr(returnType);
@@ -96,3 +97,5 @@ namespace LynxTypes {
     };
     
 }
+
+#endif

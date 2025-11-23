@@ -18,8 +18,11 @@
 #include <llvm/IR/Constants.h>
 #include <llvm/IR/DerivedTypes.h>
 #include "TypeChecker.hpp"
+#include <constants/MagicNumericConstants.hpp>
 
 namespace LynxTypes::TypePromotion {
+
+    using namespace LynxConstants;
 
     struct PromotedNumeric {
         llvm::Value* lhs{nullptr};
@@ -42,14 +45,14 @@ namespace LynxTypes::TypePromotion {
     // ==========================
     template<NumericType T>
     constexpr int typeRank() noexcept {
-        if constexpr (std::same_as<T, ByteType>)         return 1;
-        else if constexpr (std::same_as<T, ShortType>)   return 2;
-        else if constexpr (std::same_as<T, CharType>)    return 3;
-        else if constexpr (std::same_as<T, IntegerType>) return 4;
-        else if constexpr (std::same_as<T, LongType>)    return 5;
-        else if constexpr (std::same_as<T, FloatType>)   return 6;
-        else if constexpr (std::same_as<T, DoubleType>)  return 7;
-        else return 0;
+        if constexpr (std::same_as<T, ByteType>)         return RANK_ONE;
+        else if constexpr (std::same_as<T, ShortType>)   return RANK_TWO;
+        else if constexpr (std::same_as<T, CharType>)    return RANK_THREE;
+        else if constexpr (std::same_as<T, IntegerType>) return RANK_FOUR;
+        else if constexpr (std::same_as<T, LongType>)    return RANK_FIVE;
+        else if constexpr (std::same_as<T, FloatType>)   return RANK_SIX;
+        else if constexpr (std::same_as<T, DoubleType>)  return RANK_SEVEN;
+        else return RANK_ZERO;
     }
 
     // ==========================
@@ -77,14 +80,20 @@ namespace LynxTypes::TypePromotion {
     // Promote operands to common type
     // ==========================
     inline PromotedNumeric promoteNumericOperands(llvm::Value* lhs, llvm::Value* rhs, llvm::IRBuilder<>& builder) noexcept {
-        PromotedNumeric result{ lhs, rhs, nullptr, false };
+        PromotedNumeric result{
+            .lhs = lhs,
+            .rhs = rhs,
+            .commonType = nullptr,
+            .isFloating = false
+        };
+
         if (!lhs || !rhs) return result;
 
         llvm::Type* lhsType = lhs->getType();
         llvm::Type* rhsType = rhs->getType();
 
-        int lhsRank = getNumericRank(lhsType);
-        int rhsRank = getNumericRank(rhsType);
+        const int lhsRank = getNumericRank(lhsType);
+        const int rhsRank = getNumericRank(rhsType);
 
         llvm::Type* targetType = (lhsRank >= rhsRank) ? lhsType : rhsType;
 
@@ -101,7 +110,7 @@ namespace LynxTypes::TypePromotion {
         result.lhs = castValue(lhs, targetType);
         result.rhs = castValue(rhs, targetType);
         result.commonType = targetType;
-        result.isFloating = targetType->isFloatingPointTy();
+        result.isFloating = targetType->isFloatingPointTy();        
 
         return result;
     }
@@ -109,10 +118,11 @@ namespace LynxTypes::TypePromotion {
     // ==========================
     // Match constant value type
     // ==========================
-    inline llvm::Value* matchConstantType(llvm::IRBuilder<>& builder, llvm::Value* value, llvm::Type* targetType) noexcept {
+    inline llvm::Value* matchConstantType(llvm::IRBuilder<>& /*builder*/, llvm::Value* value, llvm::Type* targetType) noexcept {
         if (llvm::isa<llvm::ConstantInt>(value) && targetType->isFloatingPointTy()) {
-            auto ci = llvm::cast<llvm::ConstantInt>(value);
-            return llvm::ConstantFP::get(targetType, ci->getSExtValue());
+            auto* cii = llvm::cast<llvm::ConstantInt>(value);
+            llvm::APFloat apf(static_cast<double>(cii->getSExtValue()));
+            return llvm::ConstantFP::get(targetType, apf);
         }
         return value;
     }

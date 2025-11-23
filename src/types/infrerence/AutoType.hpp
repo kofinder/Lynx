@@ -52,13 +52,31 @@ namespace LynxTypes {
 
         public:
 
-            explicit AutoType(AstContext* context) : BaseType(context) {};
+            // Use explicit constructor for RAII
+            explicit AutoType(AstContext* context) : BaseType(context) {}
+
+            // Public copy constructor, needed for clone()
+            AutoType(const AutoType& other) : BaseType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
+            ~AutoType() override = default;
+            AutoType& operator=(const AutoType&) = delete;
+            AutoType(AutoType&&) = delete;
+            AutoType& operator=(AutoType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<AutoType>(*this);
+            }
 
             llvm::Type* getLLVMPointerType() const override;
 
             llvm::Value* getDefaultValue() override;
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
@@ -68,23 +86,21 @@ namespace LynxTypes {
 
             llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> pairs) const override;
 
-            inline bool isBuiltInType() const noexcept override { return true; }
+            bool isBuiltInType() const noexcept override { return true; }
 
-            inline DataType getTypeTag() const override { return DataType::AUTO; }
+            DataType getTypeTag() const override { return DataType::AUTO; }
 
-            inline void setInferredType(BaseType* type) { inferredType = type; }
+            void setInferredType(BaseType* type) { inferredType = type; }
             
-            inline BaseType* getInferredType() const { return inferredType; }
+            BaseType* getInferredType() const { return inferredType; }
             
-            inline bool isInferred() const { return inferredType != nullptr; }
+            bool isInferred() const { return inferredType != nullptr; }
                         
             bool equals(const BaseType* other) const override;
 
             bool canAccept(const BaseType* other) const override;
 
-            std::string getDebugName() const override;
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<AutoType>(*this); }
+            std::string getDebugName() const override { return "auto"; }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 
@@ -93,8 +109,6 @@ namespace LynxTypes {
             uint32_t getDebugAlignInBits() const override;
 
             llvm::DINode::DIFlags getDIFlags() const override;
-
-            ~AutoType() override = default;
     };
 
 }

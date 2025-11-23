@@ -32,3 +32,4 @@ target_link_libraries(LynxAst PRIVATE
 
 target_include_directories(LynxAst PUBLIC ${LIBRARY_INCLUDES})
 
+message(STATUS "✅ LynxAst module configured successfully! ")
