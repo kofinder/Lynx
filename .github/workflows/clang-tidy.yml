@@ -8,12 +8,14 @@ on:
 jobs:
   tidy:
     runs-on: ubuntu-latest
+    env:
+      PATH: /usr/lib/llvm-21/bin:${PATH}   # Make LLVM 21 available to all steps
     steps:
       # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Cache build and clang-tidy outputs for faster runs
+      # Cache build and clang-tidy outputs
       - name: Cache build and Clang-Tidy
         uses: actions/cache@v3
         with:
@@ -23,22 +25,20 @@ jobs:
           key: clang-tidy-${{ runner.os }}-${{ hashFiles('**/*.cpp', '**/*.hpp') }}
           restore-keys: clang-tidy-${{ runner.os }}-
 
-      # Install LLVM 21 prebuilt binaries
-      - name: Install LLVM 21 via APT
+      # Install LLVM 21 via llvm.sh
+      - name: Install LLVM 21
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh 21
-          export PATH=/usr/lib/llvm-21/bin:$PATH
           clang --version
           clang-tidy --version
 
-
-      # Install CMake and Ninja
-      - name: Install CMake and Ninja
+      # Install CMake, Ninja, and required libraries
+      - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y cmake ninja-build
+          sudo apt install -y cmake ninja-build libedit-dev libcurl4-openssl-dev libffi-dev zlib1g-dev libxml2-dev libtinfo-dev libzstd-dev
 
       # Configure the project with CMake
       - name: Configure project with CMake
@@ -47,7 +47,7 @@ jobs:
       # Run clang-tidy in parallel
       - name: Run clang-tidy (parallel)
         run: |
-          CPU_CORES=$(nproc)  # Get number of available cores
+          CPU_CORES=$(nproc)
           echo "Running clang-tidy on $CPU_CORES cores..."
           ./tools/run-clang-tidy.sh $CPU_CORES | tee build/clang-tidy.log
 
