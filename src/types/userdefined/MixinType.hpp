@@ -86,11 +86,26 @@ namespace LynxTypes {
 
         public:
 
+            // Use explicit constructor for RAII
             explicit MixinType(
                 AstContext* context, 
                 std::string name
             ) : UserDefinedType(context), mixinName(std::move(name))  {}
+            
+            // Public copy constructor, needed for clone()
+            MixinType(const MixinType& other) : UserDefinedType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
             ~MixinType() override = default;
+            MixinType& operator=(const MixinType&) = delete;
+            MixinType(MixinType&&) = delete;
+            MixinType& operator=(MixinType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override;
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -101,8 +116,6 @@ namespace LynxTypes {
             llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
-
-            std::unique_ptr<BaseType> clone() const override;
             
             bool equals(const BaseType* other) const override;
 

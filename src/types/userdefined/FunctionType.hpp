@@ -17,8 +17,25 @@ namespace LynxTypes {
 
         public:
         
+            // Use explicit constructor for RAII
             explicit FunctionType(AstContext* context) : UserDefinedType(context) {}
+
+            // Public copy constructor, needed for clone()
+            FunctionType(const FunctionType& other) : UserDefinedType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
             ~FunctionType() override = default;
+            FunctionType& operator=(const FunctionType&) = delete;
+            FunctionType(FunctionType&&) = delete;
+            FunctionType& operator=(FunctionType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override { 
+                return std::make_unique<FunctionType>(*this); 
+            }
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -28,7 +45,6 @@ namespace LynxTypes {
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
          
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<FunctionType>(*this); }
 
             bool equals(const BaseType* other) const override;
 

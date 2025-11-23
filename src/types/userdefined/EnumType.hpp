@@ -72,7 +72,21 @@ namespace LynxTypes {
                 AstContext* context, 
                 std::string name
             ) : UserDefinedType(context), enumName(std::move(name)) {}
+
+            // Public copy constructor, needed for clone()
+            EnumType(const EnumType& other) : UserDefinedType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
             ~EnumType() override = default;
+            EnumType& operator=(const EnumType&) = delete;
+            EnumType(EnumType&&) = delete;
+            EnumType& operator=(EnumType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override;
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -111,8 +125,6 @@ namespace LynxTypes {
             const std::unordered_map<std::string, EnumMember>& getAllMembers() const { return members; }
 
             void registerGlobalConstant(const std::string& memberName, llvm::GlobalVariable* gov) const;
-                
-            std::unique_ptr<BaseType> clone() const override;
     };
 }
 

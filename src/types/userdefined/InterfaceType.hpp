@@ -99,12 +99,27 @@ namespace LynxTypes {
             const BaseType* createWithConst(bool newIsConst) const override;
 
         public:
-
+        
+            // Use explicit constructor for RAII
             explicit InterfaceType(
                 AstContext* context, 
                 std::string interfaceName
             ) : UserDefinedType(context), interfaceName(std::move(interfaceName))  {}
+
+            // Public copy constructor, needed for clone()
+            InterfaceType(const InterfaceType& other) : UserDefinedType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
             ~InterfaceType() override = default;
+            InterfaceType& operator=(const InterfaceType&) = delete;
+            InterfaceType(InterfaceType&&) = delete;
+            InterfaceType& operator=(InterfaceType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override;
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -113,8 +128,6 @@ namespace LynxTypes {
             llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
-
-            std::unique_ptr<BaseType> clone() const override;
             
             bool equals(const BaseType* other) const override;
 

@@ -52,8 +52,25 @@ namespace LynxTypes {
 
         public:
 
-            explicit AutoType(AstContext* context) : BaseType(context) {};
+            // Use explicit constructor for RAII
+            explicit AutoType(AstContext* context) : BaseType(context) {}
+
+            // Public copy constructor, needed for clone()
+            AutoType(const AutoType& other) : BaseType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
             ~AutoType() override = default;
+            AutoType& operator=(const AutoType&) = delete;
+            AutoType(AutoType&&) = delete;
+            AutoType& operator=(AutoType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<AutoType>(*this);
+            }
 
             llvm::Type* getLLVMPointerType() const override;
 
@@ -84,8 +101,6 @@ namespace LynxTypes {
             bool canAccept(const BaseType* other) const override;
 
             std::string getDebugName() const override { return "auto"; }
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<AutoType>(*this); }
 
             llvm::DIType* getDIType(llvm::DIScope* scope) const override;
 

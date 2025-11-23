@@ -114,13 +114,28 @@ namespace LynxTypes {
             int64_t scoreParameters(const std::vector<std::unique_ptr<BaseType>>& params, const std::vector<llvm::Type*>& argTypes) const;
 
         public:
-        
+
+            // Use explicit constructor for RAII
             explicit ClassType(
                 AstContext* context, 
                 const std::string& name
             ) : UserDefinedType(context), className(name) {}
-            ~ClassType() override = default;
+            
+            // Public copy constructor, needed for clone()
+            ClassType(const ClassType& other) : UserDefinedType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
 
+            // Rule of five: allow default destructor, delete others
+            ~ClassType() override = default;
+            ClassType& operator=(const ClassType&) = delete;
+            ClassType(ClassType&&) = delete;
+            ClassType& operator=(ClassType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override;    
+    
             llvm::Type* getLLVMPointerType() const override;
 
             llvm::Value* getDefaultValue() override;
@@ -128,8 +143,6 @@ namespace LynxTypes {
             llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
-
-            std::unique_ptr<BaseType> clone() const override;
 
             bool equals(const BaseType* other) const override;
 
