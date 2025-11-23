@@ -9,11 +9,11 @@ namespace LynxTypes {
     using namespace LynxConstants;
 
     llvm::Type* LongType::computeLLVMType() const {
-        return llvm::Type::getInt64Ty(astContext->getLLVMContext());
+        return llvm::Type::getInt64Ty(getContext()->getLLVMContext());
     }
 
     llvm::Type* LongType::getLLVMPointerType() const {
-        auto* longTy = llvm::Type::getInt64Ty(astContext->getLLVMContext());
+        auto* longTy = llvm::Type::getInt64Ty(getContext()->getLLVMContext());
         return llvm::PointerType::get(longTy->getContext(), 0);
     }
 
@@ -23,8 +23,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* LongType::createInstance(const std::string& variableName) {
-        auto& builder = astContext->getBuilder();
-        llvm::Type* longType = this->getLLVMType();
+        auto& builder = getContext()->getBuilder();
+        llvm::Type* longType = getLLVMType();
         auto* var = builder.CreateAlloca(longType, nullptr, variableName);
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::longType));
@@ -35,7 +35,7 @@ namespace LynxTypes {
 
     llvm::Value* LongType::createValue(LValueType value) const {
         if(std::holds_alternative<long>(value)) {
-            auto& context = astContext->getLLVMContext();
+            auto& context = getContext()->getLLVMContext();
             const long longValue = std::get<long>(value);
             return llvm::ConstantInt::get(context, llvm::APInt(BIT_WIDTH_LONG, longValue));
         }
@@ -51,7 +51,7 @@ namespace LynxTypes {
         }
 
         // Perform the store operation: store rhs value into lhs
-        auto& builder = astContext->getBuilder();
+        auto& builder = getContext()->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
     
@@ -61,7 +61,7 @@ namespace LynxTypes {
 
     llvm::Value* LongType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         if (!resolver)  resolver = getOrCreateResolver();
-        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
+        return resolver->resolveMethod(*getContext(), instance, instancePtr, methodName, args);
     }
 
     bool LongType::equals(const BaseType* other) const {

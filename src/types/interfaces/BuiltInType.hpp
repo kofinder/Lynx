@@ -33,6 +33,10 @@ namespace LynxTypes {
 
         public: 
 
+            /**
+             * @brief Constructs a BuiltInType with the given AST context.
+             * @param astContext Pointer to the AST context.
+            */
             explicit BuiltInType(AstContext* astContext) : BaseType(astContext) {}
 
             // Rule of five: allow default destructor, delete others
@@ -42,20 +46,37 @@ namespace LynxTypes {
             BuiltInType(BuiltInType&&) = delete;
             BuiltInType& operator=(BuiltInType&&) = delete;
 
+            /**
+             * @brief Indicates that this is a built-in type.
+             * @return Always true for built-in types.
+            */
             bool isBuiltInType() const  noexcept override { return true; }
 
+            /**
+             * @brief Indicates that assignment is supported for built-in types.
+             * @return Always true.
+            */
             bool supportsAssignment() const noexcept override { return true; }
 
-            llvm::Value* createValue(std::vector<llvm::Value*> /*unused*/) const override {
-                astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));
-                return nullptr;
-            }
+            /**
+             * @brief Not implemented for this overload; returns nullptr.
+            */
+            llvm::Value* createValue(std::vector<llvm::Value*> /*unused*/) const override { return nullptr; }
 
-            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*unused*/) const override {
-                astContext->reportError(makeRuntimeError(" createValue ( K, V) doesn't support this createValue signature."));
-                return nullptr;  
-            }
+            /**
+             * @brief Not implemented for this overload; returns nullptr.
+            */
+            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*unused*/) const override { return nullptr; }
 
+            /**
+             * @brief Determines if this built-in type can accept another type.
+             *
+             * Checks for equality first. Then, if the other type is also a BuiltInType,
+             * verifies that its type tag matches one of the recognized built-in types.
+             *
+             * @param other Pointer to another BaseType to check compatibility with.
+             * @return True if the type can be accepted, false otherwise.
+            */
             bool canAccept(const BaseType* other) const override {
                 if (equals(other)) return true;
                 const auto* obj = dynamic_cast<const BuiltInType*>(other);
@@ -68,8 +89,10 @@ namespace LynxTypes {
                     case DataType::FLOAT:
                     case DataType::DOUBLE:
                     case DataType::CHAR:
-                    case DataType::STRING:  return true;
-                    default: return false;
+                    case DataType::STRING:  
+                        return true;
+                    default: 
+                        return false;
                 }
                 return false;
             }

@@ -62,6 +62,8 @@ namespace LynxTypes {
 
             mutable llvm::Type* cachedLLVMType = nullptr;
 
+        protected:
+
             mutable TypeMethodResolver* resolver = nullptr;  // NOLINT(cppcoreguidelines-owning-memory)
 
         protected:
@@ -138,6 +140,24 @@ namespace LynxTypes {
             AstContext* getContext() const noexcept { return astContext; }
 
             /**
+             * @brief Returns the LLVMContext associated with this type.
+             * @return Reference to llvm::LLVMContext.
+             */
+            llvm::LLVMContext& getLLVMContext() const noexcept { return astContext->getLLVMContext(); }
+
+            /**
+             * @brief Returns the IRBuilder associated with the current codegen context.
+             * @return Reference to llvm::IRBuilder<>.
+             */
+            llvm::IRBuilder<>& getBuilder() const noexcept { return astContext->getBuilder(); }
+
+            /**
+             * @brief Returns the LLVM Module associated with this type/context.
+             * @return Pointer to llvm::Module.
+             */
+            llvm::Module* getModule() const noexcept { return astContext->getModule(); }
+
+            /**
              * @brief Returns true if the type is const-qualified.
              * @return True if const-qualified, false otherwise.
             */
@@ -177,6 +197,12 @@ namespace LynxTypes {
              * @return A unique pointer to the method resolver, or nullptr if not applicable.
             */
             virtual TypeMethodResolver* getOrCreateResolver() const;
+
+            /**
+             * @brief Sets or replaces the resolver for this type.
+             * @param newResolver Pointer to a resolver to associate with this type.
+             */
+            virtual void setResolver(TypeMethodResolver* newResolver) const;
 
             /**
              * @brief Returns the registry of instance methods supported by this type.

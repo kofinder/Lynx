@@ -11,7 +11,7 @@ namespace LynxTypes {
 
     llvm::Type* ByteType::computeLLVMType() const {
         if (!cachedType) {
-            auto& context = astContext->getLLVMContext();
+            auto& context = getContext()->getLLVMContext();
             cachedType = llvm::StructType::create(context, MetadataTypeConstants::structureByteType);
             cachedType->setBody(llvm::Type::getInt8Ty(context));
         }
@@ -29,7 +29,7 @@ namespace LynxTypes {
     }
 
     llvm::Value* ByteType::createInstance(const std::string& variableName) {
-        auto& builder = astContext->getBuilder();
+        auto& builder = getContext()->getBuilder();
         llvm::Type* byteType = computeLLVMType();
         llvm::Value* var = builder.CreateAlloca(byteType, nullptr, variableName);
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
@@ -42,7 +42,7 @@ namespace LynxTypes {
 
     llvm::Value* ByteType::createValue(LValueType value) const {
         if (std::holds_alternative<uint8_t>(value)) {
-            auto& builder = astContext->getBuilder();
+            auto& builder = getContext()->getBuilder();
             const uint8_t byteValue = std::get<uint8_t>(value);
             auto* byteType = computeLLVMType();
             auto* structTy = llvm::cast<llvm::StructType>(byteType);
@@ -58,7 +58,7 @@ namespace LynxTypes {
             LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
             return nullptr;
         }
-        auto& builder = astContext->getBuilder();
+        auto& builder = getContext()->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
 
@@ -70,7 +70,7 @@ namespace LynxTypes {
 
     llvm::Value* ByteType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         if (!resolver) resolver = getOrCreateResolver();
-        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
+        return resolver->resolveMethod(*getContext(), instance, instancePtr, methodName, args);
     }
 
     bool ByteType::equals(const BaseType* other) const {

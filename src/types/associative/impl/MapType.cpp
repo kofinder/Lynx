@@ -19,7 +19,7 @@ namespace LynxTypes {
             LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
             return nullptr;
         }
-        auto& builder = astContext->getBuilder();
+        auto& builder = getContext()->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
 

@@ -7,11 +7,11 @@
 namespace LynxTypes {
 
     llvm::Type* VoidType::computeLLVMType() const {
-        return llvm::Type::getVoidTy(astContext->getLLVMContext());
+        return llvm::Type::getVoidTy(getContext()->getLLVMContext());
     }
 
     llvm::Type* VoidType::getLLVMPointerType() const {
-        return llvm::PointerType::get(astContext->getLLVMContext(), 0);
+        return llvm::PointerType::get(getContext()->getLLVMContext(), 0);
     }
 
     llvm::Value* VoidType::getDefaultValue() { return nullptr; }

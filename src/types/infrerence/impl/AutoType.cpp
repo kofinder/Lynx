@@ -27,15 +27,9 @@ namespace LynxTypes {
         return inferredType->createValue(value);
     }
 
-    llvm::Value* AutoType::createValue(std::vector<llvm::Value*> /*values*/) const {
-        astContext->reportError(makeRuntimeError("AutoType createValue(T, V) doesn't support this createValue signature."));
-        return nullptr;    
-    }  
+    llvm::Value* AutoType::createValue(std::vector<llvm::Value*> /*values*/) const { return nullptr; }  
     
-    llvm::Value* AutoType::createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*pairs*/) const {
-        astContext->reportError(makeRuntimeError("AutoType createValue(T, K, V) doesn't support this createValue signature."));
-        return nullptr;    
-    }    
+    llvm::Value* AutoType::createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*pairs*/) const { return nullptr; }    
 
     llvm::Type* AutoType::getLLVMPointerType() const {
         if (!inferredType) throw std::logic_error("AutoType not yet inferred.");

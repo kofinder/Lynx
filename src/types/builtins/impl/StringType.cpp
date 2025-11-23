@@ -11,11 +11,11 @@
 namespace LynxTypes {
 
     llvm::Type* StringType::computeLLVMType() const {
-        return llvm::PointerType::get(llvm::Type::getInt8Ty(astContext->getLLVMContext())->getContext(), 0);
+        return llvm::PointerType::get(llvm::Type::getInt8Ty(getContext()->getLLVMContext())->getContext(), 0);
     }
 
     llvm::Type* StringType::getLLVMPointerType() const {
-        return llvm::PointerType::get(llvm::Type::getInt8Ty(astContext->getLLVMContext())->getContext(), 0);
+        return llvm::PointerType::get(llvm::Type::getInt8Ty(getContext()->getLLVMContext())->getContext(), 0);
     }
 
     llvm::Value* StringType::getDefaultValue() {
@@ -23,8 +23,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* StringType::createInstance(const std::string& variableName) {
-        auto& builder = astContext->getBuilder();
-        llvm::Type* llvmType = this->getLLVMType();
+        auto& builder = getContext()->getBuilder();
+        llvm::Type* llvmType = getLLVMType();
         auto* var = builder.CreateAlloca(llvmType, nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), stringType));
@@ -34,8 +34,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* StringType::createValue(LValueType value) const {
-        auto& context = astContext->getLLVMContext();
-        auto* module = astContext->getModule();
+        auto& context = getContext()->getLLVMContext();
+        auto* module = getContext()->getModule();
 
         const llvm::StringRef strRef(std::get<std::string>(value));
         auto* strConst = llvm::ConstantDataArray::getString(context, strRef, true);
@@ -53,7 +53,7 @@ namespace LynxTypes {
             LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
             return nullptr;
         }
-        auto& builder = astContext->getBuilder();
+        auto& builder = getContext()->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
 
@@ -61,7 +61,7 @@ namespace LynxTypes {
 
     llvm::Value* StringType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         if (!resolver) resolver = getOrCreateResolver();
-        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
+        return resolver->resolveMethod(*getContext(), instance, instancePtr, methodName, args);
     }
 
     TypeMethodResolver* StringType::getOrCreateResolver() const { 

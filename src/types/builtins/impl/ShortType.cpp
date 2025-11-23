@@ -10,11 +10,11 @@ namespace LynxTypes {
 
 
     llvm::Type* ShortType::computeLLVMType() const {
-        return llvm::Type::getInt16Ty(astContext->getLLVMContext());
+        return llvm::Type::getInt16Ty(getContext()->getLLVMContext());
     }
 
     llvm::Type* ShortType::getLLVMPointerType() const {
-        auto* shortTy = llvm::Type::getInt16Ty(astContext->getLLVMContext());
+        auto* shortTy = llvm::Type::getInt16Ty(getContext()->getLLVMContext());
         return llvm::PointerType::get(shortTy->getContext(), 0);
     }
 
@@ -24,8 +24,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* ShortType::createInstance(const std::string& variableName) {
-        auto& builder = astContext->getBuilder();
-        llvm::Type* shortType = this->getLLVMType();
+        auto& builder = getContext()->getBuilder();
+        llvm::Type* shortType = getLLVMType();
         auto* var = builder.CreateAlloca(shortType, nullptr, variableName);
 
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
@@ -38,7 +38,7 @@ namespace LynxTypes {
 
     llvm::Value* ShortType::createValue(LValueType value) const {
         if(std::holds_alternative<short>(value)) {
-            auto& context = astContext->getLLVMContext();
+            auto& context = getContext()->getLLVMContext();
             const short shortValue = std::get<short>(value);
             return llvm::ConstantInt::get(context, llvm::APInt(BIT_WIDTH_SHORT, shortValue));
         }
@@ -53,7 +53,7 @@ namespace LynxTypes {
             return nullptr;
         }
 
-        auto& builder = astContext->getBuilder();
+        auto& builder = getContext()->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
     
@@ -63,7 +63,7 @@ namespace LynxTypes {
 
     llvm::Value* ShortType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         if (!resolver) resolver = getOrCreateResolver();
-        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
+        return resolver->resolveMethod(*getContext(), instance, instancePtr, methodName, args);
     }
 
     bool ShortType::equals(const BaseType* other) const {

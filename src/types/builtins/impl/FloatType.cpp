@@ -6,11 +6,11 @@
 namespace LynxTypes {
 
     llvm::Type* FloatType::computeLLVMType() const {
-        return llvm::Type::getFloatTy(astContext->getLLVMContext());
+        return llvm::Type::getFloatTy(getContext()->getLLVMContext());
     }
 
     llvm::Type* FloatType::getLLVMPointerType() const {
-        auto* floatTy = llvm::Type::getFloatTy(astContext->getLLVMContext());
+        auto* floatTy = llvm::Type::getFloatTy(getContext()->getLLVMContext());
         auto* floatPtr = llvm::PointerType::get(floatTy->getContext(), 0); 
         return floatPtr;
     }
@@ -21,7 +21,7 @@ namespace LynxTypes {
     }
 
     llvm::Value* FloatType::createInstance(const std::string& variableName) {
-        auto& builder = astContext->getBuilder();
+        auto& builder = getContext()->getBuilder();
         llvm::Type* floatType = getLLVMType();
         auto* var = builder.CreateAlloca(floatType, nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
@@ -34,7 +34,7 @@ namespace LynxTypes {
 
     llvm::Value* FloatType::createValue(LValueType value) const {
         if(std::holds_alternative<float>(value)) {
-            auto& context = astContext->getLLVMContext();
+            auto& context = getContext()->getLLVMContext();
             const float floatValue = std::get<float>(value);
             return llvm::ConstantFP::get(context, llvm::APFloat(floatValue));
         } 
@@ -48,7 +48,7 @@ namespace LynxTypes {
             return nullptr;
         }
     
-        auto& builder = astContext->getBuilder();
+        auto& builder = getContext()->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
 
@@ -59,7 +59,7 @@ namespace LynxTypes {
     llvm::Value* FloatType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         LOG_ERROR("Emit Method Call Invocation.");
         if (!resolver) resolver = getOrCreateResolver();
-        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
+        return resolver->resolveMethod(*getContext(), instance, instancePtr, methodName, args);
     }
 
     bool FloatType::equals(const BaseType* other) const {

@@ -10,11 +10,11 @@ namespace LynxTypes {
     using namespace LynxConstants;
 
     llvm::Type* IntegerType::computeLLVMType() const {
-        return llvm::Type::getInt32Ty(astContext->getLLVMContext());
+        return llvm::Type::getInt32Ty(getContext()->getLLVMContext());
     }
 
     llvm::Type* IntegerType::getLLVMPointerType() const {
-        auto* intTy = llvm::Type::getInt32Ty(astContext->getLLVMContext());
+        auto* intTy = llvm::Type::getInt32Ty(getContext()->getLLVMContext());
         return llvm::PointerType::get(intTy->getContext(), 0);
     }
 
@@ -24,7 +24,7 @@ namespace LynxTypes {
     }
 
     llvm::Value* IntegerType::createInstance(const std::string& variableName) {
-        auto& builder = astContext->getBuilder();
+        auto& builder = getContext()->getBuilder();
         llvm::Type* intType = this->getLLVMType();
         auto* var = builder.CreateAlloca(intType, nullptr, variableName); 
 
@@ -38,7 +38,7 @@ namespace LynxTypes {
 
     llvm::Value* IntegerType::createValue(LValueType value) const {
         if(std::holds_alternative<int>(value)) {
-            auto& context = astContext->getLLVMContext();
+            auto& context = getContext()->getLLVMContext();
             const int intValue = std::get<int>(value); 
             return llvm::ConstantInt::get(context, llvm::APInt(BIT_WIDTH_INT, intValue));
         }
@@ -53,7 +53,7 @@ namespace LynxTypes {
             return nullptr;
         }
 
-        auto& builder = astContext->getBuilder();
+        auto& builder = getContext()->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
     
@@ -63,7 +63,7 @@ namespace LynxTypes {
 
     llvm::Value* IntegerType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         if (!resolver) resolver = IntMethodResolver::create();
-        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
+        return resolver->resolveMethod(*getContext(), instance, instancePtr, methodName, args);
     }
 
     

@@ -41,6 +41,10 @@ namespace LynxTypes {
 
         public: 
 
+            /**
+             * @brief Constructs a WrapperType with the given AST context.
+             * @param astContext Pointer to the AST context.
+            */
             explicit WrapperType(AstContext* astContext) : BaseType(astContext) {}
             
             // Rule of five: allow default destructor, delete others
@@ -50,18 +54,31 @@ namespace LynxTypes {
             WrapperType(WrapperType&&) = delete;
             WrapperType& operator=(WrapperType&&) = delete;
 
+            /**
+             * @brief Indicates that this is a wrapper type.
+             * @return Always true.
+            */
             bool isWrapperType() const noexcept override { return true; }
 
-            llvm::Value* createValue(std::vector<llvm::Value*> /*unused*/) const override {
-                astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));
-                return nullptr;
-            }
+            /**
+             * @brief Not implemented; returns nullptr.
+            */
+            llvm::Value* createValue(std::vector<llvm::Value*> /*unused*/) const override { return nullptr; }
 
-            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*unused*/) const override {
-                astContext->reportError(makeRuntimeError(" createValue ( K, V) doesn't support this createValue signature."));
-                return nullptr;  
-            }
+            /**
+             * @brief Not implemented; returns nullptr.
+            */
+            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*unused*/) const override { return nullptr; }
 
+            /**
+             * @brief Determines if this wrapper type can accept another type.
+             *
+             * Checks for equality first. Then, if the other type is also a WrapperType,
+             * returns false (no implicit acceptance between different wrapper types by default).
+             *
+             * @param other Pointer to another BaseType to check compatibility with.
+             * @return True if the type can be accepted, false otherwise.
+            */
             bool canAccept(const BaseType* other) const override {
                 if (equals(other)) return true;
                 const auto* obj = dynamic_cast<const WrapperType*>(other);

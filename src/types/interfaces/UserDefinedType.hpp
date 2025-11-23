@@ -38,6 +38,10 @@ namespace LynxTypes {
 
         public:
         
+            /**
+             * @brief Constructs a UserDefinedType with the given AST context.
+             * @param context Pointer to the AST context.
+            */
             explicit UserDefinedType(AstContext* context) : BaseType(context) {}
             
             // Rule of five: allow default destructor, delete others
@@ -47,23 +51,36 @@ namespace LynxTypes {
             UserDefinedType(UserDefinedType&&) = delete;
             UserDefinedType& operator=(UserDefinedType&&) = delete;
 
+            /**
+             * @brief Indicates that this is a user-defined type.
+             * @return Always true.
+            */
             bool isUserDefinedType() const noexcept override { return true; }
 
-            llvm::Value* createValue(LValueType /*unused*/) const override {
-                astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));
-                return nullptr;
-            }
+            /**
+             * @brief Not implemented; returns nullptr.
+            */
+            llvm::Value* createValue(LValueType /*unused*/) const override { return nullptr; }
 
-            llvm::Value* createValue(std::vector<llvm::Value*> /*unused*/) const override {
-                astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));
-                return nullptr;
-            }
+            /**
+             * @brief Not implemented; returns nullptr.
+            */
+            llvm::Value* createValue(std::vector<llvm::Value*> /*unused*/) const override { return nullptr; }
 
-            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*unused*/) const override {
-                astContext->reportError(makeRuntimeError(" createValue ( K, V) doesn't support this createValue signature."));
-                return nullptr;  
-            }
+            /**
+             * @brief Not implemented; returns nullptr.
+            */
+            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*unused*/) const override { return nullptr;  }
 
+            /**
+             * @brief Determines if this user-defined type can accept another type.
+             *
+             * Checks for equality first. Then, if the other type is also a UserDefinedType,
+             * verifies that its type tag matches recognized user-defined types.
+             *
+             * @param other Pointer to another BaseType to check compatibility with.
+             * @return True if the type can be accepted, false otherwise.
+            */
             bool canAccept(const BaseType* other) const override {
                 if (equals(other)) return true;
                 const auto* obj = dynamic_cast<const UserDefinedType*>(other);
@@ -75,8 +92,10 @@ namespace LynxTypes {
                     case DataType::DATETIME:
                     case DataType::ENUM:
                     case DataType::FILE:
-                    case DataType::FUNCTION:   return true;
-                    default: return false;
+                    case DataType::FUNCTION:   
+                        return true;
+                    default: 
+                        return false;
                 }
                 return false;
             }

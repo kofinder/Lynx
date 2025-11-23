@@ -64,10 +64,7 @@ namespace LynxTypes {
              * 
              * @note This default implementation throws a runtime error and must be overridden by the appropriate type.
             */
-            llvm::Value* createValue(LValueType /*unused*/) const override {
-                astContext->reportError(makeRuntimeError("createValue doesn't support this createValue signature."));
-                return nullptr;
-            }
+            llvm::Value* createValue(LValueType /*unused*/) const override { return nullptr; }
 
             /**
              * @brief Creates an LLVM value from a list of key-value pairs.
@@ -79,11 +76,18 @@ namespace LynxTypes {
              * 
              * @note This default implementation throws a runtime error and must be overridden by types supporting key-value construction.
              */
-            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*unused*/) const override {
-                astContext->reportError(makeRuntimeError("createValue (K, V) doesn't support this createValue signature."));
-                return nullptr;
-            }
+            llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*unused*/) const override { return nullptr; }
 
+            /**
+             * @brief Determines if this sequential type can accept another type.
+             *
+             * Checks for type equality first. If not equal, attempts a dynamic cast
+             * to a SequentialType and then checks if the type tag corresponds to a
+             * supported sequential collection (array, list, set, vector, queue, stack).
+             *
+             * @param other Pointer to another BaseType to check compatibility with.
+             * @return True if the type can be accepted, false otherwise.
+            */
             bool canAccept(const BaseType* other) const override {
                 if (equals(other)) return true;
                 const auto* obj = dynamic_cast<const SequentialType*>(other);
@@ -94,8 +98,10 @@ namespace LynxTypes {
                     case DataType::SET:
                     case DataType::VECTOR:
                     case DataType::QUEUE:
-                    case DataType::STACK: return true;
-                    default: return false;
+                    case DataType::STACK: 
+                        return true;
+                    default: 
+                        return false;
                 }
 
                 return false;
@@ -107,19 +113,14 @@ namespace LynxTypes {
              * @return LLVM value of the element at the given index.
              * @throws Runtime error if not implemented in derived class.
             */
-            llvm::Value* getElementAt(llvm::Value* /*unused*/) override {
-                astContext->reportError(makeRuntimeError("getElementAt must be implemented by derived SequentialType"));
-                return nullptr;
-            }
+            llvm::Value* getElementAt(llvm::Value* /*unused*/) override { return nullptr; }
 
             /**
              * @brief Iterate over all elements in the collection.
              * @param callback Function to invoke for each element.
              * @throws Runtime error if not implemented in derived class.
             */
-            void forEachElement(const ElementCallback& /*unused*/) override {
-                astContext->reportError(makeRuntimeError("forEachElement must be implemented by derived SequentialType"));
-            }
+            void forEachElement(const ElementCallback& /*unused*/) override { }
     };
 }
 

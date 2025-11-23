@@ -6,11 +6,11 @@
 namespace LynxTypes {
 
     llvm::Type* DoubleType::computeLLVMType() const {
-        return llvm::Type::getDoubleTy(astContext->getLLVMContext());  // Correct type for 64-bit double
+        return llvm::Type::getDoubleTy(getContext()->getLLVMContext());  // Correct type for 64-bit double
     }
 
     llvm::Type* DoubleType::getLLVMPointerType() const {
-        auto* doubleTy = llvm::Type::getDoubleTy(astContext->getLLVMContext());
+        auto* doubleTy = llvm::Type::getDoubleTy(getContext()->getLLVMContext());
         return llvm::PointerType::get(doubleTy->getContext(), 0);
     }
 
@@ -20,10 +20,9 @@ namespace LynxTypes {
     }
 
     llvm::Value* DoubleType::createInstance(const std::string& variableName) {
-        auto& builder = astContext->getBuilder();
-        llvm::Type* doubleType = this->getLLVMType();
+        auto& builder = getContext()->getBuilder();
+        llvm::Type* doubleType = getLLVMType();
         auto* var = builder.CreateAlloca(doubleType, nullptr, variableName);
-
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::doubleType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -33,7 +32,7 @@ namespace LynxTypes {
 
     llvm::Value* DoubleType::createValue(LValueType value) const {
         if(std::holds_alternative<double>(value)) {
-            auto& context = astContext->getLLVMContext();
+            auto& context = getContext()->getLLVMContext();
             const double doubleValue = std::get<double>(value);
             return llvm::ConstantFP::get(context, llvm::APFloat(doubleValue));
         }
@@ -47,7 +46,7 @@ namespace LynxTypes {
             LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
             return nullptr;
         }    
-        auto& builder = astContext->getBuilder();
+        auto& builder = getContext()->getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
 
@@ -57,7 +56,7 @@ namespace LynxTypes {
 
     llvm::Value* DoubleType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         if (!resolver) resolver = getOrCreateResolver();
-        return resolver->resolveMethod(*astContext, instance, instancePtr, methodName, args);
+        return resolver->resolveMethod(*getContext(), instance, instancePtr, methodName, args);
     }
 
     bool DoubleType::equals(const BaseType* other) const {

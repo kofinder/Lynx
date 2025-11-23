@@ -30,9 +30,9 @@ namespace LynxTypes {
         return nullptr;
     }
 
-    TypeMethodResolver* BaseType::getOrCreateResolver() const {
-        return nullptr;
-    }
+    void BaseType::setResolver(TypeMethodResolver* newResolver) const { resolver = newResolver; }
+
+    TypeMethodResolver* BaseType::getOrCreateResolver() const { return resolver; }
 
     BaseType::~BaseType() {
         delete resolver;
