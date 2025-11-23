@@ -23,7 +23,7 @@ namespace LynxTypes {
         return createValue(value);
     }
 
-    llvm::Value* ShortType::createInstance(std::string variableName) {
+    llvm::Value* ShortType::createInstance(const std::string& variableName) {
         auto& builder = astContext->getBuilder();
         llvm::Type* shortType = this->getLLVMType();
         auto* var = builder.CreateAlloca(shortType, nullptr, variableName);

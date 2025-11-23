@@ -10,7 +10,7 @@ namespace LynxTypes {
 
     llvm::Value* QueueType::getDefaultValue() { return nullptr; }
 
-    llvm::Value* QueueType::createInstance(std::string /*variableName*/) { return nullptr; }
+    llvm::Value* QueueType::createInstance(const std::string& /*variableName*/) { return nullptr; }
 
     llvm::Value* QueueType::createValue(std::vector<llvm::Value*> /*values*/) const { return nullptr; }  
 

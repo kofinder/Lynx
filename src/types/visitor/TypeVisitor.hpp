@@ -43,6 +43,8 @@ namespace LynxTypes {
 
     struct TypeVisitor {
 
+        TypeVisitor() = default; 
+
         virtual void visit(ByteType& type) = 0;
 
         virtual void visit(ShortType& type) = 0;
@@ -60,9 +62,13 @@ namespace LynxTypes {
         virtual void visit(CharType& type) = 0;
 
         virtual void visit(StringType& type) = 0;
-
-        virtual ~TypeVisitor() = default;
         
+        // Rule of five
+        TypeVisitor(const TypeVisitor&) = delete;
+        TypeVisitor& operator=(const TypeVisitor&) = delete;
+        TypeVisitor(TypeVisitor&&) = delete;
+        TypeVisitor& operator=(TypeVisitor&&) = delete;
+        virtual ~TypeVisitor() = default;
     };
 }
 

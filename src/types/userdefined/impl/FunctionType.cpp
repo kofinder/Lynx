@@ -12,7 +12,7 @@ namespace LynxTypes {
 
     llvm::Value* FunctionType::getDefaultValue() { return nullptr; }
 
-    llvm::Value* FunctionType::createInstance(std::string /*variableName*/) { return nullptr; }
+    llvm::Value* FunctionType::createInstance(const std::string& /*variableName*/) { return nullptr; }
  
     llvm::Value* FunctionType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
         auto& builder = astContext->getBuilder();

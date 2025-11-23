@@ -10,7 +10,7 @@ namespace LynxTypes {
 
     llvm::Value* StackType::getDefaultValue() { return nullptr; }
 
-    llvm::Value* StackType::createInstance(std::string /*variableName*/) { return nullptr; }
+    llvm::Value* StackType::createInstance(const std::string& /*variableName*/) { return nullptr; }
     
     llvm::Value* StackType::createValue(std::vector<llvm::Value*> /*values*/) const { return nullptr; }  
     

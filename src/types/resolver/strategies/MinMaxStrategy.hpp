@@ -39,12 +39,20 @@ namespace LynxTypes {
     // Base Interface
     // ============================================================================
     struct MinMaxStrategy {
+        
+        MinMaxStrategy() = default;
+
+        // Rule of Five
+        MinMaxStrategy(const MinMaxStrategy&) = delete;
+        MinMaxStrategy& operator=(const MinMaxStrategy&) = delete;
+        MinMaxStrategy(MinMaxStrategy&&) = delete;
+        MinMaxStrategy& operator=(MinMaxStrategy&&) = delete;
+        virtual ~MinMaxStrategy() noexcept = default; 
+            
         [[nodiscard]] virtual llvm::Value* smin(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* smax(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* umin(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* umax(const StrategyContext&) const noexcept = 0;
-
-        virtual ~MinMaxStrategy() noexcept = default;
     };
 
     // ============================================================================

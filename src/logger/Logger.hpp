@@ -39,6 +39,12 @@ namespace LynxLogger {
         
             ~LogManager() noexcept;  
 
+            // Rule of Five compliance
+            LogManager(const LogManager&) = delete;
+            LogManager(LogManager&&) noexcept = delete;
+            LogManager& operator=(const LogManager&) = delete;
+            LogManager& operator=(LogManager&&) noexcept = delete;
+
             static LogManager& instance() noexcept;  
 
             std::shared_ptr<spdlog::logger> getGlobalLogger() noexcept;  
@@ -48,13 +54,6 @@ namespace LynxLogger {
         private: 
 
             LogManager() noexcept;
-
-            // Delete copy/move to enforce singleton
-            LogManager(const LogManager&) = delete;
-            LogManager(LogManager&&) noexcept = delete;
-            LogManager& operator=(const LogManager&) = delete;
-            LogManager& operator=(LogManager&&) noexcept = delete;
-
             std::shared_ptr<spdlog::logger> logger;  
     };  
 

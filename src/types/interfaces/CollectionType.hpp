@@ -37,10 +37,10 @@ namespace LynxTypes {
 
             size_t numElements = 0;
 
-            BaseType* elementType;
-
-            BaseType* elementValue;            
-
+            BaseType* elementType = nullptr;
+            
+            BaseType* elementValue = nullptr;
+              
         public:
 
             using ElementCallback = std::function<void(llvm::Value*)>;
@@ -76,9 +76,14 @@ namespace LynxTypes {
              * @brief Returns the current number of elements in the collection.
              * @return Size as number of elements, or 0 if undefined.
             */
-            virtual size_t getSize() const { return 0; } 
-
-            inline void setSize(size_t eleSize) { numElements = eleSize; }
+            void setElementType(BaseType* type) { elementType = type; }
+            BaseType* getElementType() const { return elementType; }
+        
+            void setElementValue(BaseType* value) { elementValue = value; }
+            BaseType* getElementValue() const { return elementValue; }
+        
+            void setNumElements(size_t count) { numElements = count; }
+            size_t getNumElements() const { return numElements; }
 
             /**
              * @brief Returns the capacity (max elements before resize needed) if applicable.
@@ -111,14 +116,6 @@ namespace LynxTypes {
              * @brief Returns true if the collection guarantees unique elements.
             */
             virtual bool isUnique() const { return false; }
-
-            virtual void setElementType(BaseType* elementType) = 0;
-
-            virtual const BaseType* getElementType() const = 0;
-
-            virtual void setValueType(BaseType* elementValue) = 0;
-
-            virtual const BaseType* getValueType() const = 0;
 
             /**
              * @brief Returns the element at the specified index (for sequential collections).
@@ -197,7 +194,6 @@ namespace LynxTypes {
             virtual void forEachKeyValue(const KeyValueCallback& /*unused*/) {
                 astContext->reportError(makeRuntimeError("forEachKeyValue must be implemented by derived AssociativeType"));
             }  
-
     };
 }
 

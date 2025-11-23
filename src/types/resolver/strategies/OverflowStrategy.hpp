@@ -39,13 +39,22 @@ namespace LynxTypes {
     // Base Interface
     // ============================================================================
     struct OverflowStrategy {
+        
+        OverflowStrategy() = default;
+
+        // Rule of Five
+        OverflowStrategy(const OverflowStrategy&) = delete;
+        OverflowStrategy& operator=(const OverflowStrategy&) = delete;
+        OverflowStrategy(OverflowStrategy&&) = delete;
+        OverflowStrategy& operator=(OverflowStrategy&&) = delete;
+        virtual ~OverflowStrategy() noexcept = default; 
+            
         [[nodiscard]] virtual llvm::Value* saddWithOverflow(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* uaddWithOverflow(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* ssubWithOverflow(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* usubWithOverflow(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* smulWithOverflow(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* umulWithOverflow(const StrategyContext&) const noexcept = 0;
-        virtual ~OverflowStrategy() noexcept = default;
     };
 
     // ============================================================================

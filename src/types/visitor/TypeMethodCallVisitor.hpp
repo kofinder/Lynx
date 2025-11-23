@@ -42,6 +42,8 @@
 
 namespace LynxTypes {
 
+    struct InstancePair { llvm::Value* value{nullptr}; llvm::Value* ptr{nullptr}; };
+
     struct TypeMethodCallVisitor : public TypeVisitor {
 
         private:
@@ -53,6 +55,14 @@ namespace LynxTypes {
             std::vector<llvm::Value*> argValues;
         
         private:
+
+            friend struct Builder; // allow builder access
+
+            TypeMethodCallVisitor(
+                std::string name, 
+                InstancePair instPair,
+                std::vector<llvm::Value*> args
+            ) noexcept : methodName(std::move(name)), instance(instPair.value), instancePtr(instPair.ptr), argValues(std::move(args)) {}
 
             template<typename T>
             void dispatch(T& type) {
@@ -66,17 +76,22 @@ namespace LynxTypes {
 
         public:
 
-            TypeMethodCallVisitor(
-                const std::string& name, 
-                std::vector<llvm::Value*> args
-            ) : methodName(name), argValues(std::move(args)) {}
-
-            TypeMethodCallVisitor(
-                std::string name, 
-                llvm::Value* inst, 
-                llvm::Value* instPtr, 
-                std::vector<llvm::Value*> args
-            ) : methodName(std::move(name)), instance(inst), instancePtr(instPtr), argValues(std::move(args)) {}
+            struct Builder {
+                std::string name;
+                llvm::Value* inst = nullptr;
+                llvm::Value* instPtr = nullptr;
+                std::vector<llvm::Value*> args;
+            
+                Builder& nameOf(const std::string& _name) { name = _name; return *this; }
+                Builder& instance(llvm::Value* _inst) { inst = _inst; return *this; }
+                Builder& instancePtr(llvm::Value* _instPtr) { instPtr = _instPtr; return *this; }
+                Builder& arguments(std::vector<llvm::Value*> _args) { args = std::move(_args); return *this; }
+            
+                TypeMethodCallVisitor build() {
+                    const InstancePair instPair { .value = inst, .ptr = instPtr };
+                    return { name, instPair, args };
+                }
+            };
 
             [[nodiscard]] llvm::Value* getResult() const noexcept { return result; }
 

@@ -36,7 +36,10 @@ namespace LynxAst {
             argValues.push_back(arg->generateCode(astContext->createContext()));
         }
     
-        TypeMethodCallVisitor visitor(methodName, argValues);
+        auto visitor = TypeMethodCallVisitor::Builder()
+                    .nameOf(methodName)
+                    .arguments(argValues)
+                    .build();
         baseType->accept(visitor);
         auto* result = visitor.getResult();
 

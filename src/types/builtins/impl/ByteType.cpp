@@ -28,7 +28,7 @@ namespace LynxTypes {
         return llvm::ConstantAggregateZero::get(byteType);
     }
 
-    llvm::Value* ByteType::createInstance(std::string variableName) {
+    llvm::Value* ByteType::createInstance(const std::string& variableName) {
         auto& builder = astContext->getBuilder();
         llvm::Type* byteType = computeLLVMType();
         llvm::Value* var = builder.CreateAlloca(byteType, nullptr, variableName);

@@ -37,12 +37,29 @@ namespace LynxTypes {
 
         public:
 
-            explicit ReferenceType(AstContext* context) : WrapperType(context) {};
+            // Use explicit constructor for RAII
+            explicit ReferenceType(AstContext* context) : WrapperType(context) {}
+
+            // Public copy constructor, needed for clone()
+            ReferenceType(const ReferenceType& other) : WrapperType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
             ~ReferenceType() override = default;
+            ReferenceType& operator=(const ReferenceType&) = delete;
+            ReferenceType(ReferenceType&&) = delete;
+            ReferenceType& operator=(ReferenceType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<ReferenceType>(*this);
+            }
 
             DataType getTypeTag() const override { return DataType::REFERENCE; }
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
@@ -53,8 +70,6 @@ namespace LynxTypes {
             llvm::Value* getDefaultValue() override;
 
             bool equals(const BaseType* other) const override;
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<ReferenceType>(*this); }
 
             std::string getDebugName() const override;
 

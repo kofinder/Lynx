@@ -50,13 +50,22 @@ namespace LynxTypes {
     // Base Interface
     // ============================================================================
     struct BitManipulationStrategy {
+
+        BitManipulationStrategy() = default;
+        
+        // Rule of Five
+        BitManipulationStrategy(const BitManipulationStrategy&) = delete;
+        BitManipulationStrategy& operator=(const BitManipulationStrategy&) = delete;
+        BitManipulationStrategy(BitManipulationStrategy&&) = delete;
+        BitManipulationStrategy& operator=(BitManipulationStrategy&&) = delete;
+        virtual ~BitManipulationStrategy() noexcept = default;    
+            
         [[nodiscard]] virtual llvm::Value* popCount(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* countLeadingZeros(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* countTrailingZeros(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* bitReverse(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* rotateLeft(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* rotateRight(const StrategyContext&) const noexcept = 0;
-        virtual ~BitManipulationStrategy() noexcept = default;
     };
 
     // ============================================================================

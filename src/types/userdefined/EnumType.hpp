@@ -78,7 +78,7 @@ namespace LynxTypes {
 
             llvm::Value* getDefaultValue() override;
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::StructType* createEnumValueUnion(llvm::LLVMContext& context) const;
 

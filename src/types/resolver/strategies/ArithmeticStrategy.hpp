@@ -35,20 +35,33 @@
 #include "llvm/Support/MathExtras.h"
 #include "tmpl/TypeNumericPromotion.hpp"
 #include "resolver/TypeStrategyContext.hpp"
+#include <constants/MagicNumericConstants.hpp>
 
 namespace LynxTypes {
+
+    using namespace LynxConstants;
+
     
     // ============================================================================
     // Base Interface
     // ============================================================================
     struct ArithmeticStrategy {
+
+        ArithmeticStrategy() = default;
+        
+        // Rule of Five
+        ArithmeticStrategy(const ArithmeticStrategy&) = delete;
+        ArithmeticStrategy& operator=(const ArithmeticStrategy&) = delete;
+        ArithmeticStrategy(ArithmeticStrategy&&) = delete;
+        ArithmeticStrategy& operator=(ArithmeticStrategy&&) = delete;
+        virtual ~ArithmeticStrategy() noexcept = default;    
+
         [[nodiscard]] virtual llvm::Value* abs(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* negate(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* sign(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* clamp(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* isEven(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* isOdd(const StrategyContext&) const noexcept = 0;
-        virtual ~ArithmeticStrategy() noexcept = default;
     };
 
     // ============================================================================
@@ -213,7 +226,7 @@ namespace LynxTypes {
             auto* type = val->getType();
             auto& builder = stg.ctx.getBuilder();
 
-            auto* two = llvm::ConstantFP::get(type, 2.0);
+            auto* two = llvm::ConstantFP::get(type, FP_TWO);
             auto* zero = llvm::ConstantFP::get(type, 0.0);
             auto* rem = builder.CreateFRem(val, two);
             auto* result = builder.CreateFCmpUEQ(rem, zero);
@@ -226,7 +239,7 @@ namespace LynxTypes {
             auto* type = val->getType();
             auto& builder = stg.ctx.getBuilder();
 
-            auto* two = llvm::ConstantFP::get(type, 2.0);
+            auto* two = llvm::ConstantFP::get(type, FP_TWO);
             auto* zero = llvm::ConstantFP::get(type, 0.0);
             auto* rem = builder.CreateFRem(val, two);
             auto* result = builder.CreateFCmpUNE(rem, zero);

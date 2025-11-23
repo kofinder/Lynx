@@ -107,7 +107,7 @@ namespace LynxTypes {
         return llvm::ConstantPointerNull::get(llvm::cast<llvm::PointerType>(getLLVMPointerType()));
     }
 
-    llvm::Value* ClassType::createInstance(std::string variableName) {
+    llvm::Value* ClassType::createInstance(const std::string& variableName) {
         auto& builder = astContext->getBuilder();
         llvm::Type* clazzType = this->getLLVMType();
         auto* var = builder.CreateAlloca(clazzType, nullptr, variableName);

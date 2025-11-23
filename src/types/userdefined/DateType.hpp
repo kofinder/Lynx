@@ -52,21 +52,36 @@ namespace LynxTypes {
 
         public:
         
+            // Use explicit constructor for RAII
             explicit DateType(AstContext* context) : UserDefinedType(context) {}
+
+            // Public copy constructor, needed for clone()
+            DateType(const DateType& other) : UserDefinedType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
             ~DateType() override = default;
+            DateType& operator=(const DateType&) = delete;
+            DateType(DateType&&) = delete;
+            DateType& operator=(DateType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<DateType>(*this);
+            }
 
             llvm::Type* getLLVMPointerType() const override;
 
             llvm::Value* getDefaultValue() override;
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* getField(const std::string& fieldName, llvm::Value* instance);
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
             
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<DateType>(*this); }
-
             bool equals(const BaseType* other) const override;
 
             DataType getTypeTag() const override { return DataType::DATE; }

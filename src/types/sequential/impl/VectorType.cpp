@@ -34,7 +34,7 @@ namespace LynxTypes {
         return llvm::Constant::getNullValue(computeLLVMType());    
     }
 
-    llvm::Value* VectorType::createInstance(std::string variableName) {
+    llvm::Value* VectorType::createInstance(const std::string& variableName) {
         llvm::Type* vectorType = computeLLVMType();
         auto& builder = astContext->getBuilder();        
         auto* var = builder.CreateAlloca(vectorType, nullptr, variableName);

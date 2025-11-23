@@ -52,14 +52,31 @@ namespace LynxTypes {
 
         public:
 
+            // Use explicit constructor for RAII
             explicit FileType(AstContext* context) : UserDefinedType(context) {}
+
+            // Public copy constructor, needed for clone()
+            FileType(const FileType& other) : UserDefinedType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
             ~FileType() override = default;
+            FileType& operator=(const FileType&) = delete;
+            FileType(FileType&&) = delete;
+            FileType& operator=(FileType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<FileType>(*this);
+            }
 
             llvm::Type* getLLVMPointerType() const override;
 
             llvm::Value* getDefaultValue() override;
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
             
@@ -77,7 +94,6 @@ namespace LynxTypes {
 
             llvm::DINode::DIFlags getDIFlags() const override;
 
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<FileType>(*this); }
     };
 }
 #endif 

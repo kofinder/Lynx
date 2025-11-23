@@ -55,7 +55,7 @@ namespace LynxTypes {
         return llvm::ConstantPointerNull::get(llvm::cast<llvm::PointerType>(getLLVMPointerType()));
     }
 
-    llvm::Value* InterfaceType::createInstance(std::string variableName) {
+    llvm::Value* InterfaceType::createInstance(const std::string& variableName) {
         auto& builder = astContext->getBuilder();
         auto* llvmType = computeLLVMType();
         auto* var = builder.CreateAlloca(llvmType, nullptr, variableName);

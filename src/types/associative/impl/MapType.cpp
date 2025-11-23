@@ -10,7 +10,7 @@ namespace LynxTypes {
 
     llvm::Value* MapType::getDefaultValue() { return nullptr;  }
 
-    llvm::Value* MapType::createInstance(std::string /*variableName*/) { return nullptr; }
+    llvm::Value* MapType::createInstance(const std::string& /*variableName*/) { return nullptr; }
 
     llvm::Value* MapType::createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /* pairs */) const { return nullptr; }     
 

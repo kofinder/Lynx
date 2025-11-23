@@ -53,8 +53,6 @@ namespace LynxTypes {
     using namespace LynxConstants;
     using namespace MetadataTypeConstants;
 
-    constexpr uint32_t DEFAULT_ALIGN_BITS = 0;
-    
     class BaseType {
 
         protected:
@@ -76,7 +74,6 @@ namespace LynxTypes {
              * Must be implemented by all derived types.
             */
             virtual llvm::Type* computeLLVMType() const = 0;
-
 
             /**
              * @brief Returns a version of this type with the specified const qualification.
@@ -107,7 +104,7 @@ namespace LynxTypes {
              * @param v The LLVM value pointer to check.
              * @return true if the pointer is non-null, false otherwise.
             */
-            bool isValid(llvm::Value* v) noexcept { return v != nullptr; }
+            bool isValid(llvm::Value* value) noexcept { return value != nullptr; }
 
         public:
 
@@ -115,10 +112,8 @@ namespace LynxTypes {
              * @brief Constructor initializing the AST context.
              * @param context Pointer to the AstContext associated with this type.
             */
-            BaseType(AstContext* context) : astContext(context) {}
-            
+            explicit BaseType(AstContext* context) : astContext(context) {}
             virtual ~BaseType();
-
 
             /**
              * @brief Set or update the AST context for this type.
@@ -137,13 +132,11 @@ namespace LynxTypes {
             */
             llvm::Type* getLLVMType() const;
             
-
             /**
              * @brief Accepts a visitor to perform operations on the type.
              * Used in the visitor pattern for type-related traversals and transformations.
             */
             virtual void accept(TypeVisitor& visitor) {}
-
 
             /**
              * @brief Creates a method resolver for this type (if it supports methods).
@@ -333,7 +326,7 @@ namespace LynxTypes {
              * @param variableName Name of the variable being created.
              * @return LLVM value representing the instance.
             */
-            virtual llvm::Value* createInstance(const std::string variableName) = 0;
+            virtual llvm::Value* createInstance(const std::string& variableName) = 0;
 
             /**
              * @brief Assigns a right-hand value (rhs) to a left-hand variable (lhs).

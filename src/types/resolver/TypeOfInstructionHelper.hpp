@@ -21,6 +21,9 @@ namespace LynxTypes::helper {
     enum class ArithmeticOp : std::uint8_t { Add, Sub, Mul, Div, Mod };
     enum class BitwiseOp : std::uint8_t { And, Or, Xor, Shl, Shr, Not };
     enum class CompareOp : std::uint8_t { Eq, Ne, Lt, Le, Gt, Ge };
+    struct IntScaleBits { unsigned value; };
+    struct FloatScaleBits { unsigned value; };
+
 
     inline llvm::Function* callOfIntrinsic(llvm::Module* module, llvm::Intrinsic::ID instId, llvm::Type* type) noexcept {
         return llvm::Intrinsic::getOrInsertDeclaration(module, instId, { type });
@@ -91,7 +94,7 @@ namespace LynxTypes::helper {
             rhsVal = builder.CreateBitCast(rhsVal, intTy, "bit.rhs");
         } 
 
-        llvm::Value* result = nullptr;
+        llvm::Value* result = nullptr; // NOLINT(misc-const-correctness)
         switch (opr) {
             case BitwiseOp::And: result = builder.CreateAnd(lhsVal, rhsVal, llvm::Twine("bit.and")); break;
             case BitwiseOp::Or: result = builder.CreateOr(lhsVal, rhsVal, llvm::Twine("bit.or")); break;
@@ -204,9 +207,8 @@ namespace LynxTypes::helper {
     inline llvm::Value* callOfFixedPointIntrinsic(
         const StrategyContext& stg,
         llvm::Intrinsic::ID instId,
-        unsigned defaultIntScaleBits = BIT_WIDTH_BYTE,
-        unsigned defaultFloatScaleBits = BIT_WIDTH_SHORT) noexcept
-    {
+        IntScaleBits intScale = { BIT_WIDTH_BYTE },
+        FloatScaleBits floatScale = { BIT_WIDTH_SHORT }) noexcept {
         auto& builder = stg.ctx.getBuilder();
         auto* mod = stg.ctx.getModule();
         llvm::Value* lhs = stg.instance;
@@ -217,18 +219,18 @@ namespace LynxTypes::helper {
         // -------------------------------------------------------------------------
         if (!lhsTy->isFloatingPointTy()) {
             const unsigned bitWidth = lhsTy->getIntegerBitWidth();
-            const unsigned scaleBits = defaultIntScaleBits;
+            const unsigned scaleBits = intScale.value;
             if (scaleBits > bitWidth) llvm::report_fatal_error("scaleBits too large for integer operand width");
             auto* scaleConst = llvm::ConstantInt::get(lhsTy, llvm::APInt(bitWidth, scaleBits));
-            auto* fn = callOfIntrinsic(mod, instId, lhsTy);
-            return builder.CreateCall(fn, { lhs, lhs, scaleConst });
+            auto* func = callOfIntrinsic(mod, instId, lhsTy);
+            return builder.CreateCall(func, { lhs, lhs, scaleConst });
         }
             
         // -------------------------------------------------------------------------
         // Floating-point emulated fixed-point
         // -------------------------------------------------------------------------
-        const unsigned scaleBits = defaultFloatScaleBits;
-        const double scale = double(1ULL << scaleBits);
+        const unsigned scaleBits = floatScale.value;
+        const auto scale = double(1ULL << scaleBits);
         auto* scaleConst = llvm::ConstantFP::get(lhsTy, scale);
         auto* func = callOfIntrinsic(mod, instId, lhsTy);
         return builder.CreateCall(func, { lhs, lhs, scaleConst });

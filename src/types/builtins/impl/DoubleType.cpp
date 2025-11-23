@@ -19,7 +19,7 @@ namespace LynxTypes {
         return createValue(value);
     }
 
-    llvm::Value* DoubleType::createInstance(std::string variableName) {
+    llvm::Value* DoubleType::createInstance(const std::string& variableName) {
         auto& builder = astContext->getBuilder();
         llvm::Type* doubleType = this->getLLVMType();
         auto* var = builder.CreateAlloca(doubleType, nullptr, variableName);

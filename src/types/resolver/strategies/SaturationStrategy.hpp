@@ -40,13 +40,22 @@ namespace LynxTypes {
     // Base Interface
     // ============================================================================
     struct SaturationStrategy {
+        
+        SaturationStrategy() = default;
+
+        // Rule of Five
+        SaturationStrategy(const SaturationStrategy&) = delete;
+        SaturationStrategy& operator=(const SaturationStrategy&) = delete;
+        SaturationStrategy(SaturationStrategy&&) = delete;
+        SaturationStrategy& operator=(SaturationStrategy&&) = delete;
+        virtual ~SaturationStrategy() noexcept = default; 
+
         [[nodiscard]] virtual llvm::Value* saddSat(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* uaddSat(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* ssubSat(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* usubSat(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* sshlSat(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* ushLSat(const StrategyContext&) const noexcept = 0;
-        virtual ~SaturationStrategy() noexcept = default;
     };
 
     // ============================================================================

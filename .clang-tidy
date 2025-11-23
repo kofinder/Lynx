@@ -46,7 +46,6 @@ Checks:
   - '-readability-braces-around-statements'
   - '-readability-implicit-bool-conversion'
   - '-hicpp-braces-around-statements'
-  - '-readability-use-concise-preprocessor-directives'
 
   # --------------------------------------------
   # Portability
@@ -77,8 +76,7 @@ FormatStyle: file
 SystemHeaders: false
 
 # Additional include path (useful if you have an external/ folder)
-# ExtraArgs: ["-isystem", "external/"]
-ExtraArgs: ["-isystem/home/jovian/Workspaces/finderbar/Lynx/external"]
+ExtraArgs: ["-isystem", "external"]
 
 
 # ===============================================

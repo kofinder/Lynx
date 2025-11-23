@@ -48,29 +48,36 @@ namespace LynxTypes {
 
         public:
 
+            // Use explicit constructor for RAII
             explicit MapType(AstContext* context) : AssociativeType(context) {}
+
+            // Public copy constructor, needed for clone()
+            MapType(const MapType& other) : AssociativeType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
             ~MapType() override = default;
+            MapType& operator=(const MapType&) = delete;
+            MapType(MapType&&) = delete;
+            MapType& operator=(MapType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<MapType>(*this);
+            }
             
             bool isAssociative() const noexcept override { return true; }
 
             DataType getTypeTag() const override { return DataType::MAP; }
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
             llvm::Value* createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> pairs) const override;
 
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<MapType>(*this);}
-
-            void setElementType(BaseType* eleType) override { elementType = eleType; }
-
-            const BaseType* getElementType() const override { return elementType; }
-
-            void setValueType(BaseType* value) override { elementValue = value; }
-
-            const BaseType* getValueType() const override { return elementValue; }
-                        
             llvm::Type* getLLVMPointerType() const override;
 
             llvm::Value* getDefaultValue() override;

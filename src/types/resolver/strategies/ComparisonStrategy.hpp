@@ -45,13 +45,22 @@ namespace LynxTypes {
     // Base Interface
     // ============================================================================
     struct ComparisonStrategy {
+
+        ComparisonStrategy() = default;
+
+        // Rule of Five
+        ComparisonStrategy(const ComparisonStrategy&) = delete;
+        ComparisonStrategy& operator=(const ComparisonStrategy&) = delete;
+        ComparisonStrategy(ComparisonStrategy&&) = delete;
+        ComparisonStrategy& operator=(ComparisonStrategy&&) = delete;
+        virtual ~ComparisonStrategy() noexcept = default; 
+
         [[nodiscard]] virtual llvm::Value* eq(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* ne(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* lt(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* le(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* gt(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* ge(const StrategyContext&) const noexcept = 0;
-        virtual ~ComparisonStrategy() noexcept = default;
     };
 
 

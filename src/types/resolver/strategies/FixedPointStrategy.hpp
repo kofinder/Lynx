@@ -41,11 +41,20 @@ namespace LynxTypes {
     // Base Interface
     // ============================================================================
     struct FixedPointStrategy {
+
+        FixedPointStrategy() = default;
+
+        // Rule of Five
+        FixedPointStrategy(const FixedPointStrategy&) = delete;
+        FixedPointStrategy& operator=(const FixedPointStrategy&) = delete;
+        FixedPointStrategy(FixedPointStrategy&&) = delete;
+        FixedPointStrategy& operator=(FixedPointStrategy&&) = delete;
+        virtual ~FixedPointStrategy() noexcept = default; 
+
         [[nodiscard]] virtual llvm::Value* smul(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* umul(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* sdiv(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* udiv(const StrategyContext&) const noexcept = 0;
-        virtual ~FixedPointStrategy() noexcept = default;
     };
 
 

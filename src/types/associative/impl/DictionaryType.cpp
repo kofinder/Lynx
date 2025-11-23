@@ -10,7 +10,7 @@ namespace LynxTypes {
 
     llvm::Value* DictionaryType::getDefaultValue() { return nullptr; }
 
-    llvm::Value* DictionaryType::createInstance(std::string /*variableName*/) { return nullptr; }
+    llvm::Value* DictionaryType::createInstance(const std::string& /*variableName*/) { return nullptr; }
 
     llvm::Value* DictionaryType::createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*pairs*/) const { return nullptr; }     
 

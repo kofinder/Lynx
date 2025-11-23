@@ -48,23 +48,34 @@ namespace LynxTypes {
 
         public:
 
+            // Use explicit constructor for RAII
             explicit SetType(AstContext* context) : SequentialType(context) {}
+
+            // Public copy constructor, needed for clone()
+            SetType(const SetType& other) : SequentialType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
             ~SetType() override = default;
+            SetType& operator=(const SetType&) = delete;
+            SetType(SetType&&) = delete;
+            SetType& operator=(SetType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<SetType>(*this);
+            }
 
             DataType getTypeTag() const override { return DataType::SET; }
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
             llvm::Value* createValue(std::vector<llvm::Value*> values) const override;
             
-            const BaseType* getElementType() const override { return elementType; }
-
-            void setElementType(BaseType* eleType) override { elementType = eleType; }
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<SetType>(*this); }
-
             llvm::Type* getLLVMPointerType() const override;
 
             llvm::Value* getDefaultValue() override;

@@ -46,13 +46,22 @@ namespace LynxTypes {
     // Base Interface
     // ============================================================================
     struct BitwiseStrategy {
+
+        BitwiseStrategy() = default;
+        
+        // Rule of Five
+        BitwiseStrategy(const BitwiseStrategy&) = delete;
+        BitwiseStrategy& operator=(const BitwiseStrategy&) = delete;
+        BitwiseStrategy(BitwiseStrategy&&) = delete;
+        BitwiseStrategy& operator=(BitwiseStrategy&&) = delete;
+        virtual ~BitwiseStrategy() noexcept = default;    
+
         [[nodiscard]] virtual llvm::Value* bitAnd(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* bitOr(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* bitXor(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* shl(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* shr(const StrategyContext&) const noexcept = 0;
-        [[nodiscard]] virtual llvm::Value* bitNot(const StrategyContext&) const noexcept = 0;
-        virtual ~BitwiseStrategy() noexcept = default;
+        [[nodiscard]] virtual llvm::Value* bitNot(const StrategyContext&) const noexcept = 0;    
     };
 
     // ============================================================================

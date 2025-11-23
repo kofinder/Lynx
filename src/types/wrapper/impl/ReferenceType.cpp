@@ -10,7 +10,7 @@ namespace LynxTypes {
 
     llvm::Value* ReferenceType::getDefaultValue() { return nullptr; }
 
-    llvm::Value* ReferenceType::createInstance(std::string /*variableName*/) { return nullptr; }
+    llvm::Value* ReferenceType::createInstance(const std::string& /*variableName*/) { return nullptr; }
  
     llvm::Value* ReferenceType::assignTo(llvm::Value* /*lhs*/, llvm::Value* /*rhs*/) { return nullptr; }
 

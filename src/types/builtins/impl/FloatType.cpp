@@ -20,7 +20,7 @@ namespace LynxTypes {
         return createValue(value);
     }
 
-    llvm::Value* FloatType::createInstance(std::string variableName) {
+    llvm::Value* FloatType::createInstance(const std::string& variableName) {
         auto& builder = astContext->getBuilder();
         llvm::Type* floatType = getLLVMType();
         auto* var = builder.CreateAlloca(floatType, nullptr, variableName);

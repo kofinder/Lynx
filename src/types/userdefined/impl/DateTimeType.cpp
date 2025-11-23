@@ -50,7 +50,7 @@ namespace LynxTypes {
         return llvm::Constant::getNullValue(computeLLVMType());
     }
 
-    llvm::Value* DateTimeType::createInstance(std::string variableName) {
+    llvm::Value* DateTimeType::createInstance(const std::string& variableName) {
         auto& builder = astContext->getBuilder();
         llvm::Type* doubleType = this->getLLVMType();
         auto* var = builder.CreateAlloca(doubleType, nullptr, variableName);

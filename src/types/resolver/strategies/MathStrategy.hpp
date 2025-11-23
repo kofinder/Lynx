@@ -41,6 +41,16 @@ namespace LynxTypes {
     // Base Interface
     // ============================================================================
     struct MathStrategy {
+        
+        MathStrategy() = default;
+
+        // Rule of Fives        
+        MathStrategy(const MathStrategy&) = delete;
+        MathStrategy& operator=(const MathStrategy&) = delete;
+        MathStrategy(MathStrategy&&) = delete;
+        MathStrategy& operator=(MathStrategy&&) = delete;
+        virtual ~MathStrategy() noexcept = default; 
+            
         [[nodiscard]] virtual llvm::Value* sqrt(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* pow(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* exp(const StrategyContext&) const noexcept = 0;
@@ -64,7 +74,6 @@ namespace LynxTypes {
         [[nodiscard]] virtual llvm::Value* trunc(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* round(const StrategyContext&) const noexcept = 0;
         [[nodiscard]] virtual llvm::Value* fabs(const StrategyContext&) const noexcept = 0;
-        virtual ~MathStrategy() noexcept = default;
     };
 
     // ============================================================================

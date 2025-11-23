@@ -36,6 +36,14 @@ namespace LynxConstants {
     constexpr int RANK_SIX    = 6;
     constexpr int RANK_SEVEN  = 7;
 
+    // ---------------------------
+    // Others
+    // ---------------------------
+    constexpr double FP_TWO = 2.0;
+    constexpr uint32_t DEFAULT_ALIGN_BITS = 0;
+
+
+
 }
 
 #endif

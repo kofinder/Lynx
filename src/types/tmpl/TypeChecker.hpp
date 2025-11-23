@@ -196,9 +196,10 @@ namespace LynxTypes::TypeChecker {
             const auto name = structType->getName().str();
         
             constexpr std::string_view prefix = "enum.";
-            if (name.compare(0, prefix.size(), prefix) != 0) return false;
+            if (!name.starts_with(prefix)) return false;
+            // if (name.compare(0, prefix.size(), prefix) != 0) return false;
                 
-            unsigned numElements = structType->getNumElements();
+            const unsigned numElements = structType->getNumElements();
             if (numElements != 2) {
                 std::cout << "[is<EnumType>] Unexpected number of elements: " << numElements << "\n";
                 return false;
@@ -208,7 +209,7 @@ namespace LynxTypes::TypeChecker {
             const auto* second = structType->getElementType(1);
             if (!first->isIntegerTy(BIT_WIDTH_LONG)) return false;
 
-            if (auto* secondStruct = llvm::dyn_cast<llvm::StructType>(second)) {
+            if (const auto* secondStruct = llvm::dyn_cast<llvm::StructType>(second)) {
                 if (secondStruct->getNumElements() != 3) return false;
             
                 auto* intType = secondStruct->getElementType(0);
@@ -216,7 +217,7 @@ namespace LynxTypes::TypeChecker {
                 auto* stringType = secondStruct->getElementType(2);
             
                 // With opaque pointers, you cannot check the pointee type.
-                bool validSecondStruct =
+                const bool validSecondStruct =
                     intType->isPointerTy() &&  // opaque pointer
                     charType->isIntegerTy(BIT_WIDTH_BYTE) &&
                     stringType->isIntegerTy(BIT_WIDTH_LONG);

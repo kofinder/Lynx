@@ -16,7 +16,7 @@ namespace LynxTypes {
 
     llvm::Value* VoidType::getDefaultValue() { return nullptr; }
 
-    llvm::Value* VoidType::createInstance(std::string /*name*/) { return nullptr; }
+    llvm::Value* VoidType::createInstance(const std::string& /*name*/) { return nullptr; }
 
     llvm::Value* VoidType::createValue(LValueType /*value*/) const { return nullptr; }        
 

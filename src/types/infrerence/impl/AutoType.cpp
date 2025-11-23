@@ -12,7 +12,7 @@ namespace LynxTypes {
         return inferredType->getLLVMType();
     }
 
-    llvm::Value* AutoType::createInstance(std::string variableName) {
+    llvm::Value* AutoType::createInstance(const std::string& variableName) {
         if (!inferredType) throw std::logic_error("AutoType not yet inferred.");
         return inferredType->createInstance(variableName);
     }

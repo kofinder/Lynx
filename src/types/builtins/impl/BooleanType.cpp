@@ -19,7 +19,7 @@ namespace LynxTypes {
         return createValue(value);
     }
 
-    llvm::Value* BooleanType::createInstance(std::string variableName) {
+    llvm::Value* BooleanType::createInstance(const std::string& variableName) {
         auto& builder = astContext->getBuilder();
         llvm::Type* booType = getLLVMType();
         auto* var = builder.CreateAlloca(booType, nullptr, variableName);

@@ -110,7 +110,7 @@ namespace LynxTypes {
 
             llvm::Value* getDefaultValue() override;
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 

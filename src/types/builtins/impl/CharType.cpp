@@ -26,7 +26,7 @@ namespace LynxTypes {
         return llvm::ConstantAggregateZero::get(charType);
     }
 
-    llvm::Value* CharType::createInstance(std::string variableName) {
+    llvm::Value* CharType::createInstance(const std::string& variableName) {
         auto& builder = astContext->getBuilder();
         llvm::Type* charType = computeLLVMType();
         llvm::Value* var = builder.CreateAlloca(charType, nullptr, variableName);

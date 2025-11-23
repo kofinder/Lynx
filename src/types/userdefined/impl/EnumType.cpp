@@ -94,7 +94,7 @@ namespace LynxTypes {
         return llvm::ConstantStruct::get(structType, values);
     }
 
-    llvm::Value* EnumType::createInstance(std::string variableName) {
+    llvm::Value* EnumType::createInstance(const std::string& variableName) {
         auto& builder = astContext->getBuilder();
         llvm::Type* enumType = computeLLVMType();
         auto* var = builder.CreateAlloca(enumType, nullptr, variableName);

@@ -60,24 +60,35 @@ namespace LynxTypes {
 
         public:
 
+            // Use explicit constructor for RAII
             explicit VectorType(AstContext* context) : SequentialType(context) {}
+
+            // Public copy constructor, needed for clone()
+            VectorType(const VectorType& other) : SequentialType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
             ~VectorType() override = default;
+            VectorType& operator=(const VectorType&) = delete;
+            VectorType(VectorType&&) = delete;
+            VectorType& operator=(VectorType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<VectorType>(*this);
+            }
 
             bool isIndexable() const noexcept override { return true; }
 
             DataType getTypeTag() const override { return DataType::VECTOR; }
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
             llvm::Value* createValue(std::vector<llvm::Value*> values) const override;
-
-            const BaseType* getElementType() const override { return elementType; }
-
-            void setElementType(BaseType* eleType) override { elementType = eleType; }
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<VectorType>(*this); }
 
             llvm::Type* getLLVMPointerType() const override;
 

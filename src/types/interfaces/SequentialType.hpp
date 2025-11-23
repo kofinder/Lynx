@@ -94,35 +94,7 @@ namespace LynxTypes {
 
                 return false;
             }
-
-            /**
-             * @brief Sets the value type for associative types.
-             * 
-             * Used to configure what type of values an associative container (e.g., map) stores.
-             * 
-             * @param elementValue Pointer to the type of values to store.
-             * 
-             * @note This method must be implemented by types derived from AssociativeType.
-             */
-            void setValueType(BaseType* /*unused*/) override {
-                astContext->reportError(makeRuntimeError("setValueType must be implemented by derived AssociateType"));
-            }
-
-            /**
-             * @brief Gets the value type for associative types.
-             * 
-             * Retrieves the type of values an associative container holds.
-             * 
-             * @return Pointer to the BaseType representing the value type.
-             * 
-             * @note This method must be implemented by types derived from AssociativeType.
-             */
-            const BaseType* getValueType() const override {
-                astContext->reportError(makeRuntimeError("getValueType must be implemented by derived AssociateType"));
-                return nullptr;
-            }
-
-
+            
             /**
              * @brief Retrieve the element at the specified index.
              * @param index LLVM value representing the index to access.

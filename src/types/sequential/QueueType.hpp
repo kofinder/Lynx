@@ -49,23 +49,34 @@ namespace LynxTypes {
 
         public:
 
+            // Use explicit constructor for RAII
             explicit QueueType(AstContext* context) : SequentialType(context) {}
+
+            // Public copy constructor, needed for clone()
+            QueueType(const QueueType& other) : SequentialType(other.getContext()) {
+                setConst(other.isConst());
+                setStatic(other.isStatic());
+            }
+
+            // Rule of five: allow default destructor, delete others
             ~QueueType() override = default;
+            QueueType& operator=(const QueueType&) = delete;
+            QueueType(QueueType&&) = delete;
+            QueueType& operator=(QueueType&&) = delete;
+
+            // Clone: polymorphic RAII-safe copy
+            std::unique_ptr<BaseType> clone() const override {
+                return std::make_unique<QueueType>(*this);
+            }
 
             DataType getTypeTag() const override { return DataType::QUEUE; }
 
-            llvm::Value* createInstance(std::string variableName) override;
+            llvm::Value* createInstance(const std::string& variableName) override;
 
             llvm::Value* assignTo(llvm::Value* lhs, llvm::Value* rhs) override;
 
             llvm::Value* createValue(std::vector<llvm::Value*> values) const override;
             
-            const BaseType* getElementType() const override { return elementType; }
-
-            void setElementType(BaseType* eleType) override { elementType = eleType; }
-
-            std::unique_ptr<BaseType> clone() const override { return std::make_unique<QueueType>(*this); }
-
             llvm::Type* getLLVMPointerType() const override;
 
             llvm::Value* getDefaultValue() override;
