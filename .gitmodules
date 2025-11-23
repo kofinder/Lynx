@@ -1,24 +1,31 @@
 [submodule "external/skia"]
 	path = external/skia
 	url = https://skia.googlesource.com/skia.git
-[submodule "external/json"]
-	path = external/json
-	url = git@github.com:nlohmann/json.git
-[submodule "external/fmt"]
-	path = external/fmt
-	url = git@github.com:fmtlib/fmt.git
-[submodule "external/spdlog"]
-	path = external/spdlog
-	url = git@github.com:gabime/spdlog.git
-[submodule "external/cxxopts"]
-	path = external/cxxopts
-	url = git@github.com:jarro2783/cxxopts.git
-[submodule "external/catch2"]
-	path = external/catch2
-	url = git@github.com:catchorg/Catch2.git
-[submodule "external/yaml-cpp"]
-	path = external/yaml-cpp
-	url = https://github.com/jbeder/yaml-cpp.git
+
+# [submodule "external/json"]
+# 	path = external/json
+# 	url = git@github.com:nlohmann/json.git
+
+# [submodule "external/fmt"]
+# 	path = external/fmt
+# 	url = git@github.com:fmtlib/fmt.git
+
+# [submodule "external/spdlog"]
+# 	path = external/spdlog
+# 	url = git@github.com:gabime/spdlog.git
+
+# [submodule "external/cxxopts"]
+# 	path = external/cxxopts
+# 	url = git@github.com:jarro2783/cxxopts.git
+
+# [submodule "external/catch2"]
+# 	path = external/catch2
+# 	url = git@github.com:catchorg/Catch2.git
+
+# [submodule "external/yaml-cpp"]
+# 	path = external/yaml-cpp
+# 	url = https://github.com/jbeder/yaml-cpp.git
+	
 [submodule "src/lang"]
 	path = src/lang
 	url = https://github.com/kofinder/LynxLang.git
