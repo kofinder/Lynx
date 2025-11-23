@@ -50,8 +50,12 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y cmake ninja-build libedit-dev libcurl4-openssl-dev libffi-dev zlib1g-dev libxml2-dev libtinfo-dev libzstd-dev
-          
+          sudo apt install -y cmake ninja-build \
+             libedit-dev libcurl4-openssl-dev libffi-dev zlib1g-dev \
+             libxml2-dev libtinfo-dev libzstd-dev \
+             libboost-system-dev libboost-filesystem-dev libboost-program-options-dev \
+             libgc-dev
+
       # Install Boost required libraries
       - name: Install Boost
         run: |
