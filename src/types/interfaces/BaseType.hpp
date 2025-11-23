@@ -248,7 +248,7 @@ namespace LynxTypes {
                 llvm::Value* instancePtr, 
                 const std::string& methodName, 
                 const std::vector<llvm::Value*>& args
-            ) { return nullptr; }
+            );
             
             /**
              * @brief Returns whether the type is const-qualified.
