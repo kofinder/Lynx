@@ -24,14 +24,10 @@ jobs:
           restore-keys: clang-tidy-${{ runner.os }}-
 
       # Install LLVM 21 prebuilt binaries
-      - name: Install LLVM 21 prebuilt binaries
-        run: |
-          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-21.0.0/clang+llvm-21.0.0-x86_64-linux-gnu.tar.xz
-          tar -xf clang+llvm-21.0.0-x86_64-linux-gnu.tar.xz
-          sudo cp -r clang+llvm-21.0.0-x86_64-linux-gnu/* /usr/local/
-          export PATH=/usr/local/bin:$PATH
-          clang --version
-          clang-tidy --version
+      - name: Install LLVM 21
+        run: sudo apt-get update && sudo apt-get install -y clang-21 clang-tidy-21
+            clang --version
+            clang-tidy --version
 
       # Install CMake and Ninja
       - name: Install CMake and Ninja
