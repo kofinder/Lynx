@@ -3,7 +3,7 @@ name: clang-tidy
 on:
   push:
     branches:
-      - main  # Trigger workflow on every push to main
+      - master  # Trigger workflow on every push to main
 
 jobs:
   tidy:
