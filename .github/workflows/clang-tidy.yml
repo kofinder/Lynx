@@ -11,21 +11,24 @@ jobs:
   tidy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Install LLVM/Clang
+      - name: Cache build and CMake
+        uses: actions/cache@v3
+        with:
+          path: |
+            build
+            ~/.cache/clang-tidy
+          key: clang-tidy-${{ runner.os }}-${{ hashFiles('**/*.cpp', '**/*.hpp') }}
+          restore-keys: clang-tidy-${{ runner.os }}-
+
+      - name: Install Clang/LLVM
         run: |
           sudo apt update
-          sudo apt install -y wget gnupg lsb-release software-properties-common
-          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-21 main"
-          sudo apt update
-          sudo apt install -y clang-21 clang-tidy-21 cmake ninja-build
-          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-21 100
-          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-21 100
-          sudo update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-21 100
+          sudo apt install -y clang clang-tidy cmake ninja-build
 
-      - name: Configure
+      - name: Configure project with CMake
         run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
       - name: Run clang-tidy
