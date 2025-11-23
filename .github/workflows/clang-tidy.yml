@@ -51,6 +51,13 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y cmake ninja-build libedit-dev libcurl4-openssl-dev libffi-dev zlib1g-dev libxml2-dev libtinfo-dev libzstd-dev
+          
+      # Install Boost required libraries
+      - name: Install Boost
+        run: |
+          sudo apt update
+          sudo apt install -y libboost-system-dev libboost-filesystem-dev libboost-program-options-dev
+
 
       # Configure the project with CMake
       - name: Configure project with CMake
