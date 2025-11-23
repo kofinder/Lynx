@@ -28,4 +28,4 @@
 	
 [submodule "src/lang"]
 	path = src/lang
-	url = https://github.com/kofinder/lynxlang.git
+	url = https://github.com/kofinder/LynxLang.git
