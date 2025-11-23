@@ -8,8 +8,6 @@ on:
 jobs:
   tidy:
     runs-on: ubuntu-latest
-    env:
-      PATH: /usr/lib/llvm-21/bin:${PATH}   # Make LLVM 21 visible to all steps
     steps:
       # Checkout the code
       - name: Checkout code
@@ -25,8 +23,8 @@ jobs:
           key: clang-tidy-${{ runner.os }}-${{ hashFiles('**/*.cpp', '**/*.hpp') }}
           restore-keys: clang-tidy-${{ runner.os }}-
 
-      # Install required tools (tar, wget, curl, xz-utils)
-      - name: Install basic build utilities
+      # Install required system tools first
+      - name: Install basic build tools
         run: |
           sudo apt update
           sudo apt install -y tar wget curl xz-utils
@@ -37,6 +35,14 @@ jobs:
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh 21
+
+      # Add LLVM 21 to PATH for all subsequent steps
+      - name: Add LLVM 21 to PATH
+        run: echo "/usr/lib/llvm-21/bin" >> $GITHUB_PATH
+
+      # Verify LLVM installation
+      - name: Verify LLVM 21
+        run: |
           clang --version
           clang-tidy --version
 
