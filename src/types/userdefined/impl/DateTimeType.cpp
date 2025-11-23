@@ -77,10 +77,7 @@ namespace LynxTypes {
         };
     
         auto iter = fieldIndex.find(fieldName);
-        if (iter == fieldIndex.end()) {
-            LOG_ERROR("Unknown field name in DateTimeType: ", fieldName);
-            return nullptr;
-        }    
+        if (iter == fieldIndex.end())  return nullptr;
         
         auto& builder = getBuilder();
         const auto index = static_cast<unsigned>(iter->second);
