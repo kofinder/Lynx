@@ -26,12 +26,13 @@ jobs:
       # Install LLVM 21 prebuilt binaries
       - name: Install LLVM 21 prebuilt
         run: |
-          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.6/clang+llvm-21.1.6-x86_64-linux-gnu-ubuntu-20.04.tar.xz
-          tar -xf clang+llvm-21.1.6-x86_64-linux-gnu-ubuntu-20.04.tar.xz
-          sudo cp -r clang+llvm-21.1.6-x86_64-linux-gnu-ubuntu-20.04/* /usr/local/
+          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.6/clang+llvm-21.1.6-x86_64-linux-gnu.tar.xz
+          tar -xf clang+llvm-21.1.6-x86_64-linux-gnu.tar.xz
+          sudo cp -r clang+llvm-21.1.6-x86_64-linux-gnu/* /usr/local/
           export PATH=/usr/local/bin:$PATH
           clang --version
           clang-tidy --version
+
 
       # Install CMake and Ninja
       - name: Install CMake and Ninja
