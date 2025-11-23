@@ -10,11 +10,11 @@ namespace LynxTypes {
 
 
     llvm::Type* ShortType::computeLLVMType() const {
-        return llvm::Type::getInt16Ty(getContext()->getLLVMContext());
+        return llvm::Type::getInt16Ty(getLLVMContext());
     }
 
     llvm::Type* ShortType::getLLVMPointerType() const {
-        auto* shortTy = llvm::Type::getInt16Ty(getContext()->getLLVMContext());
+        auto* shortTy = llvm::Type::getInt16Ty(getLLVMContext());
         return llvm::PointerType::get(shortTy->getContext(), 0);
     }
 
@@ -24,10 +24,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* ShortType::createInstance(const std::string& variableName) {
-        auto& builder = getContext()->getBuilder();
-        llvm::Type* shortType = getLLVMType();
-        auto* var = builder.CreateAlloca(shortType, nullptr, variableName);
-
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName);
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::shortType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -38,7 +36,7 @@ namespace LynxTypes {
 
     llvm::Value* ShortType::createValue(LValueType value) const {
         if(std::holds_alternative<short>(value)) {
-            auto& context = getContext()->getLLVMContext();
+            auto& context = getLLVMContext();
             const short shortValue = std::get<short>(value);
             return llvm::ConstantInt::get(context, llvm::APInt(BIT_WIDTH_SHORT, shortValue));
         }
@@ -53,8 +51,7 @@ namespace LynxTypes {
             return nullptr;
         }
 
-        auto& builder = getContext()->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
     
     void ShortType::accept(TypeVisitor& visitor) { visitor.visit(*this); }

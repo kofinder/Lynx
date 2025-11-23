@@ -24,7 +24,7 @@ namespace LynxTypes {
 
         if (cachedType) return cachedType;
     
-        auto& context = astContext->getLLVMContext();
+        auto& context = getLLVMContext();
     
         // Step 1: get or create the Opaque struct
         const auto name = qualifiedName();
@@ -108,9 +108,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* ClassType::createInstance(const std::string& variableName) {
-        auto& builder = astContext->getBuilder();
-        llvm::Type* clazzType = this->getLLVMType();
-        auto* var = builder.CreateAlloca(clazzType, nullptr, variableName);
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(getLLVMType(), nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), classType));
             var->setMetadata(lynxDataType, metadata);
@@ -119,8 +118,7 @@ namespace LynxTypes {
     }
 
     llvm::Value* ClassType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
     bool ClassType::equals(const BaseType* other) const {
@@ -243,7 +241,7 @@ namespace LynxTypes {
         int64_t totalScore = 0;
         for (size_t i = 0; i < params.size(); ++i) {
             BaseType* expected = params[i].get();
-            const BaseType* actual = convertLLVMTypeToBaseType(argTypes[i], *astContext);
+            const BaseType* actual = convertLLVMTypeToBaseType(argTypes[i], *getContext());
             const int64_t score = scoreSingleParameter(expected, actual);
             if (score < 0) return -1;
             totalScore += score;
@@ -471,7 +469,7 @@ namespace LynxTypes {
     void ClassType::bindVTable(llvm::Value* objValue) {
         auto* vGlobal = getOrCreateOrVTableGlobal();
         if (!vGlobal)  return;    
-        auto& builder = astContext->getBuilder();
+        auto& builder = getBuilder();
         auto* vtablePtrPtr = getVTablePtrPtr(objValue);
         builder.CreateStore(vGlobal, vtablePtrPtr); 
     }
@@ -480,7 +478,7 @@ namespace LynxTypes {
         auto itr = vtableCache.find(objValue);
         if (itr != vtableCache.end()) return itr->second;
 
-        auto& builder = astContext->getBuilder();
+        auto& builder = getBuilder();
         auto* type = computeLLVMType();
         auto* structType = llvm::dyn_cast<llvm::StructType>(type);    
         auto* vtablePtrPtr = builder.CreateStructGEP(structType, objValue, 0, llvm::Twine(originalNameLower() + "_vtable_ptr_ptr"));   
@@ -493,7 +491,7 @@ namespace LynxTypes {
         auto itr = vtableLoadCache.find(objValue);
         if (itr != vtableLoadCache.end()) return itr->second;
     
-        auto& builder = astContext->getBuilder();
+        auto& builder = getBuilder();
         auto* vtablePtrPtr = getVTablePtrPtr(objValue);
         auto* vtablePtrType = llvm::PointerType::get(vtableType->getContext(), 0); 
 
@@ -503,7 +501,7 @@ namespace LynxTypes {
     }
 
     llvm::Value* ClassType::loadVirtualMethodPtr(llvm::Value* vtablePtr, const std::string& fnName) const {
-        auto& builder = astContext->getBuilder();
+        auto& builder = getBuilder();
         const unsigned methodIndex = getVirtualMethodIndex(fnName);
         auto* methodPtrPtr = builder.CreateStructGEP(vtableType, vtablePtr, methodIndex, llvm::Twine(fnName + "_ptr_ptr"));
         auto* methodPrtTy = llvm::PointerType::get(methodPtrPtr->getContext(), 0);
@@ -511,7 +509,7 @@ namespace LynxTypes {
     }
 
     llvm::GlobalVariable* ClassType::getOrCreateOrVTableGlobal() const {
-        auto* module = astContext->getModule();
+        auto* module = getModule();
         if (auto* existingGV = module->getGlobalVariable(vtableName, true)) return existingGV;
     
         if (!vtableGlobal) return nullptr;
@@ -538,7 +536,7 @@ namespace LynxTypes {
 
     std::unique_ptr<BaseType> ClassType::clone() const {
         using namespace Cloned;
-        auto cloned = std::make_unique<ClassType>(astContext, className);
+        auto cloned = std::make_unique<ClassType>(getContext(), className);
         cloned->parentClass = parentClass;
         cloneMapContainer(methods, [&cloned](const auto& name, auto&& method) { cloned->methods[name] = std::forward<decltype(method)>(method); });
         cloneMapContainer(fields, [&cloned](const auto& name, auto&& field) { cloned->fields[name] = std::forward<decltype(field)>(field); });

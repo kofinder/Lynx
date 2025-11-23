@@ -60,10 +60,10 @@ namespace LynxTypes {
 
             AstContext* astContext;   
 
-            mutable llvm::Type* cachedLLVMType = nullptr;
-
         protected:
 
+            mutable llvm::Type* cachedLLVMType = nullptr; // NOLINT(cppcoreguidelines-owning-memory)
+            
             mutable TypeMethodResolver* resolver = nullptr;  // NOLINT(cppcoreguidelines-owning-memory)
 
         protected:
@@ -73,6 +73,24 @@ namespace LynxTypes {
              * Must be implemented by all derived types.
             */
             virtual llvm::Type* computeLLVMType() const = 0;
+
+            /**
+             * @brief Returns the LLVMContext associated with this type.
+             * @return Reference to llvm::LLVMContext.
+             */
+            llvm::LLVMContext& getLLVMContext() const noexcept;
+
+            /**
+             * @brief Returns the IRBuilder associated with the current codegen context.
+             * @return Reference to llvm::IRBuilder<>.
+             */
+            llvm::IRBuilder<>& getBuilder() const noexcept;
+
+            /**
+             * @brief Returns the LLVM Module associated with this type/context.
+             * @return Pointer to llvm::Module.
+             */
+            llvm::Module* getModule() const noexcept;
 
             /**
              * @brief Returns a version of this type with the specified const qualification.
@@ -138,24 +156,6 @@ namespace LynxTypes {
              * @return Pointer to the AstContext.
             */
             AstContext* getContext() const noexcept { return astContext; }
-
-            /**
-             * @brief Returns the LLVMContext associated with this type.
-             * @return Reference to llvm::LLVMContext.
-             */
-            llvm::LLVMContext& getLLVMContext() const noexcept { return astContext->getLLVMContext(); }
-
-            /**
-             * @brief Returns the IRBuilder associated with the current codegen context.
-             * @return Reference to llvm::IRBuilder<>.
-             */
-            llvm::IRBuilder<>& getBuilder() const noexcept { return astContext->getBuilder(); }
-
-            /**
-             * @brief Returns the LLVM Module associated with this type/context.
-             * @return Pointer to llvm::Module.
-             */
-            llvm::Module* getModule() const noexcept { return astContext->getModule(); }
 
             /**
              * @brief Returns true if the type is const-qualified.

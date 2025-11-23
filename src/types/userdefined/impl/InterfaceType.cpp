@@ -16,7 +16,7 @@ namespace LynxTypes {
         
         if (cachedType) return cachedType;
 
-        auto& llvmContext = astContext->getLLVMContext();
+        auto& llvmContext = getLLVMContext();
 
         // Step 1: get or create opaque struct
         const auto ifaceName = qualifiedName();
@@ -56,9 +56,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* InterfaceType::createInstance(const std::string& variableName) {
-        auto& builder = astContext->getBuilder();
-        auto* llvmType = computeLLVMType();
-        auto* var = builder.CreateAlloca(llvmType, nullptr, variableName);
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), interfaceType));
             var->setMetadata(lynxDataType, metadata);
@@ -151,8 +150,7 @@ namespace LynxTypes {
     }
         
     llvm::Value* InterfaceType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
     bool InterfaceType::equals(const BaseType* other) const {
@@ -206,10 +204,8 @@ namespace LynxTypes {
         auto itr = vtableCache.find(objValue);
         if (itr != vtableCache.end()) return itr->second;
 
-        auto* type = computeLLVMType();
-        auto* structType = llvm::dyn_cast<llvm::StructType>(type);
-        auto& builder = astContext->getBuilder();
-        auto* vtablePtrPtr = builder.CreateStructGEP(structType, objValue, 0, llvm::Twine(originalNameLower() + "_vtable_ptr_ptr"));   
+        auto* structType = llvm::dyn_cast<llvm::StructType>(computeLLVMType());
+        auto* vtablePtrPtr = getBuilder().CreateStructGEP(structType, objValue, 0, llvm::Twine(originalNameLower() + "_vtable_ptr_ptr"));   
         vtableCache[objValue] = vtablePtrPtr;
         return vtablePtrPtr;    
     }
@@ -221,15 +217,14 @@ namespace LynxTypes {
         auto* vtablePtrPtr = getVTablePtrPtr(objValue);
         auto* vtablePtrType = llvm::PointerType::get(vtableType->getContext(), 0); 
 
-        auto& builder = astContext->getBuilder();
-        auto* vtablePtr = builder.CreateLoad(vtablePtrType, vtablePtrPtr, llvm::Twine(originalNameLower() + + "_vtable"));
+        auto* vtablePtr = getBuilder().CreateLoad(vtablePtrType, vtablePtrPtr, llvm::Twine(originalNameLower() + + "_vtable"));
         vtableLoadCache[objValue] = vtablePtr;
 
         return vtablePtr;
     }
 
     llvm::Value* InterfaceType::loadVirtualMethodPtr(llvm::Value* vtablePtr, const std::string& fnName) const {
-        auto& builder = astContext->getBuilder();
+        auto& builder = getBuilder();
         const unsigned methodIndex = getVirtualMethodIndex(fnName);
         auto* methodPtrPtr = builder.CreateStructGEP(vtableType, vtablePtr, methodIndex, llvm::Twine(fnName + "_ptr_ptr"));
         auto* methodPtrType = llvm::PointerType::get(methodPtrPtr->getContext(), 0);
@@ -237,7 +232,7 @@ namespace LynxTypes {
     }
 
     llvm::GlobalVariable* InterfaceType::getOrCreateOrVTableGlobal() const {
-        auto* module = astContext->getModule();
+        auto* module = getModule();
         if (auto* existingGV = module->getGlobalVariable(vtableName, true)) return existingGV;
         if (!vtableGlobal) return nullptr;
         auto* newGV = new llvm::GlobalVariable(*module, vtableType, true, extType, nullptr, vtableName);
@@ -257,7 +252,7 @@ namespace LynxTypes {
 
     std::unique_ptr<BaseType> LynxTypes::InterfaceType::clone() const {
         using namespace Cloned;
-        auto cloned = std::make_unique<InterfaceType>(astContext, interfaceName);
+        auto cloned = std::make_unique<InterfaceType>(getContext(), interfaceName);
         cloned->vtableType = vtableType;
         cloneMapContainer(fields, [&cloned](const auto& name, auto&& field) { cloned->addField(name, std::forward<decltype(field)>(field)); });
         cloneMapContainer(methods, [&cloned](const auto& name, auto&& method) { cloned->addMethod(name, std::forward<decltype(method)>(method)); });

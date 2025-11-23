@@ -20,6 +20,12 @@ namespace LynxTypes {
 
         return cachedLLVMType;
     }
+
+    llvm::LLVMContext& BaseType::getLLVMContext() const noexcept { return astContext->getLLVMContext(); }
+
+    llvm::IRBuilder<>& BaseType::getBuilder() const noexcept { return astContext->getBuilder(); }
+
+    llvm::Module* BaseType::getModule() const noexcept { return astContext->getModule(); }
     
     const std::unordered_map<std::string_view, int>& BaseType::getMethodRegistry() const {
         static const std::unordered_map<std::string_view, int> emptyRegistry;

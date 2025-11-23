@@ -10,14 +10,14 @@ namespace LynxTypes {
 
     llvm::Type* ArrayType::computeLLVMType() const {
 
+        auto* elementType = getElementType();
         if(!elementType) return nullptr;
     
         auto* elemLLVMType = elementType->getLLVMType();
-        if (!elemLLVMType)  return nullptr;
-        if (numElements <= 0) return nullptr;
+        auto numElements = getNumElements();
+        if (!elemLLVMType || numElements <= 0)  return nullptr;
         
-        auto& context = astContext->getLLVMContext();
-    
+        auto& context = getLLVMContext();
         if (llvm::isa<llvm::StructType>(elemLLVMType)) {
             auto* innerStruct = llvm::StructType::getTypeByName(context, MetadataTypeConstants::innerArray);
             if (!innerStruct) innerStruct = llvm::StructType::create(context, elemLLVMType, MetadataTypeConstants::innerArray);
@@ -59,7 +59,7 @@ namespace LynxTypes {
     }
 
     llvm::Value* ArrayType::createNonConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const {
-        auto& builder = getContext()->getBuilder();
+        auto& builder = getBuilder();
         auto* undefStruct = llvm::UndefValue::get(structTy); 
         auto* undefArray = builder.CreateExtractValue(undefStruct, {0}); 
         for (unsigned i = 0; i < values.size(); ++i) { 
@@ -70,7 +70,7 @@ namespace LynxTypes {
 
     llvm::Value* ArrayType::createValue(const std::vector<llvm::Value*> values) const {
         auto* computedType = computeLLVMType();
-        if (!computedType) return nullptr;
+        
         if (values.empty()) return llvm::UndefValue::get(computedType);
     
         const bool allConstants = std::ranges::all_of(values, [](llvm::Value* value) {
@@ -86,9 +86,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* ArrayType::createInstance(const std::string& variableName) {
-        auto& builder = getContext()->getBuilder();
-        llvm::Type* llvmType = computeLLVMType();
-        auto* var = builder.CreateAlloca(llvmType, nullptr, variableName); 
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName); 
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::arrayType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -106,13 +105,12 @@ namespace LynxTypes {
     }
 
     llvm::Value* ArrayType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        auto& builder = getContext()->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
     llvm::Value* ArrayType::getElementPointer(llvm::Value* arrayAlloca, int index) const {
-        auto& builder = getContext()->getBuilder();
-        auto& context = getContext()->getLLVMContext();
+        auto& builder = getBuilder();
+        auto& context = getLLVMContext();
         llvm::Type* structType = computeLLVMType();
 
         if (!llvm::isa<llvm::StructType>(structType)) return nullptr;
@@ -167,9 +165,9 @@ namespace LynxTypes {
     bool ArrayType::equals(const BaseType* other) const {
         if (other->getTypeTag() != DataType::ARRAY) return false;
         const auto* otherArray = dynamic_cast<const ArrayType*>(other);
-        size_t numEle =  getNumElements();
+        const size_t numEle =  getNumElements();
         auto* eleType = getElementType();
-        return otherArray && numEle == otherArray->getNumElements() && eleType->equals(otherArray->getElementType);
+        return otherArray && numEle == otherArray->getNumElements() && eleType->equals(otherArray->getElementType());
     }
 
     const BaseType* ArrayType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }

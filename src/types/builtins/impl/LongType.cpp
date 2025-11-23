@@ -9,11 +9,11 @@ namespace LynxTypes {
     using namespace LynxConstants;
 
     llvm::Type* LongType::computeLLVMType() const {
-        return llvm::Type::getInt64Ty(getContext()->getLLVMContext());
+        return llvm::Type::getInt64Ty(getLLVMContext());
     }
 
     llvm::Type* LongType::getLLVMPointerType() const {
-        auto* longTy = llvm::Type::getInt64Ty(getContext()->getLLVMContext());
+        auto* longTy = llvm::Type::getInt64Ty(getLLVMContext());
         return llvm::PointerType::get(longTy->getContext(), 0);
     }
 
@@ -23,9 +23,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* LongType::createInstance(const std::string& variableName) {
-        auto& builder = getContext()->getBuilder();
-        llvm::Type* longType = getLLVMType();
-        auto* var = builder.CreateAlloca(longType, nullptr, variableName);
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName);
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::longType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -35,7 +34,7 @@ namespace LynxTypes {
 
     llvm::Value* LongType::createValue(LValueType value) const {
         if(std::holds_alternative<long>(value)) {
-            auto& context = getContext()->getLLVMContext();
+            auto& context = getLLVMContext();
             const long longValue = std::get<long>(value);
             return llvm::ConstantInt::get(context, llvm::APInt(BIT_WIDTH_LONG, longValue));
         }
@@ -51,8 +50,7 @@ namespace LynxTypes {
         }
 
         // Perform the store operation: store rhs value into lhs
-        auto& builder = getContext()->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
     
     void LongType::accept(TypeVisitor& visitor) { visitor.visit(*this); }

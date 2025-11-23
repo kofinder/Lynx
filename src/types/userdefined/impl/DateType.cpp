@@ -8,7 +8,7 @@ namespace LynxTypes {
 
     llvm::Type* DateType::computeLLVMType() const {
         if (!cachedType) {
-            auto& context = astContext->getLLVMContext();
+            auto& context = getLLVMContext();
             cachedType = llvm::StructType::create(context, MetadataTypeConstants::structureDateType);
             const std::vector<llvm::Type*> members = {
                 llvm::Type::getInt32Ty(context), // year
@@ -34,9 +34,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* DateType::createInstance(const std::string& variableName) {
-        auto& builder = astContext->getBuilder();
-        llvm::Type* doubleType = this->getLLVMType();
-        auto* var = builder.CreateAlloca(doubleType, nullptr, variableName);
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(getLLVMType(), nullptr, variableName);
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::dateType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -45,16 +44,10 @@ namespace LynxTypes {
     }
 
     llvm::Value* DateType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
-    llvm::Value* DateType::getField(const std::string& /*fieldName*/, llvm::Value* instance) {
-        auto& context = astContext->getLLVMContext();
-        auto& builder = astContext->getBuilder();
-        llvm::Function* func = nullptr;
-        return builder.CreateCall(func, { instance });    
-    }
+    llvm::Value* DateType::getField(const std::string& /*fieldName*/, llvm::Value* /*unused*/) { return nullptr; }
 
     bool DateType::equals(const BaseType* other) const {
         return dynamic_cast<const DateType*>(other) != nullptr;

@@ -11,11 +11,11 @@
 namespace LynxTypes {
 
     llvm::Type* StringType::computeLLVMType() const {
-        return llvm::PointerType::get(llvm::Type::getInt8Ty(getContext()->getLLVMContext())->getContext(), 0);
+        return llvm::PointerType::get(llvm::Type::getInt8Ty(getLLVMContext())->getContext(), 0);
     }
 
     llvm::Type* StringType::getLLVMPointerType() const {
-        return llvm::PointerType::get(llvm::Type::getInt8Ty(getContext()->getLLVMContext())->getContext(), 0);
+        return llvm::PointerType::get(llvm::Type::getInt8Ty(getLLVMContext())->getContext(), 0);
     }
 
     llvm::Value* StringType::getDefaultValue() {
@@ -23,9 +23,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* StringType::createInstance(const std::string& variableName) {
-        auto& builder = getContext()->getBuilder();
-        llvm::Type* llvmType = getLLVMType();
-        auto* var = builder.CreateAlloca(llvmType, nullptr, variableName);
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), stringType));
             var->setMetadata(lynxDataType, metadata);
@@ -34,8 +33,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* StringType::createValue(LValueType value) const {
-        auto& context = getContext()->getLLVMContext();
-        auto* module = getContext()->getModule();
+        auto& context = getLLVMContext();
+        auto* module = getModule();
 
         const llvm::StringRef strRef(std::get<std::string>(value));
         auto* strConst = llvm::ConstantDataArray::getString(context, strRef, true);
@@ -53,8 +52,7 @@ namespace LynxTypes {
             LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
             return nullptr;
         }
-        auto& builder = getContext()->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
     void StringType::accept(TypeVisitor& visitor) { visitor.visit(*this); }

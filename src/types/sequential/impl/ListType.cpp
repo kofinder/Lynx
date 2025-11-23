@@ -14,18 +14,9 @@ namespace LynxTypes {
 
     llvm::Value* ListType::createValue(std::vector<llvm::Value*> /*values*/) const { return nullptr; }      
 
-    llvm::Value* ListType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        if (!isValid(lhs) || !isValid(rhs)) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
-    }
+    llvm::Value* ListType::assignTo(llvm::Value* /*unused*/, llvm::Value* /*unused*/)  { return nullptr; }
 
-    bool ListType::equals(const BaseType* other) const {
-        return dynamic_cast<const ListType*>(other) != nullptr;
-    }
+    bool ListType::equals(const BaseType* other) const { return dynamic_cast<const ListType*>(other) != nullptr; }
 
     const BaseType* ListType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
     const BaseType* ListType::createWithConst(bool /*newIsConst*/) const { return nullptr; }

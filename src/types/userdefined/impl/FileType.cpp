@@ -1,16 +1,16 @@
 #include "userdefined/FileType.hpp"
 #include <context/AstContext.hpp>
 
-using namespace LynxContext;
-
 namespace LynxTypes {
 
+    using namespace LynxContext;
+    
     llvm::StructType* FileType::cachedType = nullptr;
 
     llvm::Type* FileType::computeLLVMType() const {
         
         if (!cachedType) {
-            auto& context = astContext->getLLVMContext();
+            auto& context = getLLVMContext();
             cachedType = llvm::StructType::create(context, MetadataTypeConstants::fileType);
             
             const std::vector<llvm::Type*> members = {
@@ -33,9 +33,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* FileType::createInstance(const std::string& variableName) {
-        auto& builder = astContext->getBuilder();
-        auto* type = this->computeLLVMType();
-        auto* var = builder.CreateAlloca(type, nullptr, variableName); 
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName); 
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::fileType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -44,8 +43,7 @@ namespace LynxTypes {
     }
 
     llvm::Value* FileType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
     bool FileType::equals(const BaseType* other) const {
@@ -59,5 +57,4 @@ namespace LynxTypes {
     uint64_t FileType::getDebugSizeInBits() const { return DEFAULT_ALIGN_BITS; }
     uint32_t FileType::getDebugAlignInBits() const { return DEFAULT_ALIGN_BITS; }
     llvm::DINode::DIFlags FileType::getDIFlags() const { return llvm::DINode::FlagZero; }
-    
 }

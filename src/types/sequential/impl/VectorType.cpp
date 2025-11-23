@@ -7,22 +7,28 @@ namespace LynxTypes {
     using namespace LynxConstants;
 
     llvm::Type* VectorType::computeLLVMType() const {
-        llvm::Type* elemLLVMType = elementType->getLLVMType();
-        if (!elemLLVMType)  return nullptr;
+        auto* elementType = getElementType();
+        if(!elementType) return nullptr;
+    
+        auto* elemLLVMType = elementType->getLLVMType();
+        auto numElements = getNumElements();
+        if (!elemLLVMType || numElements <= 0)  return nullptr;
+        
+        auto& context = getLLVMContext();
         if (llvm::isa<llvm::VectorType>(elemLLVMType) || llvm::isa<llvm::StructType>(elemLLVMType)) {
             const auto nestedName = getSafeStructName();
-            auto* existing = llvm::StructType::getTypeByName(astContext->getLLVMContext(), nestedName);
+            auto* existing = llvm::StructType::getTypeByName(context, nestedName);
             if (existing) {
                 cachedLLVMType = existing;
                 return existing;
             }
             const std::vector<llvm::Type*> members(numElements, elemLLVMType);
-            cachedLLVMType = llvm::StructType::create(astContext->getLLVMContext(), members, nestedName);
+            cachedLLVMType = llvm::StructType::create(context, members, nestedName);
             return cachedLLVMType;
         }
         
-        const auto eleCount = llvm::ElementCount::getFixed(numElements);
-        cachedLLVMType = llvm::VectorType::get(elemLLVMType, eleCount);
+        const auto eleSize = llvm::ElementCount::getFixed(numElements);
+        cachedLLVMType = llvm::VectorType::get(elemLLVMType, eleSize);
         return cachedLLVMType;
     }    
     
@@ -35,9 +41,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* VectorType::createInstance(const std::string& variableName) {
-        llvm::Type* vectorType = computeLLVMType();
-        auto& builder = astContext->getBuilder();        
-        auto* var = builder.CreateAlloca(vectorType, nullptr, variableName);
+        auto& builder = getBuilder();        
+        auto* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::vectorType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -59,7 +64,7 @@ namespace LynxTypes {
     }
     
     llvm::Value* VectorType::createNonConstantStructValue(llvm::StructType* structTy, const std::vector<llvm::Value*>& values) const {
-        auto& builder = astContext->getBuilder();
+        auto& builder = getBuilder();
         llvm::Value* aggregate = llvm::UndefValue::get(structTy);
         for (unsigned i = 0; i < values.size(); ++i) {
             aggregate = builder.CreateInsertValue(aggregate, values[i], {i});
@@ -86,14 +91,15 @@ namespace LynxTypes {
     }
     
     llvm::Value* VectorType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
     bool VectorType::equals(const BaseType* other) const {
         if (other->getTypeTag() != DataType::VECTOR) return false;
         const auto* otherVector = dynamic_cast<const VectorType*>(other);
-        return otherVector && numElements == otherVector->numElements && elementType->equals(otherVector->elementType);
+        auto eleSize = getNumElements();
+        auto* eleType = getElementType();
+        return otherVector && eleSize == otherVector->getNumElements() && eleType->equals(otherVector->getElementType());
     }
 
     // NOLINTNEXTLINE(misc-no-recursion)
@@ -102,13 +108,16 @@ namespace LynxTypes {
         
         visited.insert(this);
     
-        if (!elementType) return "vec_unknown_" + std::to_string(numElements);
+        auto eleSize = getNumElements();
+        auto* eleType = getElementType();
+
+        if (!eleType) return "vec_unknown_" + std::to_string(eleSize);
     
-        if (const auto* nested = dynamic_cast<const VectorType*>(elementType)) {
-            return "vec_nested_" + std::to_string(numElements) + "_of_" + nested->getSafeStructName(visited);
+        if (const auto* nested = dynamic_cast<const VectorType*>(eleType)) {
+            return "vec_nested_" + std::to_string(eleSize) + "_of_" + nested->getSafeStructName(visited);
         }
     
-        return "vec_of_" + elementType->getDebugName() + "_" + std::to_string(numElements);
+        return "vec_of_" + eleType->getDebugName() + "_" + std::to_string(eleSize);
     }
 
     std::string VectorType::getSafeStructName() const {

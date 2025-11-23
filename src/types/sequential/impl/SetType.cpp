@@ -14,14 +14,9 @@ namespace LynxTypes {
 
     llvm::Value* SetType::createValue(std::vector<llvm::Value*> /*values*/) const { return nullptr; }  
     
-    llvm::Value* SetType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
-    }
+    llvm::Value* SetType::assignTo(llvm::Value* /*unused*/, llvm::Value* /*unused*/)  { return nullptr; }
 
-    bool SetType::equals(const BaseType* other) const {
-        return dynamic_cast<const SetType*>(other) != nullptr;
-    }
+    bool SetType::equals(const BaseType* other) const { return dynamic_cast<const SetType*>(other) != nullptr; }
 
     const BaseType* SetType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
     const BaseType* SetType::createWithConst(bool /*newIsConst*/) const { return nullptr; }

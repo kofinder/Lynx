@@ -14,14 +14,9 @@ namespace LynxTypes {
 
     llvm::Value* QueueType::createValue(std::vector<llvm::Value*> /*values*/) const { return nullptr; }  
 
-    llvm::Value* QueueType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
-    }
+    llvm::Value* QueueType::assignTo(llvm::Value* /*unused*/, llvm::Value* /*unused*/)  { return nullptr; }
 
-    bool QueueType::equals(const BaseType* other) const {
-        return dynamic_cast<const QueueType*>(other) != nullptr;
-    }
+    bool QueueType::equals(const BaseType* other) const { return dynamic_cast<const QueueType*>(other) != nullptr; }
 
     const BaseType* QueueType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
     const BaseType* QueueType::createWithConst(bool /*newIsConst*/) const { return nullptr; }

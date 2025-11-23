@@ -11,7 +11,7 @@ namespace LynxTypes {
 
     llvm::Type* ByteType::computeLLVMType() const {
         if (!cachedType) {
-            auto& context = getContext()->getLLVMContext();
+            auto& context = getLLVMContext();
             cachedType = llvm::StructType::create(context, MetadataTypeConstants::structureByteType);
             cachedType->setBody(llvm::Type::getInt8Ty(context));
         }
@@ -24,14 +24,12 @@ namespace LynxTypes {
     }
 
     llvm::Value* ByteType::getDefaultValue() {
-        llvm::Type* byteType = computeLLVMType();
-        return llvm::ConstantAggregateZero::get(byteType);
+        return llvm::ConstantAggregateZero::get(computeLLVMType());
     }
 
     llvm::Value* ByteType::createInstance(const std::string& variableName) {
-        auto& builder = getContext()->getBuilder();
-        llvm::Type* byteType = computeLLVMType();
-        llvm::Value* var = builder.CreateAlloca(byteType, nullptr, variableName);
+        auto& builder = getBuilder();
+        llvm::Value* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName);
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::structureByteType));
             allocaInst->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -42,10 +40,9 @@ namespace LynxTypes {
 
     llvm::Value* ByteType::createValue(LValueType value) const {
         if (std::holds_alternative<uint8_t>(value)) {
-            auto& builder = getContext()->getBuilder();
+            auto& builder = getBuilder();
             const uint8_t byteValue = std::get<uint8_t>(value);
-            auto* byteType = computeLLVMType();
-            auto* structTy = llvm::cast<llvm::StructType>(byteType);
+            auto* structTy = llvm::cast<llvm::StructType>(computeLLVMType());
             return llvm::ConstantStruct::get(structTy, {builder.getInt8(byteValue)});
         }
 
@@ -58,15 +55,12 @@ namespace LynxTypes {
             LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
             return nullptr;
         }
-        auto& builder = getContext()->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
     void ByteType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
-    TypeMethodResolver* ByteType::getOrCreateResolver() const { 
-        return nullptr;
-    }
+    TypeMethodResolver* ByteType::getOrCreateResolver() const { return nullptr; }
 
     llvm::Value* ByteType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         if (!resolver) resolver = getOrCreateResolver();

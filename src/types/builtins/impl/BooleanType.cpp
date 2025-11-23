@@ -6,11 +6,11 @@
 namespace LynxTypes {
 
     llvm::Type* BooleanType::computeLLVMType() const {
-        return llvm::Type::getInt1Ty(getContext()->getLLVMContext());
+        return llvm::Type::getInt1Ty(getLLVMContext());
     }
 
     llvm::Type* BooleanType::getLLVMPointerType() const {
-        auto* boolTy = llvm::Type::getInt1Ty(getContext()->getLLVMContext());
+        auto* boolTy = llvm::Type::getInt1Ty(getLLVMContext());
         return llvm::PointerType::get(boolTy->getContext(), 0);
     }
 
@@ -20,9 +20,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* BooleanType::createInstance(const std::string& variableName) {
-        auto& builder = getContext()->getBuilder();
-        llvm::Type* booType = getLLVMType();
-        auto* var = builder.CreateAlloca(booType, nullptr, variableName);
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName);
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::booleanType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -31,7 +30,7 @@ namespace LynxTypes {
     }
 
     const llvm::Value* BooleanType::convertBooleanToString(llvm::Value* value) {
-        auto& builder = getContext()->getBuilder();
+        auto& builder = getBuilder();
         const auto* booleanAsString = builder.CreateSelect(value, builder.CreateGlobalString("true"), builder.CreateGlobalString("false"));
         return booleanAsString;
     }
@@ -39,7 +38,7 @@ namespace LynxTypes {
     llvm::Value* BooleanType::createValue(LValueType value) const {
         if(std::holds_alternative<bool>(value)) {
             const bool boolValue = std::get<bool>(value);
-            return llvm::ConstantInt::get(getContext()->getLLVMContext(), llvm::APInt(1, static_cast<uint64_t>(boolValue)));
+            return llvm::ConstantInt::get(getLLVMContext(), llvm::APInt(1, static_cast<uint64_t>(boolValue)));
         }
         return nullptr;
     }
@@ -49,15 +48,13 @@ namespace LynxTypes {
             LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
             return nullptr;
         }
-        auto& builder = getContext()->getBuilder();
+        auto& builder = getBuilder();
         return builder.CreateStore(rhs, lhs);
     }
 
     void BooleanType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
-    TypeMethodResolver* BooleanType::getOrCreateResolver() const { 
-        return nullptr;
-    }
+    TypeMethodResolver* BooleanType::getOrCreateResolver() const { return nullptr; }
 
     llvm::Value* BooleanType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         if (resolver == nullptr) resolver = getOrCreateResolver();

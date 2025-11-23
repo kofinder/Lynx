@@ -12,7 +12,7 @@ namespace LynxTypes {
         using namespace TypeUtils;
         if (cachedType) return cachedType;
     
-        auto& llvmContext = astContext->getLLVMContext();
+        auto& llvmContext = getLLVMContext();
     
         // Step 1: get or create opaque struct
         const auto fullName = qualifiedName();
@@ -79,9 +79,8 @@ namespace LynxTypes {
 
     llvm::Value* EnumType::getDefaultValue() {
         auto* type = computeLLVMType();
-        auto& ctx = astContext->getLLVMContext();
+        auto& ctx = getLLVMContext();
         auto* structType = llvm::cast<llvm::StructType>(type);
-
         std::vector<llvm::Constant*> values;
         if (structType->getElementType(0)->isIntegerTy()) {
             values.push_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(ctx), 0));
@@ -95,9 +94,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* EnumType::createInstance(const std::string& variableName) {
-        auto& builder = astContext->getBuilder();
-        llvm::Type* enumType = computeLLVMType();
-        auto* var = builder.CreateAlloca(enumType, nullptr, variableName);
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName);
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::structureEnumType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -106,9 +104,9 @@ namespace LynxTypes {
     }
 
     llvm::Value* EnumType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        auto& builder = astContext->getBuilder();
-        auto& context = astContext->getLLVMContext();
-        auto* module  = astContext->getModule();
+        auto& builder = getBuilder();
+        auto& context = getLLVMContext();
+        auto* module  = getModule();
         auto* int8PtrTy = llvm::PointerType::get(context, 0);
 
         // Cast both source and destination to i8*
@@ -162,7 +160,7 @@ namespace LynxTypes {
     llvm::DINode::DIFlags EnumType::getDIFlags() const { return llvm::DINode::FlagZero; }
     
     std::unique_ptr<BaseType> EnumType::clone() const {
-        auto cloned = std::make_unique<EnumType>(astContext, enumName);
+        auto cloned = std::make_unique<EnumType>(getContext(), enumName);
         for (const auto& [key, member] : members) {
             cloned->addMember(key, member);
         }

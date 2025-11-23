@@ -5,10 +5,10 @@
 #include "resolver/TypeMethodResolver.hpp"
 #include "resolver/methods/DateTimeMethodResolver.hpp"
 
-using namespace LynxContext;
-using namespace LynxLogger;
-
 namespace LynxTypes { 
+
+    using namespace LynxContext;
+    using namespace LynxLogger;
     
     enum class DateTimeFieldIndex : std::uint8_t {
         Year = 0,
@@ -25,7 +25,7 @@ namespace LynxTypes {
 
     llvm::Type* DateTimeType::computeLLVMType() const {
         if (!cachedType) {
-            auto& context = astContext->getLLVMContext();
+            auto& context = getLLVMContext();
             cachedType = llvm::StructType::create(context, MetadataTypeConstants::structureDateTimeType);
             const std::vector<llvm::Type*> members = {
                 llvm::Type::getInt32Ty(context), // year
@@ -51,9 +51,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* DateTimeType::createInstance(const std::string& variableName) {
-        auto& builder = astContext->getBuilder();
-        llvm::Type* doubleType = this->getLLVMType();
-        auto* var = builder.CreateAlloca(doubleType, nullptr, variableName);
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(getLLVMType(), nullptr, variableName);
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::dateTimeType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -62,8 +61,7 @@ namespace LynxTypes {
     }
 
     llvm::Value* DateTimeType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
     llvm::Value* DateTimeType::getField(const std::string& fieldName, llvm::Value* instance) {
@@ -84,10 +82,10 @@ namespace LynxTypes {
             return nullptr;
         }    
         
-        auto& builder = astContext->getBuilder();
+        auto& builder = getBuilder();
         const auto index = static_cast<unsigned>(iter->second);
         auto* gep = builder.CreateStructGEP(computeLLVMType(), instance, index);
-        return builder.CreateLoad(llvm::Type::getInt32Ty(astContext->getLLVMContext()), gep);
+        return builder.CreateLoad(llvm::Type::getInt32Ty(getLLVMContext()), gep);
     }
 
     bool DateTimeType::equals(const BaseType* other) const {

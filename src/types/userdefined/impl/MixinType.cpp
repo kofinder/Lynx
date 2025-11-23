@@ -10,16 +10,16 @@
 namespace LynxTypes {
 
     using namespace DFSUtils;
+    using namespace TypeUtils;
     using namespace LynxAst;
 
     // NOLINTNEXTLINE(misc-no-recursion)
     llvm::Type* MixinType::computeLLVMType() const {
-        using namespace TypeUtils;
     
         // Return cached version if already computed
         if (cachedType) return cachedType;
     
-        auto& llvmContext = astContext->getLLVMContext();
+        auto& llvmContext = getLLVMContext();
     
         // Step 1: get or create an opaque struct for this mixin
         const auto mixinNameQualified = qualifiedName();
@@ -70,9 +70,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* MixinType::createInstance(const std::string& variableName) {
-        auto& builder = astContext->getBuilder();
-        auto* llvmType = computeLLVMType();
-        auto* var = builder.CreateAlloca(llvmType, nullptr, variableName);
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), interfaceType));
             var->setMetadata(lynxDataType, metadata);
@@ -141,8 +140,7 @@ namespace LynxTypes {
     }
         
     llvm::Value* MixinType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
     bool MixinType::equals(const BaseType* other) const {
@@ -215,9 +213,8 @@ namespace LynxTypes {
             if (itr == fieldNameToIndex.end())  return nullptr;
             
             const unsigned fieldIndex = itr->second;
-            auto& builder = astContext->getBuilder();
             auto* llvmStructType = llvm::cast<llvm::StructType>(computeLLVMType());
-            auto* superPtr = builder.CreateStructGEP(llvmStructType, thisPtr, fieldIndex, "super_ptr");
+            auto* superPtr = getBuilder().CreateStructGEP(llvmStructType, thisPtr, fieldIndex, "super_ptr");
             return superPtr;
         }
         
@@ -237,7 +234,7 @@ namespace LynxTypes {
 
     std::unique_ptr<BaseType> MixinType::clone() const {
         using namespace Cloned;
-        auto cloned = std::make_unique<MixinType>(astContext, mixinName);
+        auto cloned = std::make_unique<MixinType>(getContext(), mixinName);
         cloneMapContainer(fields, [&cloned](const auto& name, auto&& field) { cloned->addField(name, std::forward<decltype(field)>(field)); });
         cloneMapContainer(methods, [&cloned](const auto& name, auto&& method) { cloned->addMethod(name, std::forward<decltype(method)>(method)); });
         cloneVectorShallow(parentMixins, [&cloned](auto* parent) { cloned->addParentMixin(parent); });

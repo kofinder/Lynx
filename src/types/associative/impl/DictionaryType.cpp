@@ -14,14 +14,7 @@ namespace LynxTypes {
 
     llvm::Value* DictionaryType::createValue(std::vector<std::pair<llvm::Value*, llvm::Value*>> /*pairs*/) const { return nullptr; }     
 
-    llvm::Value* DictionaryType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        if (!isValid(lhs) || !isValid(rhs)) {
-            LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
-            return nullptr;
-        }
-        auto& builder = getContext()->getBuilder();
-        return builder.CreateStore(rhs, lhs);
-    }
+    llvm::Value* DictionaryType::assignTo(llvm::Value* /*unused*/, llvm::Value* /*unused*/)  { return nullptr; }
 
     bool DictionaryType::equals(const BaseType* other) const {
         return dynamic_cast<const DictionaryType*>(other) != nullptr;

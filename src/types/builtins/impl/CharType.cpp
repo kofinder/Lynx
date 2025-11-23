@@ -9,9 +9,9 @@ namespace LynxTypes {
 
     llvm::Type* CharType::computeLLVMType() const {
         if (!cachedType) {
-            auto& context = getContext()->getLLVMContext();
+            auto& context = getLLVMContext();
             cachedType = llvm::StructType::create(context, MetadataTypeConstants::structureCharType);
-            cachedType->setBody(llvm::Type::getInt8Ty(context));
+            cachedType->setBody(llvm::Type::getInt8Ty(getLLVMContext()));
         }
     
         return cachedType;
@@ -22,14 +22,12 @@ namespace LynxTypes {
     }
 
     llvm::Value* CharType::getDefaultValue() {
-        auto* charType = computeLLVMType();
-        return llvm::ConstantAggregateZero::get(charType);
+        return llvm::ConstantAggregateZero::get(computeLLVMType());
     }
 
     llvm::Value* CharType::createInstance(const std::string& variableName) {
-        auto& builder = getContext()->getBuilder();
-        llvm::Type* charType = computeLLVMType();
-        llvm::Value* var = builder.CreateAlloca(charType, nullptr, variableName);
+        auto& builder = getBuilder();
+        llvm::Value* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName);
         if (auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::structureCharType));
             allocaInst->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -42,8 +40,7 @@ namespace LynxTypes {
         auto& builder = getContext()->getBuilder();
         if (std::holds_alternative<char>(value)) {
             const char charValue = std::get<char>(value);
-            auto* charType = computeLLVMType();
-            auto* stuctTy = llvm::cast<llvm::StructType>(charType);
+            auto* stuctTy = llvm::cast<llvm::StructType>(computeLLVMType());
             return llvm::ConstantStruct::get(stuctTy, {builder.getInt8(charValue)});
         }
 
@@ -56,15 +53,12 @@ namespace LynxTypes {
             LOG_ERROR("Null pointer encountered during assignment: lhs or rhs is null.");
             return nullptr;
         }
-        auto& builder = getContext()->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
     void CharType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
 
-    TypeMethodResolver* CharType::getOrCreateResolver() const { 
-        return nullptr;
-    }
+    TypeMethodResolver* CharType::getOrCreateResolver() const { return nullptr; }
 
     llvm::Value* CharType::emitMethodCall(llvm::Value* instance, llvm::Value* instancePtr, const std::string& methodName, const std::vector<llvm::Value*>& args) {
         if (!resolver)  resolver = getOrCreateResolver();

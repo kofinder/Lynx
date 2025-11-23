@@ -6,11 +6,11 @@
 namespace LynxTypes {
 
     llvm::Type* FloatType::computeLLVMType() const {
-        return llvm::Type::getFloatTy(getContext()->getLLVMContext());
+        return llvm::Type::getFloatTy(getLLVMContext());
     }
 
     llvm::Type* FloatType::getLLVMPointerType() const {
-        auto* floatTy = llvm::Type::getFloatTy(getContext()->getLLVMContext());
+        auto* floatTy = llvm::Type::getFloatTy(getLLVMContext());
         auto* floatPtr = llvm::PointerType::get(floatTy->getContext(), 0); 
         return floatPtr;
     }
@@ -21,9 +21,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* FloatType::createInstance(const std::string& variableName) {
-        auto& builder = getContext()->getBuilder();
-        llvm::Type* floatType = getLLVMType();
-        auto* var = builder.CreateAlloca(floatType, nullptr, variableName);
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName);
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::floatType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -34,7 +33,7 @@ namespace LynxTypes {
 
     llvm::Value* FloatType::createValue(LValueType value) const {
         if(std::holds_alternative<float>(value)) {
-            auto& context = getContext()->getLLVMContext();
+            auto& context = getLLVMContext();
             const float floatValue = std::get<float>(value);
             return llvm::ConstantFP::get(context, llvm::APFloat(floatValue));
         } 
@@ -48,8 +47,7 @@ namespace LynxTypes {
             return nullptr;
         }
     
-        auto& builder = getContext()->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
 
     void FloatType::accept(TypeVisitor& visitor) { visitor.visit(*this); }

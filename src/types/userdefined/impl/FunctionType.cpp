@@ -2,9 +2,9 @@
 #include <context/AstContext.hpp>
 #include "userdefined/FunctionType.hpp"
 
-using namespace LynxContext;
-
 namespace LynxTypes {
+
+    using namespace LynxContext;
 
     llvm::Type* FunctionType::computeLLVMType() const { return nullptr; }
 
@@ -14,10 +14,7 @@ namespace LynxTypes {
 
     llvm::Value* FunctionType::createInstance(const std::string& /*variableName*/) { return nullptr; }
  
-    llvm::Value* FunctionType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
-    }
+    llvm::Value* FunctionType::assignTo(llvm::Value* /*unused*/, llvm::Value* /*unused*/) { return nullptr; }
 
     bool FunctionType::equals(const BaseType* other) const {
         const auto* otherInteger = dynamic_cast<const FunctionType*>(other);

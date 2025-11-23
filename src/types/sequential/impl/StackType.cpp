@@ -14,14 +14,9 @@ namespace LynxTypes {
     
     llvm::Value* StackType::createValue(std::vector<llvm::Value*> /*values*/) const { return nullptr; }  
     
-    llvm::Value* StackType::assignTo(llvm::Value* lhs, llvm::Value* rhs) {
-        auto& builder = astContext->getBuilder();
-        return builder.CreateStore(rhs, lhs);
-    }
+    llvm::Value* StackType::assignTo(llvm::Value* /*unused*/, llvm::Value* /*unused*/)  { return nullptr; }
 
-    bool StackType::equals(const BaseType* other) const {
-        return dynamic_cast<const StackType*>(other) != nullptr;
-    }
+    bool StackType::equals(const BaseType* other) const { return dynamic_cast<const StackType*>(other) != nullptr; }
 
     const BaseType* StackType::createWithStatic(bool /*newIsStatic*/) const { return nullptr; }
     const BaseType* StackType::createWithConst(bool /*newIsConst*/) const { return nullptr; }

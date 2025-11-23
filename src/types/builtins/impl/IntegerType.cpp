@@ -10,11 +10,11 @@ namespace LynxTypes {
     using namespace LynxConstants;
 
     llvm::Type* IntegerType::computeLLVMType() const {
-        return llvm::Type::getInt32Ty(getContext()->getLLVMContext());
+        return llvm::Type::getInt32Ty(getLLVMContext());
     }
 
     llvm::Type* IntegerType::getLLVMPointerType() const {
-        auto* intTy = llvm::Type::getInt32Ty(getContext()->getLLVMContext());
+        auto* intTy = llvm::Type::getInt32Ty(getLLVMContext());
         return llvm::PointerType::get(intTy->getContext(), 0);
     }
 
@@ -24,10 +24,8 @@ namespace LynxTypes {
     }
 
     llvm::Value* IntegerType::createInstance(const std::string& variableName) {
-        auto& builder = getContext()->getBuilder();
-        llvm::Type* intType = this->getLLVMType();
-        auto* var = builder.CreateAlloca(intType, nullptr, variableName); 
-
+        auto& builder = getBuilder();
+        auto* var = builder.CreateAlloca(computeLLVMType(), nullptr, variableName); 
         if(auto* allocaInst = llvm::dyn_cast<llvm::AllocaInst>(var)) {
             auto* metadata = llvm::MDNode::get(builder.getContext(), llvm::MDString::get(builder.getContext(), MetadataTypeConstants::intType));
             var->setMetadata(MetadataTypeConstants::lynxDataType, metadata);
@@ -38,7 +36,7 @@ namespace LynxTypes {
 
     llvm::Value* IntegerType::createValue(LValueType value) const {
         if(std::holds_alternative<int>(value)) {
-            auto& context = getContext()->getLLVMContext();
+            auto& context = getLLVMContext();
             const int intValue = std::get<int>(value); 
             return llvm::ConstantInt::get(context, llvm::APInt(BIT_WIDTH_INT, intValue));
         }
@@ -53,8 +51,7 @@ namespace LynxTypes {
             return nullptr;
         }
 
-        auto& builder = getContext()->getBuilder();
-        return builder.CreateStore(rhs, lhs);
+        return getBuilder().CreateStore(rhs, lhs);
     }
     
     void IntegerType::accept(TypeVisitor& visitor) { visitor.visit(*this); }
