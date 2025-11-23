@@ -3,13 +3,13 @@ name: clang-tidy
 on:
   push:
     branches:
-      - master  # Trigger workflow on every push to main
+      - master  # Trigger workflow on every push to master
 
 jobs:
   tidy:
     runs-on: ubuntu-latest
     env:
-      PATH: /usr/lib/llvm-21/bin:${PATH}   # Make LLVM 21 available to all steps
+      PATH: /usr/lib/llvm-21/bin:${PATH}   # Make LLVM 21 visible to all steps
     steps:
       # Checkout the code
       - name: Checkout code
@@ -25,7 +25,13 @@ jobs:
           key: clang-tidy-${{ runner.os }}-${{ hashFiles('**/*.cpp', '**/*.hpp') }}
           restore-keys: clang-tidy-${{ runner.os }}-
 
-      # Install LLVM 21 via llvm.sh
+      # Install required tools (tar, wget, curl, xz-utils)
+      - name: Install basic build utilities
+        run: |
+          sudo apt update
+          sudo apt install -y tar wget curl xz-utils
+
+      # Install LLVM 21 using llvm.sh
       - name: Install LLVM 21
         run: |
           wget https://apt.llvm.org/llvm.sh
@@ -34,7 +40,7 @@ jobs:
           clang --version
           clang-tidy --version
 
-      # Install CMake, Ninja, and required libraries
+      # Install CMake, Ninja, and other required libraries
       - name: Install dependencies
         run: |
           sudo apt update
