@@ -91,7 +91,7 @@ using namespace LynxAnalyzer;
 using namespace LynxCodegen;
 using namespace LynxSystem;
 using namespace LynxCore;
-using namespace LynxProgramConfig;
+using namespace LynxConfig;
 
 namespace po = boost::program_options;
 

@@ -40,3 +40,54 @@
 [submodule "src/codegen"]
 	path = src/codegen
 	url = git@github.com:kofinder/LynxCodegen.git
+[submodule "src/logger"]
+	path = src/logger
+	url = git@github.com:kofinder/LynxLogger.git
+[submodule "src/jit"]
+	path = src/jit
+	url = git@github.com:kofinder/LynxJIT.git
+[submodule "src/linker"]
+	path = src/linker
+	url = git@github.com:kofinder/LynxLinker.git
+[submodule "src/analyzer"]
+	path = src/analyzer
+	url = git@github.com:kofinder/LynxAnalyzer.git
+[submodule "src/ast"]
+	path = src/ast
+	url = git@github.com:kofinder/LynxAst.git
+[submodule "src/attributes"]
+	path = src/attributes
+	url = git@github.com:kofinder/LynxAttributes.git
+[submodule "src/callconv"]
+	path = src/callconv
+	url = git@github.com:kofinder/LynxCallConv.git
+[submodule "src/cli"]
+	path = src/cli
+	url = git@github.com:kofinder/LynxCLI.git
+[submodule "src/config"]
+	path = src/config
+	url = git@github.com:kofinder/LynxConfig.git
+[submodule "src/context"]
+	path = src/context
+	url = git@github.com:kofinder/LynxContext.git
+[submodule "src/stdapi"]
+	path = src/stdapi
+	url = git@github.com:kofinder/LynxBridge.git
+[submodule "src/platform"]
+	path = src/platform
+	url = git@github.com:kofinder/LynxPlatform.git
+[submodule "src/constants"]
+	path = src/constants
+	url = git@github.com:kofinder/LynxConstants.git
+[submodule "src/runtime"]
+	path = src/runtime
+	url = git@github.com:kofinder/LynxRuntime.git
+[submodule "src/exceptions"]
+	path = src/exceptions
+	url = git@github.com:kofinder/LynxExceptions.git
+[submodule "src/errors"]
+	path = src/errors
+	url = git@github.com:kofinder/LynxErrors.git
+[submodule "src/lsp"]
+	path = src/lsp
+	url = git@github.com:kofinder/LynxLSP.git

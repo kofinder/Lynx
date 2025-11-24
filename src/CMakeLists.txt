@@ -90,7 +90,7 @@ target_link_libraries(${LYNX_EXECUTABLE} PUBLIC
     LynxAst 
     LynxMangler 
     LynxJIT 
-    LynxProgramConfig
+    LynxConfig
     LynxCLI 
     LynxCodegen 
     LynxLinker 
@@ -147,7 +147,7 @@ target_include_directories(LynxLSPServer SYSTEM PRIVATE
 
 target_link_libraries(LynxLSPServer PRIVATE
     LynxLogger LynxExceptions LynxConstants LynxContext LynxTypes
-    LynxLang LynxAst LynxMangler LynxProgramConfig
+    LynxLang LynxAst LynxMangler LynxConfig
     LynxCodegen LynxLinker LynxFunctionAttr LynxCallConv LynxAnalyzer
     LynxLTO LynxCore LynxRuntime LynxErrors LynxBridge
     LynxCollection LynxSystem
