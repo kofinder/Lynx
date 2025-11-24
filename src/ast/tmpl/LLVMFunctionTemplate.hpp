@@ -29,7 +29,7 @@
  * calling conventions during code generation.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_LLVM_FUNCTION_TEMPLATE_HPP

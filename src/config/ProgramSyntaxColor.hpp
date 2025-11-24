@@ -7,7 +7,7 @@
  * or any textual output that benefits from syntax differentiation.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
  */
 
 #ifndef LYNX_PROGRAM_SYNTAX_COLOR_HPP

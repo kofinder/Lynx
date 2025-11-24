@@ -23,7 +23,7 @@
  *       in the import statement.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_IMPORT_SYMOBL_HPP

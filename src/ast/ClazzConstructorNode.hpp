@@ -19,7 +19,7 @@
  * @see Node, Parameter, SuperConstructorCallNode
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_CLAZZ_CONSTRUCTOR_NODE_HPP

@@ -23,7 +23,7 @@
  *       directly within this class.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_LITERAL_PAIR_NODE_HPP

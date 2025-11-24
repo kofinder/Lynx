@@ -28,8 +28,8 @@
  *  - Only the integer `add` operation has a concrete implementation in this template.
  *  - Other operations and floating-point specializations are intended for future expansion.
  *
- * @author Ko Thein (Nathan Mratt)
- * @date   November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date:   Jan 2, 2022
 */
 
 #ifndef LYNX_RESOLVER_BINARY_STRATEGY_HPP

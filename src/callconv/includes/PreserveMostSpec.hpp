@@ -16,7 +16,7 @@
  * while maintaining ABI compatibility, offering a performance balance between safety and efficiency.
  *
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_CALLING_CONV_PRESERVE_MOST_SPEC_HPP

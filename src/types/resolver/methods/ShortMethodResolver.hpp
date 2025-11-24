@@ -15,7 +15,7 @@
  * Methods like arithmetic operations, comparisons, and type conversions
  * are resolved according to the semantics of the Lynx `short` type.
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 

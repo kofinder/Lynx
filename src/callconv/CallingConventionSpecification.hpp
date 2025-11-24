@@ -21,7 +21,7 @@
  * Provides specification-based mechanisms for identifying LLVM calling conventions.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
  */
 
 #ifndef LYNX_CALLING_CONV_SPECIFICATION_HPP

@@ -26,7 +26,7 @@
  * - Provides utilities for field access, type comparison, cloning, and debug name resolution.
  *
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_DATE_TIME_TYPE_HPP

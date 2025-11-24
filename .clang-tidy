@@ -77,12 +77,19 @@ FormatStyle: file
 SystemHeaders: false
 
 # Additional include path (useful if you have an external/ folder)
-ExtraArgs: []
+# ExtraArgs: []
 
 # ===============================================
 # Per-check configuration
 # ===============================================
 CheckOptions:
+
+  # The cppcoreguidelines-macro-usage check warns against variadic
+  # and function-like macros. Our LOG_* macros intentionally wrap
+  # spdlog to inject file/line/function metadata and cannot be
+  # replaced with constexpr templates without losing functionality.
+  - key: cppcoreguidelines-macro-usage.IgnoreMacros
+    value: 'LOG_DEBUG,LOG_INFO,LOG_WARN,LOG_ERROR'
 
   # Disable the bugprone-unchecked-optional-access check because it can cause
   # Clang-Tidy to crash when analyzing std::optional<llvm::Align> (or similar

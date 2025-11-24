@@ -5,10 +5,9 @@
  * Provides compile-time and runtime numeric type ranking, type checking,
  * and promotion of operands to a common type using LLVM IRBuilder.
  * 
- * Author: Ko Thein (Nathan Mratt)
- * Date: November 4, 2025
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: Jan 2, 2022
 */
-
 
 #ifndef LYNX_TYPE_NUMERIC_PROMOTION_HPP
 #define LYNX_TYPE_NUMERIC_PROMOTION_HPP
@@ -87,16 +86,16 @@ namespace LynxTypes::TypePromotion {
             .isFloating = false
         };
 
-        if (!lhs || !rhs) return result;
+        if (!lhs || !rhs)  return result;
 
         llvm::Type* lhsType = lhs->getType();
         llvm::Type* rhsType = rhs->getType();
 
         const int lhsRank = getNumericRank(lhsType);
         const int rhsRank = getNumericRank(rhsType);
+        if (lhsRank == 0 || rhsRank == 0) return result;
 
         llvm::Type* targetType = (lhsRank >= rhsRank) ? lhsType : rhsType;
-
         auto castValue = [&](llvm::Value* val, llvm::Type* toType) -> llvm::Value* {
             if (val->getType()->isIntegerTy() && toType->isFloatingPointTy())
                 return builder.CreateSIToFP(val, toType, "cast_int_to_fp");
@@ -119,6 +118,7 @@ namespace LynxTypes::TypePromotion {
     // Match constant value type
     // ==========================
     inline llvm::Value* matchConstantType(llvm::IRBuilder<>& /*builder*/, llvm::Value* value, llvm::Type* targetType) noexcept {
+        if (!value || !targetType) return value;
         if (llvm::isa<llvm::ConstantInt>(value) && targetType->isFloatingPointTy()) {
             auto* cii = llvm::cast<llvm::ConstantInt>(value);
             const llvm::APFloat apf(static_cast<double>(cii->getSExtValue()));

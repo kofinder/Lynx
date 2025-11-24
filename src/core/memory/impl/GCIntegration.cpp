@@ -14,7 +14,7 @@
  *  - Provide hooks for compiler-generated object management code.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 8, 2025
+ * @date:: November 8, 2025
  */
 
  #include "GCIntegration.hpp"

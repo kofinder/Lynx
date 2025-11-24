@@ -16,7 +16,7 @@
  * human-readable console output while integrating seamlessly with LLVM IR.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_SYSTEM_IO_PRINTLN_COMMAND_HPP

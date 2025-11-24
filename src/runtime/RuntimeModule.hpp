@@ -34,7 +34,7 @@
  * Provides runtime module management and dynamic extension utilities for the Lynx execution environment.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_RUNTIME_MODULE_HPP

@@ -18,8 +18,8 @@
  * - IR generator for LLVM code emission.
  * - Compiler passes that handle variable resolution and assignment.
  * 
- * @author Ko Thein (Nathan Mratt)
- * @date November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_VARIABLE_DECLARATION_NODE_HPP

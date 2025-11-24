@@ -16,7 +16,7 @@
  * This ensures that the prompt remains on the same line as the user input.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 7, 2025
+ * @date:: November 7, 2025
 */
 
 #ifndef LYNX_SYSTEM_IO_PRINTOUT_COMMAND_HPP

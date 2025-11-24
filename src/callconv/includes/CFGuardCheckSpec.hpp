@@ -11,7 +11,7 @@
  * Provides rule-based logic for identifying and classifying calling conventions within LLVM IR functions.
  *
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_CALLING_CONV_CF_GURD_SPEC_HPP

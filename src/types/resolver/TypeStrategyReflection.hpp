@@ -17,8 +17,8 @@
  * This system allows extending new strategies without repeating the
  * Entry structure or invoke logic, keeping the design DRY and type-safe.
  *
- * @author Ko Thein (Nathan Mratt)
- * @date November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: Jan 2, 2022
  */
 
 #ifndef LYNX_TYPE_STRATEGY_REFLECTION_HPP

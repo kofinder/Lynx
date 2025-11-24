@@ -28,8 +28,8 @@
  *  - All method implementations currently return `nullptr` and are intended
  *    for future expansion.
  *
- * @author Ko Thein (Nathan Mratt)
- * @date   November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date:   Jan 2, 2022
 */
 
 #ifndef LYNX_RESOLVER_BIT_MINIPULATION_STRATEGY_HPP

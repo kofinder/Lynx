@@ -20,7 +20,7 @@
  * - All functions use upper snake case prefixed with `LYNX_IO_` for consistency.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_RUNTIME_IO_H

@@ -23,7 +23,7 @@
  * @warning Memory returned from GCAllocator must not be manually freed with `delete`.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
  */
 
  #ifndef LYNX_CORE_GC_ALLOCATOR_HPP

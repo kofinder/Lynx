@@ -17,7 +17,7 @@
  * - The semantic analysis and type resolution subsystems via `TypeVisitor` and `TypeMethodResolver`.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_BASE_TYPE_HPP

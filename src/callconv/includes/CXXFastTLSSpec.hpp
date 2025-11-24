@@ -12,7 +12,7 @@
  * Each specification defines detection rules and maps them to a defined calling convention type.
  *
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_CALLING_CONV_CXX_FAST_TL_SPEC_HPP

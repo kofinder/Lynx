@@ -15,7 +15,7 @@
  * Methods like `length`, `substring`, `concat`, and others are expected to be
  * resolved according to the semantics of the Lynx `String` type.
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 
 */
 

@@ -18,7 +18,7 @@
  * @see ExpressionNode
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_STATIC_METHOD_CALL_NODE

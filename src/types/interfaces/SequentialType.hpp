@@ -21,7 +21,7 @@
  * - Derived classes must implement core operations such as element retrieval, insertion, and cloning.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_SEQUENTIAL_TYPE_HPP

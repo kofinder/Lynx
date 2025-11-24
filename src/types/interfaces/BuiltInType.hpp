@@ -17,7 +17,7 @@
  * - IntType, FloatType, DoubleType, CharType, StringType, BoolType, etc.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_BUILT_INS_TYPE_HPP

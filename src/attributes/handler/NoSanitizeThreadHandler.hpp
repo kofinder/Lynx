@@ -10,7 +10,7 @@
  * Contains classes that infer and apply LLVM function attributes in the Lynx compiler.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 5, 2025
+ * @date:: November 5, 2025
 */
 
 #ifndef LYNX_FUNC_NO_SANITIZE_THREAD_HANDLER_HPP

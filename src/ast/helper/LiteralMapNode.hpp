@@ -23,7 +23,7 @@
  *       code emission is handled at a higher AST level.
  * 
  * @authoɾ: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_LITERAL_MAP_NODE_HPP

@@ -20,7 +20,7 @@
  * - Utility scripts and tools interacting with the Lynx compiler framework.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
  */
 
 #ifndef LYNX_PROGRAM_OPTION_CONFIG_HPP

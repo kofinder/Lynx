@@ -15,8 +15,8 @@
  * Methods supported include arithmetic operations, comparisons, and
  * type conversions specific to the Lynx `float` type.
  *
- * * @author Ko Thein (Nathan Mratt)
- * @date November 2, 2024
+ * * @author: Ko Thein (Nathan Mratt)
+ * @date: Jan 2, 2022
 */
 
 

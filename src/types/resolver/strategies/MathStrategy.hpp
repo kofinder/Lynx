@@ -21,8 +21,8 @@
  *  - Provides a uniform interface for compiler code generation.
  *  - Improves maintainability and consistency in numeric computations.
  *
- * @author Ko Thein (Nathan Mratt)
- * @date   November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date:   Jan 2, 2022
 */
 
 #ifndef LYNX_RESOLVER_MATH_STRATEGY_HPP

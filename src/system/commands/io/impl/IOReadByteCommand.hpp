@@ -16,7 +16,7 @@
  * subsystem, facilitating low-level data reading through LLVM IR integration.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_SYSTEM_IO_READ_BYTE_COMMAND_HPP

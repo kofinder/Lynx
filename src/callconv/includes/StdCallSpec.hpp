@@ -16,7 +16,7 @@
  * It dictates that the callee cleans up the stack, commonly used in WinAPI functions.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_CALLING_CONV_STD_CALL_SPEC_HPP

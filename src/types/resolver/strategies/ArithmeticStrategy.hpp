@@ -21,8 +21,8 @@
  *  - Currently, the implementations return `nullptr` as placeholders.
  *  - Concrete LLVM IR generation should be provided in the respective specializations.
  *
- * @author Ko Thein (Nathan Mratt)
- * @date   November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date:   Jan 2, 2022
 */
 
 #ifndef LYNX_RESOLVER_ABS_STRATEGY_HPP

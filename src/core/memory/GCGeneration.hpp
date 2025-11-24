@@ -21,7 +21,7 @@
  *       compatible with the Boehm-Demers-Weiser GC runtime.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 8, 2025
+ * @date:: November 8, 2025
  */
 
  #ifndef LYNX_CORE_GC_GENERATION_HPP

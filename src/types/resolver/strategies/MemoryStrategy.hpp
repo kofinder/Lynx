@@ -20,8 +20,8 @@
  *  - Ensures a uniform interface for compiler code generation.
  *  - Improves maintainability and consistency in low-level memory handling.
  *
- * @author Ko Thein (Nathan Mratt)
- * @date   November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date:   Jan 2, 2022
 */
 
 

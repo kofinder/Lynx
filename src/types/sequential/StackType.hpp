@@ -26,7 +26,7 @@
  * - Supports type equality checks and cloning for stack types.
  *
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_STACK_TYPE_HPP

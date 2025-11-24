@@ -13,8 +13,8 @@
  * - Report whether each pointer is captured or remains local.
  * - Preserve analyses that remain valid after running the pass.
  *
- * @author Ko Thein (Nathan Mratt)
- * @date November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_POINTER_CAPTURE_ANALYSIS_PASS_HPP

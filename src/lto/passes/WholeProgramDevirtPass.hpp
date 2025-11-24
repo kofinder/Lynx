@@ -13,7 +13,7 @@
  * - Preserve analysis results that remain valid after the pass.
  *
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_WHOLE_PROGRAM_DEVIRT_PASS_HPP

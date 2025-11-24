@@ -6,7 +6,7 @@
  * generates the directory structure and boilerplate for the module.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_CLI_NEW_PROJECT_COMMAND_HPP

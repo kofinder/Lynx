@@ -1,3 +1,33 @@
+/**
+ * @file TypeNumericInstruction.hpp
+ * @brief Provides helper functions for LLVM IR code generation of numeric instructions.
+ *
+ * This header contains utilities for generating LLVM IR instructions for arithmetic,
+ * bitwise, comparison, min/max, fixed-point, saturation, and math intrinsics. It 
+ * handles numeric promotions, type conversions, and intrinsic calls for both 
+ * integer and floating-point types.
+ *
+ * Key components:
+ *  - `ArithmeticOp`, `BitwiseOp`, `CompareOp`: enumerations for common numeric operations.
+ *  - `IntScaleBits`, `FloatScaleBits`: structures to specify fixed-point scaling.
+ *  - Functions for promoting operands (`promoteNumericOperands`) and matching constant types (`matchConstantType`).
+ *  - Helpers for calling LLVM intrinsics (`callOfIntrinsic`, `callOfArithmeticIntrisic`, `callOfBitwiseIntrisic`, etc.).
+ *  - Conversions between integer and floating-point types (`intToFloat`, `floatToInt`).
+ *
+ * Features:
+ *  - Handles numeric promotion and type casting automatically.
+ *  - Supports fixed-point, saturation, and overflow intrinsics.
+ *  - Compatible with LLVM IRBuilder for seamless code generation.
+ *
+ * Benefits:
+ *  - Centralizes numeric instruction handling for the compiler backend.
+ *  - Reduces boilerplate and improves maintainability of IR generation code.
+ *  - Ensures type-safe numeric operations in LLVM IR.
+ *
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: Jan 2, 2022
+*/
+
 #ifndef LYNX_TYPE_NUMERIC_INSTRUCTION_HPP
 #define LYNX_TYPE_NUMERIC_INSTRUCTION_HPP
 

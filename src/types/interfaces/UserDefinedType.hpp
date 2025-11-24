@@ -21,7 +21,7 @@
  * - Derived types must implement `clone()` and type-specific LLVM construction logic.
  *
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_USER_DEFINED_TYPE_HPP

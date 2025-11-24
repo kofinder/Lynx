@@ -20,7 +20,7 @@
  * @see Node, FunctionNode, ClazzConstructorNode, ClassType, VirtualTable
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_CLAZZ_DECLARATION_NODE_HPP

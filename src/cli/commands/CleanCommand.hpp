@@ -6,7 +6,7 @@
  * and any cached outputs to reset the project to a clean state.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_CLI_CLEAN_COMMAND_HPP

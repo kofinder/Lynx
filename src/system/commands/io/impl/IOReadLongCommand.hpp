@@ -16,7 +16,7 @@
  * interactive console input and compiled input handling through LLVM IR.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_SYSTEM_IO_READ_LONG_COMMAND_HPP

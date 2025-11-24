@@ -9,8 +9,8 @@
  * - Generate LLVM IR for the ternary expression.
  * - Support cloning for AST transformations and analyses.
  * 
- * @author Ko Thein
- * @date November 4, 2024
+ * @author: Ko Thein
+ * @date: November 4, 2024
 */
 
 

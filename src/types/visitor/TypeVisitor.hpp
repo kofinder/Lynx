@@ -22,8 +22,8 @@
  *  - This interface is intentionally minimal and free of data members to
  *    maximize flexibility and avoid coupling visitors to state.
  *
- * @author Ko Thein (Nathan Mratt)
- * @date   November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date:   Jan 2, 2022
 */
 
 #ifndef LYNX_TYPE_VISITOR_HPP

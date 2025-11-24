@@ -26,7 +26,7 @@
  * - Supports type equality checks and type acceptance checks once inference is complete.
  *
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_AUTO_TYPE_HPP

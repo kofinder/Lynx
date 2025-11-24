@@ -17,7 +17,7 @@
  * This detection is currently disabled and returns `false` until implemented in LLVM IR.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_CALLING_CONV_PRESERVE_NONE_SPEC_HPP

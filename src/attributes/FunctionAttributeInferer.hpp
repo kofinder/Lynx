@@ -19,7 +19,7 @@
  * Provides builder and inference utilities for LLVM function attributes in Lynx.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_FUNCTION_ATTRS_INFERER_HPP

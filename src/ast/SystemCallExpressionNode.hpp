@@ -11,8 +11,8 @@
  * - Generate LLVM IR for system calls.
  * - Support cloning for AST transformations and analyses.
  * 
- * @author Ko Thein
- * @date November 4, 2024
+ * @author: Ko Thein
+ * @date: November 4, 2024
 */
 
 #ifndef LYNX_SYSTEM_CALL_EXPRESSION_NODE_HPP

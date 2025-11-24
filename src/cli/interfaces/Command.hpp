@@ -6,7 +6,7 @@
  * All commands must implement the execute method and provide their name and description.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_CLI_COMMAND_HPP

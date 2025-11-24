@@ -16,7 +16,7 @@
  * system, supporting LLVM-based runtime input handling.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_SYSTEM_IO_READ_CHAR_COMMAND_HPP

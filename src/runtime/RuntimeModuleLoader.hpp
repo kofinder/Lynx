@@ -33,7 +33,7 @@
  * Provides runtime utilities for module management and dynamic linking of built-in Lynx modules.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_RUNTIME_MODULE_LOADER_HPP

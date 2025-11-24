@@ -26,7 +26,7 @@
  * @note This module is automatically loaded when the Lynx runtime initializes filesystem support.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_RUNTIME_FILE_SYSTEM_MODULE_HPP

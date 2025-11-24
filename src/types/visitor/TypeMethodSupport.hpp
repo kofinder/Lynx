@@ -19,8 +19,8 @@
  * This design follows the pattern of CRTP-style or concept-based
  * polymorphism, avoiding dynamic dispatch while retaining flexibility.
  *
- * @author Ko Thein (Nathan Mratt)
- * @date   November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date:   Jan 2, 2022
 */
 
 #ifndef LYNX_TYPE_METHOD_SUPPORT_HPP

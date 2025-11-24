@@ -16,7 +16,7 @@
  * ensuring maximum safety during interprocedural function calls.
  *
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_CALLING_CONV_PRESERVE_ALL_SPEC_HPP

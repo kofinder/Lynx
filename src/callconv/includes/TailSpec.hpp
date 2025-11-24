@@ -12,7 +12,7 @@
  * to Lynx’s internal calling convention types.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_TAIL_CALLING_CONV_SPEC_HPP

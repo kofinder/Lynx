@@ -20,8 +20,8 @@
  * The design uses nested unordered_maps for fast lookup and is intended
  * primarily for compiler internal use.
  *
- * @author Ko Thein (Nathan Mratt)
- * @date   November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date:   Jan 2, 2022
 */
 
 #ifndef LYNX_TYPE_METHOD_REGISTRY_HPP

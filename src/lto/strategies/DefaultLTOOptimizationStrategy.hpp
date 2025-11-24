@@ -11,7 +11,7 @@
  * - Enable flexible strategy-based optimization in the LTOFacade workflow.
  *
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_DEFAULT_LTO_OPTIMIZATION_STRATEGY_HPP

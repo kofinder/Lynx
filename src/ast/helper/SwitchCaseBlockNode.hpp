@@ -24,7 +24,7 @@
  *       depending on compiler configuration or user-defined syntax.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_SWITCH_CASE_BLOCK_HPP

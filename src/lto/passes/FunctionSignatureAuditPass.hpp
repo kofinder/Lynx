@@ -12,7 +12,7 @@
  * - Preserve analyses that remain valid after auditing.
  *
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_FUNCTION_SIGNATURE_AUDIT_PASS_HPP

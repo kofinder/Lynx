@@ -16,7 +16,7 @@
  * - Any testing or tooling utilities requiring a full set of semantic states.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_ANALYZER_SEMANTIC_STATE_FACTORY_HPP

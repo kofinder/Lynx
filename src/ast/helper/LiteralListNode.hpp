@@ -23,7 +23,7 @@
  *       This node serves purely as an AST-level representation.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_LITERAL_LIST_NODE_HPP

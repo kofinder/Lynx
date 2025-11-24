@@ -23,7 +23,7 @@
  *       where a node must exist but performs no operation.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_EMPTY_NODE_HPP

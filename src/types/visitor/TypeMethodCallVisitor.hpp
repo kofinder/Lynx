@@ -26,8 +26,8 @@
  * This design follows the Visitor pattern, allowing new operations to be
  * added without modifying the type classes themselves.
  *
- * @author Ko Thein (Nathan Mratt)
- * @date   November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date:   Jan 2, 2022
 */
 
 #ifndef LYNX_TYPE_METHOD_CALL_VISITOR_HPP

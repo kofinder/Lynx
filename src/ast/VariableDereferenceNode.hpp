@@ -18,8 +18,8 @@
  * - IR generator for code emission.
  * - Any compiler phase requiring unified representation of dereference operations.
  * 
- * @author Ko Thein (Nathan Mratt)
- * @date November 2, 2024
+ * @author: Ko Thein (Nathan Mratt)
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_VARIABLE_DEREFERENCE_NODE_HPP

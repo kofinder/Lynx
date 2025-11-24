@@ -11,8 +11,8 @@
  * - Generate LLVM IR code for unary operations.
  * - Handle increment/decrement and logical NOT operations internally.
  * 
- * @author Ko Thein
- * @date November 4, 2024
+ * @author: Ko Thein
+ * @date: November 4, 2024
 */
 
 #ifndef LYNX_UNARY_EXPRESSION_NODE_HPP

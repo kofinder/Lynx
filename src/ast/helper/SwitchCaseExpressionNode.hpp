@@ -23,7 +23,7 @@
  *       String literals are not supported as case constants.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_SWITCH_CASE_EXPRESSION_NODE_HPP

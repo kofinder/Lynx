@@ -29,7 +29,7 @@
  * Provides runtime-level dynamic linking and function management utilities for Lynx modules.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_RUNTIME_FUNCTIN_REGISTRY_HPP

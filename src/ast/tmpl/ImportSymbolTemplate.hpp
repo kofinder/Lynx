@@ -29,7 +29,7 @@
  * ensuring Node type compatibility across modules.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_IMPORT_SYMBOL_TEMPLATE_HPP

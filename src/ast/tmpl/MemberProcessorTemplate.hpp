@@ -37,7 +37,7 @@
  * @note Automatically injects a default public constructor if none is defined.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_MEMBER_PROCESSOR_TEMPLATE_HPP

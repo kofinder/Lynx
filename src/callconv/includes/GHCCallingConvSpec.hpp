@@ -17,7 +17,7 @@
  * to support efficient functional-style execution models with optimized tail calls.
  *
  * @autor: Ko Thein (Nathan Mratt)
- * @date: November 4, 2025
+ * @date:: November 4, 2025
 */
 
 #ifndef LYNX_CALLING_CONV_GHC_CALLING_SPEC_HPP

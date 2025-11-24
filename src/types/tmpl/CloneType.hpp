@@ -19,7 +19,7 @@
  * - `AddFunc` must be a callable accepting either `(key, unique_ptr<ValueType>)` for maps or `(unique_ptr<ValueType>)` for vectors.
  *
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_CLONE_TYPE_HPP

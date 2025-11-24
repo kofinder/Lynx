@@ -16,7 +16,7 @@
  * type conversions specific to the Lynx `double` type.
  * 
  * @author: Ko Thein (Nathan Mratt)
- * @date: November 2, 2024
+ * @date: Jan 2, 2022
 */
 
 #ifndef LYNX_DOUBLE_METHOD_RESOLVER_HPP
