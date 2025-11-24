@@ -28,14 +28,11 @@
 #include <llvm/IR/Type.h>
 #include <llvm/ADT/APFloat.h>
 #include <limits>
+#include <constants/MagicNumericConstants.hpp>
 
 namespace LynxTypes {
 
-    inline unsigned SHORT_BIT_WIDTH  = 16;
-    inline unsigned INT_BIT_WIDTH   = 32;
-    inline unsigned LONG_BIT_WIDTH  = 64;
-
-
+    using namespace LynxConstants;
 
     // ======================================================
     // INTEGER CONSTANTS
@@ -171,9 +168,9 @@ namespace LynxTypes {
         if (type->isIntegerTy()) 
             return llvm::ConstantInt::get(llvm::Type::getInt32Ty(ctx), type->getIntegerBitWidth());
         if (type->isFloatTy()) 
-            return llvm::ConstantInt::get(llvm::Type::getInt32Ty(ctx), INT_BIT_WIDTH);
+            return llvm::ConstantInt::get(llvm::Type::getInt32Ty(ctx), BIT_WIDTH_INT);
         if (type->isDoubleTy()) 
-            return llvm::ConstantInt::get(llvm::Type::getInt32Ty(ctx), LONG_BIT_WIDTH);
+            return llvm::ConstantInt::get(llvm::Type::getInt32Ty(ctx), BIT_WIDTH_LONG);
         return llvm::ConstantInt::get(llvm::Type::getInt32Ty(ctx), 0);
     }
 
@@ -217,7 +214,6 @@ namespace LynxTypes {
     inline llvm::Value* isFiniteFloat(llvm::LLVMContext& ctx)  noexcept {
         return llvm::ConstantInt::getTrue(ctx);
     }
-
 }
 
 #endif

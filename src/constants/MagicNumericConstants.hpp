@@ -41,9 +41,6 @@ namespace LynxConstants {
     // ---------------------------
     constexpr double FP_TWO = 2.0;
     constexpr uint32_t DEFAULT_ALIGN_BITS = 0;
-
-
-
 }
 
 #endif
