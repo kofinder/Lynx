@@ -19,6 +19,7 @@ Lynx explores how modern programming languages can unify OOP and FP to create a 
 
 ---
 
+
 ## 🧩 Current Features
 
 Lynx is still under active development, currently focusing on **object-oriented concepts**.  
