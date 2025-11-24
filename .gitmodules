@@ -22,3 +22,6 @@
 [submodule "src/lang"]
 	path = src/lang
 	url = git@github.com:kofinder/LynxLang.git
+[submodule "src/types"]
+	path = src/types
+	url = git@github.com:kofinder/LynxTypes.git

@@ -14,3 +14,5 @@ git submodule add --force https://github.com/jbeder/yaml-cpp.git external/yaml-c
 
 git submodule add --force git@github.com:kofinder/LynxLang src/lang
 
+git submodule add --force git@github.com:kofinder/LynxTypes.git src/types
+

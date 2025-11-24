@@ -2,5 +2,5 @@
 #include "interfaces/SemanticAnalyzer.hpp"
 
 namespace LynxAnalyzer {
-    void FunctionState::handleNode(SemanticAnalyzer& analyzer, Node* node) {}
+    void FunctionState::handleNode(SemanticAnalyzer& /*analyzer*/, Node* /*node*/) {}
 }

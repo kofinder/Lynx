@@ -3,7 +3,5 @@
 
 namespace LynxAnalyzer {
 
-    void VariableState::handleNode(SemanticAnalyzer& analyzer, Node* node) {
-    }
-
+    void VariableState::handleNode(SemanticAnalyzer& /*analyzer*/, Node* /*node*/) {}
 }

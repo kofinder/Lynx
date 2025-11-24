@@ -3,6 +3,6 @@
 
 namespace LynxAnalyzer {
 
-    void EnumState::handleNode(SemanticAnalyzer& analyzer, Node* node) {}
+    void EnumState::handleNode(SemanticAnalyzer& /*analyzer*/, Node* /*node*/) {}
 
 }

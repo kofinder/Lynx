@@ -98,6 +98,7 @@ endif()
 include(ClangTidy)
 if(ENABLE_CLANG_TIDY)
     enable_clang_tidy_for_target(${LYNX_EXECUTABLE})
+    enable_clang_tidy_for_target(LynxAnalyzer) 
 endif()
 
 # if(ENABLE_CLANG_TIDY)
