@@ -17,18 +17,13 @@ fi
 # Only scan your main modules
 HEADER_FILTER='^src/(types|logger|exceptions)/'
 
-# Prefer xargs method for custom flags
+# Use xargs for per-file parallel execution to ensure .clang-tidy is respected
 if command -v clang-tidy >/dev/null 2>&1; then
-  echo "Running clang-tidy via xargs with live logs"
+  echo "Running clang-tidy via xargs with live logs and .clang-tidy support"
   find "${ROOT_DIR}/src/types" "${ROOT_DIR}/src/logger" "${ROOT_DIR}/src/exceptions" \
     -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.cc' -o -name '*.hpp' \) | \
-    xargs -n1 -P"${THREADS}" -I{} sh -c 'echo "Checking {}"; clang-tidy "{}" -p "'"${BUILD_DIR}"'" --extra-arg=-std=c++23 --header-filter="'"${HEADER_FILTER}"'" -system-headers || true'
+    xargs -n1 -P"${THREADS}" -I{} sh -c 'echo "Checking {}"; clang-tidy "{}" -p "'"${BUILD_DIR}"'" --header-filter="'"${HEADER_FILTER}"'" -system-headers || true'
 else
-  echo "clang-tidy not found — attempting run-clang-tidy.py wrapper without custom flags"
-  if [[ -f "${ROOT_DIR}/tools/run-clang-tidy.py" ]]; then
-    python3 "${ROOT_DIR}/tools/run-clang-tidy.py" -p "${BUILD_DIR}" -j "${THREADS}"
-  else
-    echo "No clang-tidy or run-clang-tidy.py found. Cannot run tidy."
-    exit 1
-  fi
+  echo "clang-tidy not found — cannot run tidy analysis"
+  exit 1
 fi

@@ -55,7 +55,9 @@ jobs:
       # Verify LLVM installation
       - name: Verify LLVM 21
         run: |
+          which clang
           clang --version
+          which clang-tidy
           clang-tidy --version
 
       # Install CMake, Ninja, and other required libraries

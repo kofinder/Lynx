@@ -106,7 +106,7 @@ format:
 	@$(CLANG_FORMAT) -i $(SRC_FILES)
 	@echo "✅ Formatting done."
 
-tidy: configure
+tidy: build
 	@echo "🧹 Running clang-tidy across project..."
 	@if [ -x "$(RUN_CLANG_TIDY_SCRIPT)" ]; then \
 		$(RUN_CLANG_TIDY_SCRIPT) $(TIDY_THREADS) -header-filter='^src/'; -system-headers; \
