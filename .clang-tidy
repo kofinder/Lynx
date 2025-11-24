@@ -20,7 +20,7 @@ Checks:
   # Correctness / Safety
   # --------------------------------------------
   - 'bugprone-*'                        # common C++ pitfalls
-  - '-bugprone-unchecked-optional-access'  # <--- fully disable it here
+  - '-bugprone-unchecked-optional-access'  # fully disable it here
   - 'cppcoreguidelines-*'               # C++ Core Guidelines (strong baseline)
   - 'hicpp-*'                           # High Integrity C++ (subset overlaps cppcoreguidelines)
 
