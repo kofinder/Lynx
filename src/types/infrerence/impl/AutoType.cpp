@@ -5,10 +5,7 @@
 namespace LynxTypes {
 
     llvm::Type* AutoType::computeLLVMType() const {
-        if (!inferredType) {
-            LOG_ERROR("Attempting to use 'auto' type before inference.");
-            return nullptr;
-        }
+        if (!inferredType) return nullptr;
         return inferredType->getLLVMType();
     }
 

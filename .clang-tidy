@@ -83,6 +83,14 @@ ExtraArgs: []
 # ===============================================
 CheckOptions:
 
+  # Disable the bugprone-unchecked-optional-access check because it can cause
+  # Clang-Tidy to crash when analyzing std::optional<llvm::Align> (or similar
+  # LLVM types). This is a known Clang-Tidy/LLVM internal bug and not an
+  # issue in our code. Safe usage of std::optional should still be enforced
+  # manually where needed.
+  - key: bugprone-unchecked-optional-access
+    value: 0
+
   # ---------- Include Cleaner (reduced noise) ----------
   - key: misc-include-cleaner.FileNameRegex
     value: '.*\.(hpp|inl)$'        # Only inspect headers

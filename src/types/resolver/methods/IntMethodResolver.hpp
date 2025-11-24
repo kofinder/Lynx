@@ -83,7 +83,7 @@ namespace LynxTypes {
             };
 
             static TypeMethodResolver* create() { 
-                return new Impl(); 
+                return new Impl(); // NOLINT(cppcoreguidelines-owning-memory) 
             }         
     };
 }
