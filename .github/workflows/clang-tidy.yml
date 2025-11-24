@@ -93,7 +93,7 @@ jobs:
 
       # Upload clang-tidy log only if it fails
       - name: Upload clang-tidy log
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: clang-tidy-log
