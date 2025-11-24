@@ -25,3 +25,18 @@
 [submodule "src/types"]
 	path = src/types
 	url = git@github.com:kofinder/LynxTypes.git
+[submodule "src/mangler"]
+	path = src/mangler
+	url = git@github.com:kofinder/LynxMangler.git
+[submodule "src/system"]
+	path = src/system
+	url = git@github.com:kofinder/LynxSystem.git
+[submodule "src/core"]
+	path = src/core
+	url = git@github.com:kofinder/LynxCore.git
+[submodule "src/lto"]
+	path = src/lto
+	url = git@github.com:kofinder/LynxLTO.git
+[submodule "src/codegen"]
+	path = src/codegen
+	url = git@github.com:kofinder/LynxCodegen.git
