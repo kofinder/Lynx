@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # tools/run-clang-tidy.sh
 # Usage: tools/run-clang-tidy.sh [threads]
-set -euo pipefail
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BUILD_DIR="${ROOT_DIR}/build"
 THREADS="${1:-4}"
 
@@ -13,17 +14,21 @@ if [[ ! -f "${BUILD_DIR}/compile_commands.json" ]]; then
   exit 1
 fi
 
-# HeaderFilterRegex to only scan your three modules
+# Only scan your main modules
 HEADER_FILTER='^src/(types|logger|exceptions)/'
 
-# prefer the run-clang-tidy.py helper if available
-if command -v run-clang-tidy.py >/dev/null 2>&1; then
-  echo "Using run-clang-tidy.py (parallel)"
-  run-clang-tidy.py -p "${BUILD_DIR}" -j "${THREADS}" --header-filter="${HEADER_FILTER}" -system-headers --exclude "external/*"
-else
-  echo "run-clang-tidy.py not found — falling back to parallel clang-tidy via xargs"
-  # Only scan your module files
+# Prefer xargs method for custom flags
+if command -v clang-tidy >/dev/null 2>&1; then
+  echo "Running clang-tidy via xargs with live logs"
   find "${ROOT_DIR}/src/types" "${ROOT_DIR}/src/logger" "${ROOT_DIR}/src/exceptions" \
-    -name '*.cpp' -o -name '*.cxx' -o -name '*.cc' -o -name '*.hpp' | \
-    xargs -n1 -P"${THREADS}" -I{} clang-tidy {} -p "${BUILD_DIR}" --extra-arg=-std=c++23 --header-filter="${HEADER_FILTER}" -system-headers || true
+    -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.cc' -o -name '*.hpp' \) | \
+    xargs -n1 -P"${THREADS}" -I{} sh -c 'echo "Checking {}"; clang-tidy "{}" -p "'"${BUILD_DIR}"'" --extra-arg=-std=c++23 --header-filter="'"${HEADER_FILTER}"'" -system-headers || true'
+else
+  echo "clang-tidy not found — attempting run-clang-tidy.py wrapper without custom flags"
+  if [[ -f "${ROOT_DIR}/tools/run-clang-tidy.py" ]]; then
+    python3 "${ROOT_DIR}/tools/run-clang-tidy.py" -p "${BUILD_DIR}" -j "${THREADS}"
+  else
+    echo "No clang-tidy or run-clang-tidy.py found. Cannot run tidy."
+    exit 1
+  fi
 fi
