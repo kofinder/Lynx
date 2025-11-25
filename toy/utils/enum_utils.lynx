@@ -41,19 +41,19 @@ int main() {
 
   if (Syntax::UPPERCASE == sytx) {
 
-    system.prettyPrint("UPPERCASE");
+    system.io.println("UPPERCASE");
 
   } else if (sytx == Syntax::LOWERCASE) {
 
-    system.prettyPrint("LOWERCASE");
+    system.io.println("LOWERCASE");
 
   } else if (sytx == Syntax::SNAKE_CASE) {
 
-    system.prettyPrint("SNAKE_CASE");
+    system.io.println("SNAKE_CASE");
 
   } else {
 
-    system.prettyPrint("No match");
+    system.io.println("No match");
 
   }
 

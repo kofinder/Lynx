@@ -16,27 +16,27 @@ interface AdvancedDocumentIO extends DocumentIO, Savable {
 
 class PdfEditor implements AdvancedDocumentIO {
     public void read() override {
-        system.prettyPrint("Reading PDF...");
+        system.io.println("Reading PDF...");
     }
 
     public void write() override {
-        system.prettyPrint("Writing to PDF...");
+        system.io.println("Writing to PDF...");
     }
 
     public void open() override {
-        system.prettyPrint("Opening PDF document...");
+        system.io.println("Opening PDF document...");
     }
 
     public void close() override {
-        system.prettyPrint("Closing PDF document...");
+        system.io.println("Closing PDF document...");
     }
 
     public void save() override {
-        system.prettyPrint("Saving PDF...");
+        system.io.println("Saving PDF...");
     }
 
     public void exporter(string format) override {
-        system.prettyPrint("Exporting PDF as " + format);
+        system.io.println("Exporting PDF as " + format);
     }
 }
 

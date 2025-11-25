@@ -12,7 +12,7 @@ int main() {
     double w = 0.0;
 
     String result = a ? "true" : "false";
-    system.prettyPrint(result);
+    system.io.println(result);
 
     return 20;
 

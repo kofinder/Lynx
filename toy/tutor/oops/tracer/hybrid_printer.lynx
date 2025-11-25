@@ -3,7 +3,7 @@ import "printer";
 class HybridLogger implements Printer {
 
   void print(string level, string message) override {
-    system.prettyPrint(message);
+    system.io.println(message);
   }
     
 }

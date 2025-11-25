@@ -3,18 +3,18 @@ import "base_logger";
 class LiveChatLogger implements BaseLogger {
 
     void info(string message) override {
-        system.prettyPrint(message);
+        system.io.println(message);
     }
 
     void warn(string message) override {
-        system.prettyPrint(message);
+        system.io.println(message);
     }
 
     void debug(string message) override {
-        system.prettyPrint(message);
+        system.io.println(message);
     }
 
     void error(string message) override {
-        system.prettyPrint(message);
+        system.io.println(message);
     }
 }

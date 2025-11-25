@@ -2,20 +2,20 @@
 
 mixin Tiger {
   void speak() { 
-    system.prettyPrint("[Tiger] This is tigher speak method invocation !");  
+    system.io.println("[Tiger] This is tigher speak method invocation !");  
   }
 }
 
 mixin Cat {
   void speak() { 
-    system.prettyPrint("[Cat] This is tigher speak method invocation !");  
+    system.io.println("[Cat] This is tigher speak method invocation !");  
   }
 }
 
 mixin Eagle on Tiger, Cat {
   void speak() { 
     super.speak();
-    system.prettyPrint("[Eage] This is eagle speak method invocation !"); 
+    system.io.println("[Eage] This is eagle speak method invocation !"); 
   }
 }
 

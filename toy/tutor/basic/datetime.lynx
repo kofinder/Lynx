@@ -4,9 +4,9 @@ int main() {
 
   DateTime dt2 = new DateTime(2024, 6, 13);
 
-  system.prettyPrint(dt);
+  system.io.println(dt);
 
-  system.prettyPrint(dt2);
+  system.io.println(dt2);
 
   return 0;
 }

@@ -1,11 +1,11 @@
 
 
 class Tiger {
-  void speak() { system.prettyPrint("[Tiger] This is tigher speak method invocation !");  }
+  void speak() { system.io.println("[Tiger] This is tigher speak method invocation !");  }
 }
 
 class Eagle {
-  void speak() { system.prettyPrint("[Eage] This is eagle speak method invocation !"); }
+  void speak() { system.io.println("[Eage] This is eagle speak method invocation !"); }
 }
 
 class CtorOverload {

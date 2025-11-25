@@ -3,37 +3,37 @@ int main() {
 
     int x = -5;
     x = x - 5;
-    system.prettyPrint(x);  // result should be -10
+    system.io.println(x);  // result should be -10
 
     
     int num = 10;
     num++;
-    system.prettyPrint(num); // result should be 11;
+    system.io.println(num); // result should be 11;
 
 
     // prefix unary test
     int i = 5;
     int y = ++i;  // x is incremented first, then assigned to y
-    system.prettyPrint(i);  // result should be 6
-    system.prettyPrint(y);  // result should be 6
+    system.io.println(i);  // result should be 6
+    system.io.println(y);  // result should be 6
 
 
     int n = 5;
     int z = n++; 
-    system.prettyPrint(n);  // result should be 6
-    system.prettyPrint(z);  // result should be 5
+    system.io.println(n);  // result should be 6
+    system.io.println(z);  // result should be 5
 
 
     bool value = true;
     bool result = !value; // Logical NOT applied
-    system.prettyPrint(result);  // result should be 5
+    system.io.println(result);  // result should be 5
 
     
     int a = 5;
     int b = 0;
 
-    system.prettyPrint(!a);  // Any nonzero value becomes false (0)
-    system.prettyPrint(!b);  // Zero becomes true (1)
+    system.io.println(!a);  // Any nonzero value becomes false (0)
+    system.io.println(!b);  // Zero becomes true (1)
 
     return 0;
 

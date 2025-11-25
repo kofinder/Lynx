@@ -167,9 +167,9 @@ int main() {
 
     string abc = user.getId();
     
-    system.prettyPrint(str);
+    system.io.println(str);
 
-    system.prettyPrint(abc);
+    system.io.println(abc);
 
     return 0;
 }

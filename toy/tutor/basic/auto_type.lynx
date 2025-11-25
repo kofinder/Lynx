@@ -4,7 +4,7 @@ int main() {
 
   auto y = x + 30;
 
-  system.prettyPrint(y);
+  system.io.println(y);
 
   return 0;
 }

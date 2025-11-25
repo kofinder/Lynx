@@ -6,9 +6,9 @@ int main() {
     int result = a ^ b; // 0101 ^ 0011 = 0110 (6 in decimal)
 
 
-    system.prettyPrint(a);
-    system.prettyPrint(b);
-    system.prettyPrint(result);
+    system.io.println(a);
+    system.io.println(b);
+    system.io.println(result);
 
     return 0;
 }
