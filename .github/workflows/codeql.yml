@@ -9,15 +9,21 @@
 # the `language` matrix defined below to confirm you have the correct set of
 # supported CodeQL languages.
 #
-name: "CodeQL Advanced"
+name: "CodeQL Analysis Advanced"
 
 on:
-  push:
-    branches: [ "feature/types-utilities" ]
-  pull_request:
-    branches: [ "feature/types-utilities" ]
-  schedule:
-    - cron: '24 23 * * 4'
+    pull_request:
+      branches:
+        - master
+      paths:
+        - '**/*.cpp'
+        - '**/*.hpp'
+        - 'src/**'
+    push:
+      branches:
+        - master  # Optional: run on push
+    schedule:
+        - cron: '24 23 * * 4'
     
 jobs:
   analyze:
