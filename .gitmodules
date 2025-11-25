@@ -91,3 +91,6 @@
 [submodule "src/lsp"]
 	path = src/lsp
 	url = git@github.com:kofinder/LynxLSP.git
+[submodule "src/collections"]
+	path = src/collections
+	url = git@github.com:kofinder/LynxCollection.git
