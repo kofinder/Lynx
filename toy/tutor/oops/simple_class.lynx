@@ -1,0 +1,32 @@
+
+
+class Student {
+    private int age;
+    private char grade;
+
+    public Student(int age, char grade) {
+        this.grade = grade;
+        this.age = age;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public char getGrade() {
+        return grade;
+    }
+
+    public void setGrade(char grade) {
+        this.grade = grade;
+    }
+}
+
+
+int main() {
+    return 0;
+}

@@ -1,0 +1,3 @@
+interface Writable {  
+    void write(); 
+}

@@ -1,0 +1,25 @@
+
+int main() {
+    int a = 5;
+    a &= 3;  // Equivalent to: a = b + 5;
+
+    system.prettyPrint(a);
+
+    int x = 8;  // Binary: 0000 1000
+    int y = -8; // Binary: 1111 1000 (in two's complement representation)
+
+    // Left shift (x <<= 2) → Multiplies by 2^2 = 4
+    // x <<= 2;  // Binary: 0010 0000 (decimal 32)
+   // system.prettyPrint(x);
+
+    // Right shift (x >>= 2) → Divides by 2^2 = 4
+    x >>= 2;  // Binary: 0000 1000 (decimal 8)
+    system.prettyPrint(x);
+
+    // Right shift on negative number (Arithmetic Shift)
+    y >>= 2;  // Arithmetic shift: retains the sign bit
+    system.prettyPrint(y);
+
+
+    return 0;
+}

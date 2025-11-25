@@ -1,0 +1,22 @@
+
+
+int maxProfit(int sellingprice, int purchasePrice) {
+    int profit = sellingprice + purchasePrice;
+    return profit;
+}
+
+int towSun() {
+    int x = 100000;
+    int y = 800000;
+    int sum = x + y;
+    return sum;
+}
+
+
+int main() {
+    int profit = maxProfit(100, 200);
+    int towSum = towSun();
+    return 0;
+}
+
+

@@ -1,0 +1,25 @@
+int main() {
+    
+    int x = 4;
+    switch (x) {
+        case 1:
+            system.prettyPrint("100");
+            break;
+        case 2:
+            system.prettyPrint("55");
+            break;
+        case 3:
+            system.prettyPrint("666");
+            break;
+        case 4:
+            system.prettyPrint("88");
+        case 5:
+        case 6:
+            system.prettyPrint("092");
+        default:
+            system.prettyPrint("10");
+            break;
+    }
+
+    return 0;
+}

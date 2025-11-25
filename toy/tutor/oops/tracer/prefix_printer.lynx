@@ -1,0 +1,9 @@
+import "printer";
+
+class PrefixPrinter implements Printer {
+
+    void print(string level, string message) override {
+        system.prettyPrint(message);
+    }
+
+}

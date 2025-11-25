@@ -1,0 +1,10 @@
+
+import { A, B as C } from "module";
+import defaultExport as name from "module"; 
+import defaultExport from "module";
+import defaultExport, { named } from "module"; 
+import "side-effect";
+
+int main() {
+    return 10;
+}

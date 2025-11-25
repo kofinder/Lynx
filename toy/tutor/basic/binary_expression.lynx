@@ -1,0 +1,14 @@
+
+int main() {
+    int a = 5;  // 0101 in binary
+    int b = 3;  // 0011 in binary
+
+    int result = a ^ b; // 0101 ^ 0011 = 0110 (6 in decimal)
+
+
+    system.prettyPrint(a);
+    system.prettyPrint(b);
+    system.prettyPrint(result);
+
+    return 0;
+}

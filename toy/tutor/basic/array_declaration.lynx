@@ -1,0 +1,30 @@
+
+
+int main() {
+
+  short short_numbers[6] = {1, 2, 3, 4, 5, 6};
+  short short_matrix_numbers[6][2] = { {1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}, {11, 12} };
+
+  int int_numbers[6] = {10000, 200000, 300000, 4000000, 5000000, 6000000};
+  int int_matrix_numbers[4][2] = { {1234, 56}, {1212, 33}, {1434, 80}, {1312, 78} };
+
+  long long_numbers[6] = {1, 2, 3, 4, 5, 6};
+  long long_matrix_numbers[6][2] = { {1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}, {11, 12} };
+
+  float float_numbers[6] = { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 };
+  float float_matix_numbers[6][2] = { {1.1, 2.2}, {3.3, 4.4}, {5.5, 6.6}, {7.7, 8.8}, {9.9, 10.10}, {11.11, 12.12} };
+
+  double double_numbers[6] = { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 };
+  double double_matrix_numbers[6][2] = { {1.1, 2.2}, {3.3, 4.4}, {5.5, 6.6}, {7.7, 8.8}, {9.9, 10.10}, {11.11, 12.12} };
+
+  char char_words[6] = {'G', 'H', 'I', 'J', 'L', 'M'};
+  char char_matix_words[2][6] = {{'A', 'B', 'C', 'D', 'E', 'F'}, {'G', 'H', 'I', 'J', 'L', 'M'}};
+
+  boolean bool_numbers[6] = {true, false, true, false, true, false};
+  boolean bool_matrix_numbers[2][6] = { {true, false, true, false, true, false}, {true, false, true, false, true, false} };
+
+  string str_words[6] = {"One", "Two", "Three", "Four", "Five", "Six"};
+  string str_matrix_words[2][6] = { {"One", "Two", "Three", "Four", "Five", "Six"}, {"Eight", "Nine", "Ten", "Eleven", "Twlen", "Seven"}};
+  
+  return 0;
+}

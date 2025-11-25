@@ -1,0 +1,8 @@
+import "document";
+import "save_doc";
+
+interface AdvancedDocumentIO extends DocumentIO, Savable {
+
+  void exporter(string format);
+
+}

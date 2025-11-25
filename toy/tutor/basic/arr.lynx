@@ -1,0 +1,19 @@
+
+import "system" as sm;
+import "collections";
+import "algorithm";
+
+int main() {
+
+    int x = 10;
+
+    string c = x + y;
+
+    array<int, 7> arr = {1, 6, 4, 2, 8, 9, 3};
+
+    auto filteredArr = arr |> filter(x > 2) |> sort();
+
+    sm.prettyPrint("filtered array {}",  filteredArr);
+
+    return 0;
+}

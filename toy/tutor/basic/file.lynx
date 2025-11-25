@@ -1,0 +1,17 @@
+import "filesystem";
+
+int main() {
+
+
+// oop Style
+//File file = new File("livechat/word.txt");
+//file.open();
+//file.read();
+//file.close();
+
+// Functional Style
+//auto file2 = fs::open("word.txt");
+//fs::write(file2, "Hello world");
+//fs::close(file2);
+
+}

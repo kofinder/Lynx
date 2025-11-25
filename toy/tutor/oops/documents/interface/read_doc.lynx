@@ -1,0 +1,3 @@
+interface Readable { 
+    void read(); 
+}

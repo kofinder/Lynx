@@ -1,0 +1,11 @@
+import "read_doc";
+import "write_doc";
+
+
+interface DocumentIO extends Readable, Writable {
+
+  void open();
+
+  void close();
+  
+}

@@ -1,0 +1,20 @@
+import "base_logger";
+
+class LiveChatLogger implements BaseLogger {
+
+    void info(string message) override {
+        system.prettyPrint(message);
+    }
+
+    void warn(string message) override {
+        system.prettyPrint(message);
+    }
+
+    void debug(string message) override {
+        system.prettyPrint(message);
+    }
+
+    void error(string message) override {
+        system.prettyPrint(message);
+    }
+}

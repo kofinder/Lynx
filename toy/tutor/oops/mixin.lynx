@@ -1,4 +1,5 @@
 
+
 mixin Tiger {
   void speak() { 
     system.prettyPrint("[Tiger] This is tigher speak method invocation !");  
@@ -19,3 +20,12 @@ mixin Eagle on Tiger, Cat {
 }
 
 class Zoo with Tiger, Cat, Eagle { }
+
+int main() {
+
+  auto z = new Zoo();
+
+  z.speak();
+  
+  return 0;
+}

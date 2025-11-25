@@ -1,0 +1,33 @@
+
+
+
+int main() {
+    byte byteVal = 100b;
+    system.prettyPrint(byteVal);
+
+    short shortVal = 200s;
+    system.prettyPrint(shortVal);
+
+    int intVal = 300;
+    system.prettyPrint(intVal);
+
+    long longVal = 400l;
+    system.prettyPrint(longVal);
+
+    float floatVal = 2.45f;
+    system.prettyPrint(floatVal);
+
+    double doubleVal = 4.022e23;
+    system.prettyPrint(doubleVal);
+
+    boolean booVal = false;
+    system.prettyPrint(booVal);
+
+    char charVal = 'A';
+    system.prettyPrint(charVal);
+
+    string strVal = "Hello World!";
+    system.prettyPrint(strVal);
+
+    return 0;
+}
