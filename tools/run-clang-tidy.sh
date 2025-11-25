@@ -15,12 +15,12 @@ if [[ ! -f "${BUILD_DIR}/compile_commands.json" ]]; then
 fi
 
 # Only scan your main modules
-HEADER_FILTER='^src/(types|logger|exceptions)/'
+HEADER_FILTER='^src/(types|logger|exceptions|analyzer)/'
 
 # Use xargs for per-file parallel execution to ensure .clang-tidy is respected
 if command -v clang-tidy >/dev/null 2>&1; then
   echo "Running clang-tidy via xargs with live logs and .clang-tidy support"
-  find "${ROOT_DIR}/src/types" "${ROOT_DIR}/src/logger" "${ROOT_DIR}/src/exceptions" \
+  find "${ROOT_DIR}/src/types" "${ROOT_DIR}/src/analyzer" "${ROOT_DIR}/src/logger" "${ROOT_DIR}/src/exceptions" \
     -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.cc' -o -name '*.hpp' \) | \
     xargs -n1 -P"${THREADS}" -I{} sh -c 'echo "Checking {}"; clang-tidy "{}" \
       -p "'"${BUILD_DIR}"'" \

@@ -1,11 +1,12 @@
 
   int main() {
 
-    int x = -11;
-    int y = +10;
-    int z = -(x + y);
+    int x = 10;
+   
+    string x = x.toString();
 
-    system.io.println("binary_expression : ", z);
+    system.io.println("binary_expression : ", x);
 
     return 32;
+    
   }
