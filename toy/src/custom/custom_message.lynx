@@ -1,0 +1,13 @@
+import "src/chat_message";
+
+class CustomMessage extends ChatMessage {
+    private string customPayload;
+
+    public CustomMessage(string id, string roomId, boolean isOnline, int createdAt, char status, ChatUser author, string customPayload) {
+        super(id, roomId, isOnline, createdAt, status, MessageType::CUSTOM, author);
+        this.customPayload = customPayload;
+    }
+
+    public string getCustomPayload() { return customPayload; }
+    public void setCustomPayload(string customPayload) { this.customPayload = customPayload; }
+}

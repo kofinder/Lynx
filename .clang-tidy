@@ -1,0 +1,120 @@
+# ===============================================
+# Modern C++23 clang-tidy baseline
+# Goal: High signal / low noise
+# - Strong correctness + static analysis
+# - Useful modernization
+# - Good readability checks without naming-style spam
+# - Performance checks enabled
+# ===============================================
+
+Checks:
+  - '-*'                                # Start with everything disabled: explicit > implicit
+
+  # --------------------------------------------
+  # Core analyzers (ALWAYS useful, never noisy)
+  # --------------------------------------------
+  - 'clang-analyzer-*'                  # Static analyzer (memory leaks, null deref, etc.)
+  - 'clang-diagnostic-*'                # compiler warnings surfaced in clang-tidy
+
+  # --------------------------------------------
+  # Correctness / Safety
+  # --------------------------------------------
+  - 'bugprone-*'                        # common C++ pitfalls
+  - '-bugprone-unchecked-optional-access'  # fully disable it here
+  - 'cppcoreguidelines-*'               # C++ Core Guidelines (strong baseline)
+  - 'hicpp-*'                           # High Integrity C++ (subset overlaps cppcoreguidelines)
+
+  # --------------------------------------------
+  # Modern C++
+  # --------------------------------------------
+  - 'modernize-*'                       # auto, smart pointers, range-based loops, etc.
+  - '-modernize-use-trailing-return-type'   # Too verbose for most codebases
+  - '-modernize-pass-by-value'               # Noisy for constructors; often misleading
+
+  # --------------------------------------------
+  # Performance
+  # --------------------------------------------
+  - 'performance-*'                     # Avoid unnecessary copies, expensive ops, etc.
+
+  # --------------------------------------------
+  # Readability checks
+  # --------------------------------------------
+  - 'readability-*'
+  - '-readability-redundant-access-specifiers'      # class Pubic: public: public: noise
+  - '-readability-magic-numbers'                    # Too noisy for game/GUI codebases
+  - '-readability-convert-member-functions-to-static'  # Annoying for OOP
+  - '-readability-identifier-naming'                # Disable because it conflicts with identifier-length
+  - '-readability-braces-around-statements'
+  - '-readability-implicit-bool-conversion'
+  - '-hicpp-braces-around-statements'
+
+  # --------------------------------------------
+  # Portability
+  # --------------------------------------------
+  - 'portability-*'
+
+  # --------------------------------------------
+  # Misc
+  # --------------------------------------------
+  - 'misc-*'
+  - '-misc-non-private-member-variables-in-classes'   # Unrealistic for engine/UI code
+  - '-misc-include-cleaner'                           # Disable global include-cleaner noise
+
+  # Additional useful rule
+  - 'readability-non-const-parameter'                 # catch accidental pass-by-non-const
+
+# Treat all Core Guidelines violations as errors (makes code safety consistent)
+WarningsAsErrors: 'cppcoreguidelines-*'
+
+# Only analyze headers in src/ (instead of system or external libs)
+# HeaderFilterRegex: '^src/(types/logger/exceptions)/'
+HeaderFilterRegex: '^src/'
+
+# Use clang-format config from your .clang-format file
+FormatStyle: file
+
+# Don’t analyze system headers
+SystemHeaders: false
+
+# Additional include path (useful if you have an external/ folder)
+# ExtraArgs: []
+
+# ===============================================
+# Per-check configuration
+# ===============================================
+CheckOptions:
+
+  # The cppcoreguidelines-macro-usage check warns against variadic
+  # and function-like macros. Our LOG_* macros intentionally wrap
+  # spdlog to inject file/line/function metadata and cannot be
+  # replaced with constexpr templates without losing functionality.
+  - key: cppcoreguidelines-macro-usage.IgnoreMacros
+    value: 'LOG_DEBUG,LOG_INFO,LOG_WARN,LOG_ERROR'
+
+  # Disable the bugprone-unchecked-optional-access check because it can cause
+  # Clang-Tidy to crash when analyzing std::optional<llvm::Align> (or similar
+  # LLVM types). This is a known Clang-Tidy/LLVM internal bug and not an
+  # issue in our code. Safe usage of std::optional should still be enforced
+  # manually where needed.
+  - key: bugprone-unchecked-optional-access
+    value: 0
+
+  # ---------- Include Cleaner (reduced noise) ----------
+  - key: misc-include-cleaner.FileNameRegex
+    value: '.*\.(hpp|inl)$'        # Only inspect headers
+  - key: misc-include-cleaner.AllowIndirectIncludes
+    value: 'true'
+
+  # ---------- Identifier Length (this is what fixes 'ms' warning) ----------
+  - key: readability-identifier-length.MinimumLength
+    value: '2'                     # Allow 2-char names (ms, dt, ok, id, x, y, z, etc.)
+
+  # ---------- modernize-use-auto tuning ----------
+  - key: modernize-use-auto.MinTypeNameLength
+    value: '5'                     # Use auto only when type name >= 5 chars
+  - key: modernize-use-auto.IncludeStyle
+    value: 'llvm'                  # Consistent with LLVM include style
+
+  # ---------- vararg warnings ----------
+  - key: cppcoreguidelines-pro-type-vararg.WarnOnVararg
+    value: '1'                     # Enable vararg warnings (safer)

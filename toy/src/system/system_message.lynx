@@ -1,0 +1,13 @@
+import "src/chat_message";
+
+class SystemMessage extends ChatMessage {
+    private string systemContent;
+
+    public SystemMessage(string id, string roomId, boolean isOnline, int createdAt, char status, ChatUser author, string systemContent) {
+        super(id, roomId, isOnline, createdAt, status, MessageType::SYSTEM, author);
+        this.systemContent = systemContent;
+    }
+
+    public string getSystemContent() { return systemContent; }
+    public void setSystemContent(string systemContent) { this.systemContent = systemContent; }
+}

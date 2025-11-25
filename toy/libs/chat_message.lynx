@@ -1,0 +1,31 @@
+class ChatMessage {
+    private string id;
+    private string roomId;
+    private boolean isOnline;
+    private int createdAt;
+    private char status;
+
+    public ChatMessage(string id, string roomId, boolean isOnline, int createdAt, char status) {
+        this.id = id;
+        this.roomId = roomId;
+        this.isOnline = isOnline;
+        this.createdAt = createdAt;
+        this.status = status;
+    }
+    
+    public string getId() { return id; }
+    public void setId(string id) { this.id = id; }
+
+    public string getRoomId() { return roomId; }
+    public void setRoomId(string roomId) { this.roomId = roomId; }
+
+    public boolean isOnline() { return isOnline; }
+    public void setOnline(boolean isOnline) { this.isOnline = isOnline; }
+
+    public int getCreatedAt() { return createdAt; }
+    public void setCreatedAt(int createdAt) { this.createdAt = createdAt; }
+
+    public char getStatus() { return status; }
+    public void setStatus(char status) { this.status = status; }
+
+}

@@ -1,0 +1,109 @@
+name: clang-tidy
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - '**/*.cpp'
+      - '**/*.hpp'
+      - 'src/**'
+      
+# on:
+#   push:
+#     branches:
+#       - master  # Trigger workflow on every push to master
+
+jobs:
+  tidy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Setup SSH for private repo access
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      # Checkout main repo with private submodules
+      - name: Checkout code with submodules via SSH
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Cache build and clang-tidy outputs
+      - name: Cache build and Clang-Tidy
+        uses: actions/cache@v3
+        with:
+          path: |
+            build
+            ~/.cache/clang-tidy
+          key: clang-tidy-${{ runner.os }}-${{ hashFiles('**/*.cpp', '**/*.hpp') }}
+          restore-keys: clang-tidy-${{ runner.os }}-
+
+      # Install required system tools first
+      - name: Install basic build tools
+        run: |
+          sudo apt update
+          sudo apt install -y tar wget curl xz-utils
+
+      # Install LLVM 21 using llvm.sh
+      - name: Install LLVM 21
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 21
+
+      # Add LLVM 21 to PATH for all subsequent steps
+      - name: Add LLVM 21 to PATH
+        run: echo "/usr/lib/llvm-21/bin" >> $GITHUB_PATH
+
+      # Verify LLVM installation
+      - name: Verify LLVM 21
+        run: |
+          which clang
+          clang --version
+          which clang-tidy
+          clang-tidy --version
+
+      # Install CMake, Ninja, and other required libraries
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y cmake ninja-build \
+             libedit-dev libcurl4-openssl-dev libffi-dev zlib1g-dev \
+             libxml2-dev libtinfo-dev libzstd-dev \
+             libboost-system-dev libboost-filesystem-dev libboost-program-options-dev \
+             libgc-dev
+
+      # Install Boost required libraries
+      - name: Install Boost
+        run: |
+          sudo apt update
+          sudo apt install -y libboost-system-dev libboost-filesystem-dev libboost-program-options-dev
+      
+      # Install Doxygen required libraries
+      - name: Install Doxygen
+        run: sudo apt install -y doxygen graphviz
+
+      # Configure the project with CMake
+      - name: Configure project with CMake
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      # Run clang-tidy in parallel
+      - name: Run clang-tidy (parallel)
+        run: |
+          CPU_CORES=$(nproc)
+          echo "Running clang-tidy on $CPU_CORES cores..."
+          ./tools/run-clang-tidy.sh $CPU_CORES | tee build/clang-tidy.log
+
+      # Upload clang-tidy log only if it fails
+      - name: Upload clang-tidy log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clang-tidy-log
+          path: build/clang-tidy.log

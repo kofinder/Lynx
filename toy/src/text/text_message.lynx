@@ -1,0 +1,18 @@
+import "src/chat_message";
+
+class TextMessage extends ChatMessage {
+    private string text;
+
+    public TextMessage(string id, string roomId, boolean isOnline, int createdAt, char status, MessageType messageType, ChatUser author, string text) {
+        super(id, roomId, isOnline, createdAt, status, MessageType::TEXT, author);
+        this.text = text;
+    }
+
+    public string getText() {
+        return text;
+    }
+    
+    public void setText(string text) {
+        this.text = text;
+    }
+}
