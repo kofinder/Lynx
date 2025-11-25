@@ -64,7 +64,6 @@
  * @date: Jan 2, 2022
 */
 
-
 #ifndef LYNX_HPP
 #define LYNX_HPP
 
@@ -118,6 +117,8 @@ class Lynx {
         std::unique_ptr<CoreManager> coreManager; // what about t his way?
 
         bool systemModulesInitialized = false;
+        
+    private:
 
 
         /**

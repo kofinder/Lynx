@@ -1,0 +1,30 @@
+name: Linux Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ linux ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt update && sudo apt install cmake make g++ -y
+
+      - name: Build (Linux)
+        run: |
+          mkdir build-linux
+          cd build-linux
+          cmake ..
+          make -j4
+
+      - name: Upload Linux Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-build
+          path: build-linux/

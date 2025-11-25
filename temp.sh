@@ -1,1 +1,0 @@
-git push origin --delete feature/string-type-utilities

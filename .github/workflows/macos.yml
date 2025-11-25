@@ -1,0 +1,30 @@
+name: macOS Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ macos ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install CMake
+        run: brew install cmake
+
+      - name: Build (macOS)
+        run: |
+          mkdir build-macos
+          cd build-macos
+          cmake ..
+          make -j4
+
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-build
+          path: build-macos/

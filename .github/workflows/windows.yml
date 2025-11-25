@@ -1,0 +1,29 @@
+name: Windows Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ windows ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check CMake Version
+        run: cmake --version
+
+      - name: Configure (Windows)
+        run: cmake -B build-win -G "MinGW Makefiles"
+
+      - name: Build
+        run: cmake --build build-win --parallel
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-build
+          path: build-win/

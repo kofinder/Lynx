@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  gather-artifacts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download Linux Build
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-build
+          path: linux/
+
+      - name: Download Windows Build
+        uses: actions/download-artifact@v3
+        with:
+          name: windows-build
+          path: windows/
+
+      - name: Download macOS Build
+        uses: actions/download-artifact@v3
+        with:
+          name: macos-build
+          path: macos/
+
+      - name: Create Archives
+        run: |
+          zip -r linux.zip linux/
+          zip -r windows.zip windows/
+          zip -r macos.zip macos/
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            linux.zip
+            windows.zip
+            macos.zip
