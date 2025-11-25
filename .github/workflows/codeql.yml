@@ -18,52 +18,95 @@ on:
     branches: [ "feature/types-utilities" ]
   schedule:
     - cron: '24 23 * * 4'
-
+    
 jobs:
   analyze:
-    name: Analyze C++ code with CodeQL
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        language: [ 'cpp' ]
-
     steps:
-    # -----------------------------------------------------
-    # 1. Checkout repository
-    # -----------------------------------------------------
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      # -----------------------------------------------------
+      # 1. Setup SSH for private repo/submodule access
+      # -----------------------------------------------------
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-    # -----------------------------------------------------
-    # 2. Initialize CodeQL v3
-    # -----------------------------------------------------
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
+      # -----------------------------------------------------
+      # 2. Checkout repository with submodules
+      # -----------------------------------------------------
+      - name: Checkout code with submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    # -----------------------------------------------------
-    # 3. Install LLVM / Clang dependencies
-    # -----------------------------------------------------
-    - name: Install LLVM and Clang
-      run: |
-        sudo apt update
-        sudo apt install -y clang llvm libclang-dev cmake build-essential
+      # -----------------------------------------------------
+      # 3. Cache CMake build artifacts & CodeQL database
+      # -----------------------------------------------------
+      - name: Cache build and CodeQL
+        uses: actions/cache@v3
+        with:
+          path: |
+            build
+            ~/.codeql
+          key: codeql-${{ runner.os }}-${{ hashFiles('**/*.cpp', '**/*.hpp') }}
+          restore-keys: codeql-${{ runner.os }}-
 
-    # -----------------------------------------------------
-    # 4. Build project and generate compile_commands.json
-    # -----------------------------------------------------
-    - name: Build C++ project (CMake)
-      run: |
-        mkdir -p build
-        cd build
-        cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
-        cmake --build .
+      # -----------------------------------------------------
+      # 4. Install LLVM 21 and basic build tools
+      # -----------------------------------------------------
+      - name: Install basic build tools
+        run: |
+          sudo apt update
+          sudo apt install -y tar wget curl xz-utils cmake ninja-build build-essential \
+              libedit-dev libcurl4-openssl-dev libffi-dev zlib1g-dev \
+              libxml2-dev libtinfo-dev libzstd-dev \
+              libboost-system-dev libboost-filesystem-dev libboost-program-options-dev \
+              libgc-dev doxygen graphviz
 
-    # -----------------------------------------------------
-    # 5. Perform CodeQL Analysis (v3)
-    # -----------------------------------------------------
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      - name: Install LLVM 21
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 21
+      - name: Add LLVM 21 to PATH
+        run: echo "/usr/lib/llvm-21/bin" >> $GITHUB_PATH
+
+      - name: Verify LLVM installation
+        run: |
+          clang --version
+          clang-tidy --version
+          llvm-config --version
+
+      # -----------------------------------------------------
+      # 5. Initialize CodeQL v3
+      # -----------------------------------------------------
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: cpp
+
+      # -----------------------------------------------------
+      # 6. Configure project and generate compile_commands.json
+      # -----------------------------------------------------
+      - name: Configure project with CMake
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      # -----------------------------------------------------
+      # 7. Build project
+      # -----------------------------------------------------
+      - name: Build project
+        run: cmake --build build -j $(nproc)
+
+      # -----------------------------------------------------
+      # 8. Perform CodeQL analysis
+      # -----------------------------------------------------
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:cpp"
+
 
