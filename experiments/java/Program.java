@@ -2,7 +2,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class LimitsDemo {
+public class Program {
     // Custom constant names
     public static final int MAX_INT = Integer.MAX_VALUE;
     public static final int MIN_INT = Integer.MIN_VALUE;
