@@ -1,12 +1,12 @@
 
-  int main() {
+int main() {
 
-    int x = 10;
-   
-    string x = x.toString();
+  int x = 10;
+  
+  short z = x;
 
-    system.io.println("binary_expression : ", x);
+  system.io.println("binary_expression : ", z);
 
-    return 32;
-    
-  }
+  return 32;
+  
+}
