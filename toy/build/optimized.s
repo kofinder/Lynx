@@ -9,10 +9,10 @@ main:
 	.cfi_def_cfa_offset 16
 	movl	$.Lfmt, %edi
 	movl	$.Llynx.string.constant, %esi
-	movl	$10, %edx
-	xorl	%eax, %eax
+	xorps	%xmm0, %xmm0
+	movb	$1, %al
 	callq	printf@PLT
-	movl	$32, %eax
+	movl	$64, %eax
 	popq	%rcx
 	.cfi_def_cfa_offset 8
 	retq
@@ -22,15 +22,14 @@ main:
 
 	.type	.Llynx.string.constant,@object
 	.section	.rodata,"a",@progbits
-	.p2align	4, 0x0
 .Llynx.string.constant:
-	.asciz	"binary_expression : "
-	.size	.Llynx.string.constant, 21
+	.asciz	"Result ====>:"
+	.size	.Llynx.string.constant, 14
 
 	.type	.Lfmt,@object
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .Lfmt:
-	.asciz	"%s %d\n"
+	.asciz	"%s %f\n"
 	.size	.Lfmt, 7
 
 	.section	".note.GNU-stack","",@progbits

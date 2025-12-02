@@ -1,24 +1,24 @@
-// THis code is not my own, I just test and learn from white guys who share his code on linkedin
-
 #include <iostream>
-#include <memory>
-#include <thread>
+#include <limits> // For numeric limits
 
 int main() {
+    float num = 3.40282e+38;
 
-    std::aligned_storage<sizeof(std::thread), alignof(std::thread)>::type M;
+    short x;
 
-    new(&M) std::thread([] () {
-        for(int i = 0; i < 1000; i++) {
-            std::cout << '+' << std::flush;
-        }
-        std::cout << std::endl;
-    });
+    // Check if num is within the range of short
+    if (num > std::numeric_limits<short>::max()) {
+        x = std::numeric_limits<short>::max(); // clamp to max
+        std::cerr << "num is too large, clamping to max short value: ";
+    } else if (num < std::numeric_limits<short>::min()) {
+        x = std::numeric_limits<short>::min(); // clamp to min
+        std::cerr << "num is too small, clamping to min short value: ";
+    } else {
+        x = static_cast<short>(num); // safe conversion
+        std::cerr << "num is within range, converted value: ";
+    }
 
-    reinterpret_cast<std::thread*> (&M)->join();
-
-    reinterpret_cast<std::thread*>(&M)->~thread();
+    std::cerr << x << std::endl;
 
     return 0;
-
 }

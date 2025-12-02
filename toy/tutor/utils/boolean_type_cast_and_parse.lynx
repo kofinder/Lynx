@@ -1,5 +1,4 @@
 
-
 int main() {
 
 /*
@@ -21,16 +20,12 @@ int main() {
     long num = 1;
     float num = 1.0;
     double num = 0.0;
-    chat num = 'A';
+    char num = 'A';
     string num = "0";
     system.io.println("Result ===>: ", boolean.parse(num));
 */
 
-    string str = "123";
-    short num = str::toShort();
+  system.io.println("Result ===>: ", boolean.parse("HELLO WORLD"));
 
-    system.io.println("Result ====>:", num);
-
-    return 64;
-    
+  return 32;
 }

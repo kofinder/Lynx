@@ -4,7 +4,7 @@ int main() {
 
 
     // TYPE CASTING
-    double ch = 1.0;
+    float ch = 1.0;
     boolean x = ch::toBool();
     string x = ch::toString();
     short x = ch::toShort();
@@ -25,7 +25,7 @@ int main() {
     char num = 'A';
     string num = "0";
 
-    double x = double.parse(num);
+    float x = float.parse(num);
     system.io.println("Result ====>:", x);
 
     return 64;

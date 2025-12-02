@@ -42,24 +42,24 @@ $build_dir/program
 exit_code=$?
 echo "[Program exited with code: $exit_code]"
 
-# --------------------------------------------------------
-# 5. Run with Valgrind (memory check)
-# --------------------------------------------------------
-if [ -x "$VALGRIND" ]; then
-    echo "[Valgrind] Running memory check..."
-    $VALGRIND --leak-check=full --show-leak-kinds=all $build_dir/program
-else
-    echo "[Valgrind] Not found. Skipping memory check."
-fi
+# # --------------------------------------------------------
+# # 5. Run with Valgrind (memory check)
+# # --------------------------------------------------------
+# if [ -x "$VALGRIND" ]; then
+#     echo "[Valgrind] Running memory check..."
+#     $VALGRIND --leak-check=full --show-leak-kinds=all $build_dir/program
+# else
+#     echo "[Valgrind] Not found. Skipping memory check."
+# fi
 
-# --------------------------------------------------------
-# 6. Run with GDB (interactive debugging)
-# --------------------------------------------------------
-if [ -x "$GDB" ]; then
-    echo "[GDB] Launching debugger..."
-    $GDB $build_dir/program
-else
-    echo "[GDB] Not found. Skipping debugger."
-fi
+# # --------------------------------------------------------
+# # 6. Run with GDB (interactive debugging)
+# # --------------------------------------------------------
+# if [ -x "$GDB" ]; then
+#     echo "[GDB] Launching debugger..."
+#     $GDB $build_dir/program
+# else
+#     echo "[GDB] Not found. Skipping debugger."
+# fi
 
 exit 0
