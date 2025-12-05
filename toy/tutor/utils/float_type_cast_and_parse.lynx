@@ -2,12 +2,12 @@
 
 int main() {
 
-
-    // TYPE CASTING
+    // CASTING
     float ch = 1.0;
-    boolean x = ch::toBool();
+    byte x = ch::toByte();
     string x = ch::toString();
     short x = ch::toShort();
+    boolean x = ch::toBool();
     int x = ch::toInt();
     long x = ch::toLong();
     float x = ch::toFloat();
@@ -15,14 +15,15 @@ int main() {
     char x = ch::toChar();
     system.io.println("Result ====>:", x);
 
-    // PARSING CASTING
-    boolean num = true;
+    // PARSING
+    byte num = 8;
     short num = 1;
     int num = 2147483647;
     long num = 9223372036854775807;
     float num = 1.0;
     double num = 0.0;
     char num = 'A';
+    boolean num = true;
     string num = "0";
 
     float x = float.parse(num);

@@ -2,8 +2,8 @@
 
 int main() {
 
-/*
-    // TYPE CASTING
+
+    // CASTING
     string str = "3333333333333333333.56";
     boolean x = str::toBool();
     string x = str::toString();
@@ -13,25 +13,23 @@ int main() {
     float x = str::toFloat();
     double x = str::toDouble();
     char x = str::toChar();
+    byte x = str::toByte();
     system.io.println("Result ====>:", x);
 
-    // PARSING CASTING
+    // PARSING
     boolean num = true;
     short num = 1;
+    byte num = 18;
     int num = 1;
     long num = 1;
     float num = 1.0;
     double num = 0.0;
     char num = 'A';
     string num = "0";
-    string x = string.parse(num);
-    system.io.println("Result ====>:", x);
+    string xss = string.parse(num);
+    
+    system.io.println("Result ====>:", xss);
 
-*/
-
-    char num = 'A';
-    string x = string.parse(num);
-    system.io.println("Result ====>:", x);
     return 64;
 
 }

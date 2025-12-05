@@ -3,34 +3,28 @@
 int main() {
 
 /*
-    // TYPE CASTING
-    boolean status = false;
-    short x = status::toShort();
-    int x = status::toInt();
-    long x = status::toLong();
-    float x = status::toFloat();
-    double x = status::toDouble();
-    char x = status::toChar();
-    boolean x = status::toBoolean();
-    string x = status::toString();
-    system.io.println("Result ===>: ", x);
+    byte b = 30;
+    short s = 80;
+    int i = 200;
+    long l  = 3000000;
+    float f = 4747.444;
+    double d = 4949494.333;
+    char c = 'A';
+    string str = "HELLO WORLD";
+    boolean bo = true;
 
-    // PARSING CASTING
-    short num = 1;
-    int num = 1;
-    long num = 1;
-    float num = 1.0;
-    double num = 0.0;
-    chat num = 'A';
-    string num = "0";
-    system.io.println("Result ===>: ", boolean.parse(num));
-*/
+    system.io.println("Byte Result ====>:", b);
+    system.io.println("Short Result ====>:", s);
+    system.io.println("Int Result ====>:", i);
+    system.io.println("Long Result ====>:", l);
+    system.io.println("Float Result ====>:", f);
+    system.io.println("Doube Result ====>:", d);
+    system.io.println("Char Result ====>:", c);
+    system.io.println("String Result ====>:", str);
+    system.io.println("Boolean Result ====>:", bo);
 
-    string str = "123";
-    short num = str::toShort();
+/*
 
-    system.io.println("Result ====>:", num);
-
+    system.io.println("Check Result");
     return 64;
-    
 }

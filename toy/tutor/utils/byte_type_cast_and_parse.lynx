@@ -1,0 +1,33 @@
+
+
+int main() {
+
+
+    // CASTING
+    byte b = 20;
+    boolean x = b::toBool();
+    string x = b::toString();
+    short x = b::toShort();
+    int x = b::toInt();
+    long x = b::toLong();
+    float x = b::toFloat();
+    double x = b::toDouble();
+    char x = b::toChar();
+    system.io.println("Result ====>:", x);
+
+    // PARSING
+    boolean num = true;
+    short num = 1;
+    int num = 1;
+    long num = 1;
+    float num = 1.0;
+    double num = 0.0;
+    char num = 'A';
+    string num = "0";
+
+    byte x = byte.parse(num);
+    system.io.println("Result ====>:", x);
+
+    
+    return 64;
+}

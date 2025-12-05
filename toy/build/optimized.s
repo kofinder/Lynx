@@ -9,8 +9,8 @@ main:
 	.cfi_def_cfa_offset 16
 	movl	$.Lfmt, %edi
 	movl	$.Llynx.string.constant, %esi
-	xorps	%xmm0, %xmm0
-	movb	$1, %al
+	movl	$1, %edx
+	xorl	%eax, %eax
 	callq	printf@PLT
 	movl	$64, %eax
 	popq	%rcx
@@ -29,7 +29,7 @@ main:
 	.type	.Lfmt,@object
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .Lfmt:
-	.asciz	"%s %f\n"
+	.asciz	"%s %d\n"
 	.size	.Lfmt, 7
 
 	.section	".note.GNU-stack","",@progbits
