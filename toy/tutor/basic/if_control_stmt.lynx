@@ -1,0 +1,39 @@
+int max(int a, int b) {
+  if (a > b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+
+
+void logicalOperation() {
+    int totalTrueConds = 0;
+    int x = 0;
+    if (x == 0 && x != 0) {
+        totalTrueConds = totalTrueConds + 1;
+    } else if (x == 0 || x != 0) {
+        totalTrueConds = totalTrueConds + 1;
+    } else { }
+
+    int j = 0;
+    int k = 10;
+
+    if (((j + k) == 10 && ((j == 10 && k == 0) || (k == 10 && j == 0))) || ((j * k) == 0 && (k == 0 || j == 0))) {
+        totalTrueConds = totalTrueConds + 1;
+    }
+
+    if (j == k - 10 && k == j - 10) {
+        totalTrueConds = totalTrueConds + 1;
+    }
+
+    if (j == k - 10 || k == j - 10) {
+        totalTrueConds = totalTrueConds + 1;
+    }
+
+    if (!((j + k) == 10 && ((j == 10 && k == 0) || (k == 10 && j == 0))) || !((j * k) == 0 && (k == 0 || j == 0))) {
+        totalTrueConds = totalTrueConds + 1;
+    }
+
+    return totalTrueConds;
+}

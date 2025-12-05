@@ -1,0 +1,12 @@
+int main() {
+
+  DateTime dt = new DateTime();
+
+  DateTime dt2 = new DateTime(2024, 6, 13);
+
+  system.io.println(dt);
+
+  system.io.println(dt2);
+
+  return 0;
+}

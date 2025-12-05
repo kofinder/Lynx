@@ -1,0 +1,46 @@
+interface Readable { void read(); }
+
+interface Writable { void write(); }
+
+interface Savable { void save(); }
+
+interface DocumentIO extends Readable, Writable {
+  void open();
+  void close();
+}
+
+interface AdvancedDocumentIO extends DocumentIO, Savable {
+  void exporter(string format);
+}
+
+
+class PdfEditor implements AdvancedDocumentIO {
+    public void read() override {
+        system.io.println("Reading PDF...");
+    }
+
+    public void write() override {
+        system.io.println("Writing to PDF...");
+    }
+
+    public void open() override {
+        system.io.println("Opening PDF document...");
+    }
+
+    public void close() override {
+        system.io.println("Closing PDF document...");
+    }
+
+    public void save() override {
+        system.io.println("Saving PDF...");
+    }
+
+    public void exporter(string format) override {
+        system.io.println("Exporting PDF as " + format);
+    }
+}
+
+
+int main() { 
+  return 0;
+}

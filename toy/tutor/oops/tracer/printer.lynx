@@ -1,0 +1,6 @@
+
+interface Printer {
+
+    void print(string level, string message);
+
+}

@@ -1,0 +1,31 @@
+
+
+mixin Tiger {
+  void speak() { 
+    system.io.println("[Tiger] This is tigher speak method invocation !");  
+  }
+}
+
+mixin Cat {
+  void speak() { 
+    system.io.println("[Cat] This is tigher speak method invocation !");  
+  }
+}
+
+mixin Eagle on Tiger, Cat {
+  void speak() { 
+    super.speak();
+    system.io.println("[Eage] This is eagle speak method invocation !"); 
+  }
+}
+
+class Zoo with Tiger, Cat, Eagle { }
+
+int main() {
+
+  auto z = new Zoo();
+
+  z.speak();
+  
+  return 0;
+}

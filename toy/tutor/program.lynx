@@ -1,0 +1,30 @@
+
+
+int main() {
+
+/*
+    byte b = 30;
+    short s = 80;
+    int i = 200;
+    long l  = 3000000;
+    float f = 4747.444;
+    double d = 4949494.333;
+    char c = 'A';
+    string str = "HELLO WORLD";
+    boolean bo = true;
+
+    system.io.println("Byte Result ====>:", b);
+    system.io.println("Short Result ====>:", s);
+    system.io.println("Int Result ====>:", i);
+    system.io.println("Long Result ====>:", l);
+    system.io.println("Float Result ====>:", f);
+    system.io.println("Doube Result ====>:", d);
+    system.io.println("Char Result ====>:", c);
+    system.io.println("String Result ====>:", str);
+    system.io.println("Boolean Result ====>:", bo);
+
+/*
+
+    system.io.println("Check Result");
+    return 64;
+}

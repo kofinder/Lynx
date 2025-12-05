@@ -1,0 +1,30 @@
+
+int main() {
+
+  // CASTING
+  boolean status = false;
+  byte x = status::toByte();
+  short x = status::toShort();
+  int x = status::toInt();
+  long x = status::toLong();
+  float x = status::toFloat();
+  double x = status::toDouble();
+  char x = status::toChar();
+  boolean x = status::toBool();
+  string x = status::toString();
+  system.io.println("Result ===>: ", x);
+
+  // PARSING
+  byte num = 30;
+  short num = 1000;
+  int num = 6789;
+  long num = 3333322;
+  float num = 1.0;
+  double num = 0.0;
+  char num = 'A';
+  string num = "0";
+  boolean b = boolean.parse(num);
+  system.io.println("Result ===>: " b);
+
+  return 32;
+}

@@ -1,0 +1,22 @@
+import "libs/logger";
+import "libs/tracer/hybrid_printer";
+import "libs/tracer/logfmt_printer";
+import "libs/tracer/prefix_printer";
+import "libs/tracer/pretty_printer";
+
+int main() { 
+
+  auto logger = new Logger(new HybridLogger());
+  logger.log("HYBRID", "this is hybrid log.");
+
+  logger.setPrinter(new LogfmtPrinter());
+  logger.log("LOGFMT", "This is a logfmt log.");
+
+  logger.setPrinter(new PrefixPrinter());
+  logger.log("PREFIX", "This is a prefixed log.");
+
+  logger.setPrinter(new PrettyPrinter());
+  logger.log("PRETTY", "This is a pretty log.");
+
+  return 0;
+}

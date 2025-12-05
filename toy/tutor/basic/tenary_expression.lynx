@@ -1,0 +1,19 @@
+
+int main() {
+
+    int a = 2; 
+    short b = 1;
+    long c = 1000; 
+    double d = 3.14; 
+    char e = 'A'; 
+    int x = 0;
+    short y = 0; 
+    long z = 0; 
+    double w = 0.0;
+
+    String result = a ? "true" : "false";
+    system.io.println(result);
+
+    return 20;
+
+}

@@ -1,0 +1,29 @@
+import "interface/advance_document";
+
+class PdfEditor implements AdvancedDocumentIO {
+
+    public void read() override {
+        system.io.println("Reading PDF .......");
+    }
+
+    public void write() override {
+        system.io.println("Writing to PDF .......");
+    }
+
+    public void open() override {
+        system.io.println("Opening PDF document .......");
+    }
+
+    public void close() override {
+        system.io.println("Closing PDF document .......");
+    }
+
+    public void save() override {
+        system.io.println("Saving PDF .......");
+    }
+
+    public void exporter(string word) override {
+        system.io.println(word);
+    }
+    
+}

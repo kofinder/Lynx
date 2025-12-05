@@ -1,0 +1,175 @@
+enum MessageType {
+    TEXT = 1,
+    FILE = 2,
+    IMAGE = 3,
+    AUDIO = 4,
+    VIDEO = 5,
+    CUSTOM = 6,
+    SYSTEM = 7
+}
+
+class ChatUser {
+    private string id;
+    private string name;
+    private boolean isBot;
+
+    public ChatUser(string id, string name, boolean isBot) {
+        this.id = id;
+        this.name = name;
+        this.isBot = isBot;
+    }
+}
+
+class ChatMessage {
+    private string id;
+    private string roomId;
+    private boolean isOnline;
+    private int createdAt;
+    private char status;
+    private MessageType messageType;
+    private ChatUser author;
+
+    public ChatMessage(string id, string roomId, boolean isOnline, int createdAt, char status, MessageType messageType, ChatUser author) {
+        this.id = id;
+        this.roomId = roomId;
+        this.isOnline = isOnline;
+        this.createdAt = createdAt;
+        this.status = status;
+        this.messageType = messageType;
+        this.author = author;
+    }
+
+    public string getId() { return id; }
+    public void setId(string id) { this.id = id; }
+
+    public string getRoomId() { return roomId; }
+    public void setRoomId(string roomId) { this.roomId = roomId; }
+
+    public boolean isOnline() { return isOnline; }
+    public void setOnline(boolean isOnline) { this.isOnline = isOnline; }
+
+    public int getCreatedAt() { return createdAt; }
+    public void setCreatedAt(int createdAt) { this.createdAt = createdAt; }
+
+    public char getStatus() { return status; }
+    public void setStatus(char status) { this.status = status; }
+
+    public MessageType getMessageType() { return messageType; }
+    public void setMessageType(MessageType messageType) { this.messageType = messageType; }
+
+    public ChatUser getAuthor() { return author; }
+    public void setAuthor(ChatUser author) { this.author = author; }
+}
+
+class TextMessage extends ChatMessage {
+    private string text;
+
+    public TextMessage(string id, string roomId, boolean isOnline, int createdAt, char status, MessageType messageType, ChatUser author, string text) {
+        super(id, roomId, isOnline, createdAt, status, messageType, author);
+        this.text = text;
+    }
+
+    public string getText() {
+        return text;
+    }
+    
+    public void setText(string text) {
+        this.text = text;
+    }
+}
+
+class FileMessage extends ChatMessage {
+    private string fileName;
+    private long fileSize;
+
+    public FileMessage(string id, string roomId, boolean isOnline, int createdAt, char status, ChatUser author, string fileName, long fileSize) {
+        super(id, roomId, isOnline, createdAt, status, MessageType.FILE, author);
+        this.fileName = fileName;
+        this.fileSize = fileSize;
+    }
+
+    public string getFileName() { return fileName; }
+    public void setFileName(string fileName) { this.fileName = fileName; }
+
+    public long getFileSize() { return fileSize; }
+    public void setFileSize(long fileSize) { this.fileSize = fileSize; }
+}
+
+class ImageMessage extends ChatMessage {
+    private string imageUrl;
+
+    public ImageMessage(string id, string roomId, boolean isOnline, int createdAt, char status, ChatUser author, string imageUrl) {
+        super(id, roomId, isOnline, createdAt, status, MessageType.IMAGE, author);
+        this.imageUrl = imageUrl;
+    }
+
+    public string getImageUrl() { return imageUrl; }
+    public void setImageUrl(string imageUrl) { this.imageUrl = imageUrl; }
+}
+
+class AudioMessage extends ChatMessage {
+    private int duration;
+
+    public AudioMessage(string id, string roomId, boolean isOnline, int createdAt, char status, ChatUser author, int duration) {
+        super(id, roomId, isOnline, createdAt, status, MessageType.AUDIO, author);
+        this.duration = duration;
+    }
+
+    public int getDuration() { return duration; }
+    public void setDuration(int duration) { this.duration = duration; }
+}
+
+class VideoMessage extends ChatMessage {
+    private string videoUrl;
+
+    public VideoMessage(string id, string roomId, boolean isOnline, int createdAt, char status, ChatUser author, string videoUrl) {
+        super(id, roomId, isOnline, createdAt, status, MessageType.VIDEO, author);
+        this.videoUrl = videoUrl;
+    }
+
+    public string getVideoUrl() { return videoUrl; }
+    public void setVideoUrl(string videoUrl) { this.videoUrl = videoUrl; }
+}
+
+class CustomMessage extends ChatMessage {
+    private string customPayload;
+
+    public CustomMessage(string id, string roomId, boolean isOnline, int createdAt, char status, ChatUser author, string customPayload) {
+        super(id, roomId, isOnline, createdAt, status, MessageType.CUSTOM, author);
+        this.customPayload = customPayload;
+    }
+
+    public string getCustomPayload() { return customPayload; }
+    public void setCustomPayload(string customPayload) { this.customPayload = customPayload; }
+}
+
+class SystemMessage extends ChatMessage {
+    private string systemContent;
+
+    public SystemMessage(string id, string roomId, boolean isOnline, int createdAt, char status, ChatUser author, string systemContent) {
+        super(id, roomId, isOnline, createdAt, status, MessageType.SYSTEM, author);
+        this.systemContent = systemContent;
+    }
+
+    public string getSystemContent() { return systemContent; }
+    public void setSystemContent(string systemContent) { this.systemContent = systemContent; }
+}
+
+
+int main() {
+
+    ChatUser user = new ChatUser("0000000", 20, "John Whick", false);
+    ChatMessage message = new ChatMessage("222", "333", true, 10000, 'B', MessageType::TEXT, user);
+
+    string str = message.author.getId();
+
+    message.author.id = "KO KO";
+
+    string abc = user.getId();
+    
+    system.io.println(str);
+
+    system.io.println(abc);
+
+    return 0;
+}

@@ -1,0 +1,20 @@
+
+import "tracer/printer";
+
+class Logger {
+
+    private Printer printer;
+
+    public Logger(Printer printer) {
+        this.printer = printer;
+    }
+
+    public void setPrinter(Printer printer) {
+        this.printer = printer;
+    }
+
+    public void log(string level, string message) {
+        printer.print(level, message);
+    }
+
+}

@@ -1,0 +1,14 @@
+import "libs/logger/livechat_logger";
+
+int main() { 
+  auto logger = new LiveChatLogger();
+
+  logger.info("This is info logger message");
+  
+  logger.warn("This is warn logger message");
+
+  logger.debug("This is debug logger message");
+
+  logger.error("This is error logger message");
+  return 0;
+}

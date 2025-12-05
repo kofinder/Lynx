@@ -1,0 +1,23 @@
+
+import "libs/pdf_editor";
+
+int main() { 
+
+  auto logger = new PdfEditor();
+
+  logger.read();
+
+  logger.write();
+
+  logger.open();
+
+  logger.close();
+
+  logger.save();
+
+  logger.exporter("This is export function!");
+
+  return 0;
+}
+
+

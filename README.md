@@ -70,7 +70,3 @@ Lynx is still under active development, currently focusing on **object-oriented 
 - [LSP Documentation](https://microsoft.github.io/language-server-protocol/)
 - [IOCCC Source Code Repository](https://github.com/ioccc-src/winner)
 - [Clang-Tidy](https://clang.llvm.org/extra/clang-tidy/)
-
-## CLI COMMAND
-- create project: ``make cli ARGS="create --project toy --type window"``
-- create module: ``make cli ARGS="generate --subcommand module --name chat --project ./toy"``

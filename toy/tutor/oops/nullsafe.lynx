@@ -1,0 +1,37 @@
+
+
+class Tiger {
+  void speak() { system.io.println("[Tiger] This is tigher speak method invocation !");  }
+}
+
+class Eagle {
+  void speak() { system.io.println("[Eage] This is eagle speak method invocation !"); }
+}
+
+class CtorOverload {
+    private Tiger tiger;
+    private Eagle eagle;
+
+    public CtorOverload(Tiger tg, Eagle eg) {  this.tiger = tg;  this.eagle = eg; }
+
+    public CtorOverload(Tiger tg) { this.tiger = tg; }
+
+    public CtorOverload(Eagle eg) { this.eagle = eg; }
+
+    void print() {
+      tiger.speak();
+      eagle.speak();
+    }
+}
+
+
+int main() { 
+
+  auto logger = new CtorOverload(new Eagle());
+
+  logger.print();
+
+  return 0;
+}
+
+
