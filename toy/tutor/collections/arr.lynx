@@ -1,15 +1,19 @@
 
-import "system" as sm;
-import "collections";
-import "algorithm";
 
 int main() {
 
-    array<int, 7> arr = {1, 6, 4, 2, 8, 9, 3};
+    array<int, 7> arr = {100, 600, 400, 200, 800, 900, 300};
 
-    auto filteredArr = arr |> filter(x > 2) |> sort();
+    arr::set(2, 10000);
 
-    sm.prettyPrint("filtered array {}",  filteredArr);
+    int x = arr::get(2);
 
-    return 0;
+    int size = arr::len();
+
+    system.io.println(size);
+
+    system.io.println(x);
+
+
+    return 64;
 }
