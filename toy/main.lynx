@@ -8,13 +8,13 @@ int main() {
     int z = x >> 2;
     */
     
-   // vector<vector<int>> vec = [ [1000, 2000], [1000, 2000] ];
+    vector<vector<int>> vec = [ [1000, 2000], [5000, 6000] ];
 
    // array<int, 3> a = [1, 2, 3];
 
    // map<string, int> m = {"a": 1, "b": 2};
 
-  // vector<int> vec = [100, 120, 600, 400, 200, 800, 900, 300];
+   // vector<int> vec = [100, 120, 600, 400, 200, 800, 900, 300];
 
    // set<float> s = [1.2, 3.4, 5.6];
 
@@ -26,7 +26,7 @@ int main() {
 
     //map<string, int> mvp = {  "x": 10, "y": 29 };
 
-    map<string, vector<int>> m = { "a": [1,2,3,4], "b": [5,6,7,8] };
+   // map<string, vector<int>> m = { "a": [1,2,3,4], "b": [5,6,7,8] };
 
 
     return 0;
