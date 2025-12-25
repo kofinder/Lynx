@@ -95,14 +95,14 @@ endif()
 # ===============================
 # Clang-Tidy
 # ===============================
-include(ClangTidy)
-if(ENABLE_CLANG_TIDY)
-    enable_clang_tidy_for_target(${LYNX_EXECUTABLE})
+# include(ClangTidy)
+# if(ENABLE_CLANG_TIDY)
+    # enable_clang_tidy_for_target(${LYNX_EXECUTABLE})
     # enable_clang_tidy_for_target(LynxLogger)
     # enable_clang_tidy_for_target(LynxExceptions)
     # enable_clang_tidy_for_target(LynxTypes)
     # enable_clang_tidy_for_target(LynxAnalyzer) 
-endif()
+# endif()
 
 # if(ENABLE_CLANG_TIDY)
     # include(ClangTidy)
